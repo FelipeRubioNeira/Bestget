@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "104630043190",
+    "project_id": "bestget-chile",
+    "storage_bucket": "bestget-chile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:104630043190:android:faee61a7089cf750860e97",
+        "android_client_info": {
+          "package_name": "com.bestget"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAF8pSXWMrvxf2JzXeHEx61ptkICEu93kg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
