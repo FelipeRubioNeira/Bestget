@@ -9,11 +9,19 @@ import { FontFamily } from "../../constants/Fonts";
 const ScreenOptions = Object.freeze({
 
     home: {
-        headerShown: false
+        headerShown: false,
+        title: "Inicio",
     },
 
     incomes: {
         title: "Ingresos",
+        headerTintColor: Colors.BLACK,
+        headerStyle: { backgroundColor: Colors.GREEN },
+        headerTitleStyle: { fontFamily: FontFamily.BOLD },
+    },
+
+    incomesCreate: {
+        title: "Nuevo Ingreso",
         headerTintColor: Colors.BLACK,
         headerStyle: { backgroundColor: Colors.GREEN },
         headerTitleStyle: { fontFamily: FontFamily.BOLD },

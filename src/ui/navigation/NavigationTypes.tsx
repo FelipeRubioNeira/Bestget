@@ -1,5 +1,7 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ScreensRoutes } from "./Routes";
+import { IIncomeViewModel } from "../screens/incomes/IncomeViewModel";
+
 
 
 /* 
@@ -9,8 +11,9 @@ import { ScreensRoutes } from "./Routes";
 */
 export type MainNavigatorParamList = {
     [ScreensRoutes.HOME]: undefined
-    [ScreensRoutes.INCOMES]: undefined
     [ScreensRoutes.MOVEMENTS]: undefined
+    [ScreensRoutes.INCOMES]: undefined
+    [ScreensRoutes.INCOMES_CREATE]: undefined
 }
 
 
@@ -26,6 +29,12 @@ export type HomeScreenProps = NativeStackScreenProps<
 export type IncomesScreenProps = NativeStackScreenProps<
     MainNavigatorParamList,
     ScreensRoutes.INCOMES
+>
+
+// incomes create screen
+export type IncomesCreateScreenProps = NativeStackScreenProps<
+    MainNavigatorParamList,
+    ScreensRoutes.INCOMES_CREATE
 >
 
 // movements screen

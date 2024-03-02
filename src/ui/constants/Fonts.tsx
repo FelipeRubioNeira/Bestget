@@ -7,7 +7,9 @@ export enum FontFamily {
 }
 
 export enum FontSize {
+    XSMALL = 16,
     SMALL = 18,
     MEDIUM = 22,
     LARGE = 28,
+    XLARGE = 32
 }

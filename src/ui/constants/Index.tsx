@@ -6,9 +6,9 @@ import { Styles, DefaultStyles } from "./Styles";
 
 
 export {
-    Colors,
-    FontSize,
-    FontFamily,
-    Styles,
-    DefaultStyles
+    Colors as Colors,
+    FontSize as FontSize,
+    FontFamily as FontFamily,
+    Styles as Styles,
+    DefaultStyles as DefaultStyles
 }

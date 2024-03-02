@@ -37,7 +37,7 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
                 <Spacer marginVertical={"1%"} />
 
                 <Label
-                    value="$1.200.000"
+                    value="$1.500.000"
                     fontSize={FontSize.LARGE}
                     fontFamily={FontFamily.BLACK}
                 />

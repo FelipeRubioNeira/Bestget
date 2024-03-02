@@ -48,7 +48,7 @@ const MenuButtonStyle = StyleSheet.create({
         borderRadius: Styles.BORDER_RADIUS,
         justifyContent: "center",
         alignItems: "center",
-        flex: 1
+        flex: 1,
     }
 
 })
