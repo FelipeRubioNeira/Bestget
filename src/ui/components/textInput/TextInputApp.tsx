@@ -1,18 +1,28 @@
 import { StyleSheet, TextInput } from "react-native"
 import { Colors, FontFamily, FontSize, Styles } from "../../constants/Index"
-import { ITextInput } from "../IProps"
+
+interface ITextInput {
+    value?: string | number
+    fontSize?: number
+    fontFamily?: string
+    color?: string
+    placeholder?: string,
+    onChangeText?: (text: string | number) => void
+}
 
 const TextInputApp = ({
     value,
     fontSize = FontSize.MEDIUM,
     fontFamily = FontFamily.REGULAR,
     color = Colors.BLACK,
-    placeholder = "Ingrese el monto"
+    placeholder = "Ingrese el monto",
+    onChangeText = () => { },
 }: ITextInput) => {
 
     return (
 
         <TextInput
+            onChangeText={onChangeText}
             placeholder={placeholder}
             placeholderTextColor={Colors.GRAY}
             style={{

@@ -14,13 +14,7 @@ interface ITotalAmount {
 }
 
 // textInput
-interface ITextInput {
-    value?: string
-    fontSize?: number
-    fontFamily?: string
-    color?: string
-    placeholder?: string
-}
+
 
 // buttonAdd
 interface IButtonAdd {
@@ -34,18 +28,13 @@ interface ISubmmitButton {
 }
 
 // textInputWithLabel
-interface ITextInputWithLabel {
-    title?: string,
-    placeholder?: string
-  }
-  
+
+
 
 
 export type {
     ILabel as ILabel,
     ITotalAmount as ITotalAmount,
-    ITextInput as ITextInput,
     IButtonAdd as IButtonAdd,
     ISubmmitButton as ISubmmitButton,
-    ITextInputWithLabel as ITextInputWithLabel
 }

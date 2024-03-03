@@ -28,6 +28,8 @@ const IncomesCreateScreen = ({ navigation, route }: IncomesCreateScreenProps) =>
 
         <View>
           <TextInputWithLabel
+            value={incomesCreateViewModel.incomeName}
+            onChangeText={value => incomesCreateViewModel.updateIncomeName(value.toString())}
             title="Nombre nuevo ingreso:"
             placeholder="Sueldo"
           />
@@ -35,6 +37,8 @@ const IncomesCreateScreen = ({ navigation, route }: IncomesCreateScreenProps) =>
           <Spacer marginVertical={"4%"} />
 
           <TextInputWithLabel
+            value={incomesCreateViewModel.incomeAmount}
+            onChangeText={newValue => incomesCreateViewModel.updateIncomeAmount(parseInt(newValue.toString()))}
             title="Monto:"
             placeholder="100.000"
           />
