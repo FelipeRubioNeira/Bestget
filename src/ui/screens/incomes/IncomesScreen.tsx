@@ -10,7 +10,7 @@ import TotalAmount from '../../components/totalAmount/TotalAmount'
 import ButtonAdd from '../../components/buttonAdd/ButtonAdd'
 import HelpText from '../../components/helpText/Help'
 import { IncomesScreenProps } from '../../navigation/NavigationTypes'
-import useIncomeViewModel from './IncomeViewModel'
+import useIncomeViewModel, { IncomeFormatted } from './IncomeViewModel'
 import { IncomeDataSource } from '../../../data/repository/incomeRepository/IncomeDataSource'
 import { IncomeRepository } from '../../../data/repository/incomeRepository/IncomeRepository'
 import { GetAllIncomesUseCase } from '../../../domain/useCases/GetAllIncomesUseCase'
@@ -45,7 +45,7 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
 
         <TotalAmount
           label="Ingreso"
-          amount="1.500.000"
+          amount={incomeViewModel?.totalAmount}
         />
 
         <Spacer marginVertical={"4%"} />
@@ -70,7 +70,7 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
   )
 }
 
-const IncomeItem = ({ name, amount }: Income) => {
+const IncomeItem = ({ name, amount }: IncomeFormatted) => {
 
   return (
     <TouchableOpacity style={incomesScreenStyle.incomeItem}>

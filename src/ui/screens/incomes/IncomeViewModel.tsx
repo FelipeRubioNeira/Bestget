@@ -3,10 +3,18 @@ import { IncomesScreenProps } from "../../navigation/NavigationTypes"
 import { ScreensRoutes } from "../../navigation/Routes"
 import { GetAllIncomesUseCase } from "../../../domain/useCases/GetAllIncomesUseCase"
 import { Income } from "../../../data/models/Income"
+import { applyPesoCurrency } from "../../../utils/Convert"
 
 type IIncomesViewModel = {
     getAllIncomesUseCase: GetAllIncomesUseCase
 } & IncomesScreenProps
+
+export type IncomeFormatted = {
+    id: string | null,
+    name: string,
+    amount: string
+}
+
 
 
 const useIncomeViewModel = ({
@@ -17,7 +25,8 @@ const useIncomeViewModel = ({
 
 
     // ------------------- states ------------------- //
-    const [incomesList, setIncomesList] = useState<Income[]>([])
+    const [incomesList, setIncomesList] = useState<IncomeFormatted[]>([])
+    const [totalAmount, setTotalAmount] = useState<string>("0")
 
 
     // ------------------- effects ------------------- //
@@ -40,12 +49,49 @@ const useIncomeViewModel = ({
     const getAllIncomes = async () => {
 
         try {
+
             const allIncomes = await getAllIncomesUseCase.getAll()
-            setIncomesList(allIncomes)
+            const allIncomesFormatted = applyFormat(allIncomes)
+
+            const totalAmount = getTotalAmount(allIncomes)
+            const totalAmountFormatted = applyPesoCurrency(totalAmount)
+
+            setTotalAmount(totalAmountFormatted)
+            setIncomesList(allIncomesFormatted)
 
         } catch (error) {
             console.error("error al obtener todos los ingresos", error)
         }
+
+    }
+
+    const getTotalAmount = (incomes: Income[]): number => {
+
+        let total = 0
+
+        incomes.forEach(income => {
+            total += income.amount
+        })
+
+
+        return total
+
+    }
+
+    const applyFormat = (incomes: Income[]): IncomeFormatted[] => {
+
+        const incomesFormatted = incomes.map(income => {
+
+            const incomeFormatted: IncomeFormatted = {
+                id: income.id,
+                name: income.name,
+                amount: applyPesoCurrency(income.amount)
+            }
+
+            return incomeFormatted
+        })
+
+        return incomesFormatted
 
     }
 
@@ -56,6 +102,7 @@ const useIncomeViewModel = ({
 
 
     return {
+        totalAmount,
         incomesList,
 
         navigateIncomeCreate
