@@ -4,7 +4,8 @@ import { IncomeRepository } from "../../data/repository/incomeRepository/IncomeR
 export class CreateIncomeUseCase {
     constructor(private incomeRepository: IncomeRepository) { }
 
-    public createIncome(income: Income): Promise<void> {
-        return this.incomeRepository.createIncome(income)
+    public create(income: Income): Promise<string> {
+        return this.incomeRepository.create(income)
     }
+
 }

@@ -10,12 +10,25 @@ import TextInputApp from '../../components/textInput/TextInputApp'
 import SubmitButton from '../../components/submitButton/SubmitButton'
 import useIncomeCreateViewModel from './IncomesCreateViewModel'
 import TextInputWithLabel from '../../components/textInputWithLabel/TextInputWithLabel'
+import { IncomeDataSource } from '../../../data/repository/incomeRepository/IncomeDataSource'
+import { IncomeRepository } from '../../../data/repository/incomeRepository/IncomeRepository'
+import { CreateIncomeUseCase } from '../../../domain/useCases/CreateIncomeUseCase'
 
+
+// dependency injection 
+const incomeDataSource = new IncomeDataSource()
+const incomeRepository = new IncomeRepository(incomeDataSource)
+const createIncomeUseCase = new CreateIncomeUseCase(incomeRepository)
 
 
 const IncomesCreateScreen = ({ navigation, route }: IncomesCreateScreenProps) => {
 
-  const incomesCreateViewModel = useIncomeCreateViewModel({ navigation, route })
+
+  const incomesCreateViewModel = useIncomeCreateViewModel({
+    navigation,
+    route,
+    createIncomeUseCase
+  })
 
   return (
 
@@ -29,7 +42,7 @@ const IncomesCreateScreen = ({ navigation, route }: IncomesCreateScreenProps) =>
         <View>
           <TextInputWithLabel
             value={incomesCreateViewModel.incomeName}
-            onChangeText={value => incomesCreateViewModel.updateIncomeName(value.toString())}
+            onChangeText={incomesCreateViewModel.updateIncomeName}
             title="Nombre nuevo ingreso:"
             placeholder="Sueldo"
           />
@@ -38,7 +51,7 @@ const IncomesCreateScreen = ({ navigation, route }: IncomesCreateScreenProps) =>
 
           <TextInputWithLabel
             value={incomesCreateViewModel.incomeAmount}
-            onChangeText={newValue => incomesCreateViewModel.updateIncomeAmount(parseInt(newValue.toString()))}
+            onChangeText={incomesCreateViewModel.updateIncomeAmount}
             title="Monto:"
             placeholder="100.000"
           />
@@ -48,7 +61,7 @@ const IncomesCreateScreen = ({ navigation, route }: IncomesCreateScreenProps) =>
 
 
         <SubmitButton
-          onPress={incomesCreateViewModel.saveNewIncome}
+          onPress={incomesCreateViewModel.createIncome}
         />
 
       </View>

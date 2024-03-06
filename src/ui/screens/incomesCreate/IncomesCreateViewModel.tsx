@@ -2,25 +2,23 @@ import { useState } from "react";
 import { IncomesCreateScreenProps } from "../../navigation/NavigationTypes";
 import { ScreensRoutes } from "../../navigation/Routes";
 import { CreateIncomeUseCase } from "../../../domain/useCases/CreateIncomeUseCase";
-import { IncomeRepository } from "../../../data/repository/incomeRepository/IncomeRepository";
-import { IncomesCreateDataSource } from "../../../data/repository/incomeRepository/IncomesCreateDataSource";
 import { Income } from "../../../data/models/Income";
 
+type IIncomesCreateViewModel = {
+    createIncomeUseCase: CreateIncomeUseCase,
+} & IncomesCreateScreenProps
 
 
-const useIncomeCreateViewModel = ({ navigation }: IncomesCreateScreenProps) => {
+const useIncomeCreateViewModel = ({
+    navigation,
+    createIncomeUseCase
+}: IIncomesCreateViewModel) => {
 
 
 
     // ------------------- states ------------------- //
-    const [incomeName, setIncomeName] = useState<string | number>("")
-    const [incomeAmount, setIncomeAmount] = useState<string | number>(0)
-
-
-    const incomesCreateDataSource = new IncomesCreateDataSource()
-    const incomeRepository = new IncomeRepository(incomesCreateDataSource)
-    const inconmeUseCase = new CreateIncomeUseCase(incomeRepository)
-
+    const [incomeName, setIncomeName] = useState<string>("")
+    const [incomeAmount, setIncomeAmount] = useState<string>("")
 
 
     // ------------------- methods ------------------- //
@@ -28,34 +26,30 @@ const useIncomeCreateViewModel = ({ navigation }: IncomesCreateScreenProps) => {
         setIncomeName(newIncomeName)
     }
 
-    const updateIncomeAmount = (newIncomeAmount: number) => {
+    const updateIncomeAmount = (newIncomeAmount: string) => {
         setIncomeAmount(newIncomeAmount)
     }
 
-    const saveNewIncome = () => {
+    const createIncome = async () => {
 
-        /* 
-            llamamos al caso de uso correspondiente
-            para guardar el nuevo ingreso
+        try {
 
-            el caso de uso se encargará de guardar el nuevo ingreso
-            
-            el viewModel se encarga de validar que los campos de la UI
-            estan correctamente ingresados
+            const newIncome = new Income(
+                null,
+                incomeName,
+                parseInt(incomeAmount)
+            )
 
-            en caso de que esten correctos pasamos a subir el nuevo ingreso
-            
-         */
+            const newIncomeId = await createIncomeUseCase.create(newIncome)
 
-        // hay que hacer algo para convertir estos valores correctamente. (crear una fx)
-        const newIncome = new Income(
-            incomeName.toString(),
-            parseInt(incomeAmount + "")
-        )
+            navigation.navigate(ScreensRoutes.INCOMES,{
+                newIncomeId: newIncomeId
+            })
 
-        inconmeUseCase.createIncome(newIncome)
+        } catch (error) {
+            console.error("error al guardar el nuevo ingreso", error)
+        }
 
-        navigation.navigate(ScreensRoutes.INCOMES)
     }
 
 
@@ -66,7 +60,7 @@ const useIncomeCreateViewModel = ({ navigation }: IncomesCreateScreenProps) => {
         incomeName, updateIncomeName,
         incomeAmount, updateIncomeAmount,
 
-        saveNewIncome
+        createIncome
     }
 
 

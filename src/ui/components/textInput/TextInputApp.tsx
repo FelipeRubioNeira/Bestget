@@ -2,12 +2,12 @@ import { StyleSheet, TextInput } from "react-native"
 import { Colors, FontFamily, FontSize, Styles } from "../../constants/Index"
 
 interface ITextInput {
-    value?: string | number
+    value?: string
     fontSize?: number
     fontFamily?: string
     color?: string
     placeholder?: string,
-    onChangeText?: (text: string | number) => void
+    onChangeText?: (text: string) => void
 }
 
 const TextInputApp = ({

@@ -4,8 +4,12 @@ import { IIncomeRepository } from "./IIncomeRepository";
 export class IncomeRepository {
     constructor(private incomeRepository: IIncomeRepository) { }
 
-    public createIncome(income: Income): Promise<void> {
-        return this.incomeRepository.createIncome(income)
+    public create(income: Income): Promise<string> {
+        return this.incomeRepository.create(income)
+    }
+
+    public getAll(): Promise<Income[]> {
+        return this.incomeRepository.getAll();
     }
 
 }

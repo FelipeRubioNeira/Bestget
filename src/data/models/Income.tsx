@@ -1,15 +1,9 @@
 export class Income {
+
     constructor(
-        private name: string,
-        private amount: number,
+        public id: string | null,
+        public name: string,
+        public amount: number,
     ) { }
-
-    get getName() {
-        return this.name
-    }
-
-    get getAmount() {
-        return this.amount
-    }
 
 }

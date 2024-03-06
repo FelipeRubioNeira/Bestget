@@ -1,6 +1,5 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ScreensRoutes } from "./Routes";
-import { IIncomeViewModel } from "../screens/incomes/IncomeViewModel";
 
 
 
@@ -12,7 +11,7 @@ import { IIncomeViewModel } from "../screens/incomes/IncomeViewModel";
 export type MainNavigatorParamList = {
     [ScreensRoutes.HOME]: undefined
     [ScreensRoutes.MOVEMENTS]: undefined
-    [ScreensRoutes.INCOMES]: undefined
+    [ScreensRoutes.INCOMES]: { newIncomeId?: string}
     [ScreensRoutes.INCOMES_CREATE]: undefined
 }
 

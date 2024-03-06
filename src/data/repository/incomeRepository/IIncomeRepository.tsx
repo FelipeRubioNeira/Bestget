@@ -1,5 +1,6 @@
 import { Income } from "../../models/Income";
 
 export interface IIncomeRepository {
-     createIncome: (income: Income) => Promise<any>
+     create: (income: Income) => Promise<string>
+     getAll: () => Promise<Income[]>
 }

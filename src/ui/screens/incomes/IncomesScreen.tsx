@@ -1,4 +1,4 @@
-import { SafeAreaView, View, TouchableOpacity, StyleSheet } from 'react-native'
+import { SafeAreaView, View, TouchableOpacity, StyleSheet, FlatList } from 'react-native'
 import React from 'react'
 import { DefaultStyles, Styles } from '../../constants/Styles'
 import Label from '../../components/Label'
@@ -11,13 +11,24 @@ import ButtonAdd from '../../components/buttonAdd/ButtonAdd'
 import HelpText from '../../components/helpText/Help'
 import { IncomesScreenProps } from '../../navigation/NavigationTypes'
 import useIncomeViewModel from './IncomeViewModel'
+import { IncomeDataSource } from '../../../data/repository/incomeRepository/IncomeDataSource'
+import { IncomeRepository } from '../../../data/repository/incomeRepository/IncomeRepository'
+import { GetAllIncomesUseCase } from '../../../domain/useCases/GetAllIncomesUseCase'
+import { Income } from '../../../data/models/Income'
+
+const incomeDataSource = new IncomeDataSource()
+const incomeRepository = new IncomeRepository(incomeDataSource)
+const getAllIncomesUseCase = new GetAllIncomesUseCase(incomeRepository)
 
 
+const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
 
-const IncomesScreen = ({ navigation, route }: IncomesScreenProps,
-) => {
 
-  const incomeViewModel = useIncomeViewModel({ navigation, route })
+  const incomeViewModel = useIncomeViewModel({
+    navigation,
+    route,
+    getAllIncomesUseCase
+  })
 
 
   return (
@@ -39,7 +50,11 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps,
 
         <Spacer marginVertical={"4%"} />
 
-        <IncomeItem />
+        <FlatList
+          data={incomeViewModel?.incomesList}
+          renderItem={({ item }) => <IncomeItem {...item} />}
+        />
+
 
         <Spacer marginVertical={"4%"} />
 
@@ -55,19 +70,19 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps,
   )
 }
 
-const IncomeItem = () => {
+const IncomeItem = ({ name, amount }: Income) => {
 
   return (
     <TouchableOpacity style={incomesScreenStyle.incomeItem}>
 
       <Label
-        value="Sueldo Felipe"
+        value={name}
         fontSize={FontSize.SMALL}
         fontFamily={FontFamily.REGULAR}
       />
 
       <Label
-        value="$1.500.000"
+        value={amount.toString()}
         fontSize={FontSize.SMALL}
         fontFamily={FontFamily.REGULAR}
       />

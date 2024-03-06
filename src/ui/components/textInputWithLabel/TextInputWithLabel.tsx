@@ -9,8 +9,8 @@ import TextInputApp from "../textInput/TextInputApp"
 interface ITextInputWithLabel {
     title?: string,
     placeholder?: string,
-    value?: string | number,
-    onChangeText?: (text: string | number) => void
+    value?: string,
+    onChangeText?: (text: string) => void
 }
 
 const TextInputWithLabel = ({
