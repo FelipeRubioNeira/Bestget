@@ -1,24 +1,19 @@
-import { SafeAreaView, StyleSheet, View, TouchableOpacity } from 'react-native'
+import { SafeAreaView, View } from 'react-native'
 import React from 'react'
 import { DefaultStyles } from '../../constants/Styles'
-import Label from '../../components/Label'
-import { FontFamily, FontSize } from '../../constants/Fonts'
 import Spacer from '../../components/Spacer'
 import { IncomesCreateScreenProps } from '../../navigation/NavigationTypes'
-import { Colors } from '../../constants/Colors'
-import TextInputApp from '../../components/textInput/TextInputApp'
 import SubmitButton from '../../components/submitButton/SubmitButton'
 import useIncomeCreateViewModel from './IncomesCreateViewModel'
 import TextInputWithLabel from '../../components/textInputWithLabel/TextInputWithLabel'
-import { IncomeDataSource } from '../../../data/repository/incomeRepository/IncomeDataSource'
 import { IncomeRepository } from '../../../data/repository/incomeRepository/IncomeRepository'
 import { CreateIncomeUseCase } from '../../../domain/useCases/CreateIncomeUseCase'
+import { InputType } from '../../components/textInput/TextInputViewModel'
 
 
 // dependency injection 
-const incomeDataSource = new IncomeDataSource()
-const incomeRepository = new IncomeRepository(incomeDataSource)
-const createIncomeUseCase = new CreateIncomeUseCase(incomeRepository)
+const incomeDataSource = new IncomeRepository()
+const createIncomeUseCase = new CreateIncomeUseCase(incomeDataSource)
 
 
 const IncomesCreateScreen = ({ navigation, route }: IncomesCreateScreenProps) => {
@@ -54,6 +49,7 @@ const IncomesCreateScreen = ({ navigation, route }: IncomesCreateScreenProps) =>
             onChangeText={incomesCreateViewModel.updateIncomeAmount}
             title="Monto:"
             placeholder="100.000"
+            inputMode={InputType.NUMERIC}
           />
         </View>
 

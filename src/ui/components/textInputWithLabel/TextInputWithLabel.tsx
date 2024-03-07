@@ -1,4 +1,4 @@
-import { View } from "react-native"
+import { InputModeOptions, View } from "react-native"
 import Label from "../Label"
 import { FontSize } from "../../constants/Fonts"
 import { Colors } from "../../constants/Colors"
@@ -7,16 +7,18 @@ import TextInputApp from "../textInput/TextInputApp"
 
 
 interface ITextInputWithLabel {
+    value?: string,
     title?: string,
     placeholder?: string,
-    value?: string,
-    onChangeText?: (text: string) => void
+    inputMode?: InputModeOptions,
+    onChangeText: (text: string) => void
 }
 
 const TextInputWithLabel = ({
-    title = "",
     value = "",
+    title = "",
     placeholder = "",
+    inputMode,
     onChangeText,
 }: ITextInputWithLabel) => {
 
@@ -34,9 +36,10 @@ const TextInputWithLabel = ({
 
             <TextInputApp
                 value={value}
+                onChangeText={onChangeText}
                 placeholder={placeholder}
                 fontSize={FontSize.SMALL}
-                onChangeText={onChangeText}
+                inputMode={inputMode}
             />
 
         </View>

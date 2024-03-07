@@ -11,13 +11,10 @@ import ButtonAdd from '../../components/buttonAdd/ButtonAdd'
 import HelpText from '../../components/helpText/Help'
 import { IncomesScreenProps } from '../../navigation/NavigationTypes'
 import useIncomeViewModel, { IncomeFormatted } from './IncomeViewModel'
-import { IncomeDataSource } from '../../../data/repository/incomeRepository/IncomeDataSource'
 import { IncomeRepository } from '../../../data/repository/incomeRepository/IncomeRepository'
 import { GetAllIncomesUseCase } from '../../../domain/useCases/GetAllIncomesUseCase'
-import { Income } from '../../../data/models/Income'
 
-const incomeDataSource = new IncomeDataSource()
-const incomeRepository = new IncomeRepository(incomeDataSource)
+const incomeRepository = new IncomeRepository()
 const getAllIncomesUseCase = new GetAllIncomesUseCase(incomeRepository)
 
 

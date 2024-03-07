@@ -3,6 +3,7 @@ import { IncomesCreateScreenProps } from "../../navigation/NavigationTypes";
 import { ScreensRoutes } from "../../navigation/Routes";
 import { CreateIncomeUseCase } from "../../../domain/useCases/CreateIncomeUseCase";
 import { Income } from "../../../data/models/Income";
+import { plainFormat } from "../../../utils/Convert";
 
 type IIncomesCreateViewModel = {
     createIncomeUseCase: CreateIncomeUseCase,
@@ -34,15 +35,14 @@ const useIncomeCreateViewModel = ({
 
         try {
 
-            const newIncome = new Income(
-                null,
+            // 1. we pass the values and the use case will take care of the rest
+            const newIncomeId = await createIncomeUseCase.create(
                 incomeName,
-                parseInt(incomeAmount)
+                incomeAmount,
             )
 
-            const newIncomeId = await createIncomeUseCase.create(newIncome)
-
-            navigation.navigate(ScreensRoutes.INCOMES,{
+            // 2. finally we navigate to the incomes screen
+            navigation.navigate(ScreensRoutes.INCOMES, {
                 newIncomeId: newIncomeId
             })
 

@@ -1,6 +1,5 @@
-export const applyPesoCurrency = (value: number): string => {
 
-
+export const currencyFormat = (value: number | string): string => {
 
     let number = value.toString().replace(/\./g, '');
 
@@ -17,4 +16,9 @@ export const applyPesoCurrency = (value: number): string => {
     const resultado = parteEntera + parteDecimal;
 
     return resultado;
+}
+
+export const plainFormat = (value: string | undefined): string => {
+    if (typeof value === 'undefined') return '';
+    return value.replace(/\./g, '');
 }

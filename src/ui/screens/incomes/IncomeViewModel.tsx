@@ -3,7 +3,7 @@ import { IncomesScreenProps } from "../../navigation/NavigationTypes"
 import { ScreensRoutes } from "../../navigation/Routes"
 import { GetAllIncomesUseCase } from "../../../domain/useCases/GetAllIncomesUseCase"
 import { Income } from "../../../data/models/Income"
-import { applyPesoCurrency } from "../../../utils/Convert"
+import { currencyFormat } from "../../../utils/Convert"
 
 type IIncomesViewModel = {
     getAllIncomesUseCase: GetAllIncomesUseCase
@@ -54,7 +54,7 @@ const useIncomeViewModel = ({
             const allIncomesFormatted = applyFormat(allIncomes)
 
             const totalAmount = getTotalAmount(allIncomes)
-            const totalAmountFormatted = applyPesoCurrency(totalAmount)
+            const totalAmountFormatted = currencyFormat(totalAmount)
 
             setTotalAmount(totalAmountFormatted)
             setIncomesList(allIncomesFormatted)
@@ -85,7 +85,7 @@ const useIncomeViewModel = ({
             const incomeFormatted: IncomeFormatted = {
                 id: income.id,
                 name: income.name,
-                amount: applyPesoCurrency(income.amount)
+                amount: currencyFormat(income.amount)
             }
 
             return incomeFormatted

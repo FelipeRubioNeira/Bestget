@@ -1,14 +1,8 @@
-import { StyleSheet, TextInput } from "react-native"
+import { InputModeOptions, StyleSheet, TextInput } from "react-native"
 import { Colors, FontFamily, FontSize, Styles } from "../../constants/Index"
+import useTextInputViewModel, { ITextInput } from "./TextInputViewModel"
 
-interface ITextInput {
-    value?: string
-    fontSize?: number
-    fontFamily?: string
-    color?: string
-    placeholder?: string,
-    onChangeText?: (text: string) => void
-}
+
 
 const TextInputApp = ({
     value,
@@ -16,24 +10,30 @@ const TextInputApp = ({
     fontFamily = FontFamily.REGULAR,
     color = Colors.BLACK,
     placeholder = "Ingrese el monto",
+    inputMode,
     onChangeText = () => { },
 }: ITextInput) => {
+
+    const textInputViewModel = useTextInputViewModel({
+        inputMode,
+        onChangeText
+    })
 
     return (
 
         <TextInput
-            onChangeText={onChangeText}
+            value={value}
+            onChangeText={textInputViewModel.onChangeTextViewModel}
             placeholder={placeholder}
             placeholderTextColor={Colors.GRAY}
+            inputMode={inputMode}
             style={{
                 ...textInputStyles.textInput,
                 fontSize: fontSize,
                 fontFamily: fontFamily,
                 color: color
             }}
-        >
-            {value}
-        </TextInput>
+        />
     )
 }
 export default TextInputApp

@@ -1,8 +1,8 @@
 import { Income } from "../../data/models/Income";
-import { IncomeRepository } from "../../data/repository/incomeRepository/IncomeRepository";
+import { IIncomeRepository } from "../../data/repository/incomeRepository/IIncomeRepository";
 
 export class GetAllIncomesUseCase {
-  constructor(private incomeRepository: IncomeRepository) {}
+  constructor(private incomeRepository: IIncomeRepository) {}
 
   async getAll(): Promise<Income[]> {
     return this.incomeRepository.getAll();
