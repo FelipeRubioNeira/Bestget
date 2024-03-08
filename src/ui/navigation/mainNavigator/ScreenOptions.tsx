@@ -27,8 +27,8 @@ const ScreenOptions = Object.freeze({
         headerTitleStyle: { fontFamily: FontFamily.BOLD },
     },
     
-    movements: {
-        title: "Movimientos",
+    OUTCOMES: {
+        title: "Gastos y Presupuestos",
         headerTintColor: Colors.BLACK,
         headerStyle: { backgroundColor: Colors.YELLOW },
         headerTitleStyle: { fontFamily: FontFamily.BOLD },

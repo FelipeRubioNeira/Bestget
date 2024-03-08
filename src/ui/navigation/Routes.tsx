@@ -5,7 +5,7 @@ export enum ScreenRoutes {
     HOME = "HOME",
     INCOMES = "INCOMES",
     INCOMES_CREATE = "INCOMES_CREATE",
-    MOVEMENTS = "MOVEMENTS"
+    OUTCOMES = "OUTCOMES"
 }
 
 export enum NavigatorRoutes {

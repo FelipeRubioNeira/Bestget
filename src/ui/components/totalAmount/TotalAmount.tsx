@@ -2,15 +2,25 @@
 import { StyleSheet, View } from "react-native"
 import { Styles, Colors, FontFamily } from "../../constants/Index"
 import Label from "../Label"
-import { ITotalAmount } from "../IProps"
 
 
-const TotalAmount = ({ label, amount }: ITotalAmount) => {
+interface ITotalAmount {
+    label: string,
+    amount: string,
+    color?: string
+}
+
+
+const TotalAmount = ({
+    label,
+    amount,
+    color = Colors.GRAY
+}: ITotalAmount) => {
 
     return (
 
-        <View style={totalAmountStyles.container}>
-            
+        <View style={{ ...totalAmountStyles.container, backgroundColor: color }}>
+
             <Label
                 value={`${label} total`}
                 fontFamily={FontFamily.BLACK}

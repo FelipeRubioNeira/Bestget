@@ -13,7 +13,7 @@ export type NavigatorParamList = {
     [NavigatorRoutes.HOME]: undefined
 
     [ScreenRoutes.HOME]: undefined
-    [ScreenRoutes.MOVEMENTS]: undefined
+    [ScreenRoutes.OUTCOMES]: undefined
     [ScreenRoutes.INCOMES]: { newIncomeId?: string | undefined }
     [ScreenRoutes.INCOMES_CREATE]: undefined
 }
@@ -46,8 +46,8 @@ export type IncomesCreateScreenProps = NativeStackScreenProps<
     ScreenRoutes.INCOMES_CREATE
 >
 
-// movements screen
-export type MovementsScreenProps = NativeStackScreenProps<
+// OUTCOMES screen
+export type OutcomesScreenProps = NativeStackScreenProps<
     NavigatorParamList,
-    ScreenRoutes.MOVEMENTS
+    ScreenRoutes.OUTCOMES
 >

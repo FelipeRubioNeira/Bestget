@@ -1,13 +1,20 @@
 import { StyleSheet, TouchableOpacity } from "react-native"
-import { Colors, FontFamily, Styles } from "../../constants/Index"
+import { Colors, FontFamily, Styles, DefaultStyles } from "../../constants/Index"
 import Label from "../Label"
-import { IButtonAdd } from "../IProps"
+
+interface IButtonAdd {
+    visible?: boolean,
+    backgroundColor?: string,
+    onPress?: () => void
+}
 
 const ButtonAdd = ({
+    visible = true,
     backgroundColor,
     onPress = () => { }
 }: IButtonAdd) => {
 
+    if (!visible) return null
     return (
         <TouchableOpacity
             onPress={onPress}
@@ -41,14 +48,7 @@ const buttonAddStyles = StyleSheet.create({
         right: 20,
         bottom: 20,
         // --- shadow --- //
-        shadowColor: Colors.BLACK,
-        shadowOffset: {
-            width: 0,
-            height: 3,
-        },
-        shadowOpacity: 0.17,
-        shadowRadius: 3.05,
-        elevation: 4
+        ...DefaultStyles.SHADOW
     }
 
 })

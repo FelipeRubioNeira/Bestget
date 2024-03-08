@@ -17,7 +17,7 @@ export type IncomeFormatted = {
 
 
 
-const useIncomeViewModel = ({
+const useIncomesViewModel = ({
     navigation,
     route,
     getAllIncomesUseCase
@@ -109,4 +109,4 @@ const useIncomeViewModel = ({
     }
 }
 
-export default useIncomeViewModel
+export default useIncomesViewModel

@@ -8,7 +8,7 @@ import { NavigatorParamList } from '../NavigationParamList'
 import {
     HomeScreen,
     IncomesScreen,
-    MovementsScreen
+    OutcomesSreen
 } from '../../screens/Index'
 
 import ScreenOptions from './ScreenOptions';
@@ -51,11 +51,11 @@ const MainNavigator = () => {
                 />
 
 
-                {/* movements screen */}
+                {/* OUTCOMES screen */}
                 <Stack.Screen
-                    component={MovementsScreen}
-                    name={ScreenRoutes.MOVEMENTS}
-                    options={ScreenOptions.movements}
+                    component={OutcomesSreen}
+                    name={ScreenRoutes.OUTCOMES}
+                    options={ScreenOptions.OUTCOMES}
                 />
 
             </Stack.Navigator>

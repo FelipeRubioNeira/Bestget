@@ -8,7 +8,7 @@ import { currencyFormat } from "../../../utils/Convert"
 
 // ------------------ interfaces ------------------ //
 export interface IMenuArrayButtonsProps {
-    movementsOnPress: () => void
+    OUTCOMESOnPress: () => void
     incomesOnPress: () => void
 }
 
@@ -45,8 +45,8 @@ const useHomeViewModel = ({ navigation, getTotalIncomesUseCase }: HomeViewModelP
         setTotalIncomes(totalIncomesFormatted)
     }
 
-    const movementsOnPress = () => {
-        navigation.navigate(ScreenRoutes.MOVEMENTS)
+    const OUTCOMESOnPress = () => {
+        navigation.navigate(ScreenRoutes.OUTCOMES)
     }
 
     const incomesOnPress = () => {
@@ -57,7 +57,7 @@ const useHomeViewModel = ({ navigation, getTotalIncomesUseCase }: HomeViewModelP
     // ------------------ return ------------------ //
     return {
         totalIncomes,
-        movementsOnPress,
+        OUTCOMESOnPress,
         incomesOnPress
     }
 

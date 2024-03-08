@@ -10,7 +10,7 @@ import TotalAmount from '../../components/totalAmount/TotalAmount'
 import ButtonAdd from '../../components/buttonAdd/ButtonAdd'
 import HelpText from '../../components/helpText/Help'
 import { IncomesScreenProps } from '../../navigation/NavigationParamList'
-import useIncomeViewModel, { IncomeFormatted } from './IncomeViewModel'
+import useIncomeViewModel, { IncomeFormatted } from './IncomesViewModel'
 import { IncomeRepository } from '../../../data/repository/incomeRepository/IncomeRepository'
 import { GetAllIncomesUseCase } from '../../../domain/useCases/GetAllIncomesUseCase'
 
@@ -29,41 +29,37 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
 
 
   return (
+    <View style={DefaultStyles.SCREEN}>
 
-    <SafeAreaView>
+      <HelpText
+        value={Strings.incomes}
+        fontSize={FontSize.XSMALL}
+        color={Colors.DARK_GRAY}
+      />
 
-      <View style={DefaultStyles.SCREEN}>
+      <TotalAmount
+        label="Ingreso"
+        amount={incomeViewModel?.totalAmount}
+        color={Colors.GREEN}
+      />
 
-        <HelpText
-          value={Strings.incomes}
-          fontSize={FontSize.XSMALL}
-          color={Colors.DARK_GRAY}
-        />
+      <Spacer marginVertical={"4%"} />
 
-        <TotalAmount
-          label="Ingreso"
-          amount={incomeViewModel?.totalAmount}
-        />
-
-        <Spacer marginVertical={"4%"} />
-
-        <FlatList
-          data={incomeViewModel?.incomesList}
-          renderItem={({ item }) => <IncomeItem {...item} />}
-        />
+      <FlatList
+        data={incomeViewModel?.incomesList}
+        renderItem={({ item }) => <IncomeItem {...item} />}
+      />
 
 
-        <Spacer marginVertical={"4%"} />
+      <Spacer marginVertical={"4%"} />
 
 
-        <ButtonAdd
-          onPress={incomeViewModel?.navigateIncomeCreate}
-          backgroundColor={Colors.GREEN}
-        />
+      <ButtonAdd
+        onPress={incomeViewModel?.navigateIncomeCreate}
+        backgroundColor={Colors.GREEN}
+      />
 
-      </View>
-    </SafeAreaView>
-
+    </View>
   )
 }
 

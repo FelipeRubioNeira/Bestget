@@ -7,20 +7,8 @@ interface ILabel {
     color?: string
 }
 
-// totalAmount
-interface ITotalAmount {
-    label: string,
-    amount: string
-}
-
-// textInput
-
-
 // buttonAdd
-interface IButtonAdd {
-    backgroundColor?: string,
-    onPress?: () => void
-}
+
 
 // submitButton
 interface ISubmmitButton {
@@ -34,7 +22,5 @@ interface ISubmmitButton {
 
 export type {
     ILabel as ILabel,
-    ITotalAmount as ITotalAmount,
-    IButtonAdd as IButtonAdd,
     ISubmmitButton as ISubmmitButton,
 }

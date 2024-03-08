@@ -1,5 +1,6 @@
 import { ViewStyle } from 'react-native'
 import { Dimensions } from 'react-native'
+import { Colors } from './Colors'
 
 export enum Styles {
 
@@ -21,5 +22,16 @@ export const DefaultStyles = Object.freeze({
         width: "100%",
         padding: Styles.SCREEN_PADDING,
     } as ViewStyle, // an object act as a type
+
+    SHADOW: {
+        shadowColor: Colors.BLACK,
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.17,
+        shadowRadius: 3.05,
+        elevation: 4
+    } as ViewStyle
 
 })
