@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { SafeAreaView, StyleSheet, View } from 'react-native'
 import React from 'react'
 import Label from '../../components/Label'
 import { FontFamily, FontSize } from '../../constants/Fonts'
@@ -7,13 +7,22 @@ import Spacer from '../../components/Spacer'
 import { Colors, DefaultStyles } from '../../constants/Index'
 import { IMenuArrayButtonsProps } from './HomeViewModel'
 import useHomeViewModel from './HomeViewModel'
-import { HomeScreenProps } from '../../navigation/Index'
+import { HomeScreenProps } from '../../navigation/NavigationParamList'
+import { IncomeRepository } from '../../../data/repository/incomeRepository/IncomeRepository'
+import { GetTotalIncomesUseCase } from '../../../domain/useCases/GetTotalIncomesUseCase'
+
+
+const incomeRepository = new IncomeRepository()
+const getTotalIncomesUseCase = new GetTotalIncomesUseCase(incomeRepository)
 
 
 const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
 
-
-    const homeViewModel = useHomeViewModel({navigation, route})
+    const homeViewModel = useHomeViewModel({
+        navigation,
+        route,
+        getTotalIncomesUseCase
+    })
 
     return (
 
@@ -37,7 +46,7 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
                 <Spacer marginVertical={"1%"} />
 
                 <Label
-                    value="$1.500.000"
+                    value={"$" + homeViewModel.totalIncomes}
                     fontSize={FontSize.LARGE}
                     fontFamily={FontFamily.BLACK}
                 />

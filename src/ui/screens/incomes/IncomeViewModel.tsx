@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import { IncomesScreenProps } from "../../navigation/NavigationTypes"
-import { ScreensRoutes } from "../../navigation/Routes"
+import { IncomesScreenProps } from "../../navigation/NavigationParamList"
+import { ScreenRoutes } from "../../navigation/Routes"
 import { GetAllIncomesUseCase } from "../../../domain/useCases/GetAllIncomesUseCase"
 import { Income } from "../../../data/models/Income"
 import { currencyFormat } from "../../../utils/Convert"
@@ -96,7 +96,7 @@ const useIncomeViewModel = ({
     }
 
     const navigateIncomeCreate = () => {
-        navigation.navigate(ScreensRoutes.INCOMES_CREATE)
+        navigation.navigate(ScreenRoutes.INCOMES_CREATE)
     }
 
 

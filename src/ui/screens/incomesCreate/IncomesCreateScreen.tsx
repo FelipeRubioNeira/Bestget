@@ -2,7 +2,7 @@ import { SafeAreaView, View } from 'react-native'
 import React from 'react'
 import { DefaultStyles } from '../../constants/Styles'
 import Spacer from '../../components/Spacer'
-import { IncomesCreateScreenProps } from '../../navigation/NavigationTypes'
+import { IncomesCreateScreenProps } from '../../navigation/NavigationParamList'
 import SubmitButton from '../../components/submitButton/SubmitButton'
 import useIncomeCreateViewModel from './IncomesCreateViewModel'
 import TextInputWithLabel from '../../components/textInputWithLabel/TextInputWithLabel'
@@ -38,8 +38,8 @@ const IncomesCreateScreen = ({ navigation, route }: IncomesCreateScreenProps) =>
           <TextInputWithLabel
             value={incomesCreateViewModel.incomeName}
             onChangeText={incomesCreateViewModel.updateIncomeName}
-            title="Nombre nuevo ingreso:"
-            placeholder="Sueldo"
+            title="Nombre ingreso:"
+            placeholder="Ingreso de trabajo"
           />
 
           <Spacer marginVertical={"4%"} />
@@ -48,7 +48,7 @@ const IncomesCreateScreen = ({ navigation, route }: IncomesCreateScreenProps) =>
             value={incomesCreateViewModel.incomeAmount}
             onChangeText={incomesCreateViewModel.updateIncomeAmount}
             title="Monto:"
-            placeholder="100.000"
+            placeholder="$100.000"
             inputMode={InputType.NUMERIC}
           />
         </View>

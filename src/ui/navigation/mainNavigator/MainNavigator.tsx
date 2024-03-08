@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
-import { MainNavigatorParamList } from '../NavigationTypes'
+import { NavigatorParamList } from '../NavigationParamList'
 
 import {
     HomeScreen,
@@ -12,13 +12,13 @@ import {
 } from '../../screens/Index'
 
 import ScreenOptions from './ScreenOptions';
-import { ScreensRoutes } from '../Index';
 import IncomesCreateScreen from '../../screens/incomesCreate/IncomesCreateScreen';
+import { ScreenRoutes } from '../Routes';
 
 
 
 
-const Stack = createNativeStackNavigator<MainNavigatorParamList>()
+const Stack = createNativeStackNavigator<NavigatorParamList>()
 
 
 
@@ -28,25 +28,25 @@ const MainNavigator = () => {
     return (
 
         <NavigationContainer>
-            <Stack.Navigator initialRouteName={ScreensRoutes.HOME}>
+            <Stack.Navigator initialRouteName={ScreenRoutes.HOME}>
 
                 {/* home screen */}
                 <Stack.Screen
                     component={HomeScreen}
-                    name={ScreensRoutes.HOME}
+                    name={ScreenRoutes.HOME}
                     options={ScreenOptions.home}
                 />
 
                 {/* incomes screens */}
                 <Stack.Screen
                     component={IncomesScreen}
-                    name={ScreensRoutes.INCOMES}
+                    name={ScreenRoutes.INCOMES}
                     options={ScreenOptions.incomes}
                 />
 
                 <Stack.Screen
                     component={IncomesCreateScreen}
-                    name={ScreensRoutes.INCOMES_CREATE}
+                    name={ScreenRoutes.INCOMES_CREATE}
                     options={ScreenOptions.incomesCreate}
                 />
 
@@ -54,7 +54,7 @@ const MainNavigator = () => {
                 {/* movements screen */}
                 <Stack.Screen
                     component={MovementsScreen}
-                    name={ScreensRoutes.MOVEMENTS}
+                    name={ScreenRoutes.MOVEMENTS}
                     options={ScreenOptions.movements}
                 />
 

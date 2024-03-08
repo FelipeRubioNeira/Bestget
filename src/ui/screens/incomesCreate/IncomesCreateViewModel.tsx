@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { IncomesCreateScreenProps } from "../../navigation/NavigationTypes";
-import { ScreensRoutes } from "../../navigation/Routes";
+import { IncomesCreateScreenProps } from "../../navigation/NavigationParamList";
+import { ScreenRoutes } from "../../navigation/Routes";
 import { CreateIncomeUseCase } from "../../../domain/useCases/CreateIncomeUseCase";
 import { Income } from "../../../data/models/Income";
 import { plainFormat } from "../../../utils/Convert";
@@ -42,7 +42,7 @@ const useIncomeCreateViewModel = ({
             )
 
             // 2. finally we navigate to the incomes screen
-            navigation.navigate(ScreensRoutes.INCOMES, {
+            navigation.navigate(ScreenRoutes.INCOMES, {
                 newIncomeId: newIncomeId
             })
 

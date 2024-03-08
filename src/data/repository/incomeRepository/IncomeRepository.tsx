@@ -50,4 +50,19 @@ export class IncomeRepository implements IIncomeRepository {
 
     }
 
+    public async getTotal(): Promise<number> {
+
+        const incomes = await this.getAll()
+
+        let totalIncomes = 0
+        incomes.forEach(income => {
+            totalIncomes += income.amount
+        })
+
+        return totalIncomes
+
+    }
+
+
+
 }
