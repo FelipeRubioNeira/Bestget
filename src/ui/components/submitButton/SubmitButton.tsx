@@ -2,9 +2,15 @@ import { StyleSheet, TouchableOpacity } from "react-native"
 import { Colors } from "../../constants/Colors"
 import { FontFamily, FontSize } from "../../constants/Fonts"
 import Label from "../Label"
-import { ISubmmitButton } from "../IProps"
+
+// submitButton
+interface ISubmmitButton {
+    backgroundColor?: string
+    onPress?: () => void
+}
 
 const SubmitButton = ({
+    backgroundColor,
     onPress
 }: ISubmmitButton) => {
 
@@ -12,7 +18,10 @@ const SubmitButton = ({
         
         <TouchableOpacity
             onPress={onPress}
-            style={submitButtonStyles.submitButton}
+            style={{
+                ...submitButtonStyles.submitButton,
+                backgroundColor: backgroundColor
+            }}
         >
 
             <Label

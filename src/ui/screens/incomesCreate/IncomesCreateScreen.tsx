@@ -1,4 +1,4 @@
-import { SafeAreaView, View } from 'react-native'
+import { View } from 'react-native'
 import React from 'react'
 import { DefaultStyles } from '../../constants/Styles'
 import Spacer from '../../components/Spacer'
@@ -27,41 +27,38 @@ const IncomesCreateScreen = ({ navigation, route }: IncomesCreateScreenProps) =>
 
   return (
 
-    <SafeAreaView >
+    <View style={{
+      ...DefaultStyles.SCREEN,
+      justifyContent: 'space-between'
+    }}>
 
-      <View style={{
-        ...DefaultStyles.SCREEN,
-        justifyContent: 'space-between'
-      }}>
-
-        <View>
-          <TextInputWithLabel
-            value={incomesCreateViewModel.incomeName}
-            onChangeText={incomesCreateViewModel.updateIncomeName}
-            title="Nombre ingreso:"
-            placeholder="Ingreso de trabajo"
-          />
-
-          <Spacer marginVertical={"4%"} />
-
-          <TextInputWithLabel
-            value={incomesCreateViewModel.incomeAmount}
-            onChangeText={incomesCreateViewModel.updateIncomeAmount}
-            title="Monto:"
-            placeholder="$100.000"
-            inputMode={InputType.NUMERIC}
-          />
-        </View>
-
-        <Spacer marginVertical={"8%"} />
-
-
-        <SubmitButton
-          onPress={incomesCreateViewModel.createIncome}
+      <View>
+        <TextInputWithLabel
+          value={incomesCreateViewModel.incomeName}
+          onChangeText={incomesCreateViewModel.updateIncomeName}
+          title="Nombre ingreso:"
+          placeholder="Ingreso de trabajo"
         />
 
+        <Spacer marginVertical={"4%"} />
+
+        <TextInputWithLabel
+          value={incomesCreateViewModel.incomeAmount}
+          onChangeText={incomesCreateViewModel.updateIncomeAmount}
+          title="Monto:"
+          placeholder="$100.000"
+          inputMode={InputType.NUMERIC}
+        />
       </View>
-    </SafeAreaView>
+
+      <Spacer marginVertical={"8%"} />
+
+
+      <SubmitButton
+        onPress={incomesCreateViewModel.createIncome}
+      />
+
+    </View>
 
   )
 

@@ -2,10 +2,10 @@
 // screens
 import HomeScreen from "./home/HomeScreen";
 import IncomesScreen from "./incomes/IncomesScreen";
-import OutcomesSreen from "./outcomes/OutcomesScreen";
+import ExpensesScreen from "./expenses/ExpensesScreen";
 
 export {
     HomeScreen,
     IncomesScreen,
-    OutcomesSreen
+    ExpensesScreen
 }

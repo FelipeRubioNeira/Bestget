@@ -46,7 +46,7 @@ const useHomeViewModel = ({ navigation, getTotalIncomesUseCase }: HomeViewModelP
     }
 
     const OUTCOMESOnPress = () => {
-        navigation.navigate(ScreenRoutes.OUTCOMES)
+        navigation.navigate(ScreenRoutes.EXPENSES)
     }
 
     const incomesOnPress = () => {

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { IncomesScreenProps } from "../../navigation/NavigationParamList"
 import { ScreenRoutes } from "../../navigation/Routes"
 import { GetAllIncomesUseCase } from "../../../domain/useCases/GetAllIncomesUseCase"
-import { Income } from "../../../data/models/Income"
+import { Income } from "../../../data/types/Income"
 import { currencyFormat } from "../../../utils/Convert"
 
 type IIncomesViewModel = {

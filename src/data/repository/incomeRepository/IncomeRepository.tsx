@@ -1,5 +1,5 @@
 import { Collections } from "../../collections/Collections";
-import { Income } from "../../models/Income";
+import { Income } from "../../types/Income";
 import { IIncomeRepository } from "./IIncomeRepository";
 import firestore from '@react-native-firebase/firestore';
 
@@ -33,18 +33,19 @@ export class IncomeRepository implements IIncomeRepository {
 
             incomes.docs.forEach(doc => {
 
-                const newIncome = new Income(
-                    doc.id,
-                    doc.data().name,
-                    doc.data().amount
-                )
+                const newIncome: Income = {
+                    id: doc.id,
+                    name: doc.data().name,
+                    amount: doc.data().amount
+                }
+
                 incomesArray.push(newIncome)
             })
 
             return incomesArray
 
         } catch (error) {
-            console.log("error IncomesCreateDataSource", error);
+            console.error("error IncomesCreateDataSource", error);
             return []
         }
 

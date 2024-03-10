@@ -2,13 +2,17 @@ import { StyleSheet, Text } from 'react-native'
 import React from 'react'
 import { FontFamily, FontSize } from '../constants/Fonts'
 import { Colors } from '../constants/Colors'
-import { ILabel } from './IProps'
 
-
+interface ILabel {
+    value: string | undefined
+    fontSize?: number
+    fontFamily?: string
+    color?: string
+}
 
 
 const Label = ({
-    value,
+    value = "",
     fontSize = FontSize.MEDIUM,
     fontFamily = FontFamily.REGULAR,
     color = Colors.BLACK

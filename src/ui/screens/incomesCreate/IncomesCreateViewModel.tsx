@@ -2,7 +2,7 @@ import { useState } from "react";
 import { IncomesCreateScreenProps } from "../../navigation/NavigationParamList";
 import { ScreenRoutes } from "../../navigation/Routes";
 import { CreateIncomeUseCase } from "../../../domain/useCases/CreateIncomeUseCase";
-import { Income } from "../../../data/models/Income";
+import { Income } from "../../../data/types/Income";
 import { plainFormat } from "../../../utils/Convert";
 
 type IIncomesCreateViewModel = {

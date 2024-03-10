@@ -1,4 +1,4 @@
-import { Income } from "../../data/models/Income";
+import { Income } from "../../data/types/Income";
 import { IIncomeRepository } from "../../data/repository/incomeRepository/IIncomeRepository";
 
 export class GetAllIncomesUseCase {

@@ -1,22 +1,21 @@
-import { Income } from "../../data/models/Income";
+import { Income } from "../../data/types/Income";
 import { IIncomeRepository } from "../../data/repository/incomeRepository/IIncomeRepository";
 import { plainFormat } from "../../utils/Convert";
 
 export class CreateIncomeUseCase {
     constructor(private incomeRepository: IIncomeRepository) { }
 
-    public create(incomeName: string, incomeAmount: string): Promise<string> {
+    public create(name: string, amount: string): Promise<string> {
 
-        const amountWithoutFormat = plainFormat(incomeAmount)
+        const amountWithoutFormat = plainFormat(amount)
         const amountInt = parseInt(amountWithoutFormat)
 
-        const income = new Income(
-            null,
-            incomeName,
-            amountInt
-        )
+        const newIncome: Income = {
+            name: name,
+            amount: amountInt,
+        }
 
-        return this.incomeRepository.create(income)
+        return this.incomeRepository.create(newIncome)
     }
 
 }
