@@ -1,26 +1,28 @@
 import { useEffect, useState } from "react"
 import { ExpensesCreateScreenProps } from "../../navigation/NavigationParamList"
 import { Category } from "../../../data/types/Categoty"
-import ICategoryRepository from "../../../data/repository/categoryRepository/CategoryRepository"
+import CreateExpenseUseCase from "../../../domain/useCases/CreateExpenseUseCase"
+import { currencyFormat, plainFormat } from "../../../utils/Convert"
+import { ExpenseCreate } from "../../../data/types/Expense"
+import { ScreenRoutes } from "../../navigation/Routes"
 
 type ExpensesCreateViewModelProps = {
-
+    createExpenseUseCase: CreateExpenseUseCase
 } & ExpensesCreateScreenProps
 
 
 interface IExpenseState {
     expenseName: string,
     expenseAmount: string,
-    expenseLabel: number,
+    categoryId: number | undefined
 }
 
 type StateName = keyof IExpenseState
 type StateType = IExpenseState[StateName]
 
-const useExpensesCreateViewModel = ({
-    navigation,
-    route,
-}: ExpensesCreateViewModelProps) => {
+const useExpensesCreateViewModel = (
+    { navigation, route, createExpenseUseCase }: ExpensesCreateViewModelProps
+) => {
 
     const categoryList = route?.params?.categoryList || []
 
@@ -29,7 +31,7 @@ const useExpensesCreateViewModel = ({
     const [expenseCreateState, setExpenseCreateState] = useState<IExpenseState>({
         expenseName: "",
         expenseAmount: "",
-        expenseLabel: 0,
+        categoryId: 0
     })
 
     const [categories, setCategories] = useState<Category[]>([])
@@ -43,7 +45,6 @@ const useExpensesCreateViewModel = ({
 
 
     // ------------------- methods ------------------- //
-
 
     const updateExpenseState = (state: StateName, value: StateType) => {
         setExpenseCreateState({
@@ -67,11 +68,39 @@ const useExpensesCreateViewModel = ({
         )
     }
 
-    const updateExpenseLabel = (newExpenseLabel: number) => {
+    const updateCategory = (newCategoryId: number) => {
+
         updateExpenseState(
-            "expenseLabel",
-            newExpenseLabel
+            "categoryId",
+            newCategoryId
         )
+    }
+
+    const saveExpense = async () => {
+
+        try {
+
+            const amountInt = parseInt(plainFormat(expenseCreateState.expenseAmount))
+            const currentDate = new Date().toISOString()
+
+            const expense: ExpenseCreate = {
+                name: expenseCreateState.expenseName,
+                amount: amountInt,
+                categoryId: expenseCreateState.categoryId || 0,
+                date: currentDate
+            }
+
+            const newExpenseId = await createExpenseUseCase.create(expense)
+
+            navigation.navigate(ScreenRoutes.EXPENSES, {
+                newExpenseId: newExpenseId
+            })
+
+        } catch (error) {
+            console.log("error al guardar el nuevo gasto", error);
+
+        }
+
     }
 
 
@@ -80,7 +109,8 @@ const useExpensesCreateViewModel = ({
         expenseCreateState,
         updateExpenseName,
         updateExpenseAmount,
-        updateExpenseLabel
+        updateCategory,
+        saveExpense
 
     }
 

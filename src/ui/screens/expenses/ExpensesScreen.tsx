@@ -12,7 +12,7 @@ import Label from '../../components/Label'
 import ButtonAdd from '../../components/buttonAdd/ButtonAdd'
 import ExpenseRepository from '../../../data/repository/expenseRepository/ExpenseRepository'
 import CategoryRespository from '../../../data/repository/categoryRepository/CategoryRepository'
-import { Category, CategoryType } from '../../../data/types/Categoty'
+import { Category } from '../../../data/types/Categoty'
 import ChipItem from '../../components/chipItem/ChipItem'
 
 interface ExpenseFormatted {
@@ -101,6 +101,7 @@ const ExpensesScreen = ({ navigation, route }: ExpensesScreenProps) => {
 
 
 const OutcomeItem = ({ name, amount, category }: ExpenseFormatted) => {
+    
 
     return (
 
@@ -123,7 +124,7 @@ const OutcomeItem = ({ name, amount, category }: ExpenseFormatted) => {
             </View>
 
             <ChipItem
-                categoryType={category?.name as CategoryType}
+                category={category as Category}
                 disabled={true}
             />
 

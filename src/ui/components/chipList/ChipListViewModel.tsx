@@ -1,24 +1,25 @@
-interface ICategory {
-    id: number,
-    name: string,
+import { useState } from "react";
+
+interface IChipListViewModel {
+    onPress: (categoryId: number) => void
 }
 
-import { useState } from "react";
-import { CategoryType } from "../../../data/types/Categoty";
 
-const useChipsViewModel = () => {
 
-    const [currentPressedValue, setCurrentPressedValue] = useState<CategoryType>();
+const useChipListViewModel = ({onPress}: IChipListViewModel) => {
 
-    const updatePressedValue = (newValue: CategoryType) => {
-        setCurrentPressedValue(newValue)
+    const [currentPressedCategory, setCurrentPressedCategory] = useState<number>();
+
+    const updatePressedCategory = (categoryId: number) => {
+        setCurrentPressedCategory(categoryId)
+        onPress(categoryId)
     }
 
     return {
-        currentPressedValue,
-        updatePressedValue
+        currentPressedCategory,
+        updatePressedCategory
     }
 
 }
 
-export default useChipsViewModel
+export default useChipListViewModel

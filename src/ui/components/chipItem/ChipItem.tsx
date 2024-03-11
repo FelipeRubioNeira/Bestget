@@ -3,44 +3,48 @@ import React from 'react'
 import Label from '../Label'
 import { Styles } from '../../constants/Styles'
 import { FontFamily, FontSize } from '../../constants/Fonts'
-import { CategoryType } from '../../../data/types/Categoty'
+import { Category } from '../../../data/types/Categoty'
 import useChipItemViewModel from './ChipItemViewModel'
 
 
 interface IchipItem {
-    categoryType?: CategoryType,
-    style?: ViewStyle,
+    // basico
+    category: Category,
     disabled?: boolean,
-    onPress?: (categoryType: CategoryType) => void,
-    pressedValue?: CategoryType
+    // avanzado
+    style?: ViewStyle,
+    pressedValue?: number
+    onPress?: (categoryId: number) => void,
 }
 
 const ChipItem = ({
-    categoryType,
-    style,
+    category,
     disabled = false,
     onPress,
-    pressedValue
+    pressedValue,
+    style,
 }: IchipItem) => {
 
     const chipItemViewModel = useChipItemViewModel({
-        categoryType,
+        category,
         pressedValue,
         onPress
     })
 
+    if (!category) return null
     return (
         <TouchableOpacity
             onPress={chipItemViewModel.onPressViewModel}
             disabled={disabled}
             style={{
                 ...chipStyle.base,
+                ...{ borderColor: category.color },
                 ...chipItemViewModel.chipStyle,
                 ...style,
             }}>
 
             <Label
-                value={categoryType}
+                value={category.name}
                 fontSize={FontSize.XXSMALL}
                 fontFamily={FontFamily.BOLD}
             />

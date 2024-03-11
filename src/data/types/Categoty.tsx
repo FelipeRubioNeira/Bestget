@@ -1,9 +1,7 @@
 export type Category = {
-    id: string,
+    id: number,
     name: string,
+    color: string
 }
 
-
-
-export type CategoryType = "Esenciales" | "Lujos" | "Deudas" | "Ahorros" | undefined
 

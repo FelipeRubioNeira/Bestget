@@ -36,11 +36,7 @@ const useIncomesViewModel = ({
 
 
     useEffect(() => {
-
-        if (route.params?.newIncomeId) {
-            getAllIncomes()
-        }
-
+        if (route.params?.newIncomeId) getAllIncomes()
     }, [route.params?.newIncomeId])
 
 
@@ -83,7 +79,7 @@ const useIncomesViewModel = ({
         const incomesFormatted = incomes.map(income => {
 
             const incomeFormatted: IncomeFormatted = {
-                id: income.id,
+                id: income.id + "",
                 name: income.name,
                 amount: currencyFormat(income.amount)
             }

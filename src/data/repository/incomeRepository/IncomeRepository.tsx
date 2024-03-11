@@ -20,7 +20,6 @@ export class IncomeRepository implements IIncomeRepository {
             return ""
         }
 
-
     }
 
     public async getAll(): Promise<Income[]> {

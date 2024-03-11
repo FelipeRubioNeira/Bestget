@@ -9,7 +9,6 @@ import IExpenseRespository from "../../../data/repository/expenseRepository/IExp
 import ICategoryRepository from "../../../data/repository/categoryRepository/ICategoryRespository"
 import Expense from "../../../data/types/Expense"
 import { currencyFormat } from "../../../utils/Convert"
-import CategoryRespository from "../../../data/repository/categoryRepository/CategoryRepository"
 import { Category } from "../../../data/types/Categoty"
 
 
@@ -30,6 +29,7 @@ export interface ExpenseFormatted {
 
 const useExpensesViewModel = ({
     navigation,
+    route,
     expenseRepository,
     categoryRepository
 }: ExpensesViewModelProps) => {
@@ -50,6 +50,10 @@ const useExpensesViewModel = ({
         getData()
     }, [])
 
+    useEffect(() => {
+        if (route.params?.newExpenseId) getData()
+    }, [route.params?.newExpenseId])
+
 
     // ----------- methods ----------- //
     const getData = async () => {
@@ -59,6 +63,8 @@ const useExpensesViewModel = ({
             getExpenses(),
             getCategories()
         ])
+
+
 
         //2- setCategories
         setCategories(categories)
@@ -83,12 +89,12 @@ const useExpensesViewModel = ({
 
         const expensesFormatted = expenses.map(expense => {
 
-            const category = findCategory(expense.categoryId, categories)
+            let category = findCategory(expense.categoryId, categories)
 
             const expenseFormatted: ExpenseFormatted = {
                 name: expense.name,
                 amount: currencyFormat(expense.amount),
-                category: category // Category | undefined
+                category: category 
             }
 
             return expenseFormatted
@@ -99,8 +105,7 @@ const useExpensesViewModel = ({
 
     }
 
-    const findCategory = (categoryId: string, categories: Category[]): Category | undefined => {
-
+    const findCategory = (categoryId: number, categories: Category[]): Category | undefined => {
         if (!categoryId) return undefined
         else if (categories.length === 0) return undefined
         else return categories.find(category => category.id === categoryId)

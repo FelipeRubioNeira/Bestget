@@ -1,91 +1,43 @@
 import { useEffect, useState } from "react"
 import { ViewStyle } from "react-native"
-import { CategoryType } from "../../../data/types/Categoty"
+import { Category } from "../../../data/types/Categoty"
 import { Colors } from "../../constants/Colors"
 
 interface IChipItemViewModel {
-    categoryType: CategoryType | undefined,
-    pressedValue?: CategoryType,
-    onPress?: (categoryType: CategoryType) => void
+    category?: Category,
+    pressedValue?: number,
+    onPress?: (categoryId: number) => void
 }
 
 
 
-const useChipItemViewModel = ({ categoryType, pressedValue, onPress }: IChipItemViewModel) => {
+const useChipItemViewModel = ({ category, pressedValue, onPress }: IChipItemViewModel) => {
 
     // ------------- states ------------- //
-    const [chipStyle, setChipStyle] = useState<ViewStyle>({
-        borderColor: Colors.GRAY
-    })
+    const [chipStyle, setChipStyle] = useState<ViewStyle>({})
 
 
     // ------------- effects ------------- //
-    useEffect(() => {
-        setDefaultStyle(categoryType)
-    }, [categoryType])
-
     useEffect(() => {
         updateStyle(pressedValue)
     }, [pressedValue])
 
 
-    const setDefaultStyle = (categoryType: CategoryType | undefined) => {
+    const updateStyle = (pressedValue: number | undefined) => {
 
-        const borderColor = getColor(categoryType)
-
-        setChipStyle({
-            ...chipStyle,
-            borderColor: borderColor
-        })
-    }
-
-    const updateStyle = (pressed: CategoryType | undefined) => {
-
-        if (!pressed) return
+        if (!pressedValue) return
 
         setChipStyle({
             ...chipStyle,
-            backgroundColor: pressedValue === categoryType ? getColor(categoryType) : Colors.WHITE,
+            backgroundColor: pressedValue === category?.id ? category.color : Colors.WHITE,
         });
 
     }
 
-    const getColor = (categoryType: CategoryType | undefined) => {
-
-        if (!categoryType) return Colors.WHITE
-
-        let color: string
-
-        switch (categoryType) {
-
-            case "Esenciales":
-                color = Colors.CHIP_ESSENTIALS
-                break;
-
-            case "Deudas":
-                color = Colors.CHIP_DEBTS
-                break;
-
-            case "Ahorros":
-                color = Colors.CHIP_SAVINGS
-                break;
-
-            case "Lujos":
-                color = Colors.CHIP_LUXURIES
-                break;
-
-            default:
-                color = Colors.WHITE
-                break;
-        }
-
-        return color
-
-    }
 
     const onPressViewModel = () => {
         if (!onPress) return
-        onPress(categoryType)
+        onPress(category?.id || 0)
     }
 
 

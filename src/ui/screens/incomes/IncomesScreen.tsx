@@ -50,9 +50,7 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
         renderItem={({ item }) => <IncomeItem {...item} />}
       />
 
-
       <Spacer marginVertical={"4%"} />
-
 
       <ButtonAdd
         onPress={incomeViewModel?.navigateIncomeCreate}

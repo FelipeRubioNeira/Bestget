@@ -1,5 +1,5 @@
 import { Collections } from "../../collections/Collections";
-import Expense from "../../types/Expense";
+import Expense, { ExpenseCreate, ExpenseKey } from "../../types/Expense";
 import IExpenseRespository from "./IExpenseRepository";
 import firestore from '@react-native-firebase/firestore';
 
@@ -9,19 +9,23 @@ class ExpenseRepository implements IExpenseRespository {
 
         try {
 
-            const expensesFirebase = await firestore().collection(Collections.EXPENSE).get()
+            const expensesFirebase = await firestore()
+                .collection(Collections.EXPENSE)
+                .orderBy(ExpenseKey.DATE, "desc")
+                .get()
 
             const expensesArray: Expense[] = []
 
             expensesFirebase.docs.forEach(doc => {
 
-                const { name, amount, categoryId } = doc.data()
+                const { name, amount, categoryId, date } = doc.data() as Expense
 
                 const newExpense: Expense = {
                     id: doc.id,
                     name: name,
                     amount: amount,
-                    categoryId: categoryId
+                    categoryId: categoryId,
+                    date: date
                 }
                 expensesArray.push(newExpense)
             })
@@ -31,6 +35,21 @@ class ExpenseRepository implements IExpenseRespository {
         } catch (error) {
             console.error("error getExpenses repository", error);
             return []
+        }
+
+    }
+
+    async create(expense: ExpenseCreate): Promise<string> {
+
+        try {
+            const result = await firestore().collection(Collections.EXPENSE).add(expense)
+            const expenseId = result.id
+
+            return (expenseId)
+
+        } catch (error) {
+            console.error("error ExpenseRepository create", error);
+            return ""
         }
 
     }

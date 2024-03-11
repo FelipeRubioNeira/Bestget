@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native'
+import { View } from 'react-native'
 import React from 'react'
 import { DefaultStyles } from '../../constants/Styles'
 import Spacer from '../../components/Spacer'
@@ -6,23 +6,29 @@ import SubmitButton from '../../components/submitButton/SubmitButton'
 import TextInputWithLabel from '../../components/textInputWithLabel/TextInputWithLabel'
 import { InputType } from '../../components/textInput/TextInputViewModel'
 import { Colors } from '../../constants/Colors'
-import Chips from '../../components/chipList/ChipList'
+import ChipList from '../../components/chipList/ChipList'
 import useExpensesCreateViewModel from './ExpensesCreateViewModel'
 import { ExpensesCreateScreenProps } from '../../navigation/NavigationParamList'
+import CreateExpenseUseCase from '../../../domain/useCases/CreateExpenseUseCase'
+import ExpenseRepository from '../../../data/repository/expenseRepository/ExpenseRepository'
 
 
-const ExpensesCreate = ({ navigation, route}: ExpensesCreateScreenProps) => {
+const expenseRepository = new ExpenseRepository()
+const createExpenseUseCase = new CreateExpenseUseCase(expenseRepository)
+
+
+const ExpensesCreate = ({ navigation, route }: ExpensesCreateScreenProps) => {
 
   const expensesCreateViewModel = useExpensesCreateViewModel({
     navigation,
     route,
+    createExpenseUseCase
   })
 
 
   const {
     expenseName,
     expenseAmount,
-    expenseLabel,
   } = expensesCreateViewModel.expenseCreateState
 
   return (
@@ -51,8 +57,9 @@ const ExpensesCreate = ({ navigation, route}: ExpensesCreateScreenProps) => {
           inputMode={InputType.NUMERIC}
         />
 
-        <Chips
-          categories = {expensesCreateViewModel.categories}
+        <ChipList
+          onPress={expensesCreateViewModel.updateCategory}
+          categories={expensesCreateViewModel.categories}
         />
 
       </View>
@@ -62,7 +69,7 @@ const ExpensesCreate = ({ navigation, route}: ExpensesCreateScreenProps) => {
 
       <SubmitButton
         backgroundColor={Colors.YELLOW}
-        onPress={() => { }}
+        onPress={expensesCreateViewModel.saveExpense}
       />
 
     </View>
@@ -71,5 +78,3 @@ const ExpensesCreate = ({ navigation, route}: ExpensesCreateScreenProps) => {
 }
 
 export default ExpensesCreate
-
-const styles = StyleSheet.create({})

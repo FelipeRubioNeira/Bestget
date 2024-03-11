@@ -1,37 +1,34 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import React from 'react'
-import Label from '../Label'
-import { Styles } from '../../constants/Styles'
-import { FontFamily, FontSize } from '../../constants/Fonts'
-import { Colors } from '../../constants/Colors'
-import useChipsViewModel from './ChipListViewModel'
-import { Category, CategoryType } from '../../../data/types/Categoty'
+import useChipListViewModel from './ChipListViewModel'
+import { Category, } from '../../../data/types/Categoty'
 import ChipItem from '../chipItem/ChipItem'
-import Spacer from '../Spacer'
 
 interface IChipList {
+    onPress: (categoryId: number) => void,
     categories: Category[],
 }
 
 
 const ChipList = ({
     categories,
+    onPress
 }: IChipList) => {
 
-    const chipsViewModel = useChipsViewModel()
+    const chipsViewModel = useChipListViewModel({onPress})
 
     return (
 
         <View style={chipsStyles.container}>
 
-            {categories.map((category, index) => {
+            {categories.map(category => {
                 return (
                     <ChipItem
-                        categoryType={category.name as CategoryType}
-                        key={index}
+                        key={category.id}
+                        category={category}
                         style={chipsStyles.separation}
-                        onPress={chipsViewModel.updatePressedValue}
-                        pressedValue={chipsViewModel.currentPressedValue}
+                        onPress={chipsViewModel.updatePressedCategory}
+                        pressedValue={chipsViewModel.currentPressedCategory}
                     />
                 )
             })}
