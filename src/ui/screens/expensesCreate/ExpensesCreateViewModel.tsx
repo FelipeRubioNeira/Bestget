@@ -5,6 +5,7 @@ import CreateExpenseUseCase from "../../../domain/useCases/CreateExpenseUseCase"
 import { currencyFormat, plainFormat } from "../../../utils/Convert"
 import { ExpenseCreate } from "../../../data/types/Expense"
 import { ScreenRoutes } from "../../navigation/Routes"
+import { getCurrentDate } from "../../../utils/Date"
 
 type ExpensesCreateViewModelProps = {
     createExpenseUseCase: CreateExpenseUseCase
@@ -81,7 +82,7 @@ const useExpensesCreateViewModel = (
         try {
 
             const amountInt = parseInt(plainFormat(expenseCreateState.expenseAmount))
-            const currentDate = new Date().toISOString()
+            const currentDate = getCurrentDate()
 
             const expense: ExpenseCreate = {
                 name: expenseCreateState.expenseName,
