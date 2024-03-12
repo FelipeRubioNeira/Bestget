@@ -6,17 +6,19 @@ import firestore from '@react-native-firebase/firestore';
 class CategoryRespository implements ICategoryRepository {
 
     async getCategories(): Promise<Category[]> {
-        
+
         try {
 
-            const categoriesFirebase = await firestore().collection(Collections.CATEGOTY).orderBy('name').get()
+            const categoriesFirebase = await firestore()
+                .collection(Collections.CATEGOTY)
+                .orderBy('name')
+                .get()
 
             const categories: Category[] = []
 
             categoriesFirebase.docs.forEach(doc => {
 
                 const { id, name, color } = doc.data()
-                
 
                 const newCategorie: Category = {
                     id: id,

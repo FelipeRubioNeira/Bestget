@@ -6,6 +6,7 @@ import { Budget, BudgetCreate } from "../../../data/types/Budget"
 import { plainFormat } from "../../../utils/Convert"
 import BudgetExpense from "../../../data/types/BudgetExpense"
 import { ScreenRoutes } from "../../navigation/Routes"
+import { getCurrentDate } from "../../../utils/Date"
 
 type IBudgetCreateViewModel = {
     createBudgetUseCase: CreateBudgetUseCase
@@ -77,24 +78,16 @@ const useBudgetsCreateViewModel = ({
         const budgetCreate: BudgetCreate = {
             name: budgetState.budgetName,
             amount: amountInt,
-            categoryId: budgetState.categoryId
+            categoryId: budgetState.categoryId,
+            date: getCurrentDate()
         }
 
         // 3- upload budget and budget expenses
-        const budgetId = await createBudgetUseCase.createBudget(budgetCreate)
+        const budgetCreated = await createBudgetUseCase.createBudget(budgetCreate)
 
 
-        if (budgetId) {
-
-            // 4- navigate to budgets screen with a new full budget
-            const newBudget: Budget = {
-                id: budgetId,
-                name: budgetCreate.name,
-                amount: budgetCreate.amount,
-                categoryId: budgetState.categoryId
-            }
-
-            navigation.navigate(ScreenRoutes.BUDGETS, { budget: newBudget })
+        if (budgetCreated) {
+            navigation.navigate(ScreenRoutes.BUDGETS, { budget: budgetCreated })
 
         } else {
             // showError

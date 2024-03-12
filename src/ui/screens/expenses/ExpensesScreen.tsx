@@ -1,4 +1,4 @@
-import { FlatList, Image, ImageProps, SafeAreaView, StyleProp, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View, ViewStyle } from 'react-native'
+import { FlatList, Image, ImageProps, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View, ViewStyle } from 'react-native'
 import React from 'react'
 import { DefaultStyles, Styles } from '../../constants/Styles'
 import HelpText from '../../components/helpText/Help'
@@ -15,6 +15,7 @@ import CategoryRespository from '../../../data/repository/categoryRepository/Cat
 import { Category } from '../../../data/types/Categoty'
 import ChipItem from '../../components/chipItem/ChipItem'
 import Loading from '../../components/loading/Loading'
+import BudgetRepository from '../../../data/repository/budgetRepository/BudgetRepository'
 
 interface ExpenseFormatted {
     name: string,
@@ -38,6 +39,7 @@ interface OutcomeOptionItemProps {
 
 
 const expenseRepository = new ExpenseRepository()
+const budgetRepository = new BudgetRepository()
 const categoryRepository = new CategoryRespository()
 
 
@@ -48,6 +50,7 @@ const ExpensesScreen = ({ navigation, route }: ExpensesScreenProps) => {
         navigation,
         route,
         expenseRepository,
+        budgetRepository,
         categoryRepository
     })
 

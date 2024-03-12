@@ -10,11 +10,14 @@ import ICategoryRepository from "../../../data/repository/categoryRepository/ICa
 import Expense from "../../../data/types/Expense"
 import { currencyFormat } from "../../../utils/Convert"
 import { Category } from "../../../data/types/Categoty"
+import IBudgetRepository from "../../../data/repository/budgetRepository/IBudgetRepository"
+import { Budget } from "../../../data/types/Budget"
 
 // ----------- interfaces and types ----------- //
 
 type ExpensesViewModelProps = {
     expenseRepository: IExpenseRespository,
+    budgetRepository: IBudgetRepository,
     categoryRepository: ICategoryRepository,
 } & ExpensesScreenProps
 
@@ -30,6 +33,7 @@ const useExpensesViewModel = ({
     navigation,
     route,
     expenseRepository,
+    budgetRepository,
     categoryRepository
 }: ExpensesViewModelProps) => {
 
@@ -64,9 +68,10 @@ const useExpensesViewModel = ({
 
 
         //1 - getExpenses and getCategories
-        const [expenses, categories] = await Promise.all([
-            getExpenses(),
-            getCategories()
+        const [expenses, budgets, categories] = await Promise.all([
+            expenseRepository.getExpenses(),
+            budgetRepository.getAll(),
+            categoryRepository.getCategories()
         ])
 
 
@@ -79,7 +84,7 @@ const useExpensesViewModel = ({
 
 
         //4- applyExpensesFormat
-        const expensesFormatted = applyExpensesFormat(expenses, categories)
+        const expensesFormatted = applyExpensesFormat(expenses, budgets, categories)
         setExpenses(expensesFormatted)
 
 
@@ -88,12 +93,12 @@ const useExpensesViewModel = ({
 
     }
 
-    const getExpenses = async (): Promise<Expense[]> => {
-        const expensesRespository = await expenseRepository.getExpenses()
-        return expensesRespository
-    }
 
-    const applyExpensesFormat = (expenses: Expense[], categories: Category[]): ExpenseFormatted[] => {
+    const applyExpensesFormat = (
+        expenses: Expense[],
+        budgets: Budget[],
+        categories: Category[]
+    ): ExpenseFormatted[] => {
 
         const expensesFormatted = expenses.map(expense => {
 
@@ -123,11 +128,6 @@ const useExpensesViewModel = ({
         let totalAmount = 0
         expeses.forEach(expense => totalAmount += expense.amount)
         setTotalAmount(currencyFormat(totalAmount))
-    }
-
-    const getCategories = async (): Promise<Category[]> => {
-        const categories = await categoryRepository.getCategories()
-        return categories
     }
 
     const onShowExpenseOptions = () => {

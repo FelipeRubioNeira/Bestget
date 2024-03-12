@@ -1,11 +1,11 @@
 import { Collections } from "../../collections/Collections";
-import { BudgetCreate } from "../../types/Budget";
+import { Budget, BudgetCreate } from "../../types/Budget";
 import IBudgetRepository from "./IBudgetRepository";
 import firestore from '@react-native-firebase/firestore';
 
 class BudgetRepository implements IBudgetRepository {
 
-    async create(budget: BudgetCreate): Promise<string> {
+    async create(budget: BudgetCreate): Promise<Budget | null> {
 
         try {
 
@@ -15,11 +15,50 @@ class BudgetRepository implements IBudgetRepository {
 
             const budgetId = result.id
 
-            return (budgetId)
+            const budgetCreated: Budget = {
+                id: budgetId,
+                name: budget.name,
+                amount: budget.amount,
+                categoryId: budget?.categoryId || 0,
+                date: budget.date
+            }
+
+            return budgetCreated
 
         } catch (error) {
             console.error("error BudgetRepository create", error);
-            return ""
+            return null
+        }
+
+    }
+
+    async getAll(): Promise<Budget[]> {
+
+        try {
+
+            const budgetsFirebase = await firestore()
+                .collection(Collections.BUDGET)
+                .orderBy('name')
+                .get()
+
+            return budgetsFirebase.docs.map(doc => {
+
+                const { name, amount, categoryId, date } = doc.data()
+
+                const newBudget: Budget = {
+                    id: doc.id,
+                    name: name,
+                    amount: amount,
+                    categoryId: categoryId,
+                    date: date
+                }
+
+                return newBudget
+            })
+
+        } catch (error) {
+            console.error("error BudgetRepository getAll", error);
+            return []
         }
 
     }
