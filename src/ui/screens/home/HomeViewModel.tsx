@@ -8,8 +8,8 @@ import { currencyFormat } from "../../../utils/Convert"
 
 // ------------------ interfaces ------------------ //
 export interface IMenuArrayButtonsProps {
-    OUTCOMESOnPress: () => void
-    incomesOnPress: () => void
+    onPressBudgetsExpenses: () => void
+    onPressIncomes: () => void
 }
 
 type HomeViewModelProps = {
@@ -45,11 +45,11 @@ const useHomeViewModel = ({ navigation, getTotalIncomesUseCase }: HomeViewModelP
         setTotalIncomes(totalIncomesFormatted)
     }
 
-    const OUTCOMESOnPress = () => {
-        navigation.navigate(ScreenRoutes.EXPENSES)
+    const onPressBudgetsExpenses = () => {
+        navigation.navigate(ScreenRoutes.BUDGET_EXPENSES)
     }
 
-    const incomesOnPress = () => {
+    const onPressIncomes = () => {
         navigation.navigate(ScreenRoutes.INCOMES, {})
     }
 
@@ -57,8 +57,8 @@ const useHomeViewModel = ({ navigation, getTotalIncomesUseCase }: HomeViewModelP
     // ------------------ return ------------------ //
     return {
         totalIncomes,
-        OUTCOMESOnPress,
-        incomesOnPress
+        onPressBudgetsExpenses,
+        onPressIncomes
     }
 
 }

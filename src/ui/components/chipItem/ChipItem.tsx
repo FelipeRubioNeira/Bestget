@@ -8,10 +8,8 @@ import useChipItemViewModel from './ChipItemViewModel'
 
 
 interface IchipItem {
-    // basico
     category?: Category,
     disabled?: boolean,
-    // avanzado
     style?: ViewStyle,
     pressedValue?: number
     onPress?: (categoryId: number) => void,

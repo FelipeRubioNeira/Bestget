@@ -16,11 +16,13 @@ export type NavigatorParamList = {
 
     [ScreenRoutes.HOME]: undefined
 
-    [ScreenRoutes.EXPENSES]: { newExpenseId?: string | undefined }
-    [ScreenRoutes.EXPENSES_CREATE]: { categoryList: Category[] | undefined }
-
     [ScreenRoutes.INCOMES]: { newIncomeId?: string | undefined }
     [ScreenRoutes.INCOMES_CREATE]: undefined
+
+    [ScreenRoutes.BUDGET_EXPENSES]: undefined
+
+    [ScreenRoutes.EXPENSES]: { newExpenseId?: string | undefined }
+    [ScreenRoutes.EXPENSES_CREATE]: { categoryList: Category[] | undefined }
 
     [ScreenRoutes.BUDGETS]: { budget: Budget }
     [ScreenRoutes.BUDGETS_CREATE]: { categoryList: Category[] | undefined }
@@ -53,6 +55,12 @@ export type IncomesScreenProps = NativeStackScreenProps<
 export type IncomesCreateScreenProps = NativeStackScreenProps<
     NavigatorParamList,
     ScreenRoutes.INCOMES_CREATE
+>
+
+// BUDGET EXPENSES screen
+export type BudgetsExpensesScreenProps = NativeStackScreenProps<
+    NavigatorParamList,
+    ScreenRoutes.BUDGET_EXPENSES
 >
 
 // EXPENSES screen

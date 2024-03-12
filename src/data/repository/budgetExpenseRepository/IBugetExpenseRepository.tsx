@@ -1,4 +1,4 @@
-import BudgetExpense from "../../types/BudgetExpense"
+import {BudgetExpense} from "../../types/BudgetExpense"
 
 interface IBudgetExpenseRepository {
     create: (budgetExpense: BudgetExpense) => Promise<void>

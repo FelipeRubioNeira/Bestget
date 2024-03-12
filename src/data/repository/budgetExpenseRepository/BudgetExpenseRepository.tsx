@@ -1,5 +1,5 @@
 import { Collections } from "../../collections/Collections";
-import BudgetExpense from "../../types/BudgetExpense";
+import {BudgetExpense} from "../../types/BudgetExpense";
 import IBudgetExpenseRepository from "./IBugetExpenseRepository";
 import firestore from '@react-native-firebase/firestore';
 

@@ -2,9 +2,8 @@ import { useEffect, useState } from "react"
 import { BudgetsCreateScreenProps } from "../../navigation/NavigationParamList"
 import { Category } from "../../../data/types/Categoty"
 import CreateBudgetUseCase from "../../../domain/useCases/CreateBudgetUseCase"
-import { Budget, BudgetCreate } from "../../../data/types/Budget"
+import { BudgetCreate } from "../../../data/types/Budget"
 import { plainFormat } from "../../../utils/Convert"
-import BudgetExpense from "../../../data/types/BudgetExpense"
 import { ScreenRoutes } from "../../navigation/Routes"
 import { getCurrentDate } from "../../../utils/Date"
 
@@ -81,6 +80,9 @@ const useBudgetsCreateViewModel = ({
             categoryId: budgetState.categoryId,
             date: getCurrentDate()
         }
+
+        console.log("budgetCreate", budgetCreate);
+
 
         // 3- upload budget and budget expenses
         const budgetCreated = await createBudgetUseCase.createBudget(budgetCreate)

@@ -3,4 +3,6 @@ type BudgetExpense = {
     expenseId: string,
 }
 
-export default BudgetExpense
+export type {
+    BudgetExpense
+}

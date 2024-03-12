@@ -6,8 +6,7 @@ import { Strings } from '../incomes/Strings'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 import { Colors } from '../../constants/Colors'
 import TotalAmount from '../../components/totalAmount/TotalAmount'
-import useExpensesViewModel from './ExpensesViewModel'
-import { ExpensesScreenProps } from '../../navigation/NavigationParamList'
+import { BudgetsExpensesScreenProps, ExpensesScreenProps } from '../../navigation/NavigationParamList'
 import Label from '../../components/label/Label'
 import ButtonAdd from '../../components/buttonAdd/ButtonAdd'
 import ExpenseRepository from '../../../data/repository/expenseRepository/ExpenseRepository'
@@ -16,6 +15,7 @@ import { Category } from '../../../data/types/Categoty'
 import ChipItem from '../../components/chipItem/ChipItem'
 import Loading from '../../components/loading/Loading'
 import BudgetRepository from '../../../data/repository/budgetRepository/BudgetRepository'
+import useBudgetExpensesViewModel from './BudgetsExpensesViewModel'
 
 interface ExpenseItem {
     name: string,
@@ -43,10 +43,10 @@ const budgetRepository = new BudgetRepository()
 const categoryRepository = new CategoryRespository()
 
 
-const ExpensesScreen = ({ navigation, route }: ExpensesScreenProps) => {
+const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps) => {
 
 
-    const expensesViewModel = useExpensesViewModel({
+    const expensesViewModel = useBudgetExpensesViewModel({
         navigation,
         route,
         expenseRepository,
@@ -72,7 +72,7 @@ const ExpensesScreen = ({ navigation, route }: ExpensesScreenProps) => {
                 />
 
                 <FlatList
-                    data={expensesViewModel.expenses}
+                    data={null}
                     renderItem={({ item }) => (
                         <ExpenseItem
                             name={item.name}
@@ -108,7 +108,6 @@ const ExpensesScreen = ({ navigation, route }: ExpensesScreenProps) => {
 
 
 const ExpenseItem = ({ name, amount, category }: ExpenseItem) => {
-
 
     return (
 
@@ -210,7 +209,7 @@ const OutcomeOptionItem = ({
 
 }
 
-export default ExpensesScreen
+export default BudgetsExpensesScreen
 
 const outcomes_styles = StyleSheet.create({
 

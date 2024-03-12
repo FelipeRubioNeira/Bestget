@@ -55,8 +55,8 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
 
 
                 <MenuArrayButton
-                    OUTCOMESOnPress={homeViewModel.OUTCOMESOnPress}
-                    incomesOnPress={homeViewModel.incomesOnPress}
+                    onPressBudgetsExpenses={homeViewModel.onPressBudgetsExpenses}
+                    onPressIncomes={homeViewModel.onPressIncomes}
                 />
 
 
@@ -67,8 +67,8 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
 }
 
 const MenuArrayButton = ({
-    OUTCOMESOnPress,
-    incomesOnPress
+    onPressBudgetsExpenses,
+    onPressIncomes
 }: IMenuArrayButtonsProps) => {
 
     return (
@@ -77,7 +77,7 @@ const MenuArrayButton = ({
 
             <MenuButton
                 title="Gastos y Presupuestos"
-                onPress={OUTCOMESOnPress}
+                onPress={onPressBudgetsExpenses}
                 backgroundColor={Colors.YELLOW}
                 titleColor={Colors.BLACK}
             />
@@ -86,7 +86,7 @@ const MenuArrayButton = ({
 
             <MenuButton
                 title="Ingresos"
-                onPress={incomesOnPress}
+                onPress={onPressIncomes}
                 backgroundColor={Colors.GREEN}
                 titleColor={Colors.BLACK}
             />

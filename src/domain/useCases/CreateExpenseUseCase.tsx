@@ -1,6 +1,6 @@
 import IBudgetExpenseRepository from "../../data/repository/budgetExpenseRepository/IBugetExpenseRepository";
 import IExpenseRespository from "../../data/repository/expenseRepository/IExpenseRepository";
-import BudgetExpense from "../../data/types/BudgetExpense";
+import { BudgetExpense } from "../../data/types/BudgetExpense";
 import { ExpenseCreate } from "../../data/types/Expense";
 
 

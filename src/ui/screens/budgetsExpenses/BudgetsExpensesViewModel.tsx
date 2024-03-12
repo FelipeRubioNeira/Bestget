@@ -3,15 +3,16 @@
 */
 
 import { useEffect, useState } from "react"
-import { ExpensesScreenProps } from "../../navigation/NavigationParamList"
+import { BudgetsExpensesScreenProps } from "../../navigation/NavigationParamList"
 import { ScreenRoutes } from "../../navigation/Routes"
 import IExpenseRespository from "../../../data/repository/expenseRepository/IExpenseRepository"
 import ICategoryRepository from "../../../data/repository/categoryRepository/ICategoryRespository"
-import Expense from "../../../data/types/Expense"
+import { Expense, ExpenseItem } from "../../../data/types/Expense"
 import { currencyFormat } from "../../../utils/Convert"
 import { Category } from "../../../data/types/Categoty"
 import IBudgetRepository from "../../../data/repository/budgetRepository/IBudgetRepository"
-import { Budget } from "../../../data/types/Budget"
+import { Budget, BudgetItem } from "../../../data/types/Budget"
+import {BudgetExpense} from "../../../data/types/BudgetExpense"
 
 // ----------- interfaces and types ----------- //
 
@@ -19,17 +20,12 @@ type ExpensesViewModelProps = {
     expenseRepository: IExpenseRespository,
     budgetRepository: IBudgetRepository,
     categoryRepository: ICategoryRepository,
-} & ExpensesScreenProps
+} & BudgetsExpensesScreenProps
 
-export interface ExpenseItem {
-    name: string,
-    amount: string,
-    category: Category | undefined
-}
 
 
 // ----------- view model ----------- //
-const useExpensesViewModel = ({
+const useBudgetExpensesViewModel = ({
     navigation,
     route,
     expenseRepository,
@@ -44,8 +40,8 @@ const useExpensesViewModel = ({
     const [buttonAddVisible, setButtonAddVisible] = useState(true)
     const [ExpenseOptionsVisible, setExpenseOptionsVisble] = useState(false)
 
-    const [expenses, setExpenses] = useState<ExpenseItem[]>([])
     const [categories, setCategories] = useState<Category[]>([])
+    const [budgetsExpenses, setBudgetsExpenses] = useState<BudgetExpense[]>([])
 
     const [loading, setLoading] = useState(false)
 
@@ -54,11 +50,6 @@ const useExpensesViewModel = ({
     useEffect(() => {
         getData()
     }, [])
-
-    useEffect(() => {
-        if (route.params?.newExpenseId) getData()
-    }, [route.params?.newExpenseId])
-
 
     // ----------- methods ----------- //
     const getData = async () => {
@@ -83,9 +74,9 @@ const useExpensesViewModel = ({
         calculateTotalAmount(expenses)
 
 
-        //4- applyFormat
-        const expensesFormatted = applyFormat(expenses, budgets, categories)
-        setExpenses(expensesFormatted)
+        // 4 - fill the lists
+        const budgetsList = applyBudgetFormat(budgets, categories)
+        const expensesList = applyExpenseFormat(expenses, categories)
 
 
         setLoading(false)
@@ -93,32 +84,45 @@ const useExpensesViewModel = ({
 
     }
 
+    const applyBudgetFormat = (budgets: Budget[], categories: Category[]) => {
 
-    const applyFormat = (
-        expenses: Expense[],
-        budgets: Budget[],
-        categories: Category[]
-    ): ExpenseItem[] => {
+        return budgets.map(budget => {
 
-        console.log("budgets ", budgets);
+            const { id, name, amount, categoryId, date } = budget
+            const category = findCategory(categoryId, categories)
 
-
-        const expensesFormatted = expenses.map(expense => {
-
-            let category = findCategory(expense.categoryId, categories)
-
-            const ExpenseItem: ExpenseItem = {
-                name: expense.name,
-                amount: currencyFormat(expense.amount),
-                category: category
+            const budgetItem: BudgetItem = {
+                id: id,
+                name: name,
+                amount: amount,
+                category: category,
+                date: date
             }
 
-            return ExpenseItem
+            return budgetItem
 
         })
 
-        return expensesFormatted
+    }
 
+    const applyExpenseFormat = (expenses: Expense[], categories: Category[]) => {
+
+        return expenses.map(expense => {
+
+            const { id, name, amount, categoryId, date } = expense
+            const category = findCategory(expense.categoryId, categories)
+
+            const expenseItem: ExpenseItem = {
+                id: id,
+                name: name,
+                amount: amount,
+                date: date,
+                category: category
+            }
+
+            return expenseItem
+
+        })
     }
 
     const findCategory = (categoryId: number, categories: Category[]): Category | undefined => {
@@ -161,7 +165,6 @@ const useExpensesViewModel = ({
     // ----------- return ----------- //
     return {
         loading,
-        expenses,
         categories,
         buttonAddVisible,
         ExpenseOptionsVisible,
@@ -177,4 +180,4 @@ const useExpensesViewModel = ({
 
 }
 
-export default useExpensesViewModel
+export default useBudgetExpensesViewModel

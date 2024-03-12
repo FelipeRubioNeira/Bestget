@@ -27,8 +27,15 @@ const ScreenOptions = Object.freeze({
         headerTitleStyle: { fontFamily: FontFamily.BOLD },
     },
 
+    BUDGET_EXPENSES: {
+        title: "Gastos y presupuestos",
+        headerTintColor: Colors.BLACK,
+        headerStyle: { backgroundColor: Colors.YELLOW },
+        headerTitleStyle: { fontFamily: FontFamily.BOLD },
+    },
+
     EXPENSES: {
-        title: "Gastos y Presupuestos",
+        title: "Gastos",
         headerTintColor: Colors.BLACK,
         headerStyle: { backgroundColor: Colors.YELLOW },
         headerTitleStyle: { fontFamily: FontFamily.BOLD },
@@ -48,7 +55,7 @@ const ScreenOptions = Object.freeze({
         headerTitleStyle: { fontFamily: FontFamily.BOLD },
     },
 
-    BUDGETS_CREATE:{
+    BUDGETS_CREATE: {
         title: "Nuevo presupuesto",
         headerTintColor: Colors.BLACK,
         headerStyle: { backgroundColor: Colors.YELLOW },

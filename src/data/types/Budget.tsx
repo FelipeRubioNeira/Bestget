@@ -1,3 +1,5 @@
+import { Category } from "./Categoty"
+
 type Budget = {
     id: string,
     name: string
@@ -13,7 +15,18 @@ type BudgetCreate = {
     date: string
 }
 
+// item for list of budgets
+type BudgetItem = {
+    id: string,
+    name: string
+    amount: number
+    category: Category | undefined
+    date: string
+}
+
+
 export type {
     Budget,
-    BudgetCreate
+    BudgetCreate,
+    BudgetItem
 }

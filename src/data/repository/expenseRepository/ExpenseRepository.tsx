@@ -1,5 +1,5 @@
 import { Collections } from "../../collections/Collections";
-import Expense, { ExpenseCreate, ExpenseKey } from "../../types/Expense";
+import { Expense, ExpenseCreate, ExpenseKey } from "../../types/Expense";
 import IExpenseRespository from "./IExpenseRepository";
 import firestore from '@react-native-firebase/firestore';
 
