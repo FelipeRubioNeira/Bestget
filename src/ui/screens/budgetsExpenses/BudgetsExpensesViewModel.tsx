@@ -7,12 +7,12 @@ import { BudgetsExpensesScreenProps } from "../../navigation/NavigationParamList
 import { ScreenRoutes } from "../../navigation/Routes"
 import IExpenseRespository from "../../../data/repository/expenseRepository/IExpenseRepository"
 import ICategoryRepository from "../../../data/repository/categoryRepository/ICategoryRespository"
-import { Expense, ExpenseItem } from "../../../data/types/Expense"
+import { Expense } from "../../../data/types/Expense"
 import { currencyFormat } from "../../../utils/Convert"
 import { Category } from "../../../data/types/Categoty"
 import IBudgetRepository from "../../../data/repository/budgetRepository/IBudgetRepository"
-import { Budget, BudgetItem } from "../../../data/types/Budget"
-import {BudgetExpense} from "../../../data/types/BudgetExpense"
+import { Budget } from "../../../data/types/Budget"
+import { BudgetExpenseItem, BudgetExpenseItemType } from "../../../data/types/BudgetExpense"
 
 // ----------- interfaces and types ----------- //
 
@@ -41,7 +41,7 @@ const useBudgetExpensesViewModel = ({
     const [ExpenseOptionsVisible, setExpenseOptionsVisble] = useState(false)
 
     const [categories, setCategories] = useState<Category[]>([])
-    const [budgetsExpenses, setBudgetsExpenses] = useState<BudgetExpense[]>([])
+    const [budgetsExpenses, setBudgetsExpenses] = useState<BudgetExpenseItem[]>([])
 
     const [loading, setLoading] = useState(false)
 
@@ -75,54 +75,54 @@ const useBudgetExpensesViewModel = ({
 
 
         // 4 - fill the lists
-        const budgetsList = applyBudgetFormat(budgets, categories)
-        const expensesList = applyExpenseFormat(expenses, categories)
+        const budgetsList = applyFormat(budgets, categories, "Budget")
+        const expensesList = applyFormat(expenses, categories, "Expense")
 
+
+
+        setBudgetsExpenses([
+            ...budgetsList,
+            ...expensesList
+        ])
+
+        console.log(
+            [
+                ...budgetsList,
+                ...expensesList
+            ]
+        );
+        
 
         setLoading(false)
 
-
     }
 
-    const applyBudgetFormat = (budgets: Budget[], categories: Category[]) => {
+    // apply to budgets and expenses
+    const applyFormat = (
+        budgetsOrExpenses: Budget[] | Expense[],
+        categories: Category[],
+        type: BudgetExpenseItemType
+    ) => {
 
-        return budgets.map(budget => {
+        return budgetsOrExpenses.map(item => {
 
-            const { id, name, amount, categoryId, date } = budget
+            const { id, name, amount, categoryId, date } = item
             const category = findCategory(categoryId, categories)
+            const amountFormatted = currencyFormat(amount)
 
-            const budgetItem: BudgetItem = {
+            const budgetOrExpensItem: BudgetExpenseItem = {
                 id: id,
                 name: name,
-                amount: amount,
+                amount: amountFormatted,
                 category: category,
-                date: date
-            }
-
-            return budgetItem
-
-        })
-
-    }
-
-    const applyExpenseFormat = (expenses: Expense[], categories: Category[]) => {
-
-        return expenses.map(expense => {
-
-            const { id, name, amount, categoryId, date } = expense
-            const category = findCategory(expense.categoryId, categories)
-
-            const expenseItem: ExpenseItem = {
-                id: id,
-                name: name,
-                amount: amount,
                 date: date,
-                category: category
+                type: type
             }
 
-            return expenseItem
+            return budgetOrExpensItem
 
         })
+
     }
 
     const findCategory = (categoryId: number, categories: Category[]): Category | undefined => {
@@ -169,6 +169,7 @@ const useBudgetExpensesViewModel = ({
         buttonAddVisible,
         ExpenseOptionsVisible,
         totalAmount,
+        budgetsExpenses,
 
         onShowExpenseOptions,
         onAddExpense,

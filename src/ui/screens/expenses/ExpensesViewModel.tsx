@@ -7,11 +7,11 @@ import { ExpensesScreenProps } from "../../navigation/NavigationParamList"
 import { ScreenRoutes } from "../../navigation/Routes"
 import IExpenseRespository from "../../../data/repository/expenseRepository/IExpenseRepository"
 import ICategoryRepository from "../../../data/repository/categoryRepository/ICategoryRespository"
-import Expense from "../../../data/types/Expense"
 import { currencyFormat } from "../../../utils/Convert"
 import { Category } from "../../../data/types/Categoty"
 import IBudgetRepository from "../../../data/repository/budgetRepository/IBudgetRepository"
 import { Budget } from "../../../data/types/Budget"
+import { Expense } from "../../../data/types/Expense"
 
 // ----------- interfaces and types ----------- //
 

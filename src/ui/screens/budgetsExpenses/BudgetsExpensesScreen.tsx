@@ -3,25 +3,21 @@ import React from 'react'
 import { DefaultStyles, Styles } from '../../constants/Styles'
 import HelpText from '../../components/helpText/Help'
 import { Strings } from '../incomes/Strings'
-import { FontFamily, FontSize } from '../../constants/Fonts'
+import { FontSize } from '../../constants/Fonts'
 import { Colors } from '../../constants/Colors'
 import TotalAmount from '../../components/totalAmount/TotalAmount'
-import { BudgetsExpensesScreenProps, ExpensesScreenProps } from '../../navigation/NavigationParamList'
+import { BudgetsExpensesScreenProps } from '../../navigation/NavigationParamList'
 import Label from '../../components/label/Label'
 import ButtonAdd from '../../components/buttonAdd/ButtonAdd'
 import ExpenseRepository from '../../../data/repository/expenseRepository/ExpenseRepository'
 import CategoryRespository from '../../../data/repository/categoryRepository/CategoryRepository'
-import { Category } from '../../../data/types/Categoty'
-import ChipItem from '../../components/chipItem/ChipItem'
 import Loading from '../../components/loading/Loading'
 import BudgetRepository from '../../../data/repository/budgetRepository/BudgetRepository'
 import useBudgetExpensesViewModel from './BudgetsExpensesViewModel'
+import { BudgetExpenseItem } from '../../../data/types/BudgetExpense'
+import ExpenseItem from '../../components/expenseItem/ExpenseItem'
+import BudgetItem from '../../components/budgetItem/BudgetItem'
 
-interface ExpenseItem {
-    name: string,
-    amount: string,
-    category: Category | undefined,
-}
 
 interface ExpenseOptionsProps {
     visible: boolean,
@@ -46,7 +42,7 @@ const categoryRepository = new CategoryRespository()
 const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps) => {
 
 
-    const expensesViewModel = useBudgetExpensesViewModel({
+    const budgetsExpensesViewModel = useBudgetExpensesViewModel({
         navigation,
         route,
         expenseRepository,
@@ -54,8 +50,30 @@ const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps
         categoryRepository
     })
 
-    return (
+    const renderBugdetOrExpense = (item: BudgetExpenseItem) => {
 
+        const { name, amount, category } = item
+
+        if (item.type === "Expense") {
+
+            return <ExpenseItem
+                name={name}
+                amount={amount}
+                category={category}
+            />
+
+        } else {
+
+            return <BudgetItem
+                name={name}
+                amount={amount}
+                category={category}
+            />
+        }
+
+    }
+
+    return (
         <>
             <View style={DefaultStyles.SCREEN}>
 
@@ -67,76 +85,39 @@ const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps
 
                 <TotalAmount
                     label="Gasto"
-                    amount={expensesViewModel?.totalAmount}
+                    amount={budgetsExpensesViewModel?.totalAmount}
                     color={Colors.YELLOW}
                 />
 
                 <FlatList
-                    data={null}
-                    renderItem={({ item }) => (
-                        <ExpenseItem
-                            name={item.name}
-                            amount={item.amount}
-                            category={item.category}
-                        />
-                    )}
+                    data={budgetsExpensesViewModel.budgetsExpenses}
+                    renderItem={({ item }) => renderBugdetOrExpense(item)}
                 />
 
                 <ButtonAdd
-                    visible={expensesViewModel.buttonAddVisible}
+                    visible={budgetsExpensesViewModel.buttonAddVisible}
                     backgroundColor={Colors.YELLOW}
-                    onPress={expensesViewModel.onShowExpenseOptions}
+                    onPress={budgetsExpensesViewModel.onShowExpenseOptions}
                 />
-
 
             </View>
 
+
             <ExpenseOptions
-                visible={expensesViewModel.ExpenseOptionsVisible}
-                onPressOutcome={expensesViewModel.onAddExpense}
-                onPressBudget={expensesViewModel.onAddBudget}
-                onHideOptions={expensesViewModel.onHideExpenseOptions}
+                visible={budgetsExpensesViewModel.ExpenseOptionsVisible}
+                onPressOutcome={budgetsExpensesViewModel.onAddExpense}
+                onPressBudget={budgetsExpensesViewModel.onAddBudget}
+                onHideOptions={budgetsExpensesViewModel.onHideExpenseOptions}
             />
 
-            <Loading visible={expensesViewModel.loading} />
+
+            <Loading visible={budgetsExpensesViewModel.loading} />
 
         </>
 
     )
 }
 
-
-
-const ExpenseItem = ({ name, amount, category }: ExpenseItem) => {
-
-    return (
-
-        <TouchableOpacity style={outcomes_styles.outcomeItem}>
-
-            <View>
-
-                <Label
-                    value={name}
-                    fontSize={FontSize.SMALL}
-                    fontFamily={FontFamily.REGULAR}
-                />
-
-                <Label
-                    value={"$" + amount}
-                    fontSize={FontSize.SMALL}
-                    fontFamily={FontFamily.REGULAR}
-                />
-
-            </View>
-
-            <ChipItem
-                category={category as Category}
-                disabled={true}
-            />
-
-        </TouchableOpacity>
-    )
-}
 
 const ExpenseOptions = ({
     visible,
@@ -158,7 +139,7 @@ const ExpenseOptions = ({
                 }}
             >
 
-                <OutcomeOptionItem
+                <ExpenseOptionItem
                     title='Gasto'
                     onPress={onPressOutcome}
                     image={require("../../../assets/icons/ic_salary.png")}
@@ -169,7 +150,7 @@ const ExpenseOptions = ({
                     }}
                 />
 
-                <OutcomeOptionItem
+                <ExpenseOptionItem
                     title='Plan'
                     onPress={onPressBudget}
                     image={require("../../../assets/icons/ic_budget.png")}
@@ -179,13 +160,14 @@ const ExpenseOptions = ({
                         right: 100,
                     }}
                 />
+
             </View>
         </TouchableWithoutFeedback>
 
     )
 }
 
-const OutcomeOptionItem = ({
+const ExpenseOptionItem = ({
     title,
     image,
     styles,
@@ -208,8 +190,6 @@ const OutcomeOptionItem = ({
     )
 
 }
-
-export default BudgetsExpensesScreen
 
 const outcomes_styles = StyleSheet.create({
 
@@ -251,3 +231,5 @@ const outcomes_styles = StyleSheet.create({
         alignSelf: 'center',
     }
 })
+
+export default BudgetsExpensesScreen

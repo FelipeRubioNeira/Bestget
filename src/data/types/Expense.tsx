@@ -15,14 +15,6 @@ type ExpenseCreate = {
     date: string;
 }
 
-type ExpenseItem = {
-    id: string
-    name: string
-    amount: number
-    date: string
-    category: Category | undefined
-}
-
 export const ExpenseKey = Object.freeze({
     ID: "id",
     NAME: "name",
@@ -34,6 +26,5 @@ export const ExpenseKey = Object.freeze({
 
 export type {
     Expense,
-    ExpenseItem,
     ExpenseCreate
 }
