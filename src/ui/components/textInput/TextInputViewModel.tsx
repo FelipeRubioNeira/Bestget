@@ -10,7 +10,8 @@ export interface ITextInput {
     color?: string
     placeholder?: string,
     inputMode?: InputModeOptions,
-    onChangeText: (text: string) => void
+    onChangeText: (text: string) => void,
+    editable?: boolean
 }
 
 const TextInputRegex = Object.freeze({

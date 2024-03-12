@@ -1,7 +1,7 @@
 
 import { StyleSheet, View } from "react-native"
 import { Styles, Colors, FontFamily } from "../../constants/Index"
-import Label from "../Label"
+import Label from "../label/Label"
 
 
 interface ITotalAmount {

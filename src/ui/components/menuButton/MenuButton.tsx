@@ -2,7 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { Styles } from '../../constants/Styles'
 import { Colors } from '../../constants/Colors'
-import Label from '../Label'
+import Label from '../label/Label'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 
 interface IMenuButtonProps {

@@ -8,12 +8,13 @@ import { Colors } from '../../constants/Colors'
 import TotalAmount from '../../components/totalAmount/TotalAmount'
 import useExpensesViewModel from './ExpensesViewModel'
 import { ExpensesScreenProps } from '../../navigation/NavigationParamList'
-import Label from '../../components/Label'
+import Label from '../../components/label/Label'
 import ButtonAdd from '../../components/buttonAdd/ButtonAdd'
 import ExpenseRepository from '../../../data/repository/expenseRepository/ExpenseRepository'
 import CategoryRespository from '../../../data/repository/categoryRepository/CategoryRepository'
 import { Category } from '../../../data/types/Categoty'
 import ChipItem from '../../components/chipItem/ChipItem'
+import Loading from '../../components/loading/Loading'
 
 interface ExpenseFormatted {
     name: string,
@@ -56,7 +57,7 @@ const ExpensesScreen = ({ navigation, route }: ExpensesScreenProps) => {
             <View style={DefaultStyles.SCREEN}>
 
                 <HelpText
-                    value={Strings.outcomes}
+                    value={Strings.expenses}
                     fontSize={FontSize.XSMALL}
                     color={Colors.DARK_GRAY}
                 />
@@ -70,7 +71,7 @@ const ExpensesScreen = ({ navigation, route }: ExpensesScreenProps) => {
                 <FlatList
                     data={expensesViewModel.expenses}
                     renderItem={({ item }) => (
-                        <OutcomeItem
+                        <ExpenseItem
                             name={item.name}
                             amount={item.amount}
                             category={item.category}
@@ -93,6 +94,9 @@ const ExpensesScreen = ({ navigation, route }: ExpensesScreenProps) => {
                 onPressBudget={expensesViewModel.onAddBudget}
                 onHideOptions={expensesViewModel.onHideExpenseOptions}
             />
+
+            <Loading visible={expensesViewModel.loading} />
+
         </>
 
     )
@@ -100,8 +104,8 @@ const ExpensesScreen = ({ navigation, route }: ExpensesScreenProps) => {
 
 
 
-const OutcomeItem = ({ name, amount, category }: ExpenseFormatted) => {
-    
+const ExpenseItem = ({ name, amount, category }: ExpenseFormatted) => {
+
 
     return (
 

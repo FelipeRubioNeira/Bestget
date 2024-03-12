@@ -1,6 +1,7 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { NavigatorRoutes, ScreenRoutes } from "./Routes";
 import { Category } from "../../data/types/Categoty";
+import { Budget } from "../../data/types/Budget";
 
 
 
@@ -15,11 +16,14 @@ export type NavigatorParamList = {
 
     [ScreenRoutes.HOME]: undefined
 
-    [ScreenRoutes.EXPENSES]: {newExpenseId?: string | undefined}
+    [ScreenRoutes.EXPENSES]: { newExpenseId?: string | undefined }
     [ScreenRoutes.EXPENSES_CREATE]: { categoryList: Category[] | undefined }
 
     [ScreenRoutes.INCOMES]: { newIncomeId?: string | undefined }
     [ScreenRoutes.INCOMES_CREATE]: undefined
+
+    [ScreenRoutes.BUDGETS]: { budget: Budget }
+    [ScreenRoutes.BUDGETS_CREATE]: { categoryList: Category[] | undefined }
 
 }
 
@@ -61,4 +65,16 @@ export type ExpensesScreenProps = NativeStackScreenProps<
 export type ExpensesCreateScreenProps = NativeStackScreenProps<
     NavigatorParamList,
     ScreenRoutes.EXPENSES_CREATE
+>
+
+// BUDGETS screen
+export type BudgetsScreenProps = NativeStackScreenProps<
+    NavigatorParamList,
+    ScreenRoutes.BUDGETS
+>
+
+// BUDGETS CREATE screen
+export type BudgetsCreateScreenProps = NativeStackScreenProps<
+    NavigatorParamList,
+    ScreenRoutes.BUDGETS_CREATE
 >

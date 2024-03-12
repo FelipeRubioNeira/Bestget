@@ -1,7 +1,7 @@
 import { StyleSheet, Text } from 'react-native'
 import React from 'react'
-import { FontFamily, FontSize } from '../constants/Fonts'
-import { Colors } from '../constants/Colors'
+import { FontFamily, FontSize } from '../../constants/Fonts'
+import { Colors } from '../../constants/Colors'
 
 interface ILabel {
     value: string | undefined

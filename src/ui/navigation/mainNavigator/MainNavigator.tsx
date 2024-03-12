@@ -15,6 +15,8 @@ import ScreenOptions from './ScreenOptions';
 import IncomesCreateScreen from '../../screens/incomesCreate/IncomesCreateScreen';
 import { ScreenRoutes } from '../Routes';
 import ExpensesCreate from '../../screens/expensesCreate/ExpensesCreateScreen';
+import BudgetsCreateScreen from '../../screens/budgetsCreate/BudgetsCreateScreen';
+import BudgetsScreen from '../../screens/budgets/BudgetsScreen';
 
 
 
@@ -63,6 +65,19 @@ const MainNavigator = () => {
                     component={ExpensesCreate}
                     name={ScreenRoutes.EXPENSES_CREATE}
                     options={ScreenOptions.EXPENSES_CREATE}
+                />
+
+                <Stack.Screen
+                    component={BudgetsScreen}
+                    name={ScreenRoutes.BUDGETS}
+                    options={ScreenOptions.BUDGETS_CREATE}
+                />
+
+
+                <Stack.Screen
+                    component={BudgetsCreateScreen}
+                    name={ScreenRoutes.BUDGETS_CREATE}
+                    options={ScreenOptions.BUDGETS_CREATE}
                 />
 
             </Stack.Navigator>

@@ -1,7 +1,7 @@
 import { StyleSheet, TouchableOpacity } from "react-native"
 import { Colors } from "../../constants/Colors"
 import { FontFamily, FontSize } from "../../constants/Fonts"
-import Label from "../Label"
+import Label from "../label/Label"
 
 // submitButton
 interface ISubmmitButton {

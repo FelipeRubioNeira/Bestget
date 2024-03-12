@@ -1,7 +1,7 @@
 import { View } from 'react-native'
 import React from 'react'
 import { DefaultStyles } from '../../constants/Styles'
-import Spacer from '../../components/Spacer'
+import Spacer from '../../components/spacer/Spacer'
 import SubmitButton from '../../components/submitButton/SubmitButton'
 import TextInputWithLabel from '../../components/textInputWithLabel/TextInputWithLabel'
 import { InputType } from '../../components/textInput/TextInputViewModel'
@@ -11,10 +11,15 @@ import useExpensesCreateViewModel from './ExpensesCreateViewModel'
 import { ExpensesCreateScreenProps } from '../../navigation/NavigationParamList'
 import CreateExpenseUseCase from '../../../domain/useCases/CreateExpenseUseCase'
 import ExpenseRepository from '../../../data/repository/expenseRepository/ExpenseRepository'
+import BudgetExpenseRepository from '../../../data/repository/budgetExpenseRepository/BudgetExpenseRepository'
 
-
+const budgetExpenseRepository = new BudgetExpenseRepository()
 const expenseRepository = new ExpenseRepository()
-const createExpenseUseCase = new CreateExpenseUseCase(expenseRepository)
+
+const createExpenseUseCase = new CreateExpenseUseCase(
+  expenseRepository,
+  budgetExpenseRepository
+)
 
 
 const ExpensesCreate = ({ navigation, route }: ExpensesCreateScreenProps) => {
@@ -33,10 +38,7 @@ const ExpensesCreate = ({ navigation, route }: ExpensesCreateScreenProps) => {
 
   return (
 
-    <View style={{
-      ...DefaultStyles.SCREEN,
-      justifyContent: 'space-between'
-    }}>
+    <View style={{ ...DefaultStyles.SCREEN, justifyContent: 'space-between' }}>
 
       <View>
 

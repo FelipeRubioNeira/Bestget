@@ -1,6 +1,6 @@
 import { StyleSheet, TouchableOpacity } from "react-native"
 import { Colors, FontFamily, Styles, DefaultStyles } from "../../constants/Index"
-import Label from "../Label"
+import Label from "../label/Label"
 
 interface IButtonAdd {
     visible?: boolean,

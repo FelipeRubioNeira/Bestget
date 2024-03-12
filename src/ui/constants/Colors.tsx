@@ -1,4 +1,5 @@
 export enum Colors {
+    TRANSPARENT = "rgba(0, 0, 0, 0.125)",
     BLACK = '#2F2F2F',
     LIGHT_GRAY = '#ECECEC',
     GRAY = '#CCCCCC',

@@ -1,7 +1,7 @@
 import { View } from 'react-native'
 import React from 'react'
 import { DefaultStyles } from '../../constants/Styles'
-import Spacer from '../../components/Spacer'
+import Spacer from '../../components/spacer/Spacer'
 import { IncomesCreateScreenProps } from '../../navigation/NavigationParamList'
 import SubmitButton from '../../components/submitButton/SubmitButton'
 import useIncomeCreateViewModel from './IncomesCreateViewModel'

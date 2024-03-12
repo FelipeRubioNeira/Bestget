@@ -5,14 +5,14 @@ import { Category, } from '../../../data/types/Categoty'
 import ChipItem from '../chipItem/ChipItem'
 
 interface IChipList {
-    onPress: (categoryId: number) => void,
-    categories: Category[],
+    onPress?: (categoryId: number) => void,
+    categories?: Category[],
 }
 
 
 const ChipList = ({
-    categories,
-    onPress
+    categories = [],
+    onPress = () => { }
 }: IChipList) => {
 
     const chipsViewModel = useChipListViewModel({onPress})

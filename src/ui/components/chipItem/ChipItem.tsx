@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native'
 import React from 'react'
-import Label from '../Label'
+import Label from '../label/Label'
 import { Styles } from '../../constants/Styles'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 import { Category } from '../../../data/types/Categoty'
@@ -9,7 +9,7 @@ import useChipItemViewModel from './ChipItemViewModel'
 
 interface IchipItem {
     // basico
-    category: Category,
+    category?: Category,
     disabled?: boolean,
     // avanzado
     style?: ViewStyle,

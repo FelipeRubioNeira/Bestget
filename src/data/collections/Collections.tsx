@@ -5,8 +5,9 @@
 */
 
 export enum Collections {
-    BUGGET = 'Bugget',
+    BUDGET = 'Budget',
     CATEGOTY = "Category",
     EXPENSE = 'Expense',
     INCOME = 'Income',
+    BUDGET_EXPENSE = 'BudgetExpense',
 }

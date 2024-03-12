@@ -8,6 +8,9 @@ export enum ScreenRoutes {
 
     EXPENSES = "EXPENSES",
     EXPENSES_CREATE = "EXPENSES_CREATE",
+
+    BUDGETS = "BUDGETS",
+    BUDGETS_CREATE= "BUDGETS_CREATE",
 }
 
 export enum NavigatorRoutes {

@@ -11,6 +11,7 @@ import Expense from "../../../data/types/Expense"
 import { currencyFormat } from "../../../utils/Convert"
 import { Category } from "../../../data/types/Categoty"
 
+// ----------- interfaces and types ----------- //
 
 type ExpensesViewModelProps = {
     expenseRepository: IExpenseRespository,
@@ -24,9 +25,7 @@ export interface ExpenseFormatted {
 }
 
 
-
-
-
+// ----------- view model ----------- //
 const useExpensesViewModel = ({
     navigation,
     route,
@@ -44,6 +43,8 @@ const useExpensesViewModel = ({
     const [expenses, setExpenses] = useState<ExpenseFormatted[]>([])
     const [categories, setCategories] = useState<Category[]>([])
 
+    const [loading, setLoading] = useState(false)
+
 
     // ----------- effects ----------- //
     useEffect(() => {
@@ -58,12 +59,15 @@ const useExpensesViewModel = ({
     // ----------- methods ----------- //
     const getData = async () => {
 
+
+        setLoading(true)
+
+
         //1 - getExpenses and getCategories
         const [expenses, categories] = await Promise.all([
             getExpenses(),
             getCategories()
         ])
-
 
 
         //2- setCategories
@@ -77,6 +81,10 @@ const useExpensesViewModel = ({
         //4- applyExpensesFormat
         const expensesFormatted = applyExpensesFormat(expenses, categories)
         setExpenses(expensesFormatted)
+
+
+        setLoading(false)
+
 
     }
 
@@ -94,7 +102,7 @@ const useExpensesViewModel = ({
             const expenseFormatted: ExpenseFormatted = {
                 name: expense.name,
                 amount: currencyFormat(expense.amount),
-                category: category 
+                category: category
             }
 
             return expenseFormatted
@@ -128,17 +136,17 @@ const useExpensesViewModel = ({
     }
 
     const onAddExpense = () => {
-
         onHideExpenseOptions()
-
         navigation.navigate(ScreenRoutes.EXPENSES_CREATE, {
             categoryList: categories
         })
-
     }
 
     const onAddBudget = () => {
         onHideExpenseOptions()
+        navigation.navigate(ScreenRoutes.BUDGETS_CREATE, {
+            categoryList: categories
+        })
     }
 
     const onHideExpenseOptions = () => {
@@ -147,7 +155,9 @@ const useExpensesViewModel = ({
     }
 
 
+    // ----------- return ----------- //
     return {
+        loading,
         expenses,
         categories,
         buttonAddVisible,

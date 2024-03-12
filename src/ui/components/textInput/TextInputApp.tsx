@@ -12,6 +12,7 @@ const TextInputApp = ({
     placeholder = "Ingrese el monto",
     inputMode,
     onChangeText = () => { },
+    editable = true
 }: ITextInput) => {
 
     const textInputViewModel = useTextInputViewModel({
@@ -27,6 +28,7 @@ const TextInputApp = ({
             placeholder={placeholder}
             placeholderTextColor={Colors.GRAY}
             inputMode={inputMode}
+            editable = {editable}
             style={{
                 ...textInputStyles.textInput,
                 fontSize: fontSize,

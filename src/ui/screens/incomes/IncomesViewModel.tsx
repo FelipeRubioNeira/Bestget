@@ -100,7 +100,6 @@ const useIncomesViewModel = ({
     return {
         totalAmount,
         incomesList,
-
         navigateIncomeCreate
     }
 }
