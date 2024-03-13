@@ -1,18 +1,17 @@
-import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 import Label from '../label/Label'
 import ChipItem from '../chipItem/ChipItem'
 import { BudgetExpenseItem } from '../../../data/types/BudgetExpense'
-import { Colors } from '../../constants/Colors'
-import { Styles } from '../../constants/Styles'
+import { DefaultStyles, Styles } from '../../constants/Styles'
 
 
 const ExpenseItem = ({ name, amount, category }: BudgetExpenseItem) => {
 
     return (
 
-        <TouchableOpacity style={expenseStyles.item}>
+        <TouchableOpacity style={DefaultStyles.LIST_ITEM}>
 
             <View>
 
@@ -38,20 +37,5 @@ const ExpenseItem = ({ name, amount, category }: BudgetExpenseItem) => {
         </TouchableOpacity>
     )
 }
-
-const expenseStyles = StyleSheet.create({
-
-    item: {
-        width: "100%",
-        height: 60,
-        borderBottomWidth: 1,
-        paddingHorizontal: 10,
-        borderColor: Colors.GRAY,
-        borderRadius: Styles.BORDER_RADIUS,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-})
 
 export default ExpenseItem

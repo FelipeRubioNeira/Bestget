@@ -32,6 +32,18 @@ export const DefaultStyles = Object.freeze({
         shadowOpacity: 0.17,
         shadowRadius: 3.05,
         elevation: 4
+    } as ViewStyle,
+
+    LIST_ITEM: {
+        width: "100%",
+        borderBottomWidth: 1,
+        borderColor: Colors.GRAY,
+        borderRadius: Styles.BORDER_RADIUS,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingBottom: "1%",
+        marginBottom: "2%",
     } as ViewStyle
 
 })

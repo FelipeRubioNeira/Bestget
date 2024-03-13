@@ -9,46 +9,40 @@ import ButtonAdd from '../../components/buttonAdd/ButtonAdd'
 import { Colors } from '../../constants/Colors'
 import { BudgetsScreenProps } from '../../navigation/NavigationParamList'
 import useBudgetViewModel from './BudgetViewModel'
+import Label from '../../components/label/Label'
+import { FontFamily } from '../../constants/Fonts'
 
 
 
 const Budgets = ({ navigation, route }: BudgetsScreenProps) => {
 
-    const BudgetViewModel = useBudgetViewModel({ navigation, route })
 
+    const budgetViewModel = useBudgetViewModel({ navigation, route })
 
 
     return (
 
         <View style={DefaultStyles.SCREEN}>
 
-            <TextInputWithLabel
-                value={BudgetViewModel.budgetName}
-                title="Nombre presupuesto:"
-                placeholder="Salidas de fin de semana"
-                editable={false}
+            <Label
+                value={budgetViewModel.title}
+                fontFamily={FontFamily.BLACK}
             />
 
-            <Spacer marginVertical={"4%"} />
-
-            <TextInputWithLabel
-                value={BudgetViewModel.budgetAmount}
-                title="Presupuesto:"
-                placeholder="$120.000"
-                inputMode={InputType.NUMERIC}
-                editable={false}
-            />
+            <Label value={budgetViewModel.used} />
+            <Label value={budgetViewModel.available} />
 
 
             <ChipItem
-                category={undefined}
+                category={budgetViewModel.category}
                 disabled={true}
+                style={{ marginTop: 20, backgroundColor: budgetViewModel.category?.color }}
             />
 
             <ButtonAdd
                 visible={true}
                 backgroundColor={Colors.YELLOW}
-                onPress={() => { }}
+                onPress={budgetViewModel.onPress}
             />
 
         </View>

@@ -60,6 +60,8 @@ const chipStyle = StyleSheet.create({
         borderRadius: Styles.BORDER_RADIUS * 4,
         paddingHorizontal: "4%",
         paddingVertical: "2%",
+        justifyContent: 'center',
+        alignItems: 'center',
     }
 })
 

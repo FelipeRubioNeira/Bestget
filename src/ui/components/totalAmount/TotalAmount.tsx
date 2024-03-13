@@ -48,8 +48,6 @@ const totalAmountStyles = StyleSheet.create({
         borderRadius: Styles.BORDER_RADIUS,
         paddingHorizontal: 20,
         backgroundColor: Colors.GREEN,
-        //borderColor: Colors.GRAY,
-        //borderWidth: 1,
     }
 
 })

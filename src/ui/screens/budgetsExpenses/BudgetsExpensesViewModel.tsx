@@ -158,31 +158,37 @@ const useBudgetExpensesViewModel = ({
         return budgetsExpenses.find(item => item.id === id && item.type == type);
     };
 
+    const findCategoryById = (id: number) => {
+        return categories.find(category => category.id === id)
+    }
+
 
     const onPressItem = (id: string, type: BudgetExpenseItemType) => {
 
+        const budgetOrExpensItem = findItem(id, type)
+        const amountInt = numberFormat(budgetOrExpensItem?.amount)
+        const category = findCategoryById(budgetOrExpensItem?.category?.id as number)
 
-        const item = findItem(id, type)
-        const route = type === "Budget" ? ScreenRoutes.BUDGET : ScreenRoutes.EXPENSES
+        let finalObject = {
+            id: budgetOrExpensItem?.id as string,
+            name: budgetOrExpensItem?.name as string,
+            amount: amountInt,
+            categoryId: budgetOrExpensItem?.category?.id as number,
+            date: budgetOrExpensItem?.date as string
+        }
 
-        const amountInt = numberFormat(item?.amount)
 
-        if (item) {
+        if (type === "Budget") {
 
-            let navigationObject = {
-                id: item.id as string,
-                name: item.name as string,
-                amount: amountInt,
-                categoryId: item.category?.id as number,
-                date: item.date as string
-            }
+            const navigationObject = {
+                budget: finalObject as Budget,
+                category: category
+            } 
 
-            navigation.navigate(route, {
-                budget: navigationObject,
-                categoryList: categories
+            navigation.navigate(ScreenRoutes.BUDGET, navigationObject)
 
-            })
-
+        } else {
+            // type === "Expense"
         }
 
 

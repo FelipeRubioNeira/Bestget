@@ -24,7 +24,7 @@ export type NavigatorParamList = {
     [ScreenRoutes.EXPENSES]: { newExpenseId?: string | undefined }
     [ScreenRoutes.EXPENSES_CREATE]: { categoryList: Category[] | undefined }
 
-    [ScreenRoutes.BUDGET]: { budget: Budget, categoryList: Category[] }
+    [ScreenRoutes.BUDGET]: { budget: Budget, category: Category | undefined}
     [ScreenRoutes.BUDGETS_CREATE]: { categoryList: Category[] | undefined }
 
 }

@@ -1,7 +1,6 @@
 import { StyleSheet, View } from "react-native"
 import { Colors, Styles } from "../../constants/Index"
-import { ILabel } from "../IProps"
-import Label from "../label/Label"
+import Label, { ILabel } from "../label/Label"
 
 
 const HelpText = (props: ILabel) => {

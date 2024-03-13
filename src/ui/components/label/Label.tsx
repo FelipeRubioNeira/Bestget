@@ -3,7 +3,7 @@ import React from 'react'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 import { Colors } from '../../constants/Colors'
 
-interface ILabel {
+export interface ILabel {
     value: string | undefined
     fontSize?: number
     fontFamily?: string
