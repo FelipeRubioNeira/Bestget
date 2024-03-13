@@ -72,9 +72,4 @@ const BudgetsCreateScreen = ({ navigation, route }: BudgetsCreateScreenProps) =>
 }
 
 
-const budgetsStyle = StyleSheet.create({
-
-
-})
-
 export default BudgetsCreateScreen

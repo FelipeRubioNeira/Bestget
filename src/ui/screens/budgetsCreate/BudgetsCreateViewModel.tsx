@@ -87,10 +87,15 @@ const useBudgetsCreateViewModel = ({
 
         if (budgetCreated) {
 
-            navigation.navigate(ScreenRoutes.BUDGET, {
+            navigation.replace(ScreenRoutes.BUDGET, {
                 budget: budgetCreated,
                 categoryList: categories
             })
+
+            // navigation.navigate(ScreenRoutes.BUDGET, {
+            //     budget: budgetCreated,
+            //     categoryList: categories
+            // })
 
         } else {
             console.error("Error creating budget")
