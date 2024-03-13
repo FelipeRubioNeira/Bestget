@@ -8,7 +8,7 @@ import { ScreenRoutes } from "../../navigation/Routes"
 import IExpenseRespository from "../../../data/repository/expenseRepository/IExpenseRepository"
 import ICategoryRepository from "../../../data/repository/categoryRepository/ICategoryRespository"
 import { Expense } from "../../../data/types/Expense"
-import { currencyFormat } from "../../../utils/Convert"
+import { currencyFormat, numberFormat } from "../../../utils/Convert"
 import { Category } from "../../../data/types/Categoty"
 import IBudgetRepository from "../../../data/repository/budgetRepository/IBudgetRepository"
 import { Budget } from "../../../data/types/Budget"
@@ -41,6 +41,7 @@ const useBudgetExpensesViewModel = ({
     const [ExpenseOptionsVisible, setExpenseOptionsVisble] = useState(false)
 
     const [categories, setCategories] = useState<Category[]>([])
+
     const [budgetsExpenses, setBudgetsExpenses] = useState<BudgetExpenseItem[]>([])
 
     const [loading, setLoading] = useState(false)
@@ -84,14 +85,6 @@ const useBudgetExpensesViewModel = ({
             ...budgetsList,
             ...expensesList
         ])
-
-        console.log(
-            [
-                ...budgetsList,
-                ...expensesList
-            ]
-        );
-        
 
         setLoading(false)
 
@@ -161,6 +154,40 @@ const useBudgetExpensesViewModel = ({
         setExpenseOptionsVisble(false)
     }
 
+    const findItem = <T extends BudgetExpenseItemType>(id: string, type: T) => {
+        return budgetsExpenses.find(item => item.id === id && item.type == type);
+    };
+
+
+    const onPressItem = (id: string, type: BudgetExpenseItemType) => {
+
+
+        const item = findItem(id, type)
+        const route = type === "Budget" ? ScreenRoutes.BUDGET : ScreenRoutes.EXPENSES
+
+        const amountInt = numberFormat(item?.amount)
+
+        if (item) {
+
+            let navigationObject = {
+                id: item.id as string,
+                name: item.name as string,
+                amount: amountInt,
+                categoryId: item.category?.id as number,
+                date: item.date as string
+            }
+
+            navigation.navigate(route, {
+                budget: navigationObject,
+                categoryList: categories
+
+            })
+
+        }
+
+
+    }
+
 
     // ----------- return ----------- //
     return {
@@ -174,6 +201,7 @@ const useBudgetExpensesViewModel = ({
         onShowExpenseOptions,
         onAddExpense,
         onAddBudget,
+        onPressItem,
 
         onHideExpenseOptions,
 

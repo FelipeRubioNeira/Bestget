@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { ExpensesCreateScreenProps } from "../../navigation/NavigationParamList"
 import { Category } from "../../../data/types/Categoty"
 import CreateExpenseUseCase from "../../../domain/useCases/CreateExpenseUseCase"
-import { plainFormat } from "../../../utils/Convert"
+import { numberFormat } from "../../../utils/Convert"
 import { ExpenseCreate } from "../../../data/types/Expense"
 import { ScreenRoutes } from "../../navigation/Routes"
 import { getCurrentDate } from "../../../utils/Date"
@@ -81,7 +81,7 @@ const useExpensesCreateViewModel = (
 
         try {
 
-            const amountInt = parseInt(plainFormat(expenseCreateState.expenseAmount))
+            const amountInt = numberFormat(expenseCreateState.expenseAmount)
             const currentDate = getCurrentDate()
 
             const expense: ExpenseCreate = {
@@ -99,7 +99,6 @@ const useExpensesCreateViewModel = (
 
         } catch (error) {
             console.log("error al guardar el nuevo gasto", error);
-
         }
 
     }

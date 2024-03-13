@@ -1,14 +1,13 @@
 import { Income } from "../../data/types/Income";
 import { IIncomeRepository } from "../../data/repository/incomeRepository/IIncomeRepository";
-import { plainFormat } from "../../utils/Convert";
+import { numberFormat } from "../../utils/Convert";
 
 export class CreateIncomeUseCase {
     constructor(private incomeRepository: IIncomeRepository) { }
 
     public create(name: string, amount: string): Promise<string> {
 
-        const amountWithoutFormat = plainFormat(amount)
-        const amountInt = parseInt(amountWithoutFormat)
+        const amountInt = numberFormat(amount)
 
         const newIncome: Income = {
             name: name,

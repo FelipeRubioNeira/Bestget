@@ -100,9 +100,6 @@ const useExpensesViewModel = ({
         categories: Category[]
     ): ExpenseItem[] => {
 
-        console.log("budgets ", budgets);
-
-
         const expensesFormatted = expenses.map(expense => {
 
             let category = findCategory(expense.categoryId, categories)

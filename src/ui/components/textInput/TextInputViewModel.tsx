@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { InputModeOptions } from "react-native"
-import { currencyFormat, plainFormat } from "../../../utils/Convert"
+import { currencyFormat } from "../../../utils/Convert"
 
 
 export interface ITextInput {

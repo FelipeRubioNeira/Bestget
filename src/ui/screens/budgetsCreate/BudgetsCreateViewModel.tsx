@@ -3,7 +3,7 @@ import { BudgetsCreateScreenProps } from "../../navigation/NavigationParamList"
 import { Category } from "../../../data/types/Categoty"
 import CreateBudgetUseCase from "../../../domain/useCases/CreateBudgetUseCase"
 import { BudgetCreate } from "../../../data/types/Budget"
-import { plainFormat } from "../../../utils/Convert"
+import { numberFormat } from "../../../utils/Convert"
 import { ScreenRoutes } from "../../navigation/Routes"
 import { getCurrentDate } from "../../../utils/Date"
 
@@ -71,7 +71,7 @@ const useBudgetsCreateViewModel = ({
     const onSubmit = async () => {
 
         // 1- convert $ to int
-        const amountInt = parseInt(plainFormat(budgetState.budgetAmount))
+        const amountInt = numberFormat(budgetState.budgetAmount)
 
         // 2- create budget
         const budgetCreate: BudgetCreate = {
@@ -81,18 +81,19 @@ const useBudgetsCreateViewModel = ({
             date: getCurrentDate()
         }
 
-        console.log("budgetCreate", budgetCreate);
-
-
         // 3- upload budget and budget expenses
         const budgetCreated = await createBudgetUseCase.createBudget(budgetCreate)
 
 
         if (budgetCreated) {
-            navigation.navigate(ScreenRoutes.BUDGETS, { budget: budgetCreated })
+
+            navigation.navigate(ScreenRoutes.BUDGET, {
+                budget: budgetCreated,
+                categoryList: categories
+            })
 
         } else {
-            // showError
+            console.error("Error creating budget")
         }
 
     }

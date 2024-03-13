@@ -8,11 +8,16 @@ import { Colors } from '../../constants/Colors'
 import { Styles } from '../../constants/Styles'
 
 
-const BudgetItem = ({ name, amount, category }: BudgetExpenseItem) => {
+
+const BudgetItem = ({ name, amount, category, onPress }: BudgetExpenseItem) => {
+
 
     return (
 
-        <TouchableOpacity style={budgetStyles.item}>
+        <TouchableOpacity
+            onPress={onPress}
+            style={budgetStyles.item}
+        >
 
             <View>
 
@@ -36,8 +41,6 @@ const BudgetItem = ({ name, amount, category }: BudgetExpenseItem) => {
                 category={category}
                 disabled={true}
             />
-
-
 
         </TouchableOpacity>
     )

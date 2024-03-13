@@ -16,7 +16,8 @@ type BudgetExpenseItem = {
     amount?: string
     date?: string,
     category?: Category | undefined
-    type?: BudgetExpenseItemType
+    type?: BudgetExpenseItemType,
+    onPress?: () => void
 }
 
 export type {

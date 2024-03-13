@@ -48,7 +48,7 @@ const ScreenOptions = Object.freeze({
         headerTitleStyle: { fontFamily: FontFamily.BOLD },
     },
 
-    BUDGETS: {
+    BUDGET: {
         title: "Presupuesto",
         headerTintColor: Colors.BLACK,
         headerStyle: { backgroundColor: Colors.YELLOW },

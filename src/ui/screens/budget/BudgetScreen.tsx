@@ -8,13 +8,13 @@ import ChipItem from '../../components/chipItem/ChipItem'
 import ButtonAdd from '../../components/buttonAdd/ButtonAdd'
 import { Colors } from '../../constants/Colors'
 import { BudgetsScreenProps } from '../../navigation/NavigationParamList'
-import useBudgetsViewModel from './BudgetsViewModel'
+import useBudgetViewModel from './BudgetViewModel'
 
 
 
 const Budgets = ({ navigation, route }: BudgetsScreenProps) => {
 
-    const BudgetsViewModel = useBudgetsViewModel({ navigation, route })
+    const BudgetViewModel = useBudgetViewModel({ navigation, route })
 
 
 
@@ -23,7 +23,7 @@ const Budgets = ({ navigation, route }: BudgetsScreenProps) => {
         <View style={DefaultStyles.SCREEN}>
 
             <TextInputWithLabel
-                value={BudgetsViewModel.budgetName}
+                value={BudgetViewModel.budgetName}
                 title="Nombre presupuesto:"
                 placeholder="Salidas de fin de semana"
                 editable={false}
@@ -32,7 +32,7 @@ const Budgets = ({ navigation, route }: BudgetsScreenProps) => {
             <Spacer marginVertical={"4%"} />
 
             <TextInputWithLabel
-                value={BudgetsViewModel.budgetAmount}
+                value={BudgetViewModel.budgetAmount}
                 title="Presupuesto:"
                 placeholder="$120.000"
                 inputMode={InputType.NUMERIC}

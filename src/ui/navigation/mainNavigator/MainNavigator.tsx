@@ -16,7 +16,7 @@ import IncomesCreateScreen from '../../screens/incomesCreate/IncomesCreateScreen
 import { ScreenRoutes } from '../Routes';
 import ExpensesCreate from '../../screens/expensesCreate/ExpensesCreateScreen';
 import BudgetsCreateScreen from '../../screens/budgetsCreate/BudgetsCreateScreen';
-import BudgetsScreen from '../../screens/budgets/BudgetsScreen';
+import BudgetScreen from '../../screens/budget/BudgetScreen';
 import BudgetsExpensesScreen from '../../screens/budgetsExpenses/BudgetsExpensesScreen';
 
 
@@ -55,7 +55,7 @@ const MainNavigator = () => {
                 />
 
 
-                {/* BUDGETS EXPENSES screen */}
+                {/* BUDGET EXPENSES screen */}
                 <Stack.Screen
                     component={BudgetsExpensesScreen}
                     name={ScreenRoutes.BUDGET_EXPENSES}
@@ -77,8 +77,8 @@ const MainNavigator = () => {
                 />
 
                 <Stack.Screen
-                    component={BudgetsScreen}
-                    name={ScreenRoutes.BUDGETS}
+                    component={BudgetScreen}
+                    name={ScreenRoutes.BUDGET}
                     options={ScreenOptions.BUDGETS_CREATE}
                 />
 

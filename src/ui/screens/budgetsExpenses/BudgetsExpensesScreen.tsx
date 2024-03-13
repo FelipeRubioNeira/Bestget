@@ -14,7 +14,7 @@ import CategoryRespository from '../../../data/repository/categoryRepository/Cat
 import Loading from '../../components/loading/Loading'
 import BudgetRepository from '../../../data/repository/budgetRepository/BudgetRepository'
 import useBudgetExpensesViewModel from './BudgetsExpensesViewModel'
-import { BudgetExpenseItem } from '../../../data/types/BudgetExpense'
+import { BudgetExpenseItem, BudgetExpenseItemType } from '../../../data/types/BudgetExpense'
 import ExpenseItem from '../../components/expenseItem/ExpenseItem'
 import BudgetItem from '../../components/budgetItem/BudgetItem'
 
@@ -54,17 +54,20 @@ const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps
 
         const { name, amount, category } = item
 
-        if (item.type === "Expense") {
+        const id = item.id as string
+        const type = item.type as BudgetExpenseItemType
 
-            return <ExpenseItem
+        if (item.type === "Budget") {
+
+            return <BudgetItem
                 name={name}
                 amount={amount}
                 category={category}
+                onPress={() => budgetsExpensesViewModel.onPressItem(id, type)}
             />
 
         } else {
-
-            return <BudgetItem
+            return <ExpenseItem
                 name={name}
                 amount={amount}
                 category={category}
