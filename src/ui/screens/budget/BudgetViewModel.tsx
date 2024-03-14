@@ -6,6 +6,16 @@ import { Category } from "../../../data/types/Categoty"
 
 const useBudgetsViewModel = ({ navigation, route }: BudgetsScreenProps) => {
 
+    // ----------- params ----------- //
+    // const {
+    //     name,
+    //     amount,
+    //     categoryId
+    // } = route?.params?.budget
+    const {
+        budget,
+        categoryList = []
+    } = route.params
 
     // ----------- states ----------- //
     const [category, setCategory] = useState<Category>()
@@ -19,14 +29,12 @@ const useBudgetsViewModel = ({ navigation, route }: BudgetsScreenProps) => {
     // ----------- effects ----------- //
     useEffect(() => {
 
-        const currencyValue = currencyFormat(route?.params?.budget?.amount)
-
-        setCategory(route?.params?.category)
-
         generateTitle(
-            currencyValue,
-            route?.params?.budget?.name
+            currencyFormat(budget.amount),
+            budget.name
         )
+
+        findCategory(budget.categoryId, categoryList)
 
     }, [route?.params?.budget])
 
@@ -45,6 +53,15 @@ const useBudgetsViewModel = ({ navigation, route }: BudgetsScreenProps) => {
 
     }
 
+    const findCategory = (categoryId: number, categoryList: Category[]) => {
+
+        const category = categoryList.find(category => category.id === categoryId)
+        setCategory(category)
+
+    }
+
+
+    // ----------- events ----------- //
     const onPress = () => {
         console.log("onPress");
     }

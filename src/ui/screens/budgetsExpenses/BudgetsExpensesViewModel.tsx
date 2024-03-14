@@ -34,6 +34,17 @@ const useBudgetExpensesViewModel = ({
 }: ExpensesViewModelProps) => {
 
 
+
+    // ----------- params ----------- //
+    const {
+        budgetExpenseList,
+        categoryList = [],
+        newExpenseId,
+        newBudgetId
+    } = route?.params || {}
+
+
+
     // ----------- states ----------- //
     const [totalAmount, setTotalAmount] = useState("0")
 
@@ -47,19 +58,37 @@ const useBudgetExpensesViewModel = ({
     const [loading, setLoading] = useState(false)
 
 
+
     // ----------- effects ----------- //
     useEffect(() => {
 
-        const budgetExpenseList = route.params.budgetExpenseList
-        const categoryList = route.params.categoryList
+        const unsubscribe = navigation.addListener('focus', () => {
+            getData(categoryList)
+            setCategories(categoryList)
+        })
 
-        getData(budgetExpenseList)
-        setCategories(categoryList)
+        return unsubscribe;
 
     }, [])
 
-    // ----------- methods ----------- //
-    const getData = async (budgetExpenseList: BudgetExpense[]) => {
+
+    useEffect(() => {
+
+        if (!newExpenseId) return
+        getData(categoryList)
+        setCategories(categoryList)
+
+    }, [newExpenseId, newBudgetId])
+
+
+
+
+    // ########## methods ########## //
+
+
+
+    // ----------- get data ----------- //
+    const getData = async (categoryList: Category[]) => {
 
         setLoading(true)
 
@@ -75,9 +104,8 @@ const useBudgetExpensesViewModel = ({
 
 
         // 4 - fill the lists
-        const budgetsList = applyFormat(budgets, categories, "Budget")
-        const expensesList = applyFormat(expenses, categories, "Expense")
-
+        const budgetsList = applyFormat(budgets, categoryList, "Budget")
+        const expensesList = applyFormat(expenses, categoryList, "Expense")
 
 
         setBudgetsExpenses([
@@ -96,6 +124,7 @@ const useBudgetExpensesViewModel = ({
         type: BudgetExpenseItemType
     ) => {
 
+
         return budgetsOrExpenses.map(item => {
 
             const { id, name, amount, categoryId, date } = item
@@ -111,6 +140,7 @@ const useBudgetExpensesViewModel = ({
                 type: type
             }
 
+
             return budgetOrExpensItem
 
         })
@@ -122,6 +152,9 @@ const useBudgetExpensesViewModel = ({
         else if (categories.length === 0) return undefined
         else return categories.find(category => category.id === categoryId)
     }
+
+
+    // ----------- ui interaction ----------- //
 
     const calculateTotalAmount = (expeses: Expense[]) => {
         let totalAmount = 0
@@ -162,7 +195,31 @@ const useBudgetExpensesViewModel = ({
     }
 
 
+
+    // ----------- navigation ----------- //
     const onPressItem = (id: string, type: BudgetExpenseItemType) => {
+
+
+        const [itemToNavigate, category] = createItemToNavigate(id, type)
+
+
+        if (type === "Budget") {
+
+            const navigationObject = {
+                budget: itemToNavigate as Budget,
+                categoryList: categoryList
+            }
+
+            navigation.navigate(ScreenRoutes.BUDGET, navigationObject)
+
+        } else {
+            // type === "Expense"
+        }
+
+
+    }
+
+    const createItemToNavigate = (id: string, type: BudgetExpenseItemType) => {
 
         const budgetOrExpensItem = findItem(id, type)
         const amountInt = numberFormat(budgetOrExpensItem?.amount)
@@ -176,20 +233,7 @@ const useBudgetExpensesViewModel = ({
             date: budgetOrExpensItem?.date as string
         }
 
-
-        if (type === "Budget") {
-
-            const navigationObject = {
-                budget: finalObject as Budget,
-                category: category
-            }
-
-            navigation.navigate(ScreenRoutes.BUDGET, navigationObject)
-
-        } else {
-            // type === "Expense"
-        }
-
+        return [finalObject, category]
 
     }
 

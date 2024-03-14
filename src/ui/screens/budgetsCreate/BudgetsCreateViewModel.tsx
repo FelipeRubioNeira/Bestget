@@ -30,7 +30,10 @@ const useBudgetsCreateViewModel = ({
 
 
     // ------------------- params ------------------- //
-    const categoryList = route?.params?.categoryList || []
+
+    const {
+        categoryList = []
+    } = route.params || {}
 
     // ------------------- states ------------------- //
     const [categories, setCategories] = useState<Category[]>([])
@@ -82,20 +85,15 @@ const useBudgetsCreateViewModel = ({
         }
 
         // 3- upload budget and budget expenses
-        const budgetCreated = await createBudgetUseCase.createBudget(budgetCreate)
+        const newBudget = await createBudgetUseCase.createBudget(budgetCreate)
 
 
-        if (budgetCreated) {
+        if (newBudget) {
 
             navigation.replace(ScreenRoutes.BUDGET, {
-                budget: budgetCreated,
+                budget: newBudget,
                 categoryList: categories
             })
-
-            // navigation.navigate(ScreenRoutes.BUDGET, {
-            //     budget: budgetCreated,
-            //     categoryList: categories
-            // })
 
         } else {
             console.error("Error creating budget")

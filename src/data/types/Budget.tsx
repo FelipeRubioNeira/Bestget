@@ -1,4 +1,3 @@
-import { Category } from "./Categoty"
 
 type Budget = {
     id: string,
@@ -14,6 +13,15 @@ type BudgetCreate = {
     categoryId?: number,
     date: string
 }
+
+export const BudgetKeys = Object.freeze({
+    ID: "id",
+    NAME: "name",
+    AMOUNT: "amount",
+    CATEGORY_ID: "categoryId",
+    DATE: "date"
+})
+
 
 export type {
     Budget,

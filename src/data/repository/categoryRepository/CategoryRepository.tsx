@@ -11,7 +11,7 @@ class CategoryRespository implements ICategoryRepository {
 
             const categoriesFirebase = await firestore()
                 .collection(Collections.CATEGOTY)
-                .orderBy('name')
+                .orderBy('date', 'desc')
                 .get()
 
             const categories: Category[] = []

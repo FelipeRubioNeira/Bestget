@@ -3,7 +3,7 @@
 */
 
 import { useEffect, useState } from "react"
-import { ExpensesScreenProps } from "../../../navigation/NavigationParamList"
+import { ExpenseScreenProps } from "../../../navigation/NavigationParamList"
 import { ScreenRoutes } from "../../../navigation/Routes"
 import IExpenseRespository from "../../../data/repository/expenseRepository/IExpenseRepository"
 import ICategoryRepository from "../../../data/repository/categoryRepository/ICategoryRespository"
@@ -19,7 +19,7 @@ type ExpensesViewModelProps = {
     expenseRepository: IExpenseRespository,
     budgetRepository: IBudgetRepository,
     categoryRepository: ICategoryRepository,
-} & ExpensesScreenProps
+} & ExpenseScreenProps
 
 export interface ExpenseItem {
     name: string,

@@ -28,19 +28,26 @@ export type NavigatorParamList = {
 
 
     [ScreenRoutes.BUDGET_EXPENSES]: {
-        budgetExpenseList: BudgetExpense[],
-        categoryList: Category[]
+        budgetExpenseList?: BudgetExpense[],
+        categoryList?: Category[],
+        newExpenseId?: string | undefined,
+        newBudgetId?: string | undefined
     }
+
+    [ScreenRoutes.BUDGETS_CREATE]: { categoryList: Category[] | undefined }
+    [ScreenRoutes.BUDGET]: {
+        budget: Budget,
+        categoryList?: Category[]
+    }
+
 
     [ScreenRoutes.EXPENSES_CREATE]: { categoryList: Category[] | undefined }
 
-    [ScreenRoutes.EXPENSES]: {
+    [ScreenRoutes.EXPENSE]: {
         newExpenseId?: string | undefined
         expenseList?: Expense[],
     }
 
-    [ScreenRoutes.BUDGETS_CREATE]: { categoryList: Category[] | undefined }
-    [ScreenRoutes.BUDGET]: { budget: Budget, category: Category | undefined }
 
 }
 
@@ -72,19 +79,19 @@ export type IncomesCreateScreenProps = NativeStackScreenProps<
     ScreenRoutes.INCOMES_CREATE
 >
 
-// BUDGET EXPENSES screen
+// BUDGET EXPENSE screen
 export type BudgetsExpensesScreenProps = NativeStackScreenProps<
     NavigatorParamList,
     ScreenRoutes.BUDGET_EXPENSES
 >
 
-// EXPENSES screen
-export type ExpensesScreenProps = NativeStackScreenProps<
+// EXPENSE screen
+export type ExpenseScreenProps = NativeStackScreenProps<
     NavigatorParamList,
-    ScreenRoutes.EXPENSES
+    ScreenRoutes.EXPENSE
 >
 
-// EXPENSES create screen
+// EXPENSE create screen
 export type ExpensesCreateScreenProps = NativeStackScreenProps<
     NavigatorParamList,
     ScreenRoutes.EXPENSES_CREATE

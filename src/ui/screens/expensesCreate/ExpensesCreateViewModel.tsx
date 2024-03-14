@@ -93,7 +93,7 @@ const useExpensesCreateViewModel = (
 
             const newExpenseId = await createExpenseUseCase.create(expense)
 
-            navigation.navigate(ScreenRoutes.EXPENSES, {
+            navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {
                 newExpenseId: newExpenseId
             })
 

@@ -6,8 +6,8 @@ import { Strings } from '../incomes/Strings'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 import { Colors } from '../../constants/Colors'
 import TotalAmount from '../../components/totalAmount/TotalAmount'
-import useExpensesViewModel from './ExpensesViewModel'
-import { ExpensesScreenProps } from '../../../navigation/NavigationParamList'
+import useExpensesViewModel from './ExpenseViewModel'
+import { ExpenseScreenProps } from '../../../navigation/NavigationParamList'
 import Label from '../../components/label/Label'
 import ButtonAdd from '../../components/buttonAdd/ButtonAdd'
 import ExpenseRepository from '../../../data/repository/expenseRepository/ExpenseRepository'
@@ -43,7 +43,7 @@ const budgetRepository = new BudgetRepository()
 const categoryRepository = new CategoryRespository()
 
 
-const ExpensesScreen = ({ navigation, route }: ExpensesScreenProps) => {
+const ExpenseScreen = ({ navigation, route }: ExpenseScreenProps) => {
 
 
     const expensesViewModel = useExpensesViewModel({
@@ -210,7 +210,7 @@ const OutcomeOptionItem = ({
 
 }
 
-export default ExpensesScreen
+export default ExpenseScreen
 
 const outcomes_styles = StyleSheet.create({
 

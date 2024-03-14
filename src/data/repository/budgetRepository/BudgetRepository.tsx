@@ -1,9 +1,41 @@
 import { Collections } from "../../collections/Collections";
-import { Budget, BudgetCreate } from "../../types/Budget";
+import { Budget, BudgetCreate, BudgetKeys } from "../../types/Budget";
 import IBudgetRepository from "./IBudgetRepository";
 import firestore from '@react-native-firebase/firestore';
 
+
 class BudgetRepository implements IBudgetRepository {
+
+    async getAll(): Promise<Budget[]> {
+
+        try {
+
+            const budgetsFirebase = await firestore()
+                .collection(Collections.BUDGET)
+                .orderBy(BudgetKeys.DATE, "desc")
+                .get()
+
+            return budgetsFirebase.docs.map(doc => {
+
+                const { name, amount, categoryId, date } = doc.data()
+
+                const newBudget: Budget = {
+                    id: doc.id,
+                    name: name,
+                    amount: amount,
+                    categoryId: categoryId,
+                    date: date
+                }
+
+                return newBudget
+            })
+
+        } catch (error) {
+            console.error("error BudgetRepository getAll", error);
+            return []
+        }
+
+    }
 
     async create(budget: BudgetCreate): Promise<Budget | null> {
 
@@ -28,37 +60,6 @@ class BudgetRepository implements IBudgetRepository {
         } catch (error) {
             console.error("error BudgetRepository create", error);
             return null
-        }
-
-    }
-
-    async getAll(): Promise<Budget[]> {
-
-        try {
-
-            const budgetsFirebase = await firestore()
-                .collection(Collections.BUDGET)
-                .orderBy('name')
-                .get()
-
-            return budgetsFirebase.docs.map(doc => {
-
-                const { name, amount, categoryId, date } = doc.data()
-
-                const newBudget: Budget = {
-                    id: doc.id,
-                    name: name,
-                    amount: amount,
-                    categoryId: categoryId,
-                    date: date
-                }
-
-                return newBudget
-            })
-
-        } catch (error) {
-            console.error("error BudgetRepository getAll", error);
-            return []
         }
 
     }
