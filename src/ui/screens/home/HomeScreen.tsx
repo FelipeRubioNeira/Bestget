@@ -10,7 +10,6 @@ import useHomeViewModel from './HomeViewModel'
 import { HomeScreenProps } from '../../../navigation/NavigationParamList'
 import IncomeRepository from '../../../data/repository/incomeRepository/IncomeRepository'
 import CategoryRespository from '../../../data/repository/categoryRepository/CategoryRepository'
-import ExpenseRepository from '../../../data/repository/expenseRepository/ExpenseRepository'
 import BudgetExpenseRepository from '../../../data/repository/budgetExpenseRepository/BudgetExpenseRepository'
 
 const incomeRepository = new IncomeRepository()

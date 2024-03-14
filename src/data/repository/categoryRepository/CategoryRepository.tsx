@@ -1,5 +1,5 @@
 import { Collections } from "../../collections/Collections";
-import { Category } from "../../types/Categoty";
+import { Category, CategoryKeys } from "../../types/Categoty";
 import ICategoryRepository from "./ICategoryRespository";
 import firestore from '@react-native-firebase/firestore';
 
@@ -11,7 +11,7 @@ class CategoryRespository implements ICategoryRepository {
 
             const categoriesFirebase = await firestore()
                 .collection(Collections.CATEGOTY)
-                .orderBy('date', 'desc')
+                .orderBy(CategoryKeys.name, 'desc')
                 .get()
 
             const categories: Category[] = []

@@ -4,4 +4,10 @@ export type Category = {
     color: string
 }
 
+export const CategoryKeys = Object.freeze({
+    id: "id",
+    name: "name",
+    color: "color"
+})
+
 

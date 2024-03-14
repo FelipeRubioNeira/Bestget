@@ -67,6 +67,9 @@ const useBudgetExpensesViewModel = ({
             setCategories(categoryList)
         })
 
+        console.log("category list " , categoryList);
+        
+
         return unsubscribe;
 
     }, [])

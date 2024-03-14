@@ -44,6 +44,7 @@ const useHomeViewModel = ({
 
 
     // ------------------ effects ------------------ //
+
     useEffect(() => {
 
         const unsubscribe = navigation.addListener('focus', () => {
@@ -59,8 +60,8 @@ const useHomeViewModel = ({
     const getData = async () => {
         Promise.all([
             getIncomes(),
+            getBudgetsExpenses(),
             getCategories(),
-            getBudgetsExpenses()
         ])
     }
 
@@ -91,6 +92,8 @@ const useHomeViewModel = ({
 
     const getCategories = async () => {
         const categories = await categoryRepository.getAll()
+        console.log("categories => ", categories);
+
         setAllCategories(categories)
     }
 
@@ -102,7 +105,7 @@ const useHomeViewModel = ({
 
     // ------------------ user Events ------------------ //
     const onPressBudgetsExpenses = () => {
-        navigation.navigate(ScreenRoutes.BUDGET_EXPENSES,{
+        navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {
             budgetExpenseList: allBudgetExpense,
             categoryList: allCategories,
         })
