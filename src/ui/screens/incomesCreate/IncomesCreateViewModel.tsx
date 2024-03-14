@@ -42,7 +42,7 @@ const useIncomeCreateViewModel = ({
 
             // 2. finally we navigate to the incomes screen
             navigation.navigate(ScreenRoutes.INCOMES, {
-                newIncomeId: newIncomeId
+                newIncomeId: newIncomeId,
             })
 
         } catch (error) {

@@ -17,13 +17,13 @@ export enum Styles {
 
 export const DefaultStyles = Object.freeze({
 
-    SCREEN: {
+    screen: {
         height: "100%",
         width: "100%",
         padding: Styles.SCREEN_PADDING,
     } as ViewStyle, // an object act as a type
 
-    SHADOW: {
+    shadow: {
         shadowColor: Colors.BLACK,
         shadowOffset: {
             width: 0,
@@ -34,16 +34,16 @@ export const DefaultStyles = Object.freeze({
         elevation: 4
     } as ViewStyle,
 
-    LIST_ITEM: {
+    listItemContainer: {
+        flexDirection: 'row',
         width: "100%",
         borderBottomWidth: 1,
         borderColor: Colors.GRAY,
-        borderRadius: Styles.BORDER_RADIUS,
-        flexDirection: 'row',
+        //borderRadius: Styles.BORDER_RADIUS,
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingBottom: "1%",
-        marginBottom: "2%",
+        paddingVertical: "4%",
+        marginBottom: "4%",
     } as ViewStyle
 
 })

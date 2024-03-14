@@ -11,15 +11,12 @@ import useExpensesCreateViewModel from './ExpensesCreateViewModel'
 import { ExpensesCreateScreenProps } from '../../../navigation/NavigationParamList'
 import CreateExpenseUseCase from '../../../domain/useCases/CreateExpenseUseCase'
 import ExpenseRepository from '../../../data/repository/expenseRepository/ExpenseRepository'
-import BudgetExpenseRepository from '../../../data/repository/budgetExpenseRepository/BudgetExpenseRepository'
+import ChipItem from '../../components/chipItem/ChipItem'
 
-const budgetExpenseRepository = new BudgetExpenseRepository()
+
 const expenseRepository = new ExpenseRepository()
 
-const createExpenseUseCase = new CreateExpenseUseCase(
-  expenseRepository,
-  budgetExpenseRepository
-)
+const createExpenseUseCase = new CreateExpenseUseCase(expenseRepository)
 
 
 const ExpensesCreate = ({ navigation, route }: ExpensesCreateScreenProps) => {
@@ -38,7 +35,7 @@ const ExpensesCreate = ({ navigation, route }: ExpensesCreateScreenProps) => {
 
   return (
 
-    <View style={{ ...DefaultStyles.SCREEN, justifyContent: 'space-between' }}>
+    <View style={{ ...DefaultStyles.screen, justifyContent: 'space-between' }}>
 
       <View>
 
@@ -59,10 +56,22 @@ const ExpensesCreate = ({ navigation, route }: ExpensesCreateScreenProps) => {
           inputMode={InputType.NUMERIC}
         />
 
-        <ChipList
-          onPress={expensesCreateViewModel.updateCategory}
-          categories={expensesCreateViewModel.categories}
-        />
+        {
+          expensesCreateViewModel.showChipItem ?
+            <ChipItem
+              disabled={true}
+              category={expensesCreateViewModel.chipItemProps?.category}
+              style={expensesCreateViewModel.chipItemProps?.style}
+            />
+
+            :
+
+            <ChipList
+              onPress={expensesCreateViewModel.updateCategory}
+              categories={expensesCreateViewModel.categories}
+            />
+        }
+
 
       </View>
 

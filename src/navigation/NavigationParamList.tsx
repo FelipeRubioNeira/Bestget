@@ -20,7 +20,7 @@ export type NavigatorParamList = {
     [ScreenRoutes.HOME]: undefined
 
     [ScreenRoutes.INCOMES]: {
-        incomes: Income[],
+        incomes?: Income[],
         newIncomeId?: string | undefined
     }
 
@@ -28,7 +28,6 @@ export type NavigatorParamList = {
 
 
     [ScreenRoutes.BUDGET_EXPENSES]: {
-        budgetExpenseList?: BudgetExpense[],
         categoryList?: Category[],
         newExpenseId?: string | undefined,
         newBudgetId?: string | undefined
@@ -37,11 +36,15 @@ export type NavigatorParamList = {
     [ScreenRoutes.BUDGETS_CREATE]: { categoryList: Category[] | undefined }
     [ScreenRoutes.BUDGET]: {
         budget: Budget,
-        categoryList?: Category[]
+        categoryList?: Category[],
+        newExpenseId?: string | undefined
     }
 
 
-    [ScreenRoutes.EXPENSES_CREATE]: { categoryList: Category[] | undefined }
+    [ScreenRoutes.EXPENSES_CREATE]: {
+        categoryList: Category[],
+        budget?: Budget
+    }
 
     [ScreenRoutes.EXPENSE]: {
         newExpenseId?: string | undefined

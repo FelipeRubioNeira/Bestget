@@ -1,32 +1,35 @@
 import { Collections } from "../../collections/Collections";
-import { Expense, ExpenseCreate, ExpenseKey } from "../../types/Expense";
+import { Expense, ExpenseCreate, ExpenseKeys } from "../../types/Expense";
 import IExpenseRespository from "./IExpenseRepository";
 import firestore from '@react-native-firebase/firestore';
+import QuerySnapshot from "@react-native-firebase/firestore";
 
 class ExpenseRepository implements IExpenseRespository {
 
-    async getAll(): Promise<Expense[]> {
 
+    async getAll(): Promise<Expense[]> {
         try {
 
             const expensesFirebase = await firestore()
                 .collection(Collections.EXPENSE)
-                .orderBy(ExpenseKey.DATE, "desc")
+                .orderBy(ExpenseKeys.DATE, "desc")
                 .get()
 
             const expensesArray: Expense[] = []
 
             expensesFirebase.docs.forEach(doc => {
 
-                const { name, amount, categoryId, date } = doc.data() as Expense
+                const { name, amount, categoryId, date, budgetId } = doc.data() as Expense
 
                 const newExpense: Expense = {
                     id: doc.id,
                     name: name,
                     amount: amount,
-                    categoryId: categoryId,
-                    date: date
+                    date: date,
+                    categoryId,
+                    budgetId
                 }
+
                 expensesArray.push(newExpense)
             })
 
@@ -36,14 +39,86 @@ class ExpenseRepository implements IExpenseRespository {
             console.error("error getExpenses repository", error);
             return []
         }
+    }
 
+    async getById(id: string): Promise<Expense[]> {
+
+        try {
+
+            const expensesFirebase = await firestore()
+                .collection(Collections.EXPENSE)
+                .where(ExpenseKeys.BUDGET_ID, "==", id)
+                .get()
+
+
+            const expensesArray = [] as Expense[]
+
+            expensesFirebase.docs.forEach(doc => {
+
+                const { name, amount, categoryId, date, budgetId } = doc.data() as Expense
+
+                const newExpense: Expense = {
+                    id: doc.id,
+                    name: name,
+                    amount: amount,
+                    date: date,
+                    categoryId,
+                    budgetId
+                }
+                expensesArray.push(newExpense)
+            })
+
+            return expensesArray
+
+        } catch (error) {
+            console.error("error getExpensesById", error);
+            return []
+        }
+    }
+
+    async getWithoutBudget(): Promise<Expense[]> {
+
+        try {
+
+            const expensesFirebase = await firestore()
+                .collection(Collections.EXPENSE)
+                .where(ExpenseKeys.BUDGET_ID, "==", "")
+                .get()
+
+
+            const expensesArray: Expense[] = []
+
+            expensesFirebase.docs.forEach(doc => {
+
+                const { name, amount, categoryId, date, budgetId } = doc.data() as Expense
+
+                const newExpense: Expense = {
+                    id: doc.id,
+                    name: name,
+                    amount: amount,
+                    date: date,
+                    categoryId,
+                    budgetId
+                }
+                expensesArray.push(newExpense)
+            })
+
+            return expensesArray
+
+        } catch (error) {
+            console.error("error getExpensesById", error);
+            return []
+        }
     }
 
     async create(expense: ExpenseCreate): Promise<string> {
 
         try {
-            
-            const result = await firestore().collection(Collections.EXPENSE).add(expense)
+
+            const result = await firestore()
+                .collection(Collections.EXPENSE)
+                .add(expense)
+
             const expenseId = result.id
 
             return (expenseId)
@@ -54,6 +129,10 @@ class ExpenseRepository implements IExpenseRespository {
         }
 
     }
+
+
+    // ----------- helpers ----------- //
+
 
 }
 

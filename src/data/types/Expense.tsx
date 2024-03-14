@@ -4,8 +4,9 @@ type Expense = {
     id: string;
     name: string;
     amount: number;
-    categoryId: number;
     date: string;
+    categoryId: number;
+    budgetId: string;
 }
 
 type ExpenseCreate = {
@@ -13,18 +14,31 @@ type ExpenseCreate = {
     amount: number;
     categoryId: number;
     date: string;
+    budgetId: string;
 }
 
-export const ExpenseKey = Object.freeze({
+type ExpenseUI = {
+    id: string,
+    name: string
+    amount: string
+    date: string,
+    category: Category | undefined
+    type: "Expense",
+    onPress?: () => void
+}
+
+export const ExpenseKeys = Object.freeze({
     ID: "id",
     NAME: "name",
     AMOUNT: "amount",
+    DATE: "date",
     CATEGORY_ID: "categoryId",
-    DATE: "date"
+    BUDGET_ID: "budgetId"
 })
 
 
 export type {
     Expense,
-    ExpenseCreate
+    ExpenseCreate,
+    ExpenseUI
 }

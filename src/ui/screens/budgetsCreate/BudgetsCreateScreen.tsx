@@ -31,7 +31,7 @@ const BudgetsCreateScreen = ({ navigation, route }: BudgetsCreateScreenProps) =>
     } = budgetsCreateViewModel.budgetState
 
     return (
-        <View style={{ ...DefaultStyles.SCREEN, justifyContent: "space-between" }}>
+        <View style={{ ...DefaultStyles.screen, justifyContent: "space-between" }}>
 
             <View>
 

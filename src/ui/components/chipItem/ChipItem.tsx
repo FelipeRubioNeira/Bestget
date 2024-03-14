@@ -7,7 +7,7 @@ import { Category } from '../../../data/types/Categoty'
 import useChipItemViewModel from './ChipItemViewModel'
 
 
-interface IchipItem {
+export type ChipItemProps = {
     category?: Category,
     disabled?: boolean,
     style?: ViewStyle,
@@ -21,7 +21,7 @@ const ChipItem = ({
     onPress,
     pressedValue,
     style,
-}: IchipItem) => {
+}: ChipItemProps) => {
 
     const chipItemViewModel = useChipItemViewModel({
         category,

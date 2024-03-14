@@ -57,7 +57,7 @@ const ExpenseScreen = ({ navigation, route }: ExpenseScreenProps) => {
     return (
 
         <>
-            <View style={DefaultStyles.SCREEN}>
+            <View style={DefaultStyles.screen}>
 
                 <HelpText
                     value={Strings.expenses}
@@ -243,7 +243,7 @@ const outcomes_styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingVertical: "8%",
         alignItems: 'center',
-        ...DefaultStyles.SHADOW,
+        ...DefaultStyles.shadow,
     },
 
     image_option_item: {

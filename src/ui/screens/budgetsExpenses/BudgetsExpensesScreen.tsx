@@ -17,6 +17,8 @@ import useBudgetExpensesViewModel from './BudgetsExpensesViewModel'
 import { BudgetExpenseItem, BudgetExpenseItemType } from '../../../data/types/BudgetExpense'
 import ExpenseItem from '../../components/expenseItem/ExpenseItem'
 import BudgetItem from '../../components/budgetItem/BudgetItem'
+import { BudgetUI } from '../../../data/types/Budget'
+import { ExpenseUI } from '../../../data/types/Expense'
 
 
 interface ExpenseOptionsProps {
@@ -36,7 +38,6 @@ interface OutcomeOptionItemProps {
 
 const expenseRepository = new ExpenseRepository()
 const budgetRepository = new BudgetRepository()
-const categoryRepository = new CategoryRespository()
 
 
 const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps) => {
@@ -47,38 +48,27 @@ const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps
         route,
         expenseRepository,
         budgetRepository,
-        categoryRepository
     })
 
-    const renderBugdetOrExpense = (item: BudgetExpenseItem) => {
-
-        const { name, amount, category } = item
-
-        const id = item.id as string
-        const type = item.type as BudgetExpenseItemType
+    const renderBugdetOrExpense = (item: BudgetUI | ExpenseUI) => {
 
         if (item.type === "Budget") {
-
-            return <BudgetItem
-                name={name}
-                amount={amount}
-                category={category}
-                onPress={() => budgetsExpensesViewModel.onPressItem(id, type)}
-            />
-
-        } else {
-            return <ExpenseItem
-                name={name}
-                amount={amount}
-                category={category}
-            />
+            return (
+                <BudgetItem
+                    onPress={() => budgetsExpensesViewModel
+                        .onPressItem(item.id, "Budget")}
+                    {...item}
+                />
+            )
         }
+
+        else return <ExpenseItem {...item} />
 
     }
 
     return (
         <>
-            <View style={DefaultStyles.SCREEN}>
+            <View style={DefaultStyles.screen}>
 
                 <HelpText
                     value={Strings.expenses}
@@ -225,7 +215,7 @@ const outcomes_styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingVertical: "8%",
         alignItems: 'center',
-        ...DefaultStyles.SHADOW,
+        ...DefaultStyles.shadow,
     },
 
     image_option_item: {

@@ -21,8 +21,8 @@ export const getCurrentDate = () => {
     // Formatear la fecha y hora actual según la zona horaria de Chile
     const formattedDateTime = formatter.format(now);
 
-    return convertToIsoString(formattedDateTime)
-    
+    return convertToIsoString(formattedDateTime.replace(",", ""))
+
 }
 
 const convertToIsoString = (dateTime: string) => {

@@ -6,22 +6,21 @@ import { useEffect, useState } from "react"
 import { BudgetsExpensesScreenProps } from "../../../navigation/NavigationParamList"
 import { ScreenRoutes } from "../../../navigation/Routes"
 import IExpenseRespository from "../../../data/repository/expenseRepository/IExpenseRepository"
-import ICategoryRepository from "../../../data/repository/categoryRepository/ICategoryRespository"
-import { Expense } from "../../../data/types/Expense"
+import { Expense, ExpenseUI } from "../../../data/types/Expense"
 import { currencyFormat, numberFormat } from "../../../utils/Convert"
 import { Category } from "../../../data/types/Categoty"
 import IBudgetRepository from "../../../data/repository/budgetRepository/IBudgetRepository"
-import { Budget } from "../../../data/types/Budget"
-import { BudgetExpense, BudgetExpenseItem, BudgetExpenseItemType } from "../../../data/types/BudgetExpense"
+import { Budget, BudgetUI } from "../../../data/types/Budget"
+import { BudgetExpenseItemType } from "../../../data/types/BudgetExpense"
 
 // ----------- interfaces and types ----------- //
 
 type ExpensesViewModelProps = {
     expenseRepository: IExpenseRespository,
     budgetRepository: IBudgetRepository,
-    categoryRepository: ICategoryRepository,
 } & BudgetsExpensesScreenProps
 
+export type BudgetOrExpense = "Budget" | "Expense"
 
 
 // ----------- view model ----------- //
@@ -30,14 +29,12 @@ const useBudgetExpensesViewModel = ({
     route,
     expenseRepository,
     budgetRepository,
-    categoryRepository
 }: ExpensesViewModelProps) => {
 
 
 
     // ----------- params ----------- //
     const {
-        budgetExpenseList,
         categoryList = [],
         newExpenseId,
         newBudgetId
@@ -53,7 +50,7 @@ const useBudgetExpensesViewModel = ({
 
     const [categories, setCategories] = useState<Category[]>([])
 
-    const [budgetsExpenses, setBudgetsExpenses] = useState<BudgetExpenseItem[]>([])
+    const [budgetsExpenses, setBudgetsExpenses] = useState<(BudgetUI | ExpenseUI)[]>([])
 
     const [loading, setLoading] = useState(false)
 
@@ -67,9 +64,6 @@ const useBudgetExpensesViewModel = ({
             setCategories(categoryList)
         })
 
-        console.log("category list " , categoryList);
-        
-
         return unsubscribe;
 
     }, [])
@@ -77,7 +71,7 @@ const useBudgetExpensesViewModel = ({
 
     useEffect(() => {
 
-        if (!newExpenseId) return
+        if (!newExpenseId && newExpenseId) return
         getData(categoryList)
         setCategories(categoryList)
 
@@ -96,9 +90,9 @@ const useBudgetExpensesViewModel = ({
         setLoading(true)
 
         //1 - getExpenses and getCategories
-        const [expenses, budgets] = await Promise.all([
-            expenseRepository.getAll(),
+        const [budgets, expenses] = await Promise.all([
             budgetRepository.getAll(),
+            expenseRepository.getWithoutBudget(),
         ])
 
 
@@ -107,8 +101,8 @@ const useBudgetExpensesViewModel = ({
 
 
         // 4 - fill the lists
-        const budgetsList = applyFormat(budgets, categoryList, "Budget")
-        const expensesList = applyFormat(expenses, categoryList, "Expense")
+        const budgetsList = applyFormat<Budget, BudgetUI>(budgets, categoryList, "Budget")
+        const expensesList = applyFormat<Expense, ExpenseUI>(expenses, categoryList, "Expense")
 
 
         setBudgetsExpenses([
@@ -120,37 +114,35 @@ const useBudgetExpensesViewModel = ({
 
     }
 
-    // apply to budgets and expenses
-    const applyFormat = (
-        budgetsOrExpenses: Budget[] | Expense[],
+    function applyFormat<T extends Budget | Expense, U>(
+        items: T[],
         categories: Category[],
-        type: BudgetExpenseItemType
-    ) => {
+        type: BudgetOrExpense
+    ) {
 
+        return items.map(item => {
 
-        return budgetsOrExpenses.map(item => {
+            const { id, name, amount, date, categoryId } = item as T
 
-            const { id, name, amount, categoryId, date } = item
             const category = findCategory(categoryId, categories)
             const amountFormatted = currencyFormat(amount)
 
-            const budgetOrExpensItem: BudgetExpenseItem = {
+            const newItem = {
                 id: id,
                 name: name,
                 amount: amountFormatted,
                 category: category,
                 date: date,
                 type: type
-            }
+            } as U
 
-
-            return budgetOrExpensItem
+            return newItem
 
         })
 
     }
 
-    const findCategory = (categoryId: number, categories: Category[]): Category | undefined => {
+    const findCategory = (categoryId: number = 0, categories: Category[]): Category | undefined => {
         if (!categoryId) return undefined
         else if (categories.length === 0) return undefined
         else return categories.find(category => category.id === categoryId)

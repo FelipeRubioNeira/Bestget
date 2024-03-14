@@ -6,6 +6,8 @@ import { numberFormat } from "../../../utils/Convert"
 import { ExpenseCreate } from "../../../data/types/Expense"
 import { ScreenRoutes } from "../../../navigation/Routes"
 import { getCurrentDate } from "../../../utils/Date"
+import { ChipItemProps } from "../../components/chipItem/ChipItem"
+import { Budget } from "../../../data/types/Budget"
 
 type ExpensesCreateViewModelProps = {
     createExpenseUseCase: CreateExpenseUseCase
@@ -21,11 +23,16 @@ interface IExpenseState {
 type StateName = keyof IExpenseState
 type StateType = IExpenseState[StateName]
 
+
 const useExpensesCreateViewModel = (
     { navigation, route, createExpenseUseCase }: ExpensesCreateViewModelProps
 ) => {
 
-    const categoryList = route?.params?.categoryList || []
+
+    const {
+        categoryList,
+        budget,
+    } = route.params
 
 
     // ------------------- states ------------------- //
@@ -37,6 +44,10 @@ const useExpensesCreateViewModel = (
 
     const [categories, setCategories] = useState<Category[]>([])
 
+    const [showChipItem, setShowChipItem] = useState<boolean>(false)
+    const [chipItemProps, setChipItemProps] = useState<ChipItemProps>()
+
+
 
 
     // ------------------- effects ------------------- //
@@ -44,8 +55,32 @@ const useExpensesCreateViewModel = (
         setCategories(categoryList)
     }, [categoryList])
 
+    useEffect(() => {
+        validateBudget(budget, categoryList)
+    }, [budget])
+
 
     // ------------------- methods ------------------- //
+    const validateBudget = (budget: Budget | undefined, categoryList: Category[]) => {
+
+        if (budget) {
+
+            const budgetCategory = categoryList.find(category => category.id === budget.categoryId)
+
+            setChipItemProps({
+                category: budgetCategory,
+                disabled: true,
+                style: { marginVertical: "4%", backgroundColor: budgetCategory?.color }
+            })
+
+            updateCategory(budget.categoryId)
+
+            setShowChipItem(true)
+
+        } else setShowChipItem(false)
+
+    }
+
 
     const updateExpenseState = (state: StateName, value: StateType) => {
         setExpenseCreateState({
@@ -69,7 +104,7 @@ const useExpensesCreateViewModel = (
         )
     }
 
-    const updateCategory = (newCategoryId: number) => {
+    const updateCategory = (newCategoryId: number = 0) => {
 
         updateExpenseState(
             "categoryId",
@@ -77,25 +112,31 @@ const useExpensesCreateViewModel = (
         )
     }
 
+
+    // => create new expense
     const saveExpense = async () => {
 
         try {
 
-            const amountInt = numberFormat(expenseCreateState.expenseAmount)
-            const currentDate = getCurrentDate()
+            const newExpense = getExpenseFormatted(expenseCreateState)
+            const newExpenseId = await createExpenseUseCase.create(newExpense)
 
-            const expense: ExpenseCreate = {
-                name: expenseCreateState.expenseName,
-                amount: amountInt,
-                categoryId: expenseCreateState.categoryId || 0,
-                date: currentDate
+            const routeParams = {
+                categoryList,
+                newExpenseId: newExpenseId
             }
 
-            const newExpenseId = await createExpenseUseCase.create(expense)
+            if (budget) {
 
-            navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {
-                newExpenseId: newExpenseId
+                navigation.navigate(ScreenRoutes.BUDGET, {
+                    budget: budget,
+                    ...routeParams
+                })
+
+            } else navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {
+                ...routeParams,
             })
+
 
         } catch (error) {
             console.log("error al guardar el nuevo gasto", error);
@@ -103,8 +144,29 @@ const useExpensesCreateViewModel = (
 
     }
 
+    const getExpenseFormatted = (expenseCreateState: IExpenseState) => {
+
+        const { expenseAmount, expenseName, categoryId } = expenseCreateState
+
+        const amountInt = numberFormat(expenseAmount)
+        const currentDate = getCurrentDate()
+
+        const newExpense: ExpenseCreate = {
+            name: expenseName,
+            amount: amountInt,
+            date: currentDate,
+            categoryId: categoryId || 0,
+            budgetId: budget?.id || ""
+        }
+
+        return newExpense
+
+    }
+
 
     return {
+        showChipItem,
+        chipItemProps,
         categories,
         expenseCreateState,
         updateExpenseName,

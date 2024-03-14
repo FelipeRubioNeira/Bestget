@@ -10,10 +10,8 @@ import useHomeViewModel from './HomeViewModel'
 import { HomeScreenProps } from '../../../navigation/NavigationParamList'
 import IncomeRepository from '../../../data/repository/incomeRepository/IncomeRepository'
 import CategoryRespository from '../../../data/repository/categoryRepository/CategoryRepository'
-import BudgetExpenseRepository from '../../../data/repository/budgetExpenseRepository/BudgetExpenseRepository'
 
 const incomeRepository = new IncomeRepository()
-const budgetExpenseRepository = new BudgetExpenseRepository()
 const categoryRepository = new CategoryRespository()
 
 
@@ -24,14 +22,13 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
         route,
         categoryRepository,
         incomeRepository,
-        budgetExpenseRepository,
     })
 
     return (
 
         <SafeAreaView>
 
-            <View style={DefaultStyles.SCREEN}>
+            <View style={DefaultStyles.screen}>
 
                 <Label
                     value={"Hola Felipe"}

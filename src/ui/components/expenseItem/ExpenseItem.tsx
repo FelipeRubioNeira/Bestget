@@ -5,15 +5,20 @@ import Label from '../label/Label'
 import ChipItem from '../chipItem/ChipItem'
 import { BudgetExpenseItem } from '../../../data/types/BudgetExpense'
 import { DefaultStyles, Styles } from '../../constants/Styles'
+import CircleCategory from '../circleCategory/CircleCategory'
 
 
 const ExpenseItem = ({ name, amount, category }: BudgetExpenseItem) => {
 
+
+
     return (
 
-        <TouchableOpacity style={DefaultStyles.LIST_ITEM}>
+        <TouchableOpacity style={DefaultStyles.listItemContainer}>
 
-            <View>
+            <View style={{ flexDirection: "row" }}>
+
+                <CircleCategory color={category?.color} />
 
                 <Label
                     value={name}
@@ -21,18 +26,14 @@ const ExpenseItem = ({ name, amount, category }: BudgetExpenseItem) => {
                     fontFamily={FontFamily.REGULAR}
                 />
 
-                <Label
-                    value={"$" + amount}
-                    fontSize={FontSize.SMALL}
-                    fontFamily={FontFamily.REGULAR}
-                />
-
             </View>
 
-            <ChipItem
-                category={category}
-                disabled={true}
+            <Label
+                value={"$" + amount}
+                fontSize={FontSize.SMALL}
+                fontFamily={FontFamily.REGULAR}
             />
+
 
         </TouchableOpacity>
     )

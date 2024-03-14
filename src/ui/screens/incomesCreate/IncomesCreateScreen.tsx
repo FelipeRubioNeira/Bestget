@@ -29,7 +29,7 @@ const IncomesCreateScreen = ({ navigation, route }: IncomesCreateScreenProps) =>
   return (
 
     <View style={{
-      ...DefaultStyles.SCREEN,
+      ...DefaultStyles.screen,
       justifyContent: 'space-between'
     }}>
 

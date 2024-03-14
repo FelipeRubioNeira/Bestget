@@ -4,11 +4,8 @@ import { ScreenRoutes } from "../../../navigation/Routes"
 import { currencyFormat } from "../../../utils/Convert"
 import { Income } from "../../../data/types/Income"
 import { Category } from "../../../data/types/Categoty"
-
 import IncomeRepository from "../../../data/repository/incomeRepository/IncomeRepository"
 import ICategoryRepository from "../../../data/repository/categoryRepository/ICategoryRespository"
-import { Expense } from "../../../data/types/Expense"
-import IBudgetExpenseRepository from "../../../data/repository/budgetExpenseRepository/IBugetExpenseRepository"
 import { BudgetExpense } from "../../../data/types/BudgetExpense"
 
 
@@ -22,7 +19,6 @@ export interface IMenuArrayButtonsProps {
 type HomeViewModelProps = {
     incomeRepository: IncomeRepository,
     categoryRepository: ICategoryRepository,
-    budgetExpenseRepository: IBudgetExpenseRepository
 } & HomeScreenProps
 
 
@@ -31,7 +27,6 @@ const useHomeViewModel = ({
     navigation,
     categoryRepository,
     incomeRepository,
-    budgetExpenseRepository
 }: HomeViewModelProps) => {
 
 
@@ -92,14 +87,12 @@ const useHomeViewModel = ({
 
     const getCategories = async () => {
         const categories = await categoryRepository.getAll()
-        console.log("categories => ", categories);
-
         setAllCategories(categories)
     }
 
     const getBudgetsExpenses = async () => {
-        const budgetExpenses = await budgetExpenseRepository.getAll()
-        setAllBudgetExpense(budgetExpenses)
+
+
     }
 
 

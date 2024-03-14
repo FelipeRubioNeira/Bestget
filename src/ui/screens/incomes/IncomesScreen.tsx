@@ -28,7 +28,7 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
 
 
   return (
-    <View style={DefaultStyles.SCREEN}>
+    <View style={DefaultStyles.screen}>
 
       <HelpText
         value={Strings.incomes}

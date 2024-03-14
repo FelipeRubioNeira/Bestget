@@ -48,7 +48,7 @@ const buttonAddStyles = StyleSheet.create({
         right: 20,
         bottom: 20,
         // --- shadow --- //
-        ...DefaultStyles.SHADOW
+        ...DefaultStyles.shadow
     }
 
 })
