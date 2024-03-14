@@ -1,7 +1,7 @@
 import { Category } from "../../types/Categoty";
 
 interface ICategoryRepository {
-    getCategories: () => Promise<Category[]>
+    getAll: () => Promise<Category[]>
 }
 
 export default ICategoryRepository

@@ -4,7 +4,7 @@ import { IIncomeRepository } from "./IIncomeRepository";
 import firestore from '@react-native-firebase/firestore';
 
 
-export class IncomeRepository implements IIncomeRepository {
+class IncomeRepository implements IIncomeRepository {
 
 
     public async create(income: Income): Promise<string> {
@@ -66,3 +66,4 @@ export class IncomeRepository implements IIncomeRepository {
 
 
 }
+export default IncomeRepository

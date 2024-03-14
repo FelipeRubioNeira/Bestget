@@ -1,4 +1,4 @@
-import { SafeAreaView, View, TouchableOpacity, StyleSheet, FlatList } from 'react-native'
+import { View, TouchableOpacity, StyleSheet, FlatList } from 'react-native'
 import React from 'react'
 import { DefaultStyles, Styles } from '../../constants/Styles'
 import Label from '../../components/label/Label'
@@ -9,13 +9,12 @@ import Spacer from '../../components/spacer/Spacer'
 import TotalAmount from '../../components/totalAmount/TotalAmount'
 import ButtonAdd from '../../components/buttonAdd/ButtonAdd'
 import HelpText from '../../components/helpText/Help'
-import { IncomesScreenProps } from '../../navigation/NavigationParamList'
+import { IncomesScreenProps } from '../../../navigation/NavigationParamList'
 import useIncomeViewModel, { IncomeFormatted } from './IncomesViewModel'
-import { IncomeRepository } from '../../../data/repository/incomeRepository/IncomeRepository'
-import { GetAllIncomesUseCase } from '../../../domain/useCases/GetAllIncomesUseCase'
+import IncomeRepository from '../../../data/repository/incomeRepository/IncomeRepository'
 
-const incomeRepository = new IncomeRepository()
-const getAllIncomesUseCase = new GetAllIncomesUseCase(incomeRepository)
+
+const incomesRepository = new IncomeRepository()
 
 
 const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
@@ -24,7 +23,7 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
   const incomeViewModel = useIncomeViewModel({
     navigation,
     route,
-    getAllIncomesUseCase
+    incomesRepository,
   })
 
 
@@ -46,7 +45,7 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
       <Spacer marginVertical={"4%"} />
 
       <FlatList
-        data={incomeViewModel?.incomesList}
+        data={incomeViewModel?.allIncomes}
         renderItem={({ item }) => <IncomeItem {...item} />}
       />
 

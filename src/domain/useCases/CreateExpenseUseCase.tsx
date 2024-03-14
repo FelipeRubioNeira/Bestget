@@ -10,8 +10,23 @@ class CreateExpenseUseCase {
         private budgetExpenseRepository: IBudgetExpenseRepository
     ) { }
 
-    async create(expense: ExpenseCreate): Promise<string> {
-        return this.expenseRepository.create(expense)
+    async create(expense: ExpenseCreate, budgetId?: string): Promise<string> {
+
+        const expenseId = await this.expenseRepository.create(expense)
+
+        await this.createBudgetExpense(expenseId, budgetId || "")
+
+        return expenseId
+    }
+
+    private async createBudgetExpense(expenseId: string, budgetId: string) {
+
+        const budgetExpense: BudgetExpense = {
+            expenseId: expenseId,
+            budgetId: budgetId
+        }
+
+        await this.budgetExpenseRepository.create(budgetExpense)
     }
 
 }

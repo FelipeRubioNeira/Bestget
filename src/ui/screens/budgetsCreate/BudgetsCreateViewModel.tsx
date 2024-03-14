@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
-import { BudgetsCreateScreenProps } from "../../navigation/NavigationParamList"
+import { BudgetsCreateScreenProps } from "../../../navigation/NavigationParamList"
 import { Category } from "../../../data/types/Categoty"
 import CreateBudgetUseCase from "../../../domain/useCases/CreateBudgetUseCase"
 import { BudgetCreate } from "../../../data/types/Budget"
 import { numberFormat } from "../../../utils/Convert"
-import { ScreenRoutes } from "../../navigation/Routes"
+import { ScreenRoutes } from "../../../navigation/Routes"
 import { getCurrentDate } from "../../../utils/Date"
 
 type IBudgetCreateViewModel = {

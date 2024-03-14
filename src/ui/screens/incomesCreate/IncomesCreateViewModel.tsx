@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { IncomesCreateScreenProps } from "../../navigation/NavigationParamList";
-import { ScreenRoutes } from "../../navigation/Routes";
+import { IncomesCreateScreenProps } from "../../../navigation/NavigationParamList";
+import { ScreenRoutes } from "../../../navigation/Routes";
 import { CreateIncomeUseCase } from "../../../domain/useCases/CreateIncomeUseCase";
 
 

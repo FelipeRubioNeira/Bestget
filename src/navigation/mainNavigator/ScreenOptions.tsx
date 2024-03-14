@@ -2,8 +2,8 @@
     This file contains the options for the screens in the main navigator.
 */
 
-import { Colors } from "../../constants/Colors";
-import { FontFamily } from "../../constants/Fonts";
+import { Colors } from "../../ui/constants/Colors";
+import { FontFamily } from "../../ui/constants/Fonts";
 
 
 const ScreenOptions = Object.freeze({

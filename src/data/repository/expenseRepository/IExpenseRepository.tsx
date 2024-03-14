@@ -1,7 +1,8 @@
-import Expense, { ExpenseCreate } from "../../types/Expense";
+import { Expense, ExpenseCreate } from "../../types/Expense"
+
 
 interface IExpenseRespository {
-    getExpenses: () => Promise<Expense[]>
+    getAll: () => Promise<Expense[]>
     create: (expense: ExpenseCreate) => Promise<string>
 }
 

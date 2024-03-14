@@ -3,8 +3,8 @@
 */
 
 import { useEffect, useState } from "react"
-import { ExpensesScreenProps } from "../../navigation/NavigationParamList"
-import { ScreenRoutes } from "../../navigation/Routes"
+import { ExpensesScreenProps } from "../../../navigation/NavigationParamList"
+import { ScreenRoutes } from "../../../navigation/Routes"
 import IExpenseRespository from "../../../data/repository/expenseRepository/IExpenseRepository"
 import ICategoryRepository from "../../../data/repository/categoryRepository/ICategoryRespository"
 import { currencyFormat } from "../../../utils/Convert"
@@ -69,9 +69,9 @@ const useExpensesViewModel = ({
 
         //1 - getExpenses and getCategories
         const [expenses, budgets, categories] = await Promise.all([
-            expenseRepository.getExpenses(),
+            expenseRepository.getAll(),
             budgetRepository.getAll(),
-            categoryRepository.getCategories()
+            categoryRepository.getAll()
         ])
 
 

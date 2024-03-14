@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react"
-import { IncomesScreenProps } from "../../navigation/NavigationParamList"
-import { ScreenRoutes } from "../../navigation/Routes"
+import { IncomesScreenProps } from "../../../navigation/NavigationParamList"
+import { ScreenRoutes } from "../../../navigation/Routes"
 import { GetAllIncomesUseCase } from "../../../domain/useCases/GetAllIncomesUseCase"
 import { Income } from "../../../data/types/Income"
 import { currencyFormat } from "../../../utils/Convert"
+import { IIncomeRepository } from "../../../data/repository/incomeRepository/IIncomeRepository"
+import IBudgetExpenseRepository from "../../../data/repository/budgetExpenseRepository/IBugetExpenseRepository"
 
 type IIncomesViewModel = {
-    getAllIncomesUseCase: GetAllIncomesUseCase
+    incomesRepository: IIncomeRepository,
 } & IncomesScreenProps
 
 export type IncomeFormatted = {
@@ -17,43 +19,44 @@ export type IncomeFormatted = {
 
 
 
-const useIncomesViewModel = ({
-    navigation,
-    route,
-    getAllIncomesUseCase
-}: IIncomesViewModel) => {
+const useIncomesViewModel = ({ navigation, route, incomesRepository }: IIncomesViewModel) => {
 
 
     // ------------------- states ------------------- //
-    const [incomesList, setIncomesList] = useState<IncomeFormatted[]>([])
+    const [allIncomes, setAllIncomes] = useState<IncomeFormatted[]>([])
     const [totalAmount, setTotalAmount] = useState<string>("0")
 
 
     // ------------------- effects ------------------- //
     useEffect(() => {
-        getAllIncomes()
+
+        const allIncomes = route?.params?.incomes || []
+        const allIncomesFormatted = applyFormat(allIncomes)
+        const totalAmount = getTotalAmount(allIncomes)
+
+        setAllIncomes(allIncomesFormatted)
+        setTotalAmount(totalAmount)
+
     }, [])
 
 
     useEffect(() => {
-        if (route.params?.newIncomeId) getAllIncomes()
+        if (route.params?.newIncomeId) refreshNewIncome()
     }, [route.params?.newIncomeId])
 
 
 
     // ------------------- methods ------------------- //
-    const getAllIncomes = async () => {
+    const refreshNewIncome = async () => {
 
         try {
 
-            const allIncomes = await getAllIncomesUseCase.getAll()
+            const allIncomes = await incomesRepository.getAll()
             const allIncomesFormatted = applyFormat(allIncomes)
-
             const totalAmount = getTotalAmount(allIncomes)
-            const totalAmountFormatted = currencyFormat(totalAmount)
 
-            setTotalAmount(totalAmountFormatted)
-            setIncomesList(allIncomesFormatted)
+            setAllIncomes(allIncomesFormatted)
+            setTotalAmount(totalAmount)
 
         } catch (error) {
             console.error("error al obtener todos los ingresos", error)
@@ -61,7 +64,7 @@ const useIncomesViewModel = ({
 
     }
 
-    const getTotalAmount = (incomes: Income[]): number => {
+    const getTotalAmount = (incomes: Income[]): string => {
 
         let total = 0
 
@@ -69,8 +72,10 @@ const useIncomesViewModel = ({
             total += income.amount
         })
 
+        const totalCurrency = currencyFormat(total)
 
-        return total
+
+        return totalCurrency
 
     }
 
@@ -99,7 +104,7 @@ const useIncomesViewModel = ({
 
     return {
         totalAmount,
-        incomesList,
+        allIncomes,
         navigateIncomeCreate
     }
 }

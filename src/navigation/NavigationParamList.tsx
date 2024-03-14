@@ -1,7 +1,10 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { NavigatorRoutes, ScreenRoutes } from "./Routes";
-import { Category } from "../../data/types/Categoty";
-import { Budget } from "../../data/types/Budget";
+import { Category } from "../data/types/Categoty";
+import { Budget } from "../data/types/Budget";
+import { Income } from "../data/types/Income";
+import { Expense } from "../data/types/Expense";
+import { BudgetExpense } from "../data/types/BudgetExpense";
 
 
 
@@ -16,16 +19,28 @@ export type NavigatorParamList = {
 
     [ScreenRoutes.HOME]: undefined
 
-    [ScreenRoutes.INCOMES]: { newIncomeId?: string | undefined }
+    [ScreenRoutes.INCOMES]: {
+        incomes: Income[],
+        newIncomeId?: string | undefined
+    }
+
     [ScreenRoutes.INCOMES_CREATE]: undefined
 
-    [ScreenRoutes.BUDGET_EXPENSES]: undefined
 
-    [ScreenRoutes.EXPENSES]: { newExpenseId?: string | undefined }
+    [ScreenRoutes.BUDGET_EXPENSES]: {
+        budgetExpenseList: BudgetExpense[],
+        categoryList: Category[]
+    }
+
     [ScreenRoutes.EXPENSES_CREATE]: { categoryList: Category[] | undefined }
 
-    [ScreenRoutes.BUDGET]: { budget: Budget, category: Category | undefined}
+    [ScreenRoutes.EXPENSES]: {
+        newExpenseId?: string | undefined
+        expenseList?: Expense[],
+    }
+
     [ScreenRoutes.BUDGETS_CREATE]: { categoryList: Category[] | undefined }
+    [ScreenRoutes.BUDGET]: { budget: Budget, category: Category | undefined }
 
 }
 

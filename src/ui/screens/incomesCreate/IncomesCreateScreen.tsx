@@ -2,13 +2,14 @@ import { View } from 'react-native'
 import React from 'react'
 import { DefaultStyles } from '../../constants/Styles'
 import Spacer from '../../components/spacer/Spacer'
-import { IncomesCreateScreenProps } from '../../navigation/NavigationParamList'
+import { IncomesCreateScreenProps } from '../../../navigation/NavigationParamList'
 import SubmitButton from '../../components/submitButton/SubmitButton'
 import useIncomeCreateViewModel from './IncomesCreateViewModel'
 import TextInputWithLabel from '../../components/textInputWithLabel/TextInputWithLabel'
-import { IncomeRepository } from '../../../data/repository/incomeRepository/IncomeRepository'
+import IncomeRepository from '../../../data/repository/incomeRepository/IncomeRepository'
 import { CreateIncomeUseCase } from '../../../domain/useCases/CreateIncomeUseCase'
 import { InputType } from '../../components/textInput/TextInputViewModel'
+import { Colors } from '../../constants/Colors'
 
 
 // dependency injection 
@@ -56,6 +57,7 @@ const IncomesCreateScreen = ({ navigation, route }: IncomesCreateScreenProps) =>
 
       <SubmitButton
         onPress={incomesCreateViewModel.createIncome}
+        backgroundColor={Colors.GREEN}
       />
 
     </View>

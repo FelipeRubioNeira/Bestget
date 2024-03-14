@@ -3,8 +3,8 @@
 */
 
 import { useEffect, useState } from "react"
-import { BudgetsExpensesScreenProps } from "../../navigation/NavigationParamList"
-import { ScreenRoutes } from "../../navigation/Routes"
+import { BudgetsExpensesScreenProps } from "../../../navigation/NavigationParamList"
+import { ScreenRoutes } from "../../../navigation/Routes"
 import IExpenseRespository from "../../../data/repository/expenseRepository/IExpenseRepository"
 import ICategoryRepository from "../../../data/repository/categoryRepository/ICategoryRespository"
 import { Expense } from "../../../data/types/Expense"
@@ -12,7 +12,7 @@ import { currencyFormat, numberFormat } from "../../../utils/Convert"
 import { Category } from "../../../data/types/Categoty"
 import IBudgetRepository from "../../../data/repository/budgetRepository/IBudgetRepository"
 import { Budget } from "../../../data/types/Budget"
-import { BudgetExpenseItem, BudgetExpenseItemType } from "../../../data/types/BudgetExpense"
+import { BudgetExpense, BudgetExpenseItem, BudgetExpenseItemType } from "../../../data/types/BudgetExpense"
 
 // ----------- interfaces and types ----------- //
 
@@ -49,26 +49,25 @@ const useBudgetExpensesViewModel = ({
 
     // ----------- effects ----------- //
     useEffect(() => {
-        getData()
+
+        const budgetExpenseList = route.params.budgetExpenseList
+        const categoryList = route.params.categoryList
+
+        getData(budgetExpenseList)
+        setCategories(categoryList)
+
     }, [])
 
     // ----------- methods ----------- //
-    const getData = async () => {
-
+    const getData = async (budgetExpenseList: BudgetExpense[]) => {
 
         setLoading(true)
 
-
         //1 - getExpenses and getCategories
-        const [expenses, budgets, categories] = await Promise.all([
-            expenseRepository.getExpenses(),
+        const [expenses, budgets] = await Promise.all([
+            expenseRepository.getAll(),
             budgetRepository.getAll(),
-            categoryRepository.getCategories()
         ])
-
-
-        //2- setCategories
-        setCategories(categories)
 
 
         //3 - calculateTotalAmount
@@ -183,7 +182,7 @@ const useBudgetExpensesViewModel = ({
             const navigationObject = {
                 budget: finalObject as Budget,
                 category: category
-            } 
+            }
 
             navigation.navigate(ScreenRoutes.BUDGET, navigationObject)
 

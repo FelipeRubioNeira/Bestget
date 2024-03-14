@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react"
-import { HomeScreenProps } from "../../navigation/NavigationParamList"
-import { ScreenRoutes } from "../../navigation/Routes"
-import { GetTotalIncomesUseCase } from "../../../domain/useCases/GetTotalIncomesUseCase"
+import { HomeScreenProps } from "../../../navigation/NavigationParamList"
+import { ScreenRoutes } from "../../../navigation/Routes"
 import { currencyFormat } from "../../../utils/Convert"
+import { Income } from "../../../data/types/Income"
+import { Category } from "../../../data/types/Categoty"
+
+import IncomeRepository from "../../../data/repository/incomeRepository/IncomeRepository"
+import ICategoryRepository from "../../../data/repository/categoryRepository/ICategoryRespository"
+import { Expense } from "../../../data/types/Expense"
+import IBudgetExpenseRepository from "../../../data/repository/budgetExpenseRepository/IBugetExpenseRepository"
+import { BudgetExpense } from "../../../data/types/BudgetExpense"
 
 
 
@@ -13,23 +20,34 @@ export interface IMenuArrayButtonsProps {
 }
 
 type HomeViewModelProps = {
-    getTotalIncomesUseCase: GetTotalIncomesUseCase
+    incomeRepository: IncomeRepository,
+    categoryRepository: ICategoryRepository,
+    budgetExpenseRepository: IBudgetExpenseRepository
 } & HomeScreenProps
 
 
 
-const useHomeViewModel = ({ navigation, getTotalIncomesUseCase }: HomeViewModelProps) => {
+const useHomeViewModel = ({
+    navigation,
+    categoryRepository,
+    incomeRepository,
+    budgetExpenseRepository
+}: HomeViewModelProps) => {
 
 
     // ------------------ states ------------------ //
     const [totalIncomes, setTotalIncomes] = useState("0")
+
+    const [allIncomes, setAllIncomes] = useState<Income[]>([])
+    const [allCategories, setAllCategories] = useState<Category[]>([])
+    const [allBudgetExpense, setAllBudgetExpense] = useState<BudgetExpense[]>([])
 
 
     // ------------------ effects ------------------ //
     useEffect(() => {
 
         const unsubscribe = navigation.addListener('focus', () => {
-            getTotalIncomes()
+            getData()
         })
 
         return unsubscribe;
@@ -38,25 +56,71 @@ const useHomeViewModel = ({ navigation, getTotalIncomesUseCase }: HomeViewModelP
 
 
     // ------------------ methods ------------------ //
-    const getTotalIncomes = async () => {
+    const getData = async () => {
+        Promise.all([
+            getIncomes(),
+            getCategories(),
+            getBudgetsExpenses()
+        ])
+    }
 
-        const totalIncomes = await getTotalIncomesUseCase.getTotal()
+    const calculateTotalAmount = (incomes: Income[]) => {
+
+        let totalIncomes = 0
+
+        incomes.forEach(income => {
+            totalIncomes += income.amount
+        })
+
+        return totalIncomes
+
+    }
+
+    // ------------------ repository methods ------------------ //
+
+    const getIncomes = async () => {
+
+        const allIncomes = await incomeRepository.getAll()
+
+        const totalIncomes = calculateTotalAmount(allIncomes)
         const totalIncomesFormatted = currencyFormat(totalIncomes)
+
+        setAllIncomes(allIncomes)
         setTotalIncomes(totalIncomesFormatted)
     }
 
+    const getCategories = async () => {
+        const categories = await categoryRepository.getAll()
+        setAllCategories(categories)
+    }
+
+    const getBudgetsExpenses = async () => {
+        const budgetExpenses = await budgetExpenseRepository.getAll()
+        setAllBudgetExpense(budgetExpenses)
+    }
+
+
+    // ------------------ user Events ------------------ //
     const onPressBudgetsExpenses = () => {
-        navigation.navigate(ScreenRoutes.BUDGET_EXPENSES)
+        navigation.navigate(ScreenRoutes.BUDGET_EXPENSES,{
+            budgetExpenseList: allBudgetExpense,
+            categoryList: allCategories,
+        })
     }
 
     const onPressIncomes = () => {
-        navigation.navigate(ScreenRoutes.INCOMES, {})
+        navigation.navigate(ScreenRoutes.INCOMES, {
+            incomes: allIncomes
+        })
     }
 
 
     // ------------------ return ------------------ //
     return {
         totalIncomes,
+        allIncomes,
+        allCategories,
+
         onPressBudgetsExpenses,
         onPressIncomes
     }

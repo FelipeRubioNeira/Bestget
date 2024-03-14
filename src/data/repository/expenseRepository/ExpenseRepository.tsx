@@ -5,7 +5,7 @@ import firestore from '@react-native-firebase/firestore';
 
 class ExpenseRepository implements IExpenseRespository {
 
-    async getExpenses(): Promise<Expense[]> {
+    async getAll(): Promise<Expense[]> {
 
         try {
 
@@ -42,6 +42,7 @@ class ExpenseRepository implements IExpenseRespository {
     async create(expense: ExpenseCreate): Promise<string> {
 
         try {
+            
             const result = await firestore().collection(Collections.EXPENSE).add(expense)
             const expenseId = result.id
 

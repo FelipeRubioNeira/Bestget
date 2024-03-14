@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { BudgetsScreenProps } from "../../navigation/NavigationParamList"
+import { BudgetsScreenProps } from "../../../navigation/NavigationParamList"
 import { currencyFormat } from "../../../utils/Convert"
 import { Category } from "../../../data/types/Categoty"
 

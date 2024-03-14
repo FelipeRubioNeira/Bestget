@@ -9,15 +9,15 @@ import {
     HomeScreen,
     IncomesScreen,
     ExpensesScreen
-} from '../../screens/Index'
+} from '../../ui/screens/Index'
 
 import ScreenOptions from './ScreenOptions';
-import IncomesCreateScreen from '../../screens/incomesCreate/IncomesCreateScreen';
+import IncomesCreateScreen from '../../ui/screens/incomesCreate/IncomesCreateScreen';
 import { ScreenRoutes } from '../Routes';
-import ExpensesCreate from '../../screens/expensesCreate/ExpensesCreateScreen';
-import BudgetsCreateScreen from '../../screens/budgetsCreate/BudgetsCreateScreen';
-import BudgetScreen from '../../screens/budget/BudgetScreen';
-import BudgetsExpensesScreen from '../../screens/budgetsExpenses/BudgetsExpensesScreen';
+import ExpensesCreate from '../../ui/screens/expensesCreate/ExpensesCreateScreen';
+import BudgetsCreateScreen from '../../ui/screens/budgetsCreate/BudgetsCreateScreen';
+import BudgetScreen from '../../ui/screens/budget/BudgetScreen';
+import BudgetsExpensesScreen from '../../ui/screens/budgetsExpenses/BudgetsExpensesScreen';
 
 
 

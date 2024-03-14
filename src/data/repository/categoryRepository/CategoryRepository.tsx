@@ -5,7 +5,7 @@ import firestore from '@react-native-firebase/firestore';
 
 class CategoryRespository implements ICategoryRepository {
 
-    async getCategories(): Promise<Category[]> {
+    async getAll(): Promise<Category[]> {
 
         try {
 

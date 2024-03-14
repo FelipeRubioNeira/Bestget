@@ -1,6 +1,6 @@
 
 import React from 'react';
-import MainNavigator from './src/ui/navigation/mainNavigator/MainNavigator';
+import MainNavigator from './src/navigation/mainNavigator/MainNavigator';
 
 
 const App = () => {
