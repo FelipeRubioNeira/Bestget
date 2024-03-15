@@ -2,7 +2,7 @@ import { ViewStyle } from 'react-native'
 import { Dimensions } from 'react-native'
 import { Colors } from './Colors'
 
-export enum Styles {
+enum Styles {
 
     BORDER_CIRCLE = 1000,
     BORDER_RADIUS = 8,
@@ -12,10 +12,9 @@ export enum Styles {
     HEIGHT = Dimensions.get('window').height,
     WIDTH = Dimensions.get('window').width,
 
-
 }
 
-export const DefaultStyles = Object.freeze({
+const DefaultStyles = Object.freeze({
 
     screen: {
         height: "100%",
@@ -46,3 +45,8 @@ export const DefaultStyles = Object.freeze({
     } as ViewStyle
 
 })
+
+export {
+    Styles,
+    DefaultStyles
+}

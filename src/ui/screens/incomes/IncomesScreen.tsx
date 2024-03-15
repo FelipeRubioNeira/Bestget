@@ -1,9 +1,9 @@
-import { View, TouchableOpacity, StyleSheet, FlatList } from 'react-native'
+import { View, StyleSheet, FlatList } from 'react-native'
 import React from 'react'
 import { DefaultStyles, Styles } from '../../constants/Styles'
 import Label from '../../components/label/Label'
 import { Colors } from '../../constants/Colors'
-import { Strings } from './Strings'
+import { Strings } from '../../constants/Strings'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 import Spacer from '../../components/spacer/Spacer'
 import TotalAmount from '../../components/totalAmount/TotalAmount'
@@ -13,10 +13,14 @@ import { IncomesScreenProps } from '../../../navigation/NavigationParamList'
 import useIncomeViewModel from './IncomesViewModel'
 import IncomeRepository from '../../../data/repository/incomeRepository/IncomeRepository'
 import { IncomeUI } from '../../../data/types/Income'
+import DeleteButton from '../../components/deleteButton/DeleteButton'
+import DeleteIncomeUseCase from '../../../domain/useCases/DeleteIncomeUseCase'
+import Modal from '../../components/modal/Modal'
+
 
 
 const incomesRepository = new IncomeRepository()
-
+const deleteIncomeUseCase = new DeleteIncomeUseCase(incomesRepository)
 
 const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
 
@@ -25,6 +29,7 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
     navigation,
     route,
     incomesRepository,
+    deleteIncomeUseCase,
   })
 
 
@@ -47,8 +52,14 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
 
       <FlatList
         data={incomeViewModel?.allIncomes}
-        renderItem={({ item }) => <IncomeItem {...item} />}
         showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => <IncomeItem
+          {...item}
+          deleteButtonProps={{
+            ...item.deleteButtonProps,
+            onPress: () => incomeViewModel.onPressDeleteIncomeItem(item.id)
+          }}
+        />}
       />
 
       <Spacer marginVertical={"4%"} />
@@ -58,15 +69,32 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
         backgroundColor={Colors.GREEN}
       />
 
+      <Modal
+        visible={incomeViewModel.modalState.visible}
+        title={incomeViewModel.modalState.title}
+        message={incomeViewModel.modalState.message}
+        buttonList={[
+          {
+            text: 'Aceptar',
+            onPress: incomeViewModel.deleteIncome,
+          },
+          {
+            text: 'Cancelar',
+            onPress: incomeViewModel.hideAlert,
+            style: { color: Colors.BLUE, fontFamily: FontFamily.BOLD }
+          }
+        ]}
+      />
+
     </View>
   )
 }
 
-const IncomeItem = ({ name, amount }: IncomeUI) => {
+const IncomeItem = ({ name, amount, deleteButtonProps }: IncomeUI) => {
 
   return (
 
-    <TouchableOpacity
+    <View
       style={incomesScreenStyle.incomeItem}
     >
 
@@ -76,13 +104,18 @@ const IncomeItem = ({ name, amount }: IncomeUI) => {
         fontFamily={FontFamily.REGULAR}
       />
 
-      <Label
-        value={amount.toString()}
-        fontSize={FontSize.SMALL}
-        fontFamily={FontFamily.REGULAR}
-      />
+      {
+        deleteButtonProps.status ?
+          <DeleteButton {...deleteButtonProps} />
+          :
+          <Label
+            value={amount}
+            fontSize={FontSize.SMALL}
+            fontFamily={FontFamily.REGULAR}
+          />
+      }
 
-    </TouchableOpacity>
+    </View>
   )
 }
 
@@ -100,6 +133,7 @@ const incomesScreenStyle = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-  }
+  },
+
 
 })

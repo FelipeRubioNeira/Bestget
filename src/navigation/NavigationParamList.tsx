@@ -1,18 +1,20 @@
+/* 
+    Definition of each screen
+    first we define the main navigator param list 
+    if the screen are not defined here they dont exist in the app 
+*/
+
+
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { NavigatorRoutes, ScreenRoutes } from "./Routes";
 import { Category } from "../data/types/Categoty";
 import { Budget } from "../data/types/Budget";
 import { Income } from "../data/types/Income";
 import { Expense } from "../data/types/Expense";
-import { BudgetExpense } from "../data/types/BudgetExpense";
 
 
 
-/* 
-    Definition of each screen
-    first we define the main navigator param list 
-    if the screen are not defined here they dont exist in the app 
-*/
+
 export type NavigatorParamList = {
 
     [NavigatorRoutes.HOME]: undefined

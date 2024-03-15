@@ -2,7 +2,7 @@ import { FlatList, Image, ImageProps, StyleSheet, TouchableOpacity, TouchableWit
 import React from 'react'
 import { DefaultStyles, Styles } from '../../constants/Styles'
 import HelpText from '../../components/helpText/Help'
-import { Strings } from '../incomes/Strings'
+import { Strings } from '../../constants/Strings'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 import { Colors } from '../../constants/Colors'
 import TotalAmount from '../../components/totalAmount/TotalAmount'

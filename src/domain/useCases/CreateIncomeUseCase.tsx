@@ -1,6 +1,5 @@
 import { IIncomeRepository } from "../../data/repository/incomeRepository/IIncomeRepository";
 import { IncomeCreate } from "../../data/types/Income";
-import { Message } from "../../data/types/Message";
 import { Validation, ValidationResult } from "../../data/types/Validation";
 import { isConnected } from "../../utils/Connection";
 
@@ -88,7 +87,7 @@ export class CreateIncomeUseCase {
 
         } else if (amount === 0) {
             result.isValid = false
-            result.messageError = "El monto del ingreso no puede ser $0."
+            result.messageError = "El monto de ingreso debe ser mayor que $0."
         }
 
         return result
@@ -106,7 +105,7 @@ export class CreateIncomeUseCase {
 
         if (!isConnectedResult) {
             result.isValid = false
-            result.messageError = "No hay conexión a internet."
+            result.messageError = "Verifique su conexión a internet y vuelva a intentarlo."
         }
 
         return result

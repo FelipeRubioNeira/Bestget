@@ -1,3 +1,4 @@
+import { DeleteButtonProps } from "../../ui/components/deleteButton/DeleteButton"
 
 type Income = {
     id: string,
@@ -14,7 +15,7 @@ type IncomeUI = {
     id: string,
     name: string,
     amount: string,
-    onPress: () => void,
+    deleteButtonProps: DeleteButtonProps
 } 
 
 export type {

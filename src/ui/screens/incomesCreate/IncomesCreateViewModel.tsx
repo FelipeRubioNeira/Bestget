@@ -17,13 +17,18 @@ const useIncomeCreateViewModel = ({
 }: IIncomesCreateViewModel) => {
 
 
-
     // ------------------- states ------------------- //
     const [incomeName, setIncomeName] = useState<string>("")
     const [incomeAmount, setIncomeAmount] = useState<string>("")
+    const [modalState, setModalState] = useState({
+        visible: false,
+        title: "",
+        message: "",
+    })
 
 
     // ------------------- methods ------------------- //
+
     const updateIncomeName = (newIncomeName: string) => {
         setIncomeName(newIncomeName)
     }
@@ -36,21 +41,21 @@ const useIncomeCreateViewModel = ({
 
         try {
 
+
             // 1. we pass the values and the use case will take care of the rest
             const response = await createIncomeUseCase.create({
                 name: incomeName,
                 amount: numberFormat(incomeAmount)
             })
 
-            if(response.isValid){
+
+            if (response.isValid) {
                 navigation.navigate(ScreenRoutes.INCOMES, {
                     newIncomeId: response.result,
                 })
 
-            }else{
-                showUserAlert(response.message)
-            }
-    
+            } else showModalAlert(response.message)
+
 
         } catch (error) {
             console.error("error al guardar el nuevo ingreso", error)
@@ -58,7 +63,19 @@ const useIncomeCreateViewModel = ({
 
     }
 
-    const showUserAlert = (message: Message) => {
+    const showModalAlert = (message: Message) => {
+        setModalState({
+            visible: true,
+            title: message.title,
+            message: message.message
+        })
+    }
+
+    const hideModalAlert = () => {
+        setModalState({
+            ...modalState,
+            visible: false,
+        })
 
     }
 
@@ -66,11 +83,12 @@ const useIncomeCreateViewModel = ({
 
     // ------------------- return ------------------- //
     return {
-
+        modalState,
         incomeName, updateIncomeName,
         incomeAmount, updateIncomeAmount,
 
-        createIncome
+        createIncome,
+        hideModalAlert
     }
 
 

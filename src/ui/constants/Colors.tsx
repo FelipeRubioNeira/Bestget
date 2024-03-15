@@ -9,6 +9,7 @@ export enum Colors {
     DARK_GREEN = '#acd19f',
     YELLOW = "#E7DEA4",
     AQUA_MARINE = '#CFFDED',
+    BLUE = '#4B7785',
 
     //  ---  chips colors --- //
     CHIP_ESSENTIALS = "#fcbd8b",

@@ -67,6 +67,21 @@ class IncomeRepository implements IIncomeRepository {
 
     }
 
+    public async delete(id: string): Promise<void> {
+
+        try {
+
+            await firestore()
+                .collection(Collections.INCOME)
+                .doc(id)
+                .delete()
+
+        } catch (error) {
+            console.error("error IncomesCreateDataSource", error);
+        }
+
+    }
+
 
 
 }
