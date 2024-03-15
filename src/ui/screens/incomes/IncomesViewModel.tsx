@@ -49,8 +49,8 @@ const useIncomesViewModel = ({
 
 
     // ------------------- states ------------------- //
-    const [allIncomes, setAllIncomes] = useState<IncomeUI[]>([])
     const [incomeParams, setIncomeParams] = useState<Income[]>([])
+    const [allIncomes, setAllIncomes] = useState<IncomeUI[]>([])
 
     const [totalAmount, setTotalAmount] = useState<string>("0")
     const [deleteMode, setDeleteMode] = useState<DeleteButtonProps>({
@@ -91,18 +91,19 @@ const useIncomesViewModel = ({
     // we add the delete button to the header if there are incomes
     useEffect(() => {
 
-        if (allIncomes.length === 0) return
-
         navigation.setOptions({
-            headerRight: () => (
-                <DeleteButton
-                    color={deleteMode.color}
-                    onPress={onPressDeleteHeaderIcon}
-                />
-            )
+            headerRight: () => {
+                if (incomeParams.length === 0) return null
+                return (
+                    <DeleteButton
+                        color={deleteMode.color}
+                        onPress={onPressDeleteHeaderIcon}
+                    />
+                )
+            }
         })
 
-    }, [deleteMode, allIncomes, incomeParams])
+    }, [deleteMode, incomeParams])
 
 
 
@@ -112,7 +113,14 @@ const useIncomesViewModel = ({
     }
 
     const generateIncomeList = async (incomes: Income[] = [], deleteButtonProps: DeleteButtonProps) => {
+
         try {
+
+            if (incomes.length == 0) {
+                setTotalAmount("0")
+                setAllIncomes([])
+                return
+            }
 
             const allIncomesFormatted = applyFormat(incomes, deleteButtonProps)
             const totalAmount = getTotalAmount(incomes)
@@ -226,10 +234,6 @@ const useIncomesViewModel = ({
         await deleteIncomeUseCase.delete(deleteIncomeId)
 
         const newIncomesList = await getIncomes()
-
-        if (newIncomesList.length == 0) {
-            turnOffDeleteMode()
-        }
 
         setIncomeParams(newIncomesList)
         generateIncomeList(newIncomesList, deleteMode)
