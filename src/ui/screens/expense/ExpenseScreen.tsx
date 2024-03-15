@@ -80,6 +80,7 @@ const ExpenseScreen = ({ navigation, route }: ExpenseScreenProps) => {
                             category={item.category}
                         />
                     )}
+                    showsVerticalScrollIndicator={false}
                 />
 
                 <ButtonAdd

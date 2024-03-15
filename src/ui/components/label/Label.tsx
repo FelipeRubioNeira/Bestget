@@ -1,4 +1,4 @@
-import { StyleSheet, Text } from 'react-native'
+import { StyleSheet, Text, TextStyle, ViewStyle } from 'react-native'
 import React from 'react'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 import { Colors } from '../../constants/Colors'
@@ -7,7 +7,8 @@ export interface ILabel {
     value: string | undefined
     fontSize?: number
     fontFamily?: string
-    color?: string
+    color?: string,
+    style?: TextStyle
 }
 
 
@@ -15,17 +16,20 @@ const Label = ({
     value = "",
     fontSize = FontSize.MEDIUM,
     fontFamily = FontFamily.REGULAR,
-    color = Colors.BLACK
+    color = Colors.BLACK,
+    style,
 }: ILabel) => {
 
     return (
 
-        <Text style={{
-            ...titleStyles.titleDefault,
-            fontSize: fontSize,
-            fontFamily: fontFamily,
-            color: color
-        }} >
+        <Text
+            style={{
+                ...titleStyles.titleDefault,
+                fontSize: fontSize,
+                fontFamily: fontFamily,
+                color: color,
+                ...style
+            }} >
             {value}
         </Text>
     )

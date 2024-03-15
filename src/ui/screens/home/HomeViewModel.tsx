@@ -6,7 +6,7 @@ import { Income } from "../../../data/types/Income"
 import { Category } from "../../../data/types/Categoty"
 import IncomeRepository from "../../../data/repository/incomeRepository/IncomeRepository"
 import ICategoryRepository from "../../../data/repository/categoryRepository/ICategoryRespository"
-import { BudgetExpense } from "../../../data/types/BudgetExpense"
+import IExpenseRespository from "../../../data/repository/expenseRepository/IExpenseRepository"
 
 
 
@@ -18,6 +18,7 @@ export interface IMenuArrayButtonsProps {
 
 type HomeViewModelProps = {
     incomeRepository: IncomeRepository,
+    expenseRepository: IExpenseRespository,
     categoryRepository: ICategoryRepository,
 } & HomeScreenProps
 
@@ -25,17 +26,18 @@ type HomeViewModelProps = {
 
 const useHomeViewModel = ({
     navigation,
-    categoryRepository,
     incomeRepository,
+    expenseRepository,
+    categoryRepository,
 }: HomeViewModelProps) => {
 
 
     // ------------------ states ------------------ //
-    const [totalIncomes, setTotalIncomes] = useState("0")
+    const [totalremaining, setTotalremaining] = useState("0")
 
     const [allIncomes, setAllIncomes] = useState<Income[]>([])
     const [allCategories, setAllCategories] = useState<Category[]>([])
-    const [allBudgetExpense, setAllBudgetExpense] = useState<BudgetExpense[]>([])
+
 
 
     // ------------------ effects ------------------ //
@@ -53,11 +55,15 @@ const useHomeViewModel = ({
 
     // ------------------ methods ------------------ //
     const getData = async () => {
-        Promise.all([
+
+        const [totalIncomes, totalExpenses] = await Promise.all([
             getIncomes(),
-            getBudgetsExpenses(),
+            getExpenses(),
             getCategories(),
         ])
+
+        setTotalremaining(currencyFormat(totalIncomes - totalExpenses))
+        
     }
 
     const calculateTotalAmount = (incomes: Income[]) => {
@@ -77,12 +83,15 @@ const useHomeViewModel = ({
     const getIncomes = async () => {
 
         const allIncomes = await incomeRepository.getAll()
-
         const totalIncomes = calculateTotalAmount(allIncomes)
-        const totalIncomesFormatted = currencyFormat(totalIncomes)
 
         setAllIncomes(allIncomes)
-        setTotalIncomes(totalIncomesFormatted)
+        
+        return totalIncomes
+    }
+
+    const getExpenses = async () => {
+        return expenseRepository.getTotal()
     }
 
     const getCategories = async () => {
@@ -90,16 +99,11 @@ const useHomeViewModel = ({
         setAllCategories(categories)
     }
 
-    const getBudgetsExpenses = async () => {
-
-
-    }
 
 
     // ------------------ user Events ------------------ //
     const onPressBudgetsExpenses = () => {
         navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {
-            budgetExpenseList: allBudgetExpense,
             categoryList: allCategories,
         })
     }
@@ -113,7 +117,7 @@ const useHomeViewModel = ({
 
     // ------------------ return ------------------ //
     return {
-        totalIncomes,
+        totalremaining,
         allIncomes,
         allCategories,
 

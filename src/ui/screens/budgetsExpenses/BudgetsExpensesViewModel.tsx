@@ -90,14 +90,16 @@ const useBudgetExpensesViewModel = ({
         setLoading(true)
 
         //1 - getExpenses and getCategories
-        const [budgets, expenses] = await Promise.all([
+        const [budgets, expenses, total] = await Promise.all([
             budgetRepository.getAll(),
             expenseRepository.getWithoutBudget(),
+            expenseRepository.getTotal()
         ])
 
 
         //3 - calculateTotalAmount
-        calculateTotalAmount(expenses)
+        const totalCurrency = currencyFormat(total)
+        setTotalAmount(totalCurrency)
 
 
         // 4 - fill the lists
@@ -150,12 +152,6 @@ const useBudgetExpensesViewModel = ({
 
 
     // ----------- ui interaction ----------- //
-
-    const calculateTotalAmount = (expeses: Expense[]) => {
-        let totalAmount = 0
-        expeses.forEach(expense => totalAmount += expense.amount)
-        setTotalAmount(currencyFormat(totalAmount))
-    }
 
     const onShowExpenseOptions = () => {
         setButtonAddVisible(false)

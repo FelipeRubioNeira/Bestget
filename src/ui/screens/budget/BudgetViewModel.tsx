@@ -6,6 +6,11 @@ import { ScreenRoutes } from "../../../navigation/Routes"
 import IExpenseRespository from "../../../data/repository/expenseRepository/IExpenseRepository"
 import { Expense, ExpenseUI } from "../../../data/types/Expense"
 
+type Title = {
+    main: string,
+    available: string,
+    used: string
+}
 
 type budgetViewModelProps = {
     expensesRepository: IExpenseRespository
@@ -25,30 +30,21 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository }: budgetVi
 
     // ----------- states ----------- //
     const [category, setCategory] = useState<Category | undefined>()
-    const [title, setTitle] = useState<string>("")
-
     const [expenseList, setExpenseList] = useState<ExpenseUI[]>([])
-    const [available, setAvailable] = useState<string>("")
-    const [used, setUsed] = useState<string>("")
+
+    const [title, setTitle] = useState<Title>({
+        main: "",
+        available: "",
+        used: ""
+    })
 
 
 
 
     // ----------- effects ----------- //
-    useEffect(() => {
-
-        generateTitle(
-            currencyFormat(budget.amount),
-            budget.name
-        )
-
-        findCategory(budget?.categoryId, categoryList)
-
-    }, [budget])
-
 
     useEffect(() => {
-        getExpensesById(budget.id)
+        getData()
     }, [newExpenseId])
 
 
@@ -57,12 +53,37 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository }: budgetVi
     // ########### methods ########### //
 
     // ----------- data ----------- //
-    const getExpensesById = async (id: string) => {
 
-        const expenses = await expensesRepository.getById(id)
-        const expenseListFormatted = applyFormat(expenses)
+    const getData = async () => {
 
+        findCategory(budget?.categoryId, categoryList)
+
+
+        const expenseList = await expensesRepository.getById(budget.id)
+
+        const expenseListFormatted = applyFormat(expenseList)
+        const totalExpenses = getTotalExpenses(expenseList)
+
+
+        const title = generateTitle(
+            budget.amount,
+            budget.name,
+            totalExpenses,
+        )
+
+        setTitle(title)
         setExpenseList(expenseListFormatted)
+    }
+
+
+
+    const getTotalExpenses = (expenseList: Expense[]) => {
+
+        let totalExpenses = 0
+        expenseList.forEach(expense => {
+            totalExpenses += expense.amount
+        })
+        return totalExpenses
     }
 
     const applyFormat = (expenseList: Expense[]) => {
@@ -83,17 +104,28 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository }: budgetVi
 
 
     // ----------- ui ----------- //
-    const generateTitle = (budgetAmount: string, budgetName: string) => {
+    const generateTitle = (budgetAmount: number, budgetName: string, totalExpenses: number) => {
 
-        const title = `Ha destinado $${budgetAmount} a "${budgetName}"`
-        const used = `Ocupado: $${0}`
-        const available = `Disponible: $${0}`
+        const budgetCurrency = currencyFormat(budgetAmount)
+        const expensesCurrency = currencyFormat(totalExpenses)
+        const availableCurrency = currencyFormat(budgetAmount - totalExpenses)
 
-        setTitle(title)
-        setAvailable(available)
-        setUsed(used)
+
+        const title = `Ha destinado $${budgetCurrency} a "${budgetName}"`
+        const used = `Ocupado: $${expensesCurrency}`
+        const available = `Disponible: $${availableCurrency}`
+
+        return {
+            main: title,
+            available,
+            used
+        }
 
     }
+
+    const getUsedAmount = () => { }
+
+
 
     const findCategory = (categoryId: number = 0, categoryList: Category[]) => {
         const category = categoryList.find(category => category.id === categoryId)
@@ -114,8 +146,6 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository }: budgetVi
     // ----------- return ----------- //
     return {
         title,
-        available,
-        used,
         category,
         expenseList,
 

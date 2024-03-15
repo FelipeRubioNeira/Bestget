@@ -1,7 +1,7 @@
-import { Income } from "../../types/Income";
+import { Income, IncomeCreate } from "../../types/Income";
 
 export interface IIncomeRepository {
-     create: (income: Income) => Promise<string>
+     create: (income: IncomeCreate) => Promise<string>
      getAll: () => Promise<Income[]>
      getTotal: () => Promise<number>
 }

@@ -21,7 +21,7 @@ const circleStyle = StyleSheet.create({
     circle: {
         height: 20,
         aspectRatio: 1,
-        marginRight: 8,
+        marginRight: "4%",
         borderRadius: Styles.HEIGHT,
     }
 })

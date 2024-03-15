@@ -1,21 +1,14 @@
 import { useEffect, useState } from "react"
 import { IncomesScreenProps } from "../../../navigation/NavigationParamList"
 import { ScreenRoutes } from "../../../navigation/Routes"
-import { GetAllIncomesUseCase } from "../../../domain/useCases/GetAllIncomesUseCase"
-import { Income } from "../../../data/types/Income"
+import { Income, IncomeUI } from "../../../data/types/Income"
 import { currencyFormat } from "../../../utils/Convert"
 import { IIncomeRepository } from "../../../data/repository/incomeRepository/IIncomeRepository"
-import IBudgetExpenseRepository from "../../../data/repository/budgetExpenseRepository/IBugetExpenseRepository"
+
 
 type IIncomesViewModel = {
     incomesRepository: IIncomeRepository,
 } & IncomesScreenProps
-
-export type IncomeFormatted = {
-    id: string | null,
-    name: string,
-    amount: string
-}
 
 
 
@@ -23,7 +16,7 @@ const useIncomesViewModel = ({ navigation, route, incomesRepository }: IIncomesV
 
 
     // ------------------- states ------------------- //
-    const [allIncomes, setAllIncomes] = useState<IncomeFormatted[]>([])
+    const [allIncomes, setAllIncomes] = useState<IncomeUI[]>([])
     const [totalAmount, setTotalAmount] = useState<string>("0")
 
 
@@ -79,15 +72,16 @@ const useIncomesViewModel = ({ navigation, route, incomesRepository }: IIncomesV
 
     }
 
-    const applyFormat = (incomes: Income[]): IncomeFormatted[] => {
+    const applyFormat = (incomes: Income[])=> {
 
         const incomesFormatted = incomes.map(income => {
 
-            const incomeFormatted: IncomeFormatted = {
-                id: income.id + "",
+            const incomeFormatted: IncomeUI = {
+                id: income.id,
                 name: income.name,
-                amount: currencyFormat(income.amount)
-            }
+                amount: currencyFormat(income.amount),
+                onPress: () => { },
+            } 
 
             return incomeFormatted
         })

@@ -2,6 +2,8 @@ import { useState } from "react";
 import { IncomesCreateScreenProps } from "../../../navigation/NavigationParamList";
 import { ScreenRoutes } from "../../../navigation/Routes";
 import { CreateIncomeUseCase } from "../../../domain/useCases/CreateIncomeUseCase";
+import { numberFormat } from "../../../utils/Convert";
+import { Message } from "../../../data/types/Message";
 
 
 type IIncomesCreateViewModel = {
@@ -35,19 +37,28 @@ const useIncomeCreateViewModel = ({
         try {
 
             // 1. we pass the values and the use case will take care of the rest
-            const newIncomeId = await createIncomeUseCase.create(
-                incomeName,
-                incomeAmount,
-            )
-
-            // 2. finally we navigate to the incomes screen
-            navigation.navigate(ScreenRoutes.INCOMES, {
-                newIncomeId: newIncomeId,
+            const response = await createIncomeUseCase.create({
+                name: incomeName,
+                amount: numberFormat(incomeAmount)
             })
+
+            if(response.isValid){
+                navigation.navigate(ScreenRoutes.INCOMES, {
+                    newIncomeId: response.result,
+                })
+
+            }else{
+                showUserAlert(response.message)
+            }
+    
 
         } catch (error) {
             console.error("error al guardar el nuevo ingreso", error)
         }
+
+    }
+
+    const showUserAlert = (message: Message) => {
 
     }
 

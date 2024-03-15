@@ -1,5 +1,5 @@
 import { Collections } from "../../collections/Collections";
-import { Income } from "../../types/Income";
+import { Income, IncomeCreate } from "../../types/Income";
 import { IIncomeRepository } from "./IIncomeRepository";
 import firestore from '@react-native-firebase/firestore';
 
@@ -7,10 +7,14 @@ import firestore from '@react-native-firebase/firestore';
 class IncomeRepository implements IIncomeRepository {
 
 
-    public async create(income: Income): Promise<string> {
+    public async create(income: IncomeCreate): Promise<string> {
 
         try {
-            const result = await firestore().collection(Collections.INCOME).add(income)
+
+            const result = await firestore()
+                .collection(Collections.INCOME)
+                .add(income)
+
             const incomeId = result.id
 
             return (incomeId)

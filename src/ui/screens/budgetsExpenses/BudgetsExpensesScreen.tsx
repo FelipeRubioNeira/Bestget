@@ -85,6 +85,7 @@ const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps
                 <FlatList
                     data={budgetsExpensesViewModel.budgetsExpenses}
                     renderItem={({ item }) => renderBugdetOrExpense(item)}
+                    showsVerticalScrollIndicator={false}
                 />
 
                 <ButtonAdd

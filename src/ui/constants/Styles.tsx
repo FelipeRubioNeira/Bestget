@@ -39,7 +39,6 @@ export const DefaultStyles = Object.freeze({
         width: "100%",
         borderBottomWidth: 1,
         borderColor: Colors.GRAY,
-        //borderRadius: Styles.BORDER_RADIUS,
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingVertical: "4%",

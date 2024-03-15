@@ -111,6 +111,29 @@ class ExpenseRepository implements IExpenseRespository {
         }
     }
 
+    async getTotal(): Promise<number> {
+
+        try {
+
+            const expensesFirebase = await firestore()
+                .collection(Collections.EXPENSE)
+                .get()
+
+            let total = 0
+
+            expensesFirebase.docs.forEach(doc => {
+                const { amount } = doc.data() as Expense
+                total += amount
+            })
+
+            return total
+
+        } catch (error) {
+            console.error("error getTotal", error);
+            return 0
+        }
+    }
+
     async create(expense: ExpenseCreate): Promise<string> {
 
         try {

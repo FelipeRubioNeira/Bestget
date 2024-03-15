@@ -10,8 +10,10 @@ import useHomeViewModel from './HomeViewModel'
 import { HomeScreenProps } from '../../../navigation/NavigationParamList'
 import IncomeRepository from '../../../data/repository/incomeRepository/IncomeRepository'
 import CategoryRespository from '../../../data/repository/categoryRepository/CategoryRepository'
+import ExpenseRepository from '../../../data/repository/expenseRepository/ExpenseRepository'
 
 const incomeRepository = new IncomeRepository()
+const expenseRepository = new ExpenseRepository()
 const categoryRepository = new CategoryRespository()
 
 
@@ -21,6 +23,7 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
         navigation,
         route,
         categoryRepository,
+        expenseRepository,
         incomeRepository,
     })
 
@@ -46,7 +49,7 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
                 <Spacer marginVertical={"1%"} />
 
                 <Label
-                    value={"$" + homeViewModel.totalIncomes}
+                    value={"$" + homeViewModel.totalremaining}
                     fontSize={FontSize.LARGE}
                     fontFamily={FontFamily.BLACK}
                 />

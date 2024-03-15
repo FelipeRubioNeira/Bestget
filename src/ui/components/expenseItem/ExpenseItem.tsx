@@ -1,41 +1,37 @@
-import { TouchableOpacity, View } from 'react-native'
+import { View } from 'react-native'
 import React from 'react'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 import Label from '../label/Label'
-import ChipItem from '../chipItem/ChipItem'
 import { BudgetExpenseItem } from '../../../data/types/BudgetExpense'
-import { DefaultStyles, Styles } from '../../constants/Styles'
+import { DefaultStyles } from '../../constants/Styles'
 import CircleCategory from '../circleCategory/CircleCategory'
 
 
 const ExpenseItem = ({ name, amount, category }: BudgetExpenseItem) => {
 
 
-
     return (
 
-        <TouchableOpacity style={DefaultStyles.listItemContainer}>
+        <View style={DefaultStyles.listItemContainer}>
 
-            <View style={{ flexDirection: "row" }}>
+            <CircleCategory color={category?.color} />
 
-                <CircleCategory color={category?.color} />
 
-                <Label
-                    value={name}
-                    fontSize={FontSize.SMALL}
-                    fontFamily={FontFamily.REGULAR}
-                />
-
-            </View>
+            <Label
+                value={name}
+                fontSize={FontSize.SMALL}
+                fontFamily={FontFamily.REGULAR}
+                style={{ flex: 2 }}
+            />
 
             <Label
                 value={"$" + amount}
                 fontSize={FontSize.SMALL}
-                fontFamily={FontFamily.REGULAR}
+                fontFamily={FontFamily.BOLD}
+                style={{ flex: 1, textAlign: "right" }}
             />
 
-
-        </TouchableOpacity>
+        </View>
     )
 }
 

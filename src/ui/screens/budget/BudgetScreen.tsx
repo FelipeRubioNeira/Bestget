@@ -31,12 +31,12 @@ const Budgets = ({ navigation, route }: BudgetsScreenProps) => {
         <View style={DefaultStyles.screen}>
 
             <Label
-                value={budgetViewModel.title}
+                value={budgetViewModel.title.main}
                 fontFamily={FontFamily.BLACK}
             />
 
-            <Label value={budgetViewModel.used} />
-            <Label value={budgetViewModel.available} />
+            <Label value={budgetViewModel.title.used} />
+            <Label value={budgetViewModel.title.available} />
 
 
             <ChipItem
@@ -48,6 +48,7 @@ const Budgets = ({ navigation, route }: BudgetsScreenProps) => {
             <FlatList
                 data={budgetViewModel.expenseList}
                 renderItem={({ item }) => <ExpenseItem {...item} />}
+                showsVerticalScrollIndicator={false}
             />
 
             <ButtonAdd

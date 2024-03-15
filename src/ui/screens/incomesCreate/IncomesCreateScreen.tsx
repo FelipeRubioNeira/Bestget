@@ -10,6 +10,7 @@ import IncomeRepository from '../../../data/repository/incomeRepository/IncomeRe
 import { CreateIncomeUseCase } from '../../../domain/useCases/CreateIncomeUseCase'
 import { InputType } from '../../components/textInput/TextInputViewModel'
 import { Colors } from '../../constants/Colors'
+import Modal from '../../components/modal/Modal'
 
 
 // dependency injection 
@@ -28,39 +29,56 @@ const IncomesCreateScreen = ({ navigation, route }: IncomesCreateScreenProps) =>
 
   return (
 
-    <View style={{
-      ...DefaultStyles.screen,
-      justifyContent: 'space-between'
-    }}>
+    <>
 
-      <View>
-        <TextInputWithLabel
-          value={incomesCreateViewModel.incomeName}
-          onChangeText={incomesCreateViewModel.updateIncomeName}
-          title="Nombre ingreso:"
-          placeholder="Ingreso de trabajo"
+      <View style={{
+        ...DefaultStyles.screen,
+        justifyContent: 'space-between'
+      }}>
+
+        <View>
+          <TextInputWithLabel
+            value={incomesCreateViewModel.incomeName}
+            onChangeText={incomesCreateViewModel.updateIncomeName}
+            title="Nombre ingreso:"
+            placeholder="Ingreso de trabajo"
+          />
+
+          <Spacer marginVertical={"4%"} />
+
+          <TextInputWithLabel
+            value={incomesCreateViewModel.incomeAmount}
+            onChangeText={incomesCreateViewModel.updateIncomeAmount}
+            title="Monto:"
+            placeholder="$100.000"
+            inputMode={InputType.NUMERIC}
+          />
+        </View>
+
+        <Spacer marginVertical={"8%"} />
+
+
+        <SubmitButton
+          onPress={incomesCreateViewModel.createIncome}
+          backgroundColor={Colors.GREEN}
         />
 
-        <Spacer marginVertical={"4%"} />
-
-        <TextInputWithLabel
-          value={incomesCreateViewModel.incomeAmount}
-          onChangeText={incomesCreateViewModel.updateIncomeAmount}
-          title="Monto:"
-          placeholder="$100.000"
-          inputMode={InputType.NUMERIC}
-        />
       </View>
 
-      <Spacer marginVertical={"8%"} />
 
 
-      <SubmitButton
-        onPress={incomesCreateViewModel.createIncome}
-        backgroundColor={Colors.GREEN}
+      <Modal
+        title="Error al crear nuevo ingreso"
+        message="El ingreso no pudo ser creado."
+        buttonList={[
+          {
+            text: "Cerrar",
+            onPress: () => { }
+          }
+        ]}
       />
 
-    </View>
+    </>
 
   )
 

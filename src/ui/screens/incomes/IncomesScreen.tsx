@@ -10,8 +10,9 @@ import TotalAmount from '../../components/totalAmount/TotalAmount'
 import ButtonAdd from '../../components/buttonAdd/ButtonAdd'
 import HelpText from '../../components/helpText/Help'
 import { IncomesScreenProps } from '../../../navigation/NavigationParamList'
-import useIncomeViewModel, { IncomeFormatted } from './IncomesViewModel'
+import useIncomeViewModel from './IncomesViewModel'
 import IncomeRepository from '../../../data/repository/incomeRepository/IncomeRepository'
+import { IncomeUI } from '../../../data/types/Income'
 
 
 const incomesRepository = new IncomeRepository()
@@ -47,6 +48,7 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
       <FlatList
         data={incomeViewModel?.allIncomes}
         renderItem={({ item }) => <IncomeItem {...item} />}
+        showsVerticalScrollIndicator={false}
       />
 
       <Spacer marginVertical={"4%"} />
@@ -60,10 +62,13 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
   )
 }
 
-const IncomeItem = ({ name, amount }: IncomeFormatted) => {
+const IncomeItem = ({ name, amount }: IncomeUI) => {
 
   return (
-    <TouchableOpacity style={incomesScreenStyle.incomeItem}>
+
+    <TouchableOpacity
+      style={incomesScreenStyle.incomeItem}
+    >
 
       <Label
         value={name}

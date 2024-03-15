@@ -20,29 +20,23 @@ const BudgetItem = ({ name, amount, category, onPress }: BudgetExpenseItem) => {
             style={DefaultStyles.listItemContainer}
         >
 
-            <View style={{ flexDirection: "row" }}>
+            <IconBudget color={category?.color} />
 
-                <IconBudget color={category?.color} />
-
-                <Label
-                    value={name}
-                    fontSize={FontSize.SMALL}
-                    fontFamily={FontFamily.REGULAR}
-                />
-
-            </View>
+            <Label
+                value={name}
+                style={budgetStyles.description}
+            />
 
             <Label
                 value={"$" + amount}
-                fontSize={FontSize.SMALL}
-                fontFamily={FontFamily.REGULAR}
+                style={budgetStyles.amount}
             />
 
         </TouchableOpacity>
     )
 }
 
-const IconBudget = ({ color  = Colors.WHITE}: { color?: string }) => {
+const IconBudget = ({ color = Colors.WHITE }: { color?: string }) => {
 
     return (
 
@@ -52,7 +46,7 @@ const IconBudget = ({ color  = Colors.WHITE}: { color?: string }) => {
                 ...budgetStyles.icon,
                 backgroundColor: color,
                 borderRadius: Styles.BORDER_RADIUS,
-                marginRight: "8%",
+                marginRight: "4%",
             }}
         />
     )
@@ -63,7 +57,20 @@ const budgetStyles = StyleSheet.create({
     icon: {
         width: 30,
         height: 30,
-        //marginLeft: "8%",
+    },
+    description: {
+        flex: 2,
+        height: "100%",
+        fontSize: FontSize.SMALL,
+        fontFamily: FontFamily.REGULAR,
+    },
+    amount: {
+        flex: 1,
+        height: "100%",
+        fontSize: FontSize.SMALL,
+        fontFamily: FontFamily.BOLD,
+        textAlign: "right",
+        verticalAlign: "middle"
     }
 })
 
