@@ -20,15 +20,14 @@ import { ScreenRoutes } from "../../../navigation/Routes"
 import { Income, IncomeUI } from "../../../data/types/Income"
 import { currencyFormat } from "../../../utils/Convert"
 import { IIncomeRepository } from "../../../data/repository/incomeRepository/IIncomeRepository"
-import { Colors } from "../../constants/Colors"
-import DeleteButton, { DeleteButtonProps } from "../../components/deleteButton/DeleteButton"
-import DeleteIncomeUseCase from "../../../domain/useCases/DeleteIncomeUseCase"
 import { ModalProps } from "../../components/modal/Modal"
+import TouchableIcon from "../../components/touchableIcon/TouchableIcon"
+
+const editIcon = require("../../../assets/icons/ic_edit.png")
 
 
 type IIncomesViewModel = {
     incomesRepository: IIncomeRepository,
-    deleteIncomeUseCase: DeleteIncomeUseCase,
 } & IncomesScreenProps
 
 
@@ -37,7 +36,6 @@ const useIncomesViewModel = ({
     navigation,
     route,
     incomesRepository,
-    deleteIncomeUseCase
 }: IIncomesViewModel) => {
 
 
@@ -53,10 +51,7 @@ const useIncomesViewModel = ({
     const [allIncomes, setAllIncomes] = useState<IncomeUI[]>([])
 
     const [totalAmount, setTotalAmount] = useState<string>("0")
-    const [deleteMode, setDeleteMode] = useState<DeleteButtonProps>({
-        status: false,
-        color: Colors.BLACK
-    })
+    const [deleteMode, setDeleteMode] = useState<boolean>(false)
 
     const [modalState, setModalState] = useState<ModalProps>({
         visible: false,
@@ -72,18 +67,23 @@ const useIncomesViewModel = ({
     // 1. generate the list of incomes
     useEffect(() => {
         setIncomeParams(incomes)
-        generateIncomeList(incomes, deleteMode)
+        generateIncomeList(incomes)
     }, [])
 
 
     // 2. if a new income is created, we update the list
     useEffect(() => {
-        if (!newIncomeId) return
 
-        getIncomes().then(incomes => {
-            setIncomeParams(incomes)
-            generateIncomeList(incomes, deleteMode)
-        })
+        const unsubscribe = navigation.addListener('focus', () => {
+
+            getIncomes().then(incomes => {
+                setIncomeParams(incomes)
+                generateIncomeList(incomes)
+            })
+            
+        });
+
+        return unsubscribe;
 
     }, [newIncomeId])
 
@@ -95,8 +95,8 @@ const useIncomesViewModel = ({
             headerRight: () => {
                 if (incomeParams.length === 0) return null
                 return (
-                    <DeleteButton
-                        color={deleteMode.color}
+                    <TouchableIcon
+                        image={editIcon}
                         onPress={onPressDeleteHeaderIcon}
                     />
                 )
@@ -112,7 +112,7 @@ const useIncomesViewModel = ({
         return incomesRepository.getAll()
     }
 
-    const generateIncomeList = async (incomes: Income[] = [], deleteButtonProps: DeleteButtonProps) => {
+    const generateIncomeList = async (incomes: Income[] = []) => {
 
         try {
 
@@ -122,7 +122,7 @@ const useIncomesViewModel = ({
                 return
             }
 
-            const allIncomesFormatted = applyFormat(incomes, deleteButtonProps)
+            const allIncomesFormatted = applyFormat(incomes)
             const totalAmount = getTotalAmount(incomes)
 
             setAllIncomes(allIncomesFormatted)
@@ -131,6 +131,23 @@ const useIncomesViewModel = ({
         } catch (error) {
             console.error("error al obtener todos los ingresos", error)
         }
+    }
+
+    const applyFormat = (incomes: Income[]): IncomeUI[] => {
+
+        const incomesFormatted = incomes.map(income => {
+
+            const incomeFormatted: IncomeUI = {
+                id: income.id,
+                name: income.name,
+                amount: "$" + currencyFormat(income.amount),
+            }
+
+            return incomeFormatted
+        })
+
+        return incomesFormatted
+
     }
 
     const getTotalAmount = (incomes: Income[]): string => {
@@ -148,33 +165,16 @@ const useIncomesViewModel = ({
 
     }
 
-    const applyFormat = (incomes: Income[], deleteButtonProps: DeleteButtonProps): IncomeUI[] => {
-
-        const incomesFormatted = incomes.map(income => {
-
-            const incomeFormatted: IncomeUI = {
-                id: income.id,
-                name: income.name,
-                amount: "$" + currencyFormat(income.amount),
-                deleteButtonProps: deleteButtonProps
-            }
-
-            return incomeFormatted
-        })
-
-        return incomesFormatted
-
-    }
-
     const navigateIncomeCreate = () => {
         turnOffDeleteMode()
-        navigation.navigate(ScreenRoutes.INCOMES_CREATE)
+        navigation.navigate(ScreenRoutes.INCOMES_CREATE, { income: undefined })
     }
+
 
     // ------------------- delete events------------------- //
     const onPressDeleteHeaderIcon = () => {
 
-        if (!deleteMode.status) {
+        if (!deleteMode) {
             turnOnDeleteMode()
 
         } else {
@@ -184,26 +184,31 @@ const useIncomesViewModel = ({
     }
 
     const turnOnDeleteMode = () => {
-
-        const newDeleteMode: DeleteButtonProps = {
-            status: true,
-            color: Colors.CHIP_DEBTS
-        }
-
-        setDeleteMode(newDeleteMode)
-        generateIncomeList(incomeParams, newDeleteMode)
-
+        setDeleteMode(true)
     }
 
     const turnOffDeleteMode = () => {
+        setDeleteMode(false)
+    }
 
-        const newDeleteMode: DeleteButtonProps = {
-            status: false,
-            color: Colors.BLACK
-        }
+    const deleteIncome = async () => {
 
-        setDeleteMode(newDeleteMode)
-        generateIncomeList(incomeParams, newDeleteMode)
+        hideAlert()
+
+        await incomesRepository.delete(deleteIncomeId)
+
+        const newIncomesList = await getIncomes()
+
+        setIncomeParams(newIncomesList)
+        generateIncomeList(newIncomesList)
+
+    }
+
+    // ------------------- edit event ------------------- //
+    const onPressEditIncomeItem = (id: string) => {
+        turnOffDeleteMode()
+        const income = incomeParams.find(income => income.id === id)
+        navigation.navigate(ScreenRoutes.INCOMES_CREATE, { income })
     }
 
     // onPress on flatlist item
@@ -227,18 +232,7 @@ const useIncomesViewModel = ({
         })
     }
 
-    const deleteIncome = async () => {
 
-        hideAlert()
-
-        await deleteIncomeUseCase.delete(deleteIncomeId)
-
-        const newIncomesList = await getIncomes()
-
-        setIncomeParams(newIncomesList)
-        generateIncomeList(newIncomesList, deleteMode)
-
-    }
 
 
     return {
@@ -250,6 +244,7 @@ const useIncomesViewModel = ({
         navigateIncomeCreate,
         deleteIncome,
         onPressDeleteIncomeItem,
+        onPressEditIncomeItem,
         hideAlert
     }
 }

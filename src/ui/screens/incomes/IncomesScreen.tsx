@@ -13,14 +13,13 @@ import { IncomesScreenProps } from '../../../navigation/NavigationParamList'
 import useIncomeViewModel from './IncomesViewModel'
 import IncomeRepository from '../../../data/repository/incomeRepository/IncomeRepository'
 import { IncomeUI } from '../../../data/types/Income'
-import DeleteButton from '../../components/deleteButton/DeleteButton'
-import DeleteIncomeUseCase from '../../../domain/useCases/DeleteIncomeUseCase'
 import Modal from '../../components/modal/Modal'
+import EditionIcons from '../../components/editionIcons/EditionIcons'
+
 
 
 
 const incomesRepository = new IncomeRepository()
-const deleteIncomeUseCase = new DeleteIncomeUseCase(incomesRepository)
 
 const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
 
@@ -29,7 +28,6 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
     navigation,
     route,
     incomesRepository,
-    deleteIncomeUseCase,
   })
 
 
@@ -55,10 +53,9 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => <IncomeItem
           {...item}
-          deleteButtonProps={{
-            ...item.deleteButtonProps,
-            onPress: () => incomeViewModel.onPressDeleteIncomeItem(item.id)
-          }}
+          editMode={incomeViewModel.deleteMode}
+          onEdit={() => incomeViewModel.onPressEditIncomeItem(item.id)}
+          onDelete={() => incomeViewModel.onPressDeleteIncomeItem(item.id)}
         />}
       />
 
@@ -90,7 +87,7 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
   )
 }
 
-const IncomeItem = ({ name, amount, deleteButtonProps }: IncomeUI) => {
+const IncomeItem = ({ name, amount, editMode, onEdit, onDelete }: IncomeUI) => {
 
   return (
 
@@ -105,8 +102,11 @@ const IncomeItem = ({ name, amount, deleteButtonProps }: IncomeUI) => {
       />
 
       {
-        deleteButtonProps.status ?
-          <DeleteButton {...deleteButtonProps} />
+        editMode ?
+          <EditionIcons
+            onEdit={onEdit}
+            onDelete={onDelete}
+          />
           :
           <Label
             value={amount}

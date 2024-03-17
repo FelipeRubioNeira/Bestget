@@ -26,7 +26,7 @@ export type NavigatorParamList = {
         newIncomeId?: string | undefined
     }
 
-    [ScreenRoutes.INCOMES_CREATE]: undefined
+    [ScreenRoutes.INCOMES_CREATE]: { income?: Income }
 
 
     [ScreenRoutes.BUDGET_EXPENSES]: {

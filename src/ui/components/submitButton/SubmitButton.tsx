@@ -5,11 +5,13 @@ import Label from "../label/Label"
 
 // submitButton
 interface ISubmmitButton {
+    title?: string
     backgroundColor?: string
     onPress?: () => void
 }
 
 const SubmitButton = ({
+    title = "Guardar",
     backgroundColor,
     onPress
 }: ISubmmitButton) => {
@@ -25,7 +27,7 @@ const SubmitButton = ({
         >
 
             <Label
-                value="Guardar"
+                value={title}
                 fontSize={FontSize.SMALL}
                 fontFamily={FontFamily.BOLD}
                 color={Colors.BLACK}

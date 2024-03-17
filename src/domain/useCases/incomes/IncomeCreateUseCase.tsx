@@ -1,11 +1,11 @@
-import { IIncomeRepository } from "../../data/repository/incomeRepository/IIncomeRepository";
-import { IncomeCreate } from "../../data/types/Income";
-import { Validation, ValidationResult } from "../../data/types/Validation";
-import { isConnected } from "../../utils/Connection";
+import { IIncomeRepository } from "../../../data/repository/incomeRepository/IIncomeRepository";
+import { IncomeCreate } from "../../../data/types/Income";
+import { Validation, ValidationResult } from "../../../data/types/Validation";
+import { isConnected } from "../../../utils/Connection";
 
 
 
-export class CreateIncomeUseCase {
+export class IncomeCreateUseCase {
     constructor(private incomeRepository: IIncomeRepository) { }
 
 
@@ -37,11 +37,9 @@ export class CreateIncomeUseCase {
             }
         }
 
-
         return validationResult
 
     }
-
 
     // ------------------- private methods ------------------- //
     private async applyValidations(income: IncomeCreate): Promise<Validation> {
@@ -70,7 +68,6 @@ export class CreateIncomeUseCase {
         return validationResult
 
     }
-
 
     // ------------------- validations ------------------- //
     private validateInputs = ({ name = "", amount = 0 }: IncomeCreate): Validation => {

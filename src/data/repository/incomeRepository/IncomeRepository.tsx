@@ -8,7 +8,6 @@ class IncomeRepository implements IIncomeRepository {
 
 
     public async create(income: IncomeCreate): Promise<string> {
-
         try {
 
             const result = await firestore()
@@ -23,7 +22,6 @@ class IncomeRepository implements IIncomeRepository {
             console.log("error IncomesCreateDataSource", error);
             return ""
         }
-
     }
 
     public async getAll(): Promise<Income[]> {
@@ -64,6 +62,24 @@ class IncomeRepository implements IIncomeRepository {
         })
 
         return totalIncomes
+
+    }
+
+    public async edit(income: Income): Promise<void> {
+
+        try {
+
+            const result = await firestore()
+                .collection(Collections.INCOME)
+                .doc(income.id)
+                .update({
+                    name: income.name,
+                    amount: income.amount
+                })
+
+        } catch (error) {
+            console.error("error IncomesCreateDataSource", error);
+        }
 
     }
 

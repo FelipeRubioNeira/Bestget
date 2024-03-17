@@ -6,16 +6,19 @@ import SubmitButton from '../../components/submitButton/SubmitButton'
 import useIncomeCreateViewModel from './IncomesCreateViewModel'
 import TextInputWithLabel from '../../components/textInputWithLabel/TextInputWithLabel'
 import IncomeRepository from '../../../data/repository/incomeRepository/IncomeRepository'
-import { CreateIncomeUseCase } from '../../../domain/useCases/CreateIncomeUseCase'
+
 import { InputType } from '../../components/textInput/TextInputViewModel'
 import { Colors } from '../../constants/Colors'
 import Modal from '../../components/modal/Modal'
 import Screen from '../../components/screen/Screen'
+import { IncomeCreateUseCase } from '../../../domain/useCases/incomes/IncomeCreateUseCase'
+import IncomeEditUseCase from '../../../domain/useCases/incomes/IncomeEditUsecase'
 
 
 // dependency injection 
 const incomeDataSource = new IncomeRepository()
-const createIncomeUseCase = new CreateIncomeUseCase(incomeDataSource)
+const incomeCreateUseCase = new IncomeCreateUseCase(incomeDataSource)
+const incomeEditUseCase = new IncomeEditUseCase(incomeDataSource)
 
 
 const IncomesCreateScreen = ({ navigation, route }: IncomesCreateScreenProps) => {
@@ -24,7 +27,8 @@ const IncomesCreateScreen = ({ navigation, route }: IncomesCreateScreenProps) =>
   const incomesCreateViewModel = useIncomeCreateViewModel({
     navigation,
     route,
-    createIncomeUseCase
+    incomeCreateUseCase,
+    incomeEditUseCase,
   })
 
   return (
