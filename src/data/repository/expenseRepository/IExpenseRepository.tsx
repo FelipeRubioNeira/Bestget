@@ -7,7 +7,8 @@ interface IExpenseRespository {
     getWithoutBudget: () => Promise<Expense[]>
     getTotal: () => Promise<number>
     create: (expense: ExpenseCreate) => Promise<string>
-
+    delete: (id: string) => Promise<void>
+    deleteByBudgetId: (budgetId: string) => Promise<void>
 }
 
 export default IExpenseRespository

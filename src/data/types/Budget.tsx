@@ -23,7 +23,10 @@ type BudgetUI = {
     date: string,
     category: Category | undefined
     type: "Budget",
-    onPress?: () => void
+    onPress?: () => void, // navigate
+    editMode?: boolean, // delete / edit 
+    onEdit?: () => void,
+    onDelete?: () => void,
 }
 
 export const BudgetKeys = Object.freeze({

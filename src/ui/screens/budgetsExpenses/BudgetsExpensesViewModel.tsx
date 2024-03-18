@@ -12,12 +12,19 @@ import { Category } from "../../../data/types/Categoty"
 import IBudgetRepository from "../../../data/repository/budgetRepository/IBudgetRepository"
 import { Budget, BudgetUI } from "../../../data/types/Budget"
 import { BudgetExpenseItemType } from "../../../data/types/BudgetExpense"
+import TouchableIcon from "../../components/touchableIcon/TouchableIcon"
+import { ModalProps } from "../../components/modal/Modal"
+import DeleteBudgetUseCase from "../../../domain/useCases/budgets/DeleteBudgetUseCase"
+
+const editIcon = require("../../../assets/icons/ic_edit.png")
+
 
 // ----------- interfaces and types ----------- //
 
 type ExpensesViewModelProps = {
     expenseRepository: IExpenseRespository,
     budgetRepository: IBudgetRepository,
+    deleteBudgetUseCase: DeleteBudgetUseCase
 } & BudgetsExpensesScreenProps
 
 export type BudgetOrExpense = "Budget" | "Expense"
@@ -29,6 +36,7 @@ const useBudgetExpensesViewModel = ({
     route,
     expenseRepository,
     budgetRepository,
+    deleteBudgetUseCase
 }: ExpensesViewModelProps) => {
 
 
@@ -54,6 +62,19 @@ const useBudgetExpensesViewModel = ({
 
     const [loading, setLoading] = useState(false)
 
+    const [editMode, setEditMode] = useState(false)
+
+    const [modalState, setModalState] = useState<ModalProps>({
+        visible: false,
+        title: "",
+        message: "",
+    })
+
+    const [selectedItemToDelete, setSelectedItemToDelete] = useState({
+        id: "",
+        type: "Budget" as BudgetExpenseItemType
+    })
+
 
 
     // ----------- effects ----------- //
@@ -78,10 +99,28 @@ const useBudgetExpensesViewModel = ({
     }, [newExpenseId, newBudgetId])
 
 
+    // we add the delete button to the header if there are budget or expenses
+    useEffect(() => {
+
+        navigation.setOptions({
+            headerRight: () => {
+                if (budgetsExpenses.length === 0) return null
+                return (
+                    <TouchableIcon
+                        image={editIcon}
+                        onPress={() => setEditMode(!editMode)}
+                    />
+                )
+            }
+        })
+
+    }, [budgetsExpenses, editMode])
 
 
-    // ########## methods ########## //
 
+
+
+    // ----------- methods ----------- //
 
 
     // ----------- get data ----------- //
@@ -152,24 +191,9 @@ const useBudgetExpensesViewModel = ({
 
 
     // ----------- ui interaction ----------- //
-
     const onShowExpenseOptions = () => {
         setButtonAddVisible(false)
         setExpenseOptionsVisble(true)
-    }
-
-    const onAddExpense = () => {
-        onHideExpenseOptions()
-        navigation.navigate(ScreenRoutes.EXPENSES_CREATE, {
-            categoryList: categories
-        })
-    }
-
-    const onAddBudget = () => {
-        onHideExpenseOptions()
-        navigation.navigate(ScreenRoutes.BUDGETS_CREATE, {
-            categoryList: categories
-        })
     }
 
     const onHideExpenseOptions = () => {
@@ -177,22 +201,101 @@ const useBudgetExpensesViewModel = ({
         setExpenseOptionsVisble(false)
     }
 
-    const findItem = <T extends BudgetExpenseItemType>(id: string, type: T) => {
+    const findItem = (id: string, type: BudgetExpenseItemType) => {
         return budgetsExpenses.find(item => item.id === id && item.type == type);
     };
 
-    const findCategoryById = (id: number) => {
-        return categories.find(category => category.id === id)
+
+    // ----------- modal ----------- //
+    const showAlert = (title: string, message: string) => {
+        setModalState({
+            visible: true,
+            title: title,
+            message: message
+        })
+    }
+
+    const hideAlert = () => {
+        setModalState({
+            ...modalState,
+            visible: false,
+        })
+    }
+
+
+    // ----------- onPress flatList items ----------- //
+    const onPressEdit = (itemId: string, type: BudgetExpenseItemType) => {
+
+        setEditMode(false)
+
+        if (type === "Budget") {
+            navigation.navigate(ScreenRoutes.BUDGET_FORM, {
+                categoryList: categories,
+            })
+
+        } else {
+            navigation.navigate(ScreenRoutes.EXPENSES_FORM, {
+                categoryList: categories,
+            })
+        }
+
+
+    }
+
+    const onPressDelete = (itemId: string, type: BudgetExpenseItemType) => {
+
+        const budgetMessage = "¿Estás seguro que deseas eliminar este presupuesto? Se eliminarán todos los gastos asociados."
+        const expenseMessage = "¿Estás seguro que deseas eliminar este gasto?"
+
+        const message = type === "Budget" ? budgetMessage : expenseMessage
+
+        showAlert("Eliminar", message)
+
+        setSelectedItemToDelete({
+            id: itemId,
+            type: type
+        })
+    }
+
+    const deleteItem = async () => {
+
+        hideAlert()
+
+        // if the item to delete is a budget, we delete all the expenses associated with it
+        if (selectedItemToDelete.type === "Budget") await deleteBudgetUseCase.delete(selectedItemToDelete.id)
+
+        // if the item to delete is an expense, we just delete it
+        else await expenseRepository.delete(selectedItemToDelete.id)
+
+        // finally we update the data
+        await getData(categoryList)
+
     }
 
 
 
     // ----------- navigation ----------- //
+    const onAddExpense = () => {
+        setEditMode(false)
+        onHideExpenseOptions()
+        navigation.navigate(ScreenRoutes.EXPENSES_FORM, {
+            categoryList: categories
+        })
+    }
+
+    const onAddBudget = () => {
+        setEditMode(false)
+        onHideExpenseOptions()
+        navigation.navigate(ScreenRoutes.BUDGET_FORM, {
+            categoryList: categories
+        })
+    }
+
     const onPressItem = (id: string, type: BudgetExpenseItemType) => {
 
+        setEditMode(false)
 
-        const [itemToNavigate, category] = createItemToNavigate(id, type)
-
+        const itemToNavigate = createItemToNavigate(id, type)
 
         if (type === "Budget") {
 
@@ -207,16 +310,15 @@ const useBudgetExpensesViewModel = ({
             // type === "Expense"
         }
 
-
     }
 
     const createItemToNavigate = (id: string, type: BudgetExpenseItemType) => {
 
         const budgetOrExpensItem = findItem(id, type)
         const amountInt = numberFormat(budgetOrExpensItem?.amount)
-        const category = findCategoryById(budgetOrExpensItem?.category?.id as number)
 
-        let finalObject = {
+
+        let navigationObject = {
             id: budgetOrExpensItem?.id as string,
             name: budgetOrExpensItem?.name as string,
             amount: amountInt,
@@ -224,13 +326,15 @@ const useBudgetExpensesViewModel = ({
             date: budgetOrExpensItem?.date as string
         }
 
-        return [finalObject, category]
+        return navigationObject
 
     }
 
 
     // ----------- return ----------- //
     return {
+        modalState,
+        editMode,
         loading,
         categories,
         buttonAddVisible,
@@ -244,6 +348,11 @@ const useBudgetExpensesViewModel = ({
         onPressItem,
 
         onHideExpenseOptions,
+        onPressEdit,
+        onPressDelete,
+        deleteItem,
+        showAlert,
+        hideAlert,
 
     }
 

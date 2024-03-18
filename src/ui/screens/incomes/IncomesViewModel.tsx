@@ -51,7 +51,7 @@ const useIncomesViewModel = ({
     const [allIncomes, setAllIncomes] = useState<IncomeUI[]>([])
 
     const [totalAmount, setTotalAmount] = useState<string>("0")
-    const [deleteMode, setDeleteMode] = useState<boolean>(false)
+    const [editMode, setEditMode] = useState<boolean>(false)
 
     const [modalState, setModalState] = useState<ModalProps>({
         visible: false,
@@ -74,13 +74,10 @@ const useIncomesViewModel = ({
     // 2. if a new income is created, we update the list
     useEffect(() => {
 
-        const unsubscribe = navigation.addListener('focus', () => {
-
-            getIncomes().then(incomes => {
-                setIncomeParams(incomes)
-                generateIncomeList(incomes)
-            })
-            
+        const unsubscribe = navigation.addListener('focus', async () => {
+            const incomes = await getIncomes()
+            setIncomeParams(incomes)
+            generateIncomeList(incomes)
         });
 
         return unsubscribe;
@@ -103,7 +100,7 @@ const useIncomesViewModel = ({
             }
         })
 
-    }, [deleteMode, incomeParams])
+    }, [editMode, incomeParams])
 
 
 
@@ -113,7 +110,6 @@ const useIncomesViewModel = ({
     }
 
     const generateIncomeList = async (incomes: Income[] = []) => {
-
         try {
 
             if (incomes.length == 0) {
@@ -167,14 +163,14 @@ const useIncomesViewModel = ({
 
     const navigateIncomeCreate = () => {
         turnOffDeleteMode()
-        navigation.navigate(ScreenRoutes.INCOMES_CREATE, { income: undefined })
+        navigation.navigate(ScreenRoutes.INCOME_FORM, { income: undefined })
     }
 
 
     // ------------------- delete events------------------- //
     const onPressDeleteHeaderIcon = () => {
 
-        if (!deleteMode) {
+        if (!editMode) {
             turnOnDeleteMode()
 
         } else {
@@ -184,11 +180,11 @@ const useIncomesViewModel = ({
     }
 
     const turnOnDeleteMode = () => {
-        setDeleteMode(true)
+        setEditMode(true)
     }
 
     const turnOffDeleteMode = () => {
-        setDeleteMode(false)
+        setEditMode(false)
     }
 
     const deleteIncome = async () => {
@@ -208,7 +204,7 @@ const useIncomesViewModel = ({
     const onPressEditIncomeItem = (id: string) => {
         turnOffDeleteMode()
         const income = incomeParams.find(income => income.id === id)
-        navigation.navigate(ScreenRoutes.INCOMES_CREATE, { income })
+        navigation.navigate(ScreenRoutes.INCOME_FORM, { income })
     }
 
     // onPress on flatlist item
@@ -236,7 +232,7 @@ const useIncomesViewModel = ({
 
 
     return {
-        deleteMode,
+        editMode,
         modalState,
         totalAmount,
         allIncomes,

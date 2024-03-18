@@ -24,7 +24,10 @@ type ExpenseUI = {
     date: string,
     category: Category | undefined
     type: "Expense",
-    onPress?: () => void
+    onPress?: () => void,
+    editMode?: boolean, // delete / edit 
+    onEdit?: () => void,
+    onDelete?: () => void,
 }
 
 export const ExpenseKeys = Object.freeze({

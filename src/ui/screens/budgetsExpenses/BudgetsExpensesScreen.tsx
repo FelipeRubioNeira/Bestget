@@ -1,43 +1,35 @@
-import { FlatList, Image, ImageProps, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View, ViewStyle } from 'react-native'
+import { FlatList, View } from 'react-native'
 import React from 'react'
-import { DefaultStyles, Styles } from '../../constants/Styles'
+import { DefaultStyles } from '../../constants/Styles'
 import HelpText from '../../components/helpText/Help'
 import { Strings } from '../../constants/Strings'
-import { FontSize } from '../../constants/Fonts'
+import { FontFamily, FontSize } from '../../constants/Fonts'
 import { Colors } from '../../constants/Colors'
 import TotalAmount from '../../components/totalAmount/TotalAmount'
 import { BudgetsExpensesScreenProps } from '../../../navigation/NavigationParamList'
-import Label from '../../components/label/Label'
 import ButtonAdd from '../../components/buttonAdd/ButtonAdd'
 import ExpenseRepository from '../../../data/repository/expenseRepository/ExpenseRepository'
-import CategoryRespository from '../../../data/repository/categoryRepository/CategoryRepository'
 import Loading from '../../components/loading/Loading'
 import BudgetRepository from '../../../data/repository/budgetRepository/BudgetRepository'
 import useBudgetExpensesViewModel from './BudgetsExpensesViewModel'
-import { BudgetExpenseItem, BudgetExpenseItemType } from '../../../data/types/BudgetExpense'
 import ExpenseItem from '../../components/expenseItem/ExpenseItem'
 import BudgetItem from '../../components/budgetItem/BudgetItem'
 import { BudgetUI } from '../../../data/types/Budget'
 import { ExpenseUI } from '../../../data/types/Expense'
+import ExpenseOptions from '../../components/expenseOptions/ExpenseOptions'
+import Modal from '../../components/modal/Modal'
+import DeleteBudgetUseCase from '../../../domain/useCases/budgets/DeleteBudgetUseCase'
 
 
-interface ExpenseOptionsProps {
-    visible: boolean,
-    onPressOutcome: () => void,
-    onPressBudget: () => void,
-    onHideOptions: () => void
-}
 
-interface OutcomeOptionItemProps {
-    title: string,
-    image: ImageProps,
-    styles: ViewStyle,
-    onPress: () => void
-}
-
-
-const expenseRepository = new ExpenseRepository()
 const budgetRepository = new BudgetRepository()
+const expenseRepository = new ExpenseRepository()
+
+const deleteBudgetUseCase = new DeleteBudgetUseCase(
+    budgetRepository,
+    expenseRepository
+)
+
 
 
 const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps) => {
@@ -48,27 +40,38 @@ const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps
         route,
         expenseRepository,
         budgetRepository,
+        deleteBudgetUseCase,
     })
 
     const renderBugdetOrExpense = (item: BudgetUI | ExpenseUI) => {
 
+        // render budget 
         if (item.type === "Budget") {
             return (
                 <BudgetItem
-                    onPress={() => budgetsExpensesViewModel
-                        .onPressItem(item.id, "Budget")}
                     {...item}
+                    editMode={budgetsExpensesViewModel.editMode}
+                    onPress={() => budgetsExpensesViewModel.onPressItem(item.id, "Budget")}
+                    onEdit={()=>budgetsExpensesViewModel.onPressEdit(item.id, "Budget")}
+                    onDelete={() => budgetsExpensesViewModel.onPressDelete(item.id, "Budget")}
                 />
             )
-        }
 
-        else return <ExpenseItem {...item} />
+        }
+        // render expense
+        else return <ExpenseItem
+            {...item}
+            editMode={budgetsExpensesViewModel.editMode}
+            onEdit={()=>budgetsExpensesViewModel.onPressEdit(item.id, "Expense")}
+            onDelete={() => budgetsExpensesViewModel.onPressDelete(item.id, "Expense")}
+        />
 
     }
 
     return (
         <>
             <View style={DefaultStyles.screen}>
+
 
                 <HelpText
                     value={Strings.expenses}
@@ -107,123 +110,27 @@ const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps
 
             <Loading visible={budgetsExpensesViewModel.loading} />
 
+            <Modal
+                visible={budgetsExpensesViewModel.modalState.visible}
+                title={budgetsExpensesViewModel.modalState.title}
+                message={budgetsExpensesViewModel.modalState.message}
+                buttonList={[
+                    {
+                        text: 'Aceptar',
+                        onPress: budgetsExpensesViewModel.deleteItem,
+                    },
+                    {
+                        text: 'Cancelar',
+                        onPress: budgetsExpensesViewModel.hideAlert,
+                        style: { color: Colors.BLUE, fontFamily: FontFamily.BOLD }
+                    }
+                ]}
+            />
+
         </>
 
     )
 }
 
-
-const ExpenseOptions = ({
-    visible,
-    onPressOutcome,
-    onPressBudget,
-    onHideOptions
-}: ExpenseOptionsProps) => {
-
-    if (!visible) return null
-    return (
-
-        <TouchableWithoutFeedback
-            onPress={onHideOptions}>
-
-            <View
-                style={{
-                    ...outcomes_styles.outcome_options,
-                    display: visible ? 'flex' : 'none',
-                }}
-            >
-
-                <ExpenseOptionItem
-                    title='Gasto'
-                    onPress={onPressOutcome}
-                    image={require("../../../assets/icons/ic_salary.png")}
-                    styles={{
-                        backgroundColor: Colors.YELLOW,
-                        right: 0,
-                        bottom: 100,
-                    }}
-                />
-
-                <ExpenseOptionItem
-                    title='Plan'
-                    onPress={onPressBudget}
-                    image={require("../../../assets/icons/ic_budget.png")}
-                    styles={{
-                        backgroundColor: Colors.YELLOW,
-                        bottom: 0,
-                        right: 100,
-                    }}
-                />
-
-            </View>
-        </TouchableWithoutFeedback>
-
-    )
-}
-
-const ExpenseOptionItem = ({
-    title,
-    image,
-    styles,
-    onPress
-}: OutcomeOptionItemProps) => {
-
-    return (
-        <View style={{ ...outcomes_styles.touchable_option_item, ...styles }}>
-
-            <Label value={title} fontSize={FontSize.XXSMALL} />
-
-            <TouchableOpacity onPress={onPress}>
-                <Image
-                    source={image}
-                    resizeMode='center'
-                    style={outcomes_styles.image_option_item}
-                />
-            </TouchableOpacity>
-        </View>
-    )
-
-}
-
-const outcomes_styles = StyleSheet.create({
-
-    outcome_options: {
-        position: 'absolute',
-        bottom: 20,
-        right: 20,
-        aspectRatio: 1,
-        height: "100%",
-        width: "100%",
-    },
-
-    outcomeItem: {
-        width: "100%",
-        height: 60,
-        borderBottomWidth: 1,
-        paddingHorizontal: 10,
-        borderColor: Colors.GRAY,
-        borderRadius: Styles.BORDER_RADIUS,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-
-    touchable_option_item: {
-        position: 'absolute',
-        height: 80,
-        aspectRatio: 1,
-        borderRadius: Styles.HEIGHT,
-        justifyContent: 'space-between',
-        paddingVertical: "8%",
-        alignItems: 'center',
-        ...DefaultStyles.shadow,
-    },
-
-    image_option_item: {
-        height: "80%",
-        aspectRatio: 1,
-        alignSelf: 'center',
-    }
-})
 
 export default BudgetsExpensesScreen

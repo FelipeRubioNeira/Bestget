@@ -1,0 +1,140 @@
+import { Image, ImageProps, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View, ViewStyle } from 'react-native'
+import React from 'react'
+import Label from '../label/Label'
+import Spacer from '../spacer/Spacer'
+import { Colors } from '../../constants/Colors'
+import { Styles, DefaultStyles } from '../../constants/Styles'
+import { FontFamily, FontSize } from '../../constants/Fonts'
+
+const expenseIcon = require("../../../assets/icons/ic_sack.png")
+const budgetIcon = require("../../../assets/icons/ic_calculator_bold.png")
+
+
+interface ExpenseOptionsProps {
+    visible: boolean,
+    onPressOutcome: () => void,
+    onPressBudget: () => void,
+    onHideOptions: () => void
+}
+
+interface ExpenseOptionItemProps {
+    title: string,
+    image: ImageProps,
+    styles: ViewStyle,
+    onPress: () => void
+}
+
+
+const ExpenseOptions = ({
+    visible,
+    onPressOutcome,
+    onPressBudget,
+    onHideOptions
+}: ExpenseOptionsProps) => {
+
+    if (!visible) return null
+    return (
+
+        <TouchableWithoutFeedback
+            onPress={onHideOptions}>
+
+            <View
+                style={{
+                    ...expenseOptionStyles.expenseOptions,
+                    display: visible ? 'flex' : 'none',
+                }}
+            >
+
+                <ExpenseOptionItem
+                    title='Gasto'
+                    onPress={onPressOutcome}
+                    image={expenseIcon}
+                    styles={{
+                        right: 0,
+                        bottom: 100,
+                    }}
+                />
+
+                <ExpenseOptionItem
+                    title='Plan'
+                    onPress={onPressBudget}
+                    image={budgetIcon}
+                    styles={{
+                        bottom: 0,
+                        right: 100,
+                    }}
+                />
+
+            </View>
+        </TouchableWithoutFeedback>
+
+    )
+}
+
+const ExpenseOptionItem = ({
+    title,
+    image,
+    styles,
+    onPress
+}: ExpenseOptionItemProps) => {
+
+    return (
+        <View style={{
+            ...expenseOptionStyles.touchableOptionItem,
+            ...styles
+        }}
+        >
+
+            <Label
+                value={title}
+                fontSize={FontSize.XXSMALL}
+                fontFamily={FontFamily.BOLD}
+            />
+
+            <Spacer marginVertical={"2%"} />
+
+            <TouchableOpacity onPress={onPress}>
+                <Image
+                    source={image}
+                    resizeMode='contain'
+                    style={expenseOptionStyles.imageOptionItem}
+                />
+            </TouchableOpacity>
+        </View>
+    )
+
+}
+
+export default ExpenseOptions
+
+const expenseOptionStyles = StyleSheet.create({
+
+    expenseOptions: {
+        position: 'absolute',
+        bottom: 20,
+        right: 20,
+        aspectRatio: 1,
+        height: "100%",
+        width: "100%",
+    },
+
+    touchableOptionItem: {
+        backgroundColor: Colors.YELLOW,
+        position: 'absolute',
+        height: 80,
+        aspectRatio: 1,
+        borderRadius: Styles.HEIGHT,
+        justifyContent: 'space-between',
+        paddingVertical: "14%",
+        alignItems: 'center',
+        ...DefaultStyles.shadow,
+    },
+
+    imageOptionItem: {
+        width: 35,
+        height: 35,
+        alignSelf: 'center',
+        tintColor:Colors.BLACK
+    }
+
+})

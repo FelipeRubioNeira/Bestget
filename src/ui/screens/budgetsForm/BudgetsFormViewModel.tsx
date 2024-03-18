@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { BudgetsCreateScreenProps } from "../../../navigation/NavigationParamList"
 import { Category } from "../../../data/types/Categoty"
-import CreateBudgetUseCase from "../../../domain/useCases/CreateBudgetUseCase"
+import CreateBudgetUseCase from "../../../domain/useCases/budgets/CreateBudgetUseCase"
 import { BudgetCreate } from "../../../data/types/Budget"
 import { numberFormat } from "../../../utils/Convert"
 import { ScreenRoutes } from "../../../navigation/Routes"
@@ -22,7 +22,7 @@ type StateName = keyof BudgetState
 type StateType = BudgetState[StateName]
 
 
-const useBudgetsCreateViewModel = ({
+const useBudgetsFormViewModel = ({
     navigation,
     route,
     createBudgetUseCase
@@ -115,4 +115,4 @@ const useBudgetsCreateViewModel = ({
 
 }
 
-export default useBudgetsCreateViewModel
+export default useBudgetsFormViewModel

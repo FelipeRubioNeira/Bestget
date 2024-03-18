@@ -21,7 +21,6 @@ const Label = ({
 }: ILabel) => {
 
     return (
-
         <Text
             style={{
                 ...titleStyles.titleDefault,

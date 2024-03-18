@@ -1,5 +1,5 @@
-import IExpenseRespository from "../../data/repository/expenseRepository/IExpenseRepository";
-import { ExpenseCreate } from "../../data/types/Expense";
+import IExpenseRespository from "../../../data/repository/expenseRepository/IExpenseRepository";
+import { ExpenseCreate } from "../../../data/types/Expense";
 
 
 class CreateExpenseUseCase {

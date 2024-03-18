@@ -1,10 +1,10 @@
 export enum Colors {
     TRANSPARENT = "rgba(0, 0, 0, 0.125)",
-    BLACK = '#2F2F2F',
+    WHITE = '#F8F8F8',
     LIGHT_GRAY = '#ECECEC',
     GRAY = '#CCCCCC',
     DARK_GRAY = '#848484',
-    WHITE = '#F8F8F8',
+    BLACK = '#2F2F2F',
     GREEN = '#d9ead3',
     DARK_GREEN = '#acd19f',
     YELLOW = "#E7DEA4",

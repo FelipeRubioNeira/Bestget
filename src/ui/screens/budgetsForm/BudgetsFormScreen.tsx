@@ -1,6 +1,5 @@
-import { StyleSheet, View } from 'react-native'
+import { View } from 'react-native'
 import React from 'react'
-import { DefaultStyles } from '../../constants/Styles'
 import TextInputWithLabel from '../../components/textInputWithLabel/TextInputWithLabel'
 import Spacer from '../../components/spacer/Spacer'
 import { InputType } from '../../components/textInput/TextInputViewModel'
@@ -8,18 +7,19 @@ import ChipList from '../../components/chipList/ChipList'
 import SubmitButton from '../../components/submitButton/SubmitButton'
 import { Colors } from '../../constants/Colors'
 import { BudgetsCreateScreenProps } from '../../../navigation/NavigationParamList'
-import useBudgetsCreateViewModel from './BudgetsCreateViewModel'
-import CreateBudgetUseCase from '../../../domain/useCases/CreateBudgetUseCase'
+import useBudgetsFormViewModel from './BudgetsFormViewModel'
+import CreateBudgetUseCase from '../../../domain/useCases/budgets/CreateBudgetUseCase'
 import BudgetRepository from '../../../data/repository/budgetRepository/BudgetRepository'
+import Screen from '../../components/screen/Screen'
 
 
 const budgetRepository = new BudgetRepository()
 const createBudgetUseCase = new CreateBudgetUseCase(budgetRepository)
 
-const BudgetsCreateScreen = ({ navigation, route }: BudgetsCreateScreenProps) => {
+const BudgetsFormScreen = ({ navigation, route }: BudgetsCreateScreenProps) => {
 
 
-    const budgetsCreateViewModel = useBudgetsCreateViewModel({
+    const budgetsCreateViewModel = useBudgetsFormViewModel({
         navigation,
         route,
         createBudgetUseCase
@@ -31,8 +31,7 @@ const BudgetsCreateScreen = ({ navigation, route }: BudgetsCreateScreenProps) =>
     } = budgetsCreateViewModel.budgetState
 
     return (
-        <View style={{ ...DefaultStyles.screen, justifyContent: "space-between" }}>
-
+        <Screen>
             <View>
 
                 <TextInputWithLabel
@@ -61,15 +60,13 @@ const BudgetsCreateScreen = ({ navigation, route }: BudgetsCreateScreenProps) =>
 
             <Spacer marginVertical={"8%"} />
 
-
             <SubmitButton
                 backgroundColor={Colors.YELLOW}
                 onPress={budgetsCreateViewModel.onSubmit}
             />
-
-        </View>
+        </Screen>
     )
 }
 
 
-export default BudgetsCreateScreen
+export default BudgetsFormScreen

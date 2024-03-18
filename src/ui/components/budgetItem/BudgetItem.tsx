@@ -2,15 +2,16 @@ import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 import Label from '../label/Label'
-import ChipItem from '../chipItem/ChipItem'
-import { BudgetExpenseItem } from '../../../data/types/BudgetExpense'
-import { DefaultStyles, Styles } from '../../constants/Styles'
-import CircleCategory from '../circleCategory/CircleCategory'
+import { DefaultStyles } from '../../constants/Styles'
 import { Colors } from '../../constants/Colors'
+import { BudgetUI } from '../../../data/types/Budget'
+import EditionIcons from '../editionIcons/EditionIcons'
+
+const budgetIcon = require("../../../assets/icons/ic_calculator_bold.png")
 
 
 
-const BudgetItem = ({ name, amount, category, onPress }: BudgetExpenseItem) => {
+const BudgetItem = ({ name, amount, category, onPress, editMode, onEdit, onDelete }: BudgetUI) => {
 
 
     return (
@@ -22,15 +23,26 @@ const BudgetItem = ({ name, amount, category, onPress }: BudgetExpenseItem) => {
 
             <IconBudget color={category?.color} />
 
+
             <Label
                 value={name}
                 style={budgetStyles.description}
             />
 
-            <Label
-                value={"$" + amount}
-                style={budgetStyles.amount}
-            />
+            {
+                editMode ?
+                    <EditionIcons
+                        onEdit={onEdit}
+                        onDelete={onDelete}
+                    />
+                    :
+
+                    <Label
+                        value={"$" + amount}
+                        style={budgetStyles.amount}
+                    />
+            }
+
 
         </TouchableOpacity>
     )
@@ -41,11 +53,10 @@ const IconBudget = ({ color = Colors.WHITE }: { color?: string }) => {
     return (
 
         <Image
-            source={require("../../../assets/icons/ic_budget.png")}
+            source={budgetIcon}
             style={{
                 ...budgetStyles.icon,
-                backgroundColor: color,
-                borderRadius: Styles.BORDER_RADIUS,
+                tintColor: color,
                 marginRight: "4%",
             }}
         />

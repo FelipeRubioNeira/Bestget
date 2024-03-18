@@ -135,7 +135,7 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository }: budgetVi
 
     // ----------- events ----------- //
     const onPress = () => {
-        navigation.navigate(ScreenRoutes.EXPENSES_CREATE, {
+        navigation.navigate(ScreenRoutes.EXPENSES_FORM, {
             budget,
             categoryList
         })

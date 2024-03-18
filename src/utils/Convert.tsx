@@ -18,7 +18,7 @@ export const currencyFormat = (value: number | string): string => {
     return resultado;
 }
 
-export const numberFormat = (value: string): number => {
+export const numberFormat = (value: string = ""): number => {
     if (value === "") return 0;
     const formattedValue = value.replace(/\./g, '')
     return parseInt(formattedValue)

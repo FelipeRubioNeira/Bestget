@@ -137,14 +137,14 @@ const useExpensesViewModel = ({
 
     const onAddExpense = () => {
         onHideExpenseOptions()
-        navigation.navigate(ScreenRoutes.EXPENSES_CREATE, {
+        navigation.navigate(ScreenRoutes.EXPENSES_FORM, {
             categoryList: categories
         })
     }
 
     const onAddBudget = () => {
         onHideExpenseOptions()
-        navigation.navigate(ScreenRoutes.BUDGETS_CREATE, {
+        navigation.navigate(ScreenRoutes.BUDGET_FORM, {
             categoryList: categories
         })
     }

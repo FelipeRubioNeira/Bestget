@@ -53,7 +53,7 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => <IncomeItem
           {...item}
-          editMode={incomeViewModel.deleteMode}
+          editMode={incomeViewModel.editMode}
           onEdit={() => incomeViewModel.onPressEditIncomeItem(item.id)}
           onDelete={() => incomeViewModel.onPressDeleteIncomeItem(item.id)}
         />}

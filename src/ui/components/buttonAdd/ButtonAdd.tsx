@@ -1,6 +1,8 @@
-import { StyleSheet, TouchableOpacity } from "react-native"
+import { Image, StyleSheet, TouchableOpacity } from "react-native"
 import { Colors, FontFamily, Styles, DefaultStyles } from "../../constants/Index"
 import Label from "../label/Label"
+
+const plusIcon = require('../../../assets/icons/ic_plus.png')
 
 interface IButtonAdd {
     visible?: boolean,
@@ -22,11 +24,13 @@ const ButtonAdd = ({
                 ...buttonAddStyles.defaultButton,
                 backgroundColor: backgroundColor
             }}>
-            <Label
-                value="+"
-                fontSize={30}
-                fontFamily={FontFamily.LIGHT}
-                color={Colors.BLACK}
+            <Image
+                source={plusIcon}
+                style={{
+                    width: 25,
+                    height: 25,
+                    tintColor: Colors.BLACK
+                }}
             />
 
         </TouchableOpacity>

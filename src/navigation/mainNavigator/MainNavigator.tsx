@@ -11,11 +11,11 @@ import {
     ExpenseScreen
 } from '../../ui/screens/Index'
 
-import ScreenOptions from './ScreenOptions';
-import IncomesCreateScreen from '../../ui/screens/incomesCreate/IncomesCreateScreen';
 import { ScreenRoutes } from '../Routes';
-import ExpensesCreate from '../../ui/screens/expensesCreate/ExpensesCreateScreen';
-import BudgetsCreateScreen from '../../ui/screens/budgetsCreate/BudgetsCreateScreen';
+import ScreenOptions from './ScreenOptions';
+import IncomeFormScreen from '../../ui/screens/incomeForm/IncomeFormScreen';
+import ExpenseForm from '../../ui/screens/expensesForm/ExpenseFormScreen';
+import BudgetsFormScreen from '../../ui/screens/budgetsForm/BudgetsFormScreen';
 import BudgetScreen from '../../ui/screens/budget/BudgetScreen';
 import BudgetsExpensesScreen from '../../ui/screens/budgetsExpenses/BudgetsExpensesScreen';
 
@@ -49,8 +49,8 @@ const MainNavigator = () => {
                 />
 
                 <Stack.Screen
-                    component={IncomesCreateScreen}
-                    name={ScreenRoutes.INCOMES_CREATE}
+                    component={IncomeFormScreen}
+                    name={ScreenRoutes.INCOME_FORM}
                     options={ScreenOptions.incomesCreate}
                 />
 
@@ -71,22 +71,22 @@ const MainNavigator = () => {
                 />
 
                 <Stack.Screen
-                    component={ExpensesCreate}
-                    name={ScreenRoutes.EXPENSES_CREATE}
-                    options={ScreenOptions.EXPENSES_CREATE}
+                    component={ExpenseForm}
+                    name={ScreenRoutes.EXPENSES_FORM}
+                    options={ScreenOptions.EXPENSES_FORM}
                 />
 
                 <Stack.Screen
                     component={BudgetScreen}
                     name={ScreenRoutes.BUDGET}
-                    options={ScreenOptions.BUDGETS_CREATE}
+                    options={ScreenOptions.BUDGET_FORM}
                 />
 
 
                 <Stack.Screen
-                    component={BudgetsCreateScreen}
-                    name={ScreenRoutes.BUDGETS_CREATE}
-                    options={ScreenOptions.BUDGETS_CREATE}
+                    component={BudgetsFormScreen}
+                    name={ScreenRoutes.BUDGET_FORM}
+                    options={ScreenOptions.BUDGET_FORM}
                 />
 
             </Stack.Navigator>

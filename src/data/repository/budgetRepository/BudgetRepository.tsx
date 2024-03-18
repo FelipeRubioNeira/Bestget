@@ -64,6 +64,20 @@ class BudgetRepository implements IBudgetRepository {
 
     }
 
+    async delete(id: string): Promise<void> {
+
+        try {
+            await firestore()
+                .collection(Collections.BUDGET)
+                .doc(id)
+                .delete()
+
+        } catch (error) {
+            console.error("error BudgetRepository delete", error);
+        }
+
+    }
+
 }
 
 export default BudgetRepository

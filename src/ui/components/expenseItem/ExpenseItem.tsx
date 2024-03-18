@@ -1,13 +1,14 @@
-import { View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import React from 'react'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 import Label from '../label/Label'
-import { BudgetExpenseItem } from '../../../data/types/BudgetExpense'
 import { DefaultStyles } from '../../constants/Styles'
 import CircleCategory from '../circleCategory/CircleCategory'
+import { ExpenseUI } from '../../../data/types/Expense'
+import EditionIcons from '../editionIcons/EditionIcons'
 
 
-const ExpenseItem = ({ name, amount, category }: BudgetExpenseItem) => {
+const ExpenseItem = ({ name, amount, category, editMode, onEdit, onDelete }: ExpenseUI) => {
 
 
     return (
@@ -21,18 +22,37 @@ const ExpenseItem = ({ name, amount, category }: BudgetExpenseItem) => {
                 value={name}
                 fontSize={FontSize.SMALL}
                 fontFamily={FontFamily.REGULAR}
-                style={{ flex: 2 }}
+                style={expenseStyles.name}
             />
 
-            <Label
-                value={"$" + amount}
-                fontSize={FontSize.SMALL}
-                fontFamily={FontFamily.BOLD}
-                style={{ flex: 1, textAlign: "right" }}
-            />
+            {
+                editMode ?
+                    <EditionIcons
+                        onEdit={onEdit}
+                        onDelete={onDelete}
+                    />
+                    :
+
+                    <Label
+                        value={"$" + amount}
+                        fontSize={FontSize.SMALL}
+                        fontFamily={FontFamily.BOLD}
+                        style={expenseStyles.amount}
+                    />
+            }
 
         </View>
     )
 }
+
+const expenseStyles = StyleSheet.create({
+    name: {
+        flex: 2
+    },
+    amount: {
+        flex: 1,
+        textAlign: "right"
+    }
+})
 
 export default ExpenseItem

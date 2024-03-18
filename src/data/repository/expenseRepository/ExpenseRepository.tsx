@@ -153,6 +153,42 @@ class ExpenseRepository implements IExpenseRespository {
 
     }
 
+    async delete(id: string): Promise<void> {
+
+        try {
+            
+            await firestore()
+                .collection(Collections.EXPENSE)
+                .doc(id)
+                .delete()
+
+        } catch (error) {
+            console.error("error deleteExpense", error);
+        }
+
+    }
+
+    async deleteByBudgetId(budgetId: string): Promise<void> {
+
+        try {
+
+            const expenses = await this.getById(budgetId)
+
+            const deletePromises = expenses.map(expense => {
+                return firestore()
+                    .collection(Collections.EXPENSE)
+                    .doc(expense.id)
+                    .delete()
+            })
+
+            await Promise.all(deletePromises)
+
+        } catch (error) {
+            console.error("error deleteByBudgetId", error);
+        }
+
+    }
+
 
     // ----------- helpers ----------- //
 

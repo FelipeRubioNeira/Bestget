@@ -3,7 +3,7 @@ import React from 'react'
 import Spacer from '../../components/spacer/Spacer'
 import { IncomesCreateScreenProps } from '../../../navigation/NavigationParamList'
 import SubmitButton from '../../components/submitButton/SubmitButton'
-import useIncomeCreateViewModel from './IncomesCreateViewModel'
+import useIncomeFormViewModel from './IncomeFormViewModel'
 import TextInputWithLabel from '../../components/textInputWithLabel/TextInputWithLabel'
 import IncomeRepository from '../../../data/repository/incomeRepository/IncomeRepository'
 
@@ -11,24 +11,25 @@ import { InputType } from '../../components/textInput/TextInputViewModel'
 import { Colors } from '../../constants/Colors'
 import Modal from '../../components/modal/Modal'
 import Screen from '../../components/screen/Screen'
-import { IncomeCreateUseCase } from '../../../domain/useCases/incomes/IncomeCreateUseCase'
-import IncomeEditUseCase from '../../../domain/useCases/incomes/IncomeEditUsecase'
+
+import EditIncomeUseCase from '../../../domain/useCases/incomes/EditIncomeUsecase'
+import CreateIncomeUseCase from '../../../domain/useCases/incomes/CreateIncomeUseCase'
 
 
 // dependency injection 
 const incomeDataSource = new IncomeRepository()
-const incomeCreateUseCase = new IncomeCreateUseCase(incomeDataSource)
-const incomeEditUseCase = new IncomeEditUseCase(incomeDataSource)
+const createIncomeUseCase = new CreateIncomeUseCase(incomeDataSource)
+const editIncomeEUseCase = new EditIncomeUseCase(incomeDataSource)
 
 
-const IncomesCreateScreen = ({ navigation, route }: IncomesCreateScreenProps) => {
+const IncomeFormScreen = ({ navigation, route }: IncomesCreateScreenProps) => {
 
 
-  const incomesCreateViewModel = useIncomeCreateViewModel({
+  const incomesCreateViewModel = useIncomeFormViewModel({
     navigation,
     route,
-    incomeCreateUseCase,
-    incomeEditUseCase,
+    createIncomeUseCase,
+    editIncomeEUseCase,
   })
 
   return (
@@ -57,7 +58,7 @@ const IncomesCreateScreen = ({ navigation, route }: IncomesCreateScreenProps) =>
       <Spacer marginVertical={"8%"} />
 
       <SubmitButton
-        onPress={incomesCreateViewModel.createIncome}
+        onPress={incomesCreateViewModel.saveIncome}
         backgroundColor={Colors.GREEN}
       />
 
@@ -82,4 +83,4 @@ const IncomesCreateScreen = ({ navigation, route }: IncomesCreateScreenProps) =>
 
 
 
-export default IncomesCreateScreen
+export default IncomeFormScreen

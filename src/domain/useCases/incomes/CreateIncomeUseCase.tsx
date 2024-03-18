@@ -5,7 +5,7 @@ import { isConnected } from "../../../utils/Connection";
 
 
 
-export class IncomeCreateUseCase {
+class CreateIncomeUseCase {
     constructor(private incomeRepository: IIncomeRepository) { }
 
 
@@ -110,3 +110,5 @@ export class IncomeCreateUseCase {
 
 
 }
+
+export default CreateIncomeUseCase;

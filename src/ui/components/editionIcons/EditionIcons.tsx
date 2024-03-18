@@ -28,7 +28,7 @@ const EditionIcons = ({
                 onPress={onEdit}
             />
 
-            <Spacer marginHorizontal={"2%"}/>
+            <Spacer marginHorizontal={"4%"}/>
 
             <TouchableIcon
                 image={minusIcon}
@@ -44,7 +44,9 @@ const EditionIcons = ({
 const editionStyle = StyleSheet.create({
     container: {
         flexDirection: "row",
-        justifyContent:"space-between",
+        justifyContent:"flex-end",
+        flex:1,
+        height: "100%",
     }
 })
 

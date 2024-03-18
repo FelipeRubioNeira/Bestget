@@ -41,7 +41,7 @@ const ScreenOptions = Object.freeze({
         headerTitleStyle: { fontFamily: FontFamily.BOLD },
     },
 
-    EXPENSES_CREATE: {
+    EXPENSES_FORM: {
         title: "Nuevo gasto",
         headerTintColor: Colors.BLACK,
         headerStyle: { backgroundColor: Colors.YELLOW },
@@ -55,7 +55,7 @@ const ScreenOptions = Object.freeze({
         headerTitleStyle: { fontFamily: FontFamily.BOLD },
     },
 
-    BUDGETS_CREATE: {
+    BUDGET_FORM: {
         title: "Nuevo presupuesto",
         headerTintColor: Colors.BLACK,
         headerStyle: { backgroundColor: Colors.YELLOW },

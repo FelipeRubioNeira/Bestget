@@ -4,22 +4,21 @@ import { ScreenRoutes } from "../../../navigation/Routes";
 import { currencyFormat, numberFormat } from "../../../utils/Convert";
 import { Message } from "../../../data/types/Message";
 import { Income } from "../../../data/types/Income";
-import { IncomeCreateUseCase } from "../../../domain/useCases/incomes/IncomeCreateUseCase";
-import IncomeEditUseCase from "../../../domain/useCases/incomes/IncomeEditUsecase";
-import { ValidationResult } from "../../../data/types/Validation";
+import CreateIncomeUseCase from "../../../domain/useCases/incomes/CreateIncomeUseCase";
+import IncomeEditUseCase from "../../../domain/useCases/incomes/EditIncomeUsecase";
 
 
 type IIncomesCreateViewModel = {
-    incomeCreateUseCase: IncomeCreateUseCase,
-    incomeEditUseCase: IncomeEditUseCase
+    createIncomeUseCase: CreateIncomeUseCase,
+    editIncomeEUseCase: IncomeEditUseCase
 } & IncomesCreateScreenProps
 
 
-const useIncomeCreateViewModel = ({
+const useIncomeFormViewModel = ({
     navigation,
     route,
-    incomeCreateUseCase,
-    incomeEditUseCase,
+    createIncomeUseCase,
+    editIncomeEUseCase,
 }: IIncomesCreateViewModel) => {
 
 
@@ -58,8 +57,7 @@ const useIncomeCreateViewModel = ({
         setIncomeAmount(newIncomeAmount)
     }
 
-    // TODO: update the name of the method
-    const createIncome = async () => {
+    const saveIncome = async () => {
 
         try {
 
@@ -68,7 +66,7 @@ const useIncomeCreateViewModel = ({
             // 1. If is an edition
             if (income?.id) {
 
-                response = await incomeEditUseCase.edit({
+                response = await editIncomeEUseCase.edit({
                     id: income.id,
                     name: incomeName,
                     amount: numberFormat(incomeAmount)
@@ -77,7 +75,7 @@ const useIncomeCreateViewModel = ({
                 // 2. if is a new income
             } else {
 
-                response = await incomeCreateUseCase.create({
+                response = await createIncomeUseCase.create({
                     name: incomeName,
                     amount: numberFormat(incomeAmount)
                 })
@@ -123,11 +121,11 @@ const useIncomeCreateViewModel = ({
         incomeName, updateIncomeName,
         incomeAmount, updateIncomeAmount,
 
-        createIncome,
+        saveIncome,
         hideModalAlert
     }
 
 
 }
 
-export default useIncomeCreateViewModel;
+export default useIncomeFormViewModel;

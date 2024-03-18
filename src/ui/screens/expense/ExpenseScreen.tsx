@@ -30,7 +30,7 @@ interface ExpenseOptionsProps {
     onHideOptions: () => void
 }
 
-interface OutcomeOptionItemProps {
+interface ExpenseOptionItemProps {
     title: string,
     image: ImageProps,
     styles: ViewStyle,
@@ -192,7 +192,7 @@ const OutcomeOptionItem = ({
     image,
     styles,
     onPress
-}: OutcomeOptionItemProps) => {
+}: ExpenseOptionItemProps) => {
 
     return (
         <View style={{ ...outcomes_styles.touchable_option_item, ...styles }}>

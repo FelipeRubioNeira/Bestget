@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { ExpensesCreateScreenProps } from "../../../navigation/NavigationParamList"
 import { Category } from "../../../data/types/Categoty"
-import CreateExpenseUseCase from "../../../domain/useCases/CreateExpenseUseCase"
+import CreateExpenseUseCase from "../../../domain/useCases/budgets/CreateExpenseUseCase"
 import { numberFormat } from "../../../utils/Convert"
 import { ExpenseCreate } from "../../../data/types/Expense"
 import { ScreenRoutes } from "../../../navigation/Routes"
@@ -24,7 +24,7 @@ type StateName = keyof IExpenseState
 type StateType = IExpenseState[StateName]
 
 
-const useExpensesCreateViewModel = (
+const useExpenseFormViewModel = (
     { navigation, route, createExpenseUseCase }: ExpensesCreateViewModelProps
 ) => {
 
@@ -178,4 +178,4 @@ const useExpensesCreateViewModel = (
 
 }
 
-export default useExpensesCreateViewModel
+export default useExpenseFormViewModel
