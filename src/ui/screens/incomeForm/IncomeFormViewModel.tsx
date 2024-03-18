@@ -4,8 +4,8 @@ import { ScreenRoutes } from "../../../navigation/Routes";
 import { currencyFormat, numberFormat } from "../../../utils/Convert";
 import { Message } from "../../../data/types/Message";
 import { Income } from "../../../data/types/Income";
-import CreateIncomeUseCase from "../../../domain/useCases/incomes/CreateIncomeUseCase";
-import IncomeEditUseCase from "../../../domain/useCases/incomes/EditIncomeUsecase";
+import CreateIncomeUseCase from "../../../domain/useCases/CreateIncomeUseCase";
+import IncomeEditUseCase from "../../../domain/useCases/EditIncomeUsecase";
 
 
 type IIncomesCreateViewModel = {

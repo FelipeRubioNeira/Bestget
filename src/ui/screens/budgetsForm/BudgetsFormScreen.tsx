@@ -8,13 +8,23 @@ import SubmitButton from '../../components/submitButton/SubmitButton'
 import { Colors } from '../../constants/Colors'
 import { BudgetsCreateScreenProps } from '../../../navigation/NavigationParamList'
 import useBudgetsFormViewModel from './BudgetsFormViewModel'
-import CreateBudgetUseCase from '../../../domain/useCases/budgets/CreateBudgetUseCase'
+import CreateBudgetUseCase from '../../../domain/useCases/CreateBudgetUseCase'
 import BudgetRepository from '../../../data/repository/budgetRepository/BudgetRepository'
 import Screen from '../../components/screen/Screen'
+import Modal from '../../components/modal/Modal'
+import EditBudgetUseCase from '../../../domain/useCases/EditBudgetUseCase'
+import ExpenseRepository from '../../../data/repository/expenseRepository/ExpenseRepository'
 
 
 const budgetRepository = new BudgetRepository()
+const expensesRepository = new ExpenseRepository()
 const createBudgetUseCase = new CreateBudgetUseCase(budgetRepository)
+
+const editBudgetUseCase = new EditBudgetUseCase(
+    budgetRepository,
+    expensesRepository
+)
+
 
 const BudgetsFormScreen = ({ navigation, route }: BudgetsCreateScreenProps) => {
 
@@ -22,21 +32,28 @@ const BudgetsFormScreen = ({ navigation, route }: BudgetsCreateScreenProps) => {
     const budgetsCreateViewModel = useBudgetsFormViewModel({
         navigation,
         route,
-        createBudgetUseCase
+        createBudgetUseCase,
+        editBudgetUseCase
     })
 
     const {
-        budgetName,
-        budgetAmount,
-    } = budgetsCreateViewModel.budgetState
+        budgetState,
+        modalState,
+        updateBudgetName,
+        updateBudgetAmount,
+        updateCategory,
+        categories,
+        onSubmit
+    } = budgetsCreateViewModel
+
 
     return (
         <Screen>
             <View>
 
                 <TextInputWithLabel
-                    value={budgetName}
-                    onChangeText={budgetsCreateViewModel.updateBudgetName}
+                    value={budgetState.budgetName}
+                    onChangeText={updateBudgetName}
                     title="Nombre presupuesto:"
                     placeholder="Salidas de fin de semana"
                 />
@@ -44,16 +61,17 @@ const BudgetsFormScreen = ({ navigation, route }: BudgetsCreateScreenProps) => {
                 <Spacer marginVertical={"4%"} />
 
                 <TextInputWithLabel
-                    value={budgetAmount}
-                    onChangeText={budgetsCreateViewModel.updateBudgetAmount}
+                    value={budgetState.budgetAmount}
+                    onChangeText={updateBudgetAmount}
                     title="Presupuesto:"
                     placeholder="$120.000"
                     inputMode={InputType.NUMERIC}
                 />
 
                 <ChipList
-                    onPress={budgetsCreateViewModel.updateCategory}
-                    categories={budgetsCreateViewModel.categories}
+                    idSelected={budgetState.categoryId}
+                    onPress={updateCategory}
+                    categories={categories}
                 />
 
             </View>
@@ -62,8 +80,16 @@ const BudgetsFormScreen = ({ navigation, route }: BudgetsCreateScreenProps) => {
 
             <SubmitButton
                 backgroundColor={Colors.YELLOW}
-                onPress={budgetsCreateViewModel.onSubmit}
+                onPress={onSubmit}
             />
+
+            <Modal
+                visible={modalState.visible}
+                title={modalState.title}
+                message={modalState.message}
+                buttonList={modalState.buttonList}
+            />
+
         </Screen>
     )
 }

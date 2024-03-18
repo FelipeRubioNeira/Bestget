@@ -14,7 +14,7 @@ import { Budget, BudgetUI } from "../../../data/types/Budget"
 import { BudgetExpenseItemType } from "../../../data/types/BudgetExpense"
 import TouchableIcon from "../../components/touchableIcon/TouchableIcon"
 import { ModalProps } from "../../components/modal/Modal"
-import DeleteBudgetUseCase from "../../../domain/useCases/budgets/DeleteBudgetUseCase"
+import DeleteBudgetUseCase from "../../../domain/useCases/DeleteBudgetUseCase"
 
 const editIcon = require("../../../assets/icons/ic_edit.png")
 
@@ -189,6 +189,28 @@ const useBudgetExpensesViewModel = ({
         else return categories.find(category => category.id === categoryId)
     }
 
+    const getBudget = (id: string) => {
+        return budgetsExpenses.find(item => item.id === id && item.type === "Budget")
+    }
+
+    function convertToBudget<T extends Budget | Expense>(item?: BudgetUI | ExpenseUI) {
+
+        if (!item) return {} as Budget
+
+        const { id, name, amount, date, category } = item
+
+        const amountInt = numberFormat(amount)
+        const categoryId = category?.id || 0
+
+        return {
+            id: id,
+            name: name,
+            amount: amountInt,
+            date: date,
+            categoryId: categoryId,
+        } as T
+    }
+
 
     // ----------- ui interaction ----------- //
     const onShowExpenseOptions = () => {
@@ -203,7 +225,7 @@ const useBudgetExpensesViewModel = ({
 
     const findItem = (id: string, type: BudgetExpenseItemType) => {
         return budgetsExpenses.find(item => item.id === id && item.type == type);
-    };
+    }
 
 
     // ----------- modal ----------- //
@@ -228,9 +250,16 @@ const useBudgetExpensesViewModel = ({
 
         setEditMode(false)
 
+        const budgetItem = getBudget(itemId)
+        const budget = convertToBudget<Budget>(budgetItem)
+
+
+
         if (type === "Budget") {
+
             navigation.navigate(ScreenRoutes.BUDGET_FORM, {
                 categoryList: categories,
+                budget: budget
             })
 
         } else {
@@ -238,7 +267,6 @@ const useBudgetExpensesViewModel = ({
                 categoryList: categories,
             })
         }
-
 
     }
 
@@ -353,7 +381,6 @@ const useBudgetExpensesViewModel = ({
         deleteItem,
         showAlert,
         hideAlert,
-
     }
 
 }

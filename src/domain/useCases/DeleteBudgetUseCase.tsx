@@ -1,5 +1,5 @@
-import IBudgetRepository from "../../../data/repository/budgetRepository/IBudgetRepository";
-import IExpenseRespository from "../../../data/repository/expenseRepository/IExpenseRepository";
+import IBudgetRepository from "../../data/repository/budgetRepository/IBudgetRepository";
+import IExpenseRespository from "../../data/repository/expenseRepository/IExpenseRepository";
 
 class DeleteBudgetUseCase {
     constructor(

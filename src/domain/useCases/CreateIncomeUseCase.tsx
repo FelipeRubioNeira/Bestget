@@ -1,11 +1,12 @@
-import { IIncomeRepository } from "../../../data/repository/incomeRepository/IIncomeRepository";
-import { IncomeCreate } from "../../../data/types/Income";
-import { Validation, ValidationResult } from "../../../data/types/Validation";
-import { isConnected } from "../../../utils/Connection";
+import { IIncomeRepository } from "../../data/repository/incomeRepository/IIncomeRepository";
+import { IncomeCreate } from "../../data/types/Income";
+import { Validation, ValidationResult } from "../../data/types/Validation";
+import { isConnected } from "../../utils/Connection";
+import IValidation from "../interfaces/IValidation";
 
 
 
-class CreateIncomeUseCase {
+class CreateIncomeUseCase implements IValidation {
     constructor(private incomeRepository: IIncomeRepository) { }
 
 
@@ -21,7 +22,7 @@ class CreateIncomeUseCase {
             result: "",
         }
 
-        const result = await this.applyValidations(newIncome)
+        const result = await this.applyValidations(newIncome.name, newIncome.amount)
 
 
         if (result.isValid) {
@@ -42,7 +43,7 @@ class CreateIncomeUseCase {
     }
 
     // ------------------- private methods ------------------- //
-    private async applyValidations(income: IncomeCreate): Promise<Validation> {
+    async applyValidations(name: string, amount: number): Promise<Validation> {
 
         let validationResult: Validation = {
             isValid: true,
@@ -50,7 +51,7 @@ class CreateIncomeUseCase {
         }
 
         const validationArray = [
-            () => this.validateInputs(income),
+            () => this.validateInputs(name, amount),
             () => this.validateConnection(),
         ]
 
@@ -70,7 +71,7 @@ class CreateIncomeUseCase {
     }
 
     // ------------------- validations ------------------- //
-    private validateInputs = ({ name = "", amount = 0 }: IncomeCreate): Validation => {
+    validateInputs = (name = "", amount = 0): Validation => {
 
         const result: Validation = {
             isValid: true,
@@ -91,7 +92,7 @@ class CreateIncomeUseCase {
 
     }
 
-    private async validateConnection(): Promise<Validation> {
+    async validateConnection(): Promise<Validation> {
 
         const result: Validation = {
             isValid: true,

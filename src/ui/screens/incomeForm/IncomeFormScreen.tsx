@@ -12,8 +12,8 @@ import { Colors } from '../../constants/Colors'
 import Modal from '../../components/modal/Modal'
 import Screen from '../../components/screen/Screen'
 
-import EditIncomeUseCase from '../../../domain/useCases/incomes/EditIncomeUsecase'
-import CreateIncomeUseCase from '../../../domain/useCases/incomes/CreateIncomeUseCase'
+import EditIncomeUseCase from '../../../domain/useCases/EditIncomeUsecase'
+import CreateIncomeUseCase from '../../../domain/useCases/CreateIncomeUseCase'
 
 
 // dependency injection 

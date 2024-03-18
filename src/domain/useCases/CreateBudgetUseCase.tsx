@@ -1,5 +1,5 @@
-import IBudgetRepository from "../../../data/repository/budgetRepository/IBudgetRepository";
-import { Budget, BudgetCreate } from "../../../data/types/Budget";
+import IBudgetRepository from "../../data/repository/budgetRepository/IBudgetRepository";
+import { Budget, BudgetCreate } from "../../data/types/Budget";
 
 
 class CreateBudgetUseCase {

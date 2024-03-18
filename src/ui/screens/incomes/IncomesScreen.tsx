@@ -15,22 +15,43 @@ import IncomeRepository from '../../../data/repository/incomeRepository/IncomeRe
 import { IncomeUI } from '../../../data/types/Income'
 import Modal from '../../components/modal/Modal'
 import EditionIcons from '../../components/editionIcons/EditionIcons'
+import DeleteIncomeUseCase from '../../../domain/useCases/DeleteIncomeUseCase'
 
 
 
 
 const incomesRepository = new IncomeRepository()
+const deleteIncomeUseCase = new DeleteIncomeUseCase(incomesRepository)
 
 const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
 
 
+  // ------------------- view model ------------------- //
   const incomeViewModel = useIncomeViewModel({
     navigation,
     route,
     incomesRepository,
+    deleteIncomeUseCase
   })
 
+  // view Model //
+  const {
+    totalAmount = "0",
+    allIncomes = [],
+    editMode,
 
+    onPressEdit,
+    onPressDelete,
+    navigateIncomeCreate,
+
+    modalState,
+
+  } = incomeViewModel
+
+
+
+
+  // ------------------- UI ------------------- //
   return (
     <View style={DefaultStyles.screen}>
 
@@ -42,45 +63,35 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
 
       <TotalAmount
         label="Ingreso"
-        amount={incomeViewModel?.totalAmount}
+        amount={totalAmount}
         color={Colors.GREEN}
       />
 
       <Spacer marginVertical={"4%"} />
 
       <FlatList
-        data={incomeViewModel?.allIncomes}
+        data={allIncomes}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => <IncomeItem
           {...item}
-          editMode={incomeViewModel.editMode}
-          onEdit={() => incomeViewModel.onPressEditIncomeItem(item.id)}
-          onDelete={() => incomeViewModel.onPressDeleteIncomeItem(item.id)}
+          editMode={editMode}
+          onEdit={() => onPressEdit(item.id)}
+          onDelete={() => onPressDelete(item.id)}
         />}
       />
 
       <Spacer marginVertical={"4%"} />
 
       <ButtonAdd
-        onPress={incomeViewModel?.navigateIncomeCreate}
+        onPress={navigateIncomeCreate}
         backgroundColor={Colors.GREEN}
       />
 
       <Modal
-        visible={incomeViewModel.modalState.visible}
-        title={incomeViewModel.modalState.title}
-        message={incomeViewModel.modalState.message}
-        buttonList={[
-          {
-            text: 'Aceptar',
-            onPress: incomeViewModel.deleteIncome,
-          },
-          {
-            text: 'Cancelar',
-            onPress: incomeViewModel.hideAlert,
-            style: { color: Colors.BLUE, fontFamily: FontFamily.BOLD }
-          }
-        ]}
+        visible={modalState.visible}
+        title={modalState.title}
+        message={modalState.message}
+        buttonList={modalState.buttonList}
       />
 
     </View>

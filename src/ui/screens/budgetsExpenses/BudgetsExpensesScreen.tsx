@@ -18,7 +18,7 @@ import { BudgetUI } from '../../../data/types/Budget'
 import { ExpenseUI } from '../../../data/types/Expense'
 import ExpenseOptions from '../../components/expenseOptions/ExpenseOptions'
 import Modal from '../../components/modal/Modal'
-import DeleteBudgetUseCase from '../../../domain/useCases/budgets/DeleteBudgetUseCase'
+import DeleteBudgetUseCase from '../../../domain/useCases/DeleteBudgetUseCase'
 
 
 
@@ -35,6 +35,7 @@ const deleteBudgetUseCase = new DeleteBudgetUseCase(
 const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps) => {
 
 
+    // ------------------- view model ------------------- //
     const budgetsExpensesViewModel = useBudgetExpensesViewModel({
         navigation,
         route,
@@ -43,6 +44,26 @@ const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps
         deleteBudgetUseCase,
     })
 
+    // state view model //
+    const {
+        editMode,
+        onPressItem,
+        onPressEdit,
+        onPressDelete,
+        totalAmount = "0",
+        budgetsExpenses,
+        buttonAddVisible,
+        onShowExpenseOptions,
+        ExpenseOptionsVisible,
+        onAddExpense,
+        onAddBudget,
+        onHideExpenseOptions,
+        loading,
+        modalState,
+    } = budgetsExpensesViewModel
+
+
+    // ------------------- UI ------------------- //
     const renderBugdetOrExpense = (item: BudgetUI | ExpenseUI) => {
 
         // render budget 
@@ -50,10 +71,10 @@ const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps
             return (
                 <BudgetItem
                     {...item}
-                    editMode={budgetsExpensesViewModel.editMode}
-                    onPress={() => budgetsExpensesViewModel.onPressItem(item.id, "Budget")}
-                    onEdit={()=>budgetsExpensesViewModel.onPressEdit(item.id, "Budget")}
-                    onDelete={() => budgetsExpensesViewModel.onPressDelete(item.id, "Budget")}
+                    editMode={editMode}
+                    onPress={() => onPressItem(item.id, "Budget")}
+                    onEdit={() => onPressEdit(item.id, "Budget")}
+                    onDelete={() => onPressDelete(item.id, "Budget")}
                 />
             )
 
@@ -61,9 +82,9 @@ const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps
         // render expense
         else return <ExpenseItem
             {...item}
-            editMode={budgetsExpensesViewModel.editMode}
-            onEdit={()=>budgetsExpensesViewModel.onPressEdit(item.id, "Expense")}
-            onDelete={() => budgetsExpensesViewModel.onPressDelete(item.id, "Expense")}
+            editMode={editMode}
+            onEdit={() => onPressEdit(item.id, "Expense")}
+            onDelete={() => onPressDelete(item.id, "Expense")}
         />
 
     }
@@ -81,39 +102,39 @@ const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps
 
                 <TotalAmount
                     label="Gasto"
-                    amount={budgetsExpensesViewModel?.totalAmount}
+                    amount={totalAmount}
                     color={Colors.YELLOW}
                 />
 
                 <FlatList
-                    data={budgetsExpensesViewModel.budgetsExpenses}
+                    data={budgetsExpenses}
                     renderItem={({ item }) => renderBugdetOrExpense(item)}
                     showsVerticalScrollIndicator={false}
                 />
 
                 <ButtonAdd
-                    visible={budgetsExpensesViewModel.buttonAddVisible}
+                    visible={buttonAddVisible}
                     backgroundColor={Colors.YELLOW}
-                    onPress={budgetsExpensesViewModel.onShowExpenseOptions}
+                    onPress={onShowExpenseOptions}
                 />
 
             </View>
 
 
             <ExpenseOptions
-                visible={budgetsExpensesViewModel.ExpenseOptionsVisible}
-                onPressOutcome={budgetsExpensesViewModel.onAddExpense}
-                onPressBudget={budgetsExpensesViewModel.onAddBudget}
-                onHideOptions={budgetsExpensesViewModel.onHideExpenseOptions}
+                visible={ExpenseOptionsVisible}
+                onPressOutcome={onAddExpense}
+                onPressBudget={onAddBudget}
+                onHideOptions={onHideExpenseOptions}
             />
 
 
-            <Loading visible={budgetsExpensesViewModel.loading} />
+            <Loading visible={loading} />
 
             <Modal
-                visible={budgetsExpensesViewModel.modalState.visible}
-                title={budgetsExpensesViewModel.modalState.title}
-                message={budgetsExpensesViewModel.modalState.message}
+                visible={modalState.visible}
+                title={modalState.title}
+                message={modalState.message}
                 buttonList={[
                     {
                         text: 'Aceptar',
@@ -122,7 +143,7 @@ const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps
                     {
                         text: 'Cancelar',
                         onPress: budgetsExpensesViewModel.hideAlert,
-                        style: { color: Colors.BLUE, fontFamily: FontFamily.BOLD }
+                        style: DefaultStyles.mainButton
                     }
                 ]}
             />

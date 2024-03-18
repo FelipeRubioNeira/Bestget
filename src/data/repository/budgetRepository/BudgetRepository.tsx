@@ -78,6 +78,20 @@ class BudgetRepository implements IBudgetRepository {
 
     }
 
+    async update(budget: Budget): Promise<void> {
+
+        try {
+            await firestore()
+                .collection(Collections.BUDGET)
+                .doc(budget.id)
+                .update(budget)
+
+        } catch (error) {
+            console.error("error BudgetRepository update", error);
+        }
+
+    }
+
 }
 
 export default BudgetRepository

@@ -5,13 +5,13 @@ import { Colors } from "../../constants/Colors"
 
 interface IChipItemViewModel {
     category?: Category,
-    pressedValue?: number,
+    idSelected?: number,
     onPress?: (categoryId: number) => void
 }
 
 
 
-const useChipItemViewModel = ({ category, pressedValue, onPress }: IChipItemViewModel) => {
+const useChipItemViewModel = ({ category, idSelected, onPress }: IChipItemViewModel) => {
 
     // ------------- states ------------- //
     const [chipStyle, setChipStyle] = useState<ViewStyle>({})
@@ -19,17 +19,17 @@ const useChipItemViewModel = ({ category, pressedValue, onPress }: IChipItemView
 
     // ------------- effects ------------- //
     useEffect(() => {
-        updateStyle(pressedValue)
-    }, [pressedValue])
+        updateStyle(idSelected)
+    }, [idSelected])
 
 
-    const updateStyle = (pressedValue: number | undefined) => {
+    const updateStyle = (idSelected: number | undefined) => {
 
-        if (!pressedValue) return
+        if (!idSelected) return
 
         setChipStyle({
             ...chipStyle,
-            backgroundColor: pressedValue === category?.id ? category.color : Colors.WHITE,
+            backgroundColor: idSelected === category?.id ? category.color : Colors.WHITE,
         });
 
     }

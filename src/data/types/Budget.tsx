@@ -4,15 +4,15 @@ type Budget = {
     id: string,
     name: string
     amount: number
-    categoryId?: number,
     date: string
+    categoryId?: number,
 }
 
 type BudgetCreate = {
     name: string
     amount: number
-    categoryId?: number,
     date: string
+    categoryId?: number,
 }
 
 

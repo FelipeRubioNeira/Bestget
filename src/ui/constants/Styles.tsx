@@ -1,6 +1,7 @@
 import { ViewStyle } from 'react-native'
 import { Dimensions } from 'react-native'
 import { Colors } from './Colors'
+import { FontFamily } from './Fonts'
 
 enum Styles {
 
@@ -42,7 +43,12 @@ const DefaultStyles = Object.freeze({
         alignItems: 'center',
         paddingVertical: "4%",
         marginBottom: "4%",
-    } as ViewStyle
+    } as ViewStyle,
+
+    mainButton: {
+        color: Colors.BLUE,
+        fontFamily: FontFamily.BOLD
+    } as ViewStyle,
 
 })
 

@@ -7,7 +7,7 @@ import ModalStyle from './ModalStyles'
 
 
 // ----------- types ------------ //
-type Button = {
+export type ButtonModal = {
     text: string,
     onPress: () => void,
     style?: TextStyle
@@ -15,7 +15,7 @@ type Button = {
 
 type BodyProps = {
     message: string,
-    buttonList?: Button[]
+    buttonList?: ButtonModal[]
 }
 
 export type ModalProps = {
@@ -81,7 +81,7 @@ const Body = ({ message = "", buttonList = [] }: BodyProps) => {
 
 }
 
-const ButtonList = ({ buttonList }: { buttonList?: Button[] }) => {
+const ButtonList = ({ buttonList }: { buttonList?: ButtonModal[] }) => {
 
     if (!buttonList) return null
     return (
@@ -97,7 +97,7 @@ const ButtonList = ({ buttonList }: { buttonList?: Button[] }) => {
 
 }
 
-const ButtonItem = ({ text, onPress, style }: Button) => {
+const ButtonItem = ({ text, onPress, style }: ButtonModal) => {
 
     return (
         <TouchableOpacity

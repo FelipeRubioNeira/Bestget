@@ -1,4 +1,5 @@
 import { Collections } from "../../collections/Collections";
+import { Budget } from "../../types/Budget";
 import { Expense, ExpenseCreate, ExpenseKeys } from "../../types/Expense";
 import IExpenseRespository from "./IExpenseRepository";
 import firestore from '@react-native-firebase/firestore';
@@ -6,6 +7,24 @@ import QuerySnapshot from "@react-native-firebase/firestore";
 
 class ExpenseRepository implements IExpenseRespository {
 
+    async create(expense: ExpenseCreate): Promise<string> {
+
+        try {
+
+            const result = await firestore()
+                .collection(Collections.EXPENSE)
+                .add(expense)
+
+            const expenseId = result.id
+
+            return (expenseId)
+
+        } catch (error) {
+            console.error("error ExpenseRepository create", error);
+            return ""
+        }
+
+    }
 
     async getAll(): Promise<Expense[]> {
         try {
@@ -134,29 +153,10 @@ class ExpenseRepository implements IExpenseRespository {
         }
     }
 
-    async create(expense: ExpenseCreate): Promise<string> {
-
-        try {
-
-            const result = await firestore()
-                .collection(Collections.EXPENSE)
-                .add(expense)
-
-            const expenseId = result.id
-
-            return (expenseId)
-
-        } catch (error) {
-            console.error("error ExpenseRepository create", error);
-            return ""
-        }
-
-    }
-
     async delete(id: string): Promise<void> {
 
         try {
-            
+
             await firestore()
                 .collection(Collections.EXPENSE)
                 .doc(id)

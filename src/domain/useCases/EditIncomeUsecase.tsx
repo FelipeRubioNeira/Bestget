@@ -1,6 +1,6 @@
-import { IIncomeRepository } from "../../../data/repository/incomeRepository/IIncomeRepository";
-import { Income } from "../../../data/types/Income";
-import { ValidationResult } from "../../../data/types/Validation";
+import { IIncomeRepository } from "../../data/repository/incomeRepository/IIncomeRepository";
+import { Income } from "../../data/types/Income";
+import { ValidationResult } from "../../data/types/Validation";
 
 class IncomeEditUseCase {
     constructor(private incomeRepository: IIncomeRepository) { }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { ExpensesCreateScreenProps } from "../../../navigation/NavigationParamList"
 import { Category } from "../../../data/types/Categoty"
-import CreateExpenseUseCase from "../../../domain/useCases/budgets/CreateExpenseUseCase"
+import CreateExpenseUseCase from "../../../domain/useCases/CreateExpenseUseCase"
 import { numberFormat } from "../../../utils/Convert"
 import { ExpenseCreate } from "../../../data/types/Expense"
 import { ScreenRoutes } from "../../../navigation/Routes"

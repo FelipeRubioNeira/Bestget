@@ -11,7 +11,7 @@ export type ChipItemProps = {
     category?: Category,
     disabled?: boolean,
     style?: ViewStyle,
-    pressedValue?: number
+    idSelected?: number
     onPress?: (categoryId: number) => void,
 }
 
@@ -19,13 +19,13 @@ const ChipItem = ({
     category,
     disabled = false,
     onPress,
-    pressedValue,
+    idSelected,
     style,
 }: ChipItemProps) => {
 
     const chipItemViewModel = useChipItemViewModel({
         category,
-        pressedValue,
+        idSelected,
         onPress
     })
 

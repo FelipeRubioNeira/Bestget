@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react"
 import { BudgetsCreateScreenProps } from "../../../navigation/NavigationParamList"
 import { Category } from "../../../data/types/Categoty"
-import CreateBudgetUseCase from "../../../domain/useCases/budgets/CreateBudgetUseCase"
-import { BudgetCreate } from "../../../data/types/Budget"
-import { numberFormat } from "../../../utils/Convert"
-import { ScreenRoutes } from "../../../navigation/Routes"
+import CreateBudgetUseCase from "../../../domain/useCases/CreateBudgetUseCase"
+import { Budget, BudgetCreate } from "../../../data/types/Budget"
+import { currencyFormat, numberFormat } from "../../../utils/Convert"
 import { getCurrentDate } from "../../../utils/Date"
+import { ScreenRoutes } from "../../../navigation/Routes"
+import { ButtonModal, ModalProps } from "../../components/modal/Modal"
+import { DefaultStyles } from "../../constants/Styles"
+import EditBudgetUseCase from "../../../domain/useCases/EditBudgetUseCase"
+
 
 type IBudgetCreateViewModel = {
-    createBudgetUseCase: CreateBudgetUseCase
+    createBudgetUseCase: CreateBudgetUseCase,
+    editBudgetUseCase: EditBudgetUseCase
 } & BudgetsCreateScreenProps
 
 
@@ -23,16 +28,18 @@ type StateType = BudgetState[StateName]
 
 
 const useBudgetsFormViewModel = ({
-    navigation,
     route,
-    createBudgetUseCase
+    navigation,
+    createBudgetUseCase,
+    editBudgetUseCase
 }: IBudgetCreateViewModel) => {
 
 
     // ------------------- params ------------------- //
 
     const {
-        categoryList = []
+        categoryList = [],
+        budget
     } = route.params || {}
 
     // ------------------- states ------------------- //
@@ -44,14 +51,38 @@ const useBudgetsFormViewModel = ({
         categoryId: 0
     })
 
+    const [modalState, setModalState] = useState<ModalProps>({
+        visible: false,
+        title: "",
+        message: "",
+        buttonList: []
+    })
+
 
     // ------------------- effects ------------------- //
     useEffect(() => {
         setCategories(categoryList)
     }, [categoryList])
 
+    useEffect(() => {
+        if (budget) updateForm(budget)
+    }, [budget])
+
 
     // ------------------- methods ------------------- //
+
+
+    // ------------------- update form ------------------- //
+    const updateForm = (budget: Budget) => {
+
+        setBudgetState({
+            budgetName: budget.name,
+            budgetAmount: currencyFormat(budget.amount),
+            categoryId: budget?.categoryId || 0
+        })
+
+    }
+
     const updateBudgetState = (state: StateName, value: StateType) => {
         setBudgetState({
             ...budgetState,
@@ -71,28 +102,115 @@ const useBudgetsFormViewModel = ({
         updateBudgetState("categoryId", categoryId)
     }
 
+    // ------------------- modal ------------------- //
+    const showModal = (title: string, message: string, buttonList: ButtonModal[]) => {
+
+        setModalState({
+            visible: true,
+            title: title,
+            message: message,
+            buttonList: buttonList
+        })
+    }
+
+    const hideModal = () => {
+        setModalState({ ...modalState, visible: false })
+    }
+
     const onSubmit = async () => {
 
-        // 1- convert $ to int
-        const amountInt = numberFormat(budgetState.budgetAmount)
+        // if budget exists, update budget
+        if (budget) {
 
-        // 2- create budget
+            if (ifChangeCategory(budget?.categoryId, budgetState.categoryId)) {
+
+                showModal(
+                    "Cambio de categoría",
+                    "Si cambias la categoría todos los gastos asociados a este presupuesto tambien se actualizarán. ¿Deseas continuar?",
+                    [
+                        {
+                            text: "Continuar",
+                            onPress: () => updateBudget(),
+                        },
+                        {
+                            text: "Cancelar",
+                            onPress: () => setModalState({ ...modalState, visible: false }),
+                            style: DefaultStyles.mainButton
+                        },
+                    ]
+
+                )
+
+            } else updateBudget()
+
+
+            // if budget doesn't exist, create budget
+        } else createBudget()
+
+    }
+
+
+    const updateBudget = async () => {
+
+        hideModal()
+
+        const budgetEditted = {
+            id: budget?.id || "",
+            name: budgetState.budgetName,
+            amount: numberFormat(budgetState.budgetAmount),
+            categoryId: budgetState?.categoryId || 0,
+            date: getCurrentDate()
+        }
+
+
+        const response = await editBudgetUseCase.edit(budgetEditted)
+
+        if (response.isValid) {
+            navigation.replace(ScreenRoutes.BUDGET, {
+                categoryList: categories,
+                budget: budgetEditted
+            })
+
+        } else {
+
+            showModal(
+                response.message.title,
+                response.message.message,
+                [
+                    {
+                        text: "Continuar",
+                        onPress: () => setModalState({ ...modalState, visible: false }),
+                    },
+                ]
+
+            )
+        }
+
+    }
+
+    const ifChangeCategory = (previousCategory: number = 0, currentCategory: number = 0) => {
+        return previousCategory !== currentCategory
+    }
+
+    const createBudget = async () => {
+
+        // 1- create budget
         const budgetCreate: BudgetCreate = {
             name: budgetState.budgetName,
-            amount: amountInt,
+            amount: numberFormat(budgetState.budgetAmount),
             categoryId: budgetState.categoryId,
             date: getCurrentDate()
         }
 
-        // 3- upload budget and budget expenses
+        // 2- upload budget and budget expenses
         const newBudget = await createBudgetUseCase.createBudget(budgetCreate)
 
 
         if (newBudget) {
 
             navigation.replace(ScreenRoutes.BUDGET, {
-                budget: newBudget,
-                categoryList: categories
+                categoryList: categories,
+                budget: newBudget
             })
 
         } else {
@@ -103,6 +221,7 @@ const useBudgetsFormViewModel = ({
 
     // ------------------- return ------------------- //
     return {
+        modalState,
         categories,
         budgetState,
         updateBudgetName,

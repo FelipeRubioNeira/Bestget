@@ -20,14 +20,19 @@ import { ScreenRoutes } from "../../../navigation/Routes"
 import { Income, IncomeUI } from "../../../data/types/Income"
 import { currencyFormat } from "../../../utils/Convert"
 import { IIncomeRepository } from "../../../data/repository/incomeRepository/IIncomeRepository"
-import { ModalProps } from "../../components/modal/Modal"
+import { ButtonModal, ModalProps } from "../../components/modal/Modal"
 import TouchableIcon from "../../components/touchableIcon/TouchableIcon"
+import DeleteIncomeUseCase from "../../../domain/useCases/DeleteIncomeUseCase"
+import { Colors } from "../../constants/Colors"
+import { FontFamily } from "../../constants/Fonts"
+
 
 const editIcon = require("../../../assets/icons/ic_edit.png")
 
 
 type IIncomesViewModel = {
     incomesRepository: IIncomeRepository,
+    deleteIncomeUseCase: DeleteIncomeUseCase
 } & IncomesScreenProps
 
 
@@ -36,6 +41,7 @@ const useIncomesViewModel = ({
     navigation,
     route,
     incomesRepository,
+    deleteIncomeUseCase
 }: IIncomesViewModel) => {
 
 
@@ -57,6 +63,7 @@ const useIncomesViewModel = ({
         visible: false,
         title: "",
         message: "",
+        buttonList: []
     })
 
     const [deleteIncomeId, setDeleteIncomeId] = useState<string>("")
@@ -191,33 +198,59 @@ const useIncomesViewModel = ({
 
         hideAlert()
 
-        await incomesRepository.delete(deleteIncomeId)
+        const response = await deleteIncomeUseCase.delete(deleteIncomeId)
 
-        const newIncomesList = await getIncomes()
+        if (response.isValid) {
+            const newIncomesList = await getIncomes()
 
-        setIncomeParams(newIncomesList)
-        generateIncomeList(newIncomesList)
+            setIncomeParams(newIncomesList)
+            generateIncomeList(newIncomesList)
+
+        } else {
+            showAlert(
+                response.message.title,
+                response.message.message, [{ text: 'Aceptar', onPress: hideAlert }]
+            )
+        }
+
+
 
     }
 
     // ------------------- edit event ------------------- //
-    const onPressEditIncomeItem = (id: string) => {
+    const onPressEdit = (id: string) => {
         turnOffDeleteMode()
         const income = incomeParams.find(income => income.id === id)
         navigation.navigate(ScreenRoutes.INCOME_FORM, { income })
     }
 
     // onPress on flatlist item
-    const onPressDeleteIncomeItem = (id: string) => {
+    const onPressDelete = (id: string) => {
         setDeleteIncomeId(id)
-        showAlert()
+        showAlert(
+            "Eliminar ingreso",
+            "¿Estás seguro que deseas eliminar este ingreso?",
+            [
+                {
+                    text: 'Aceptar',
+                    onPress: deleteIncome,
+                },
+                {
+                    text: 'Cancelar',
+                    onPress: hideAlert,
+                    style: { color: Colors.BLUE, fontFamily: FontFamily.BOLD }
+                }
+            ]
+        )
     }
 
-    const showAlert = () => {
+    const showAlert = (title: string, message: string, buttonList: ButtonModal[]) => {
+
         setModalState({
             visible: true,
-            title: "Eliminar ingreso",
-            message: "¿Estás seguro que deseas eliminar este ingreso?",
+            title: title,
+            message: message,
+            buttonList: buttonList
         })
     }
 
@@ -239,8 +272,8 @@ const useIncomesViewModel = ({
 
         navigateIncomeCreate,
         deleteIncome,
-        onPressDeleteIncomeItem,
-        onPressEditIncomeItem,
+        onPressDelete,
+        onPressEdit,
         hideAlert
     }
 }

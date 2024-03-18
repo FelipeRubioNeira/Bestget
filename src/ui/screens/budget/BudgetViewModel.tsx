@@ -58,7 +58,6 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository }: budgetVi
 
         findCategory(budget?.categoryId, categoryList)
 
-
         const expenseList = await expensesRepository.getById(budget.id)
 
         const expenseListFormatted = applyFormat(expenseList)

@@ -48,7 +48,8 @@ export type NavigatorParamList = {
 
     [ScreenRoutes.EXPENSES_FORM]: {
         categoryList: Category[],
-        budget?: Budget
+        budget?: Budget, // if we are creating an expense from a budget
+        expense?: Expense // if we are editing an expense
     }
 
     [ScreenRoutes.EXPENSE]: {
