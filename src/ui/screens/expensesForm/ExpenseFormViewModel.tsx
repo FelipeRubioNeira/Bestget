@@ -139,7 +139,7 @@ const useExpenseFormViewModel = (
 
 
         } catch (error) {
-            console.log("error al guardar el nuevo gasto", error);
+            console.error("error al guardar el nuevo gasto", error);
         }
 
     }

@@ -8,7 +8,8 @@ import { ExpenseUI } from '../../../data/types/Expense'
 import EditionIcons from '../editionIcons/EditionIcons'
 
 
-const ExpenseItem = ({ name, amount, category, editMode, onEdit, onDelete }: ExpenseUI) => {
+const ExpenseItem = ({ name, amount, category, editMode = false, onEdit, onDelete }: ExpenseUI) => {
+
 
 
     return (
@@ -16,7 +17,6 @@ const ExpenseItem = ({ name, amount, category, editMode, onEdit, onDelete }: Exp
         <View style={DefaultStyles.listItemContainer}>
 
             <CircleCategory color={category?.color} />
-
 
             <Label
                 value={name}

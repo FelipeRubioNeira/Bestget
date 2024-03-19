@@ -19,7 +19,7 @@ class IncomeRepository implements IIncomeRepository {
             return (incomeId)
 
         } catch (error) {
-            console.log("error IncomesCreateDataSource", error);
+            console.error("error IncomesCreateDataSource", error);
             return ""
         }
     }

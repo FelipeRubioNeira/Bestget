@@ -122,7 +122,8 @@ const useBudgetsFormViewModel = ({
         // if budget exists, update budget
         if (budget) {
 
-            if (ifChangeCategory(budget?.categoryId, budgetState.categoryId)) {
+            // if category changes, show modal
+            if (hasCategoryChanged(budget?.categoryId, budgetState.categoryId)) {
 
                 showModal(
                     "Cambio de categoría",
@@ -138,9 +139,9 @@ const useBudgetsFormViewModel = ({
                             style: DefaultStyles.mainButton
                         },
                     ]
-
                 )
 
+                // if category doesn't change, update budget
             } else updateBudget()
 
 
@@ -188,7 +189,7 @@ const useBudgetsFormViewModel = ({
 
     }
 
-    const ifChangeCategory = (previousCategory: number = 0, currentCategory: number = 0) => {
+    const hasCategoryChanged = (previousCategory: number = 0, currentCategory: number = 0) => {
         return previousCategory !== currentCategory
     }
 
