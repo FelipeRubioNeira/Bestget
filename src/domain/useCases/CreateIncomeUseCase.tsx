@@ -1,12 +1,12 @@
 import { IIncomeRepository } from "../../data/repository/incomeRepository/IIncomeRepository";
 import { IncomeCreate } from "../../data/types/Income";
 import { Validation, ValidationResult } from "../../data/types/Validation";
-import { isConnected } from "../../utils/Connection";
-import IValidation from "../interfaces/IValidation";
+import { isConnected, validateConnection } from "../../utils/Connection";
+import { validateInputs } from "../../utils/Inputs";
 
 
 
-class CreateIncomeUseCase implements IValidation {
+class CreateIncomeUseCase  {
     constructor(private incomeRepository: IIncomeRepository) { }
 
 
@@ -34,7 +34,7 @@ class CreateIncomeUseCase implements IValidation {
             validationResult.isValid = false
             validationResult.message = {
                 title: "Error al guardar el ingreso.",
-                message: result.messageError,
+                message: result.errorMessage,
             }
         }
 
@@ -47,20 +47,19 @@ class CreateIncomeUseCase implements IValidation {
 
         let validationResult: Validation = {
             isValid: true,
-            messageError: ""
+            errorMessage: ""
         }
 
         const validationArray = [
-            () => this.validateInputs(name, amount),
-            () => this.validateConnection(),
+            () => validateInputs(name, amount, "ingreso"),
+            async () => validateConnection(),
         ]
-
 
         for (const validation of validationArray) {
 
             let result = await validation()
 
-            if (result.isValid === false) {
+            if (!result.isValid) {
                 validationResult = result
             }
 
@@ -68,45 +67,6 @@ class CreateIncomeUseCase implements IValidation {
 
         return validationResult
 
-    }
-
-    // ------------------- validations ------------------- //
-    validateInputs = (name = "", amount = 0): Validation => {
-
-        const result: Validation = {
-            isValid: true,
-            messageError: "",
-        }
-
-
-        if (name.trim() === "") {
-            result.isValid = false
-            result.messageError = "El nombre de su ingreso no puede estar vacío."
-
-        } else if (amount === 0) {
-            result.isValid = false
-            result.messageError = "El monto de ingreso debe ser mayor que $0."
-        }
-
-        return result
-
-    }
-
-    async validateConnection(): Promise<Validation> {
-
-        const result: Validation = {
-            isValid: true,
-            messageError: "",
-        }
-
-        const isConnectedResult = await isConnected()
-
-        if (!isConnectedResult) {
-            result.isValid = false
-            result.messageError = "Verifique su conexión a internet y vuelva a intentarlo."
-        }
-
-        return result
     }
 
 

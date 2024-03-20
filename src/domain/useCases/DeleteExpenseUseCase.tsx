@@ -1,16 +1,11 @@
-import IBudgetRepository from "../../data/repository/budgetRepository/IBudgetRepository";
 import IExpenseRespository from "../../data/repository/expenseRepository/IExpenseRepository";
 import { ValidationResult } from "../../data/types/Validation";
-import { isConnected, validateConnection } from "../../utils/Connection";
+import { validateConnection } from "../../utils/Connection";
 
-class DeleteBudgetUseCase {
-    constructor(
-        private budgetRepositoty: IBudgetRepository,
-        private expenseRepository: IExpenseRespository
-    ) { }
+class DeleteExpenseUseCase {
+    constructor(private expenseRepository: IExpenseRespository) { }
 
-    async delete(budgetId: string): Promise<ValidationResult<void>> {
-
+    async delete(id: string): Promise<ValidationResult<void>> {
 
         const validationResult: ValidationResult<void> = {
             isValid: true,
@@ -23,11 +18,7 @@ class DeleteBudgetUseCase {
         const validation = await validateConnection()
 
         if (validation.isValid) {
-
-            await Promise.all([
-                this.budgetRepositoty.delete(budgetId),
-                this.expenseRepository.deleteByBudgetId(budgetId)
-            ])
+            await this.expenseRepository.delete(id);
 
         } else {
 
@@ -39,11 +30,9 @@ class DeleteBudgetUseCase {
 
         }
 
-
         return validationResult
 
     }
-
 }
 
-export default DeleteBudgetUseCase
+export default DeleteExpenseUseCase

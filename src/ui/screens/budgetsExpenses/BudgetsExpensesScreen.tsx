@@ -19,11 +19,14 @@ import { ExpenseUI } from '../../../data/types/Expense'
 import ExpenseOptions from '../../components/expenseOptions/ExpenseOptions'
 import Modal from '../../components/modal/Modal'
 import DeleteBudgetUseCase from '../../../domain/useCases/DeleteBudgetUseCase'
+import DeleteExpenseUseCase from '../../../domain/useCases/DeleteExpenseUseCase'
 
 
 
 const budgetRepository = new BudgetRepository()
 const expenseRepository = new ExpenseRepository()
+
+const deleteExpenseUseCase  = new DeleteExpenseUseCase(expenseRepository)
 
 const deleteBudgetUseCase = new DeleteBudgetUseCase(
     budgetRepository,
@@ -42,6 +45,7 @@ const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps
         expenseRepository,
         budgetRepository,
         deleteBudgetUseCase,
+        deleteExpenseUseCase,
     })
 
     // state view model //
@@ -135,17 +139,7 @@ const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps
                 visible={modalState.visible}
                 title={modalState.title}
                 message={modalState.message}
-                buttonList={[
-                    {
-                        text: 'Aceptar',
-                        onPress: budgetsExpensesViewModel.deleteItem,
-                    },
-                    {
-                        text: 'Cancelar',
-                        onPress: budgetsExpensesViewModel.hideAlert,
-                        style: DefaultStyles.mainButton
-                    }
-                ]}
+                buttonList={modalState.buttonList}
             />
 
         </>

@@ -9,9 +9,9 @@ import { Budget } from "../../data/types/Budget"
 import { Expense } from "../../data/types/Expense"
 import { Validation, ValidationResult } from "../../data/types/Validation"
 import { isConnected } from "../../utils/Connection"
-import IValidation from "../interfaces/IValidation"
 
-class EditBudgetUseCase implements IValidation {
+
+class EditBudgetUseCase  {
     constructor(
         private budgetRespository: IBudgetRepository,
         private expenseRespository: IExpenseRespository
@@ -47,7 +47,7 @@ class EditBudgetUseCase implements IValidation {
             validationResult.isValid = false
             validationResult.message = {
                 title: "Error al guardar el presupuesto.",
-                message: result.messageError,
+                message: result.errorMessage,
             }
         }
 
@@ -59,7 +59,7 @@ class EditBudgetUseCase implements IValidation {
 
         let validationResult: Validation = {
             isValid: true,
-            messageError: ""
+            errorMessage: ""
         }
 
         const validationArray = [
@@ -85,17 +85,17 @@ class EditBudgetUseCase implements IValidation {
 
         const result: Validation = {
             isValid: true,
-            messageError: "",
+            errorMessage: "",
         }
 
 
         if (name.trim() === "") {
             result.isValid = false
-            result.messageError = "El nombre de su presupuesto no puede estar vacío."
+            result.errorMessage = "El nombre de su presupuesto no puede estar vacío."
 
         } else if (amount === 0) {
             result.isValid = false
-            result.messageError = "El monto de su presupuesto debe ser mayor que $0."
+            result.errorMessage = "El monto de su presupuesto debe ser mayor que $0."
         }
 
         return result
@@ -106,14 +106,14 @@ class EditBudgetUseCase implements IValidation {
 
         const result: Validation = {
             isValid: true,
-            messageError: "",
+            errorMessage: "",
         }
 
         const isConnectedResult = await isConnected()
 
         if (!isConnectedResult) {
             result.isValid = false
-            result.messageError = "Verifique su conexión a internet y vuelva a intentarlo."
+            result.errorMessage = "Verifique su conexión a internet y vuelva a intentarlo."
         }
 
         return result

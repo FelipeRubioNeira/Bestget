@@ -5,6 +5,8 @@ import { Expense, ExpenseCreate } from "../../types/Expense"
 interface IExpenseRespository {
     create: (expense: ExpenseCreate) => Promise<string>
 
+    edit: (expense: Expense) => Promise<void>
+
     getAll: () => Promise<Expense[]>
     getByBudgetId: (id: string) => Promise<Expense[]>
     getWithoutBudget: () => Promise<Expense[]>

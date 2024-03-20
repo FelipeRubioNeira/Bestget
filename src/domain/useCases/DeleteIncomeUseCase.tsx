@@ -1,6 +1,6 @@
 import { IIncomeRepository } from "../../data/repository/incomeRepository/IIncomeRepository";
 import { ValidationResult } from "../../data/types/Validation";
-import { isConnected } from "../../utils/Connection";
+import { isConnected, validateConnection } from "../../utils/Connection";
 
 class DeleteIncomeUseCase {
     constructor(private incomeRepository: IIncomeRepository) { }
@@ -16,18 +16,18 @@ class DeleteIncomeUseCase {
             result: ""
         }
 
+        const result = await validateConnection()
 
-        if(await isConnected()){
+        if(result.isValid){
             await this.incomeRepository.delete(id)
 
         }else{
             validationResult.isValid = false
             validationResult.message = {
                 title: "Error al eliminar el ingreso.",
-                message: "No hay conexión a internet."
+                message: result.errorMessage
             }
         }
-
 
         return validationResult
     }

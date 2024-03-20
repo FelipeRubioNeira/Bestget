@@ -5,6 +5,10 @@ import { Category } from "../../../data/types/Categoty"
 import { ScreenRoutes } from "../../../navigation/Routes"
 import IExpenseRespository from "../../../data/repository/expenseRepository/IExpenseRepository"
 import { Expense, ExpenseUI } from "../../../data/types/Expense"
+import TouchableIcon from "../../components/touchableIcon/TouchableIcon"
+
+const editIcon = require("../../../assets/icons/ic_edit.png")
+
 
 type Title = {
     main: string,
@@ -38,6 +42,8 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository }: budgetVi
         used: ""
     })
 
+    const [editMode, setEditMode] = useState(false)
+
 
 
 
@@ -46,6 +52,23 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository }: budgetVi
     useEffect(() => {
         getData()
     }, [newExpenseId])
+
+    // we add the delete button to the header if there are budget or expenses
+    useEffect(() => {
+
+        navigation.setOptions({
+            headerRight: () => {
+                if (expenseList.length === 0) return null
+                return (
+                    <TouchableIcon
+                        image={editIcon}
+                        onPress={() => setEditMode(!editMode)}
+                    />
+                )
+            }
+        })
+
+    }, [expenseList, editMode])
 
 
 
@@ -56,7 +79,7 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository }: budgetVi
 
     const getData = async () => {
 
-        const categoryFound =  findCategory(budget?.categoryId, categoryList)
+        const categoryFound = findCategory(budget?.categoryId, categoryList)
 
         const expenseList = await expensesRepository.getByBudgetId(budget.id)
         const expenseListFormatted = applyFormat(expenseList)
@@ -122,9 +145,6 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository }: budgetVi
 
     }
 
-    const getUsedAmount = () => { }
-
-
 
     const findCategory = (categoryId: number = 0, categoryList: Category[]) => {
         const category = categoryList.find(category => category.id === categoryId)
@@ -133,12 +153,16 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository }: budgetVi
 
 
     // ----------- events ----------- //
-    const onPress = () => {
+    const onPressNewExpense = () => {
         navigation.navigate(ScreenRoutes.EXPENSES_FORM, {
             budget,
             categoryList
         })
     }
+
+    const onPressEditExpense = (expense: Expense) => {}
+
+    const onPressDeleteExpense = (expense: Expense) => {}
 
 
 
@@ -147,8 +171,9 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository }: budgetVi
         title,
         category,
         expenseList,
+        editMode,
 
-        onPress
+        onPressNewExpense
     }
 
 }

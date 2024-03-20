@@ -1,6 +1,6 @@
-type BudgetExpenseItemType = "Budget" | "Expense";
+type BudgetExpenseType = "Budget" | "Expense";
+
 
 export type {
-
-    BudgetExpenseItemType
+    BudgetExpenseType,
 }

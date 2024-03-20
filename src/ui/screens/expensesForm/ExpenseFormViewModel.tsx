@@ -8,9 +8,12 @@ import { ScreenRoutes } from "../../../navigation/Routes"
 import { getCurrentDate } from "../../../utils/Date"
 import { ChipItemProps } from "../../components/chipItem/ChipItem"
 import { Budget } from "../../../data/types/Budget"
+import EditExpenseUseCase from "../../../domain/useCases/EditExpenseUseCase"
+import { ModalProps } from "../../components/modal/Modal"
 
 type ExpensesCreateViewModelProps = {
-    createExpenseUseCase: CreateExpenseUseCase
+    createExpenseUseCase: CreateExpenseUseCase,
+    editExpenseUseCase: EditExpenseUseCase
 } & ExpensesCreateScreenProps
 
 
@@ -25,7 +28,7 @@ type StateType = IExpenseState[StateName]
 
 
 const useExpenseFormViewModel = (
-    { navigation, route, createExpenseUseCase }: ExpensesCreateViewModelProps
+    { navigation, route, createExpenseUseCase, editExpenseUseCase }: ExpensesCreateViewModelProps
 ) => {
 
 
@@ -37,18 +40,22 @@ const useExpenseFormViewModel = (
 
 
     // ------------------- states ------------------- //
+    const [categories, setCategories] = useState<Category[]>([])
+    const [hasBudget, setHasBudget] = useState<boolean>(false)
+    const [chipItemProps, setChipItemProps] = useState<ChipItemProps>()
+
     const [expenseState, setExpenseState] = useState<IExpenseState>({
         expenseName: "",
         expenseAmount: "",
         categoryId: 0
     })
 
-    const [categories, setCategories] = useState<Category[]>([])
-    const [showChipItem, setShowChipItem] = useState<boolean>(false)
-    const [chipItemProps, setChipItemProps] = useState<ChipItemProps>()
-
-
-
+    const [modalState, setModalState] = useState<ModalProps>({
+        visible: false,
+        title: "",
+        message: "",
+        buttonList: []
+    })
 
 
 
@@ -95,9 +102,9 @@ const useExpenseFormViewModel = (
 
             updateCategory(budget.categoryId)
 
-            setShowChipItem(true)
+            setHasBudget(true)
 
-        } else setShowChipItem(false)
+        } else setHasBudget(false)
 
     }
 
@@ -131,45 +138,14 @@ const useExpenseFormViewModel = (
     }
 
 
-    // => create new expense
-    const saveExpense = async () => {
-
-        try {
-
-            const newExpense = getExpenseFormatted(expenseState)
-            const newExpenseId = await createExpenseUseCase.create(newExpense)
-
-            const routeParams = {
-                categoryList,
-                newExpenseId: newExpenseId
-            }
-
-            if (budget) {
-
-                navigation.navigate(ScreenRoutes.BUDGET, {
-                    budget: budget,
-                    ...routeParams
-                })
-
-            } else navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {
-                ...routeParams,
-            })
-
-
-        } catch (error) {
-            console.error("error al guardar el nuevo gasto", error);
-        }
-
-    }
-
-    const getExpenseFormatted = (expenseState: IExpenseState) => {
+    const generateExpenseCreate = () => {
 
         const { expenseAmount, expenseName, categoryId } = expenseState
 
         const amountInt = numberFormat(expenseAmount)
         const currentDate = getCurrentDate()
 
-        const newExpense: ExpenseCreate = {
+        const expenseCreated: ExpenseCreate = {
             name: expenseName,
             amount: amountInt,
             date: currentDate,
@@ -177,13 +153,119 @@ const useExpenseFormViewModel = (
             budgetId: budget?.id || ""
         }
 
-        return newExpense
+        return expenseCreated
+
+    }
+
+    const generateExpense = () => {
+
+        const { expenseAmount, expenseName, categoryId } = expenseState
+
+        const amountInt = numberFormat(expenseAmount)
+        const currentDate = getCurrentDate()
+
+        const expenseCreated: Expense = {
+            id: expense?.id || "",
+            name: expenseName,
+            amount: amountInt,
+            date: currentDate,
+            categoryId: categoryId || 0,
+            budgetId: budget?.id || ""
+        }
+
+        return expenseCreated
 
     }
 
 
+    // => create new expense
+    const saveExpense = async () => {
+
+
+        if (expense) { // edit
+            editExpense()
+
+        } else { // create
+            createExpense()
+        }
+
+    }
+
+
+    const createExpense = async () => {
+
+        let expense = generateExpenseCreate()
+
+        const result = await createExpenseUseCase.create(expense)
+
+        if (result.isValid) {
+
+            const routeParams = {
+                categoryList,
+                newExpenseId: result.result
+            }
+
+            if (budget) {
+                navigation.navigate(ScreenRoutes.BUDGET, {
+                    budget: budget,
+                    ...routeParams
+                })
+
+            } else navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, { ...routeParams })
+
+        } else {
+            const { title, message } = result.message
+            showModal(title, message)
+        }
+
+    }
+
+    const editExpense = async () => {
+
+        const expense = generateExpense()
+        const validationResult = await editExpenseUseCase.edit(expense)
+
+        if (validationResult.isValid) {
+            navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, { ...route.params })
+
+        } else {
+            const { title, message } = validationResult.message
+            showModal(title, message)
+        }
+
+    }
+
+
+    // ------------------- modal ------------------- //
+    const showModal = (title: string, message: string) => {
+
+        setModalState({
+            visible: true,
+            title: title,
+            message: message,
+            buttonList: [
+                {
+                    text: "Aceptar",
+                    onPress: hideModal
+                }
+            ]
+        })
+
+    }
+
+    const hideModal = () => {
+        setModalState({
+            ...modalState,
+            visible: false
+        })
+
+    }
+
+
+
     return {
-        showChipItem,
+        modalState,
+        hasBudget,
         chipItemProps,
         categories,
         expenseState,

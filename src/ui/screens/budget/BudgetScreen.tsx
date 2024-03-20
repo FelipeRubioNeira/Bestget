@@ -1,9 +1,6 @@
 import { FlatList, View } from 'react-native'
 import React from 'react'
 import { DefaultStyles } from '../../constants/Styles'
-import TextInputWithLabel from '../../components/textInputWithLabel/TextInputWithLabel'
-import Spacer from '../../components/spacer/Spacer'
-import { InputType } from '../../components/textInput/TextInputViewModel'
 import ChipItem from '../../components/chipItem/ChipItem'
 import ButtonAdd from '../../components/buttonAdd/ButtonAdd'
 import { Colors } from '../../constants/Colors'
@@ -16,6 +13,7 @@ import ExpenseItem from '../../components/expenseItem/ExpenseItem'
 
 const expensesRepository = new ExpenseRepository()
 
+
 const Budgets = ({ navigation, route }: BudgetsScreenProps) => {
 
 
@@ -25,31 +23,47 @@ const Budgets = ({ navigation, route }: BudgetsScreenProps) => {
         expensesRepository
     })
 
+    // ----------- atributes ----------- //
+    const {
+        title,
+        category,
+        expenseList,
+        editMode,
+    } = budgetViewModel
+
+    // ----------- events ----------- //
+    const {
+        onPressNewExpense
+    } = budgetViewModel
+
 
     return (
 
         <View style={DefaultStyles.screen}>
 
             <Label
-                value={budgetViewModel.title.main}
+                value={title.main}
                 fontFamily={FontFamily.BLACK}
             />
 
-            <Label value={budgetViewModel.title.used} />
-            <Label value={budgetViewModel.title.available} />
+            <Label value={title.used} />
+            <Label value={title.available} />
 
 
             <ChipItem
-                category={budgetViewModel.category}
+                category={category}
                 disabled={true}
-                style={{ backgroundColor: budgetViewModel.category?.color, marginVertical: 20 }}
+                style={{ backgroundColor: category?.color, marginVertical: 20 }}
             />
 
             <FlatList
-                data={budgetViewModel.expenseList}
+                data={expenseList}
                 renderItem={({ item }) => <ExpenseItem
                     {...item}
-                    category={budgetViewModel.category}
+                    editMode={editMode}
+                    category={category}
+                    onDelete={() => { }}
+                    onEdit={() => { }}
                 />}
                 showsVerticalScrollIndicator={false}
             />
@@ -57,7 +71,7 @@ const Budgets = ({ navigation, route }: BudgetsScreenProps) => {
             <ButtonAdd
                 visible={true}
                 backgroundColor={Colors.YELLOW}
-                onPress={budgetViewModel.onPress}
+                onPress={onPressNewExpense}
             />
 
         </View>

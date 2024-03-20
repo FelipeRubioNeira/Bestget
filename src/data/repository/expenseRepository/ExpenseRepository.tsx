@@ -25,6 +25,20 @@ class ExpenseRepository implements IExpenseRespository {
 
     }
 
+    async edit(expense: Expense): Promise<void> {
+
+        try {
+
+            await firestore()
+                .collection(Collections.EXPENSE)
+                .doc(expense.id)
+                .update(expense)
+
+        } catch (error) {
+            console.error("error editExpense repository", error);
+        }
+    }
+
     async getAll(): Promise<Expense[]> {
         try {
 

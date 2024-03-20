@@ -12,27 +12,36 @@ import CreateExpenseUseCase from '../../../domain/useCases/CreateExpenseUseCase'
 import ExpenseRepository from '../../../data/repository/expenseRepository/ExpenseRepository'
 import ChipItem from '../../components/chipItem/ChipItem'
 import Screen from '../../components/screen/Screen'
+import EditExpenseUseCase from '../../../domain/useCases/EditExpenseUseCase'
+import Modal from '../../components/modal/Modal'
 
 
 const expenseRepository = new ExpenseRepository()
 
 const createExpenseUseCase = new CreateExpenseUseCase(expenseRepository)
-
+const editExpenseUseCase = new EditExpenseUseCase(expenseRepository)
 
 const ExpenseForm = ({ navigation, route }: ExpensesCreateScreenProps) => {
 
-  const expensesCreateViewModel = useExpenseFormViewModel({
+  const expenseFormViewModel = useExpenseFormViewModel({
     navigation,
     route,
-    createExpenseUseCase
+    createExpenseUseCase,
+    editExpenseUseCase
   })
 
 
   const {
-    expenseName,
-    expenseAmount,
-    categoryId
-  } = expensesCreateViewModel.expenseState
+    modalState,
+    expenseState,
+    hasBudget,
+    categories,
+    updateExpenseName,
+    updateExpenseAmount,
+    updateCategory,
+    saveExpense,
+    chipItemProps
+  } = expenseFormViewModel
 
   return (
 
@@ -41,8 +50,8 @@ const ExpenseForm = ({ navigation, route }: ExpensesCreateScreenProps) => {
       <View>
 
         <TextInputWithLabel
-          value={expenseName}
-          onChangeText={expensesCreateViewModel.updateExpenseName}
+          value={expenseState.expenseName}
+          onChangeText={updateExpenseName}
           title="Nombre gasto:"
           placeholder="Salida con amigos"
         />
@@ -50,27 +59,27 @@ const ExpenseForm = ({ navigation, route }: ExpensesCreateScreenProps) => {
         <Spacer marginVertical={"4%"} />
 
         <TextInputWithLabel
-          value={expenseAmount}
-          onChangeText={expensesCreateViewModel.updateExpenseAmount}
+          value={expenseState.expenseAmount}
+          onChangeText={updateExpenseAmount}
           title="Monto:"
           placeholder="$45.000"
           inputMode={InputType.NUMERIC}
         />
 
         {
-          expensesCreateViewModel.showChipItem ?
+          hasBudget ?
             <ChipItem
               disabled={true}
-              category={expensesCreateViewModel.chipItemProps?.category}
-              style={expensesCreateViewModel.chipItemProps?.style}
+              category={chipItemProps?.category}
+              style={chipItemProps?.style}
             />
 
             :
 
             <ChipList
-              idSelected={categoryId}
-              onPress={expensesCreateViewModel.updateCategory}
-              categories={expensesCreateViewModel.categories}
+              idSelected={expenseState.categoryId}
+              onPress={updateCategory}
+              categories={categories}
             />
         }
 
@@ -82,7 +91,14 @@ const ExpenseForm = ({ navigation, route }: ExpensesCreateScreenProps) => {
 
       <SubmitButton
         backgroundColor={Colors.YELLOW}
-        onPress={expensesCreateViewModel.saveExpense}
+        onPress={saveExpense}
+      />
+
+      <Modal
+        visible={modalState.visible}
+        title={modalState.title}
+        message={modalState.message}
+        buttonList={modalState.buttonList}
       />
 
     </Screen>

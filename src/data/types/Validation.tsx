@@ -9,7 +9,7 @@ type ValidationResult<T> = {
 
 type Validation = {
     isValid: boolean,
-    messageError: string,
+    errorMessage: string,
 }
 
 export type {

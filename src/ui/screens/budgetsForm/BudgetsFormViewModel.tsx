@@ -181,9 +181,8 @@ const useBudgetsFormViewModel = ({
         const response = await editBudgetUseCase.edit(budgetEditted, expenses)
 
         if (response.isValid) {
-            navigation.replace(ScreenRoutes.BUDGET, {
+            navigation.replace(ScreenRoutes.BUDGET_EXPENSES, {
                 categoryList: categories,
-                budget: budgetEditted
             })
 
         } else {

@@ -11,10 +11,13 @@ import { currencyFormat, numberFormat } from "../../../utils/Convert"
 import { Category } from "../../../data/types/Categoty"
 import IBudgetRepository from "../../../data/repository/budgetRepository/IBudgetRepository"
 import { Budget, BudgetUI } from "../../../data/types/Budget"
-import { BudgetExpenseItemType } from "../../../data/types/BudgetExpense"
+import { BudgetExpenseType } from "../../../data/types/BudgetExpense"
 import TouchableIcon from "../../components/touchableIcon/TouchableIcon"
-import { ModalProps } from "../../components/modal/Modal"
+import { ButtonModal, ModalProps } from "../../components/modal/Modal"
 import DeleteBudgetUseCase from "../../../domain/useCases/DeleteBudgetUseCase"
+import { ValidationResult } from "../../../data/types/Validation"
+import DeleteExpenseUseCase from "../../../domain/useCases/DeleteExpenseUseCase"
+import { DefaultStyles } from "../../constants/Styles"
 
 const editIcon = require("../../../assets/icons/ic_edit.png")
 
@@ -24,7 +27,8 @@ const editIcon = require("../../../assets/icons/ic_edit.png")
 type ExpensesViewModelProps = {
     expenseRepository: IExpenseRespository,
     budgetRepository: IBudgetRepository,
-    deleteBudgetUseCase: DeleteBudgetUseCase
+    deleteBudgetUseCase: DeleteBudgetUseCase,
+    deleteExpenseUseCase: DeleteExpenseUseCase,
 } & BudgetsExpensesScreenProps
 
 export type BudgetOrExpense = "Budget" | "Expense"
@@ -36,7 +40,8 @@ const useBudgetExpensesViewModel = ({
     route,
     expenseRepository,
     budgetRepository,
-    deleteBudgetUseCase
+    deleteBudgetUseCase,
+    deleteExpenseUseCase
 }: ExpensesViewModelProps) => {
 
 
@@ -68,11 +73,12 @@ const useBudgetExpensesViewModel = ({
         visible: false,
         title: "",
         message: "",
+        buttonList: []
     })
 
     const [selectedItemToDelete, setSelectedItemToDelete] = useState({
         id: "",
-        type: "Budget" as BudgetExpenseItemType
+        type: "Budget" as BudgetExpenseType
     })
 
 
@@ -233,17 +239,18 @@ const useBudgetExpensesViewModel = ({
         setExpenseOptionsVisble(false)
     }
 
-    const findItem = (id: string, type: BudgetExpenseItemType) => {
+    const findItem = (id: string, type: BudgetExpenseType) => {
         return budgetsExpenses.find(item => item.id === id && item.type == type);
     }
 
 
     // ----------- modal ----------- //
-    const showAlert = (title: string, message: string) => {
+    const showAlert = (title: string, message: string, buttonList: ButtonModal[]) => {
         setModalState({
-            visible: true,
             title: title,
-            message: message
+            message: message,
+            buttonList: buttonList,
+            visible: true,
         })
     }
 
@@ -256,7 +263,7 @@ const useBudgetExpensesViewModel = ({
 
 
     // ----------- onPress flatList items ----------- //
-    const onPressEdit = (itemId: string, type: BudgetExpenseItemType) => {
+    const onPressEdit = (itemId: string, type: BudgetExpenseType) => {
 
         setEditMode(false)
 
@@ -279,19 +286,31 @@ const useBudgetExpensesViewModel = ({
                 categoryList: categories,
                 expense: expense
             })
-            
+
         }
 
     }
 
-    const onPressDelete = (itemId: string, type: BudgetExpenseItemType) => {
+    const onPressDelete = (itemId: string, type: BudgetExpenseType) => {
 
         const budgetMessage = "¿Estás seguro que deseas eliminar este presupuesto? Se eliminarán todos los gastos asociados."
         const expenseMessage = "¿Estás seguro que deseas eliminar este gasto?"
 
         const message = type === "Budget" ? budgetMessage : expenseMessage
 
-        showAlert("Eliminar", message)
+        showAlert(
+            "Eliminar",
+            message,
+            [{
+                text: 'Aceptar',
+                onPress: deleteItem,
+            },
+            {
+                text: 'Cancelar',
+                onPress: hideAlert,
+                style: DefaultStyles.mainButton
+            }]
+        )
 
         setSelectedItemToDelete({
             id: itemId,
@@ -303,11 +322,37 @@ const useBudgetExpensesViewModel = ({
 
         hideAlert()
 
-        // if the item to delete is a budget, we delete all the expenses associated with it
-        if (selectedItemToDelete.type === "Budget") await deleteBudgetUseCase.delete(selectedItemToDelete.id)
+        let validationResult: ValidationResult<void> = {
+            isValid: true,
+            message: {
+                title: "",
+                message: ""
+            },
+        }
 
-        // if the item to delete is an expense, we just delete it
-        else await expenseRepository.delete(selectedItemToDelete.id)
+        const buttonItem: ButtonModal[] = [{
+            text: "Aceptar",
+            onPress: hideAlert,
+        }]
+
+
+        // if the item to delete is a budget, we delete all the expenses associated with it
+        if (selectedItemToDelete.type === "Budget") {
+
+            validationResult = await deleteBudgetUseCase.delete(selectedItemToDelete.id)
+
+            const { title, message } = validationResult.message
+            if (!validationResult.isValid) showAlert(title, message, buttonItem)
+
+        }
+        // if the item to delete is an expense
+        else {
+
+            validationResult = await deleteExpenseUseCase.delete(selectedItemToDelete.id)
+
+            const { title, message } = validationResult.message
+            if (!validationResult.isValid) showAlert(title, message, buttonItem)
+        }
 
         // finally we update the data
         await getData(categoryList)
@@ -333,7 +378,7 @@ const useBudgetExpensesViewModel = ({
         })
     }
 
-    const onPressItem = (id: string, type: BudgetExpenseItemType) => {
+    const onPressItem = (id: string, type: BudgetExpenseType) => {
 
         setEditMode(false)
 
