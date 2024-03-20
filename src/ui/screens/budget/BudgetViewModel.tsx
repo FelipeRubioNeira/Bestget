@@ -56,9 +56,9 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository }: budgetVi
 
     const getData = async () => {
 
-        findCategory(budget?.categoryId, categoryList)
+        const categoryFound =  findCategory(budget?.categoryId, categoryList)
 
-        const expenseList = await expensesRepository.getById(budget.id)
+        const expenseList = await expensesRepository.getByBudgetId(budget.id)
         const expenseListFormatted = applyFormat(expenseList)
         const totalExpenses = getTotalExpenses(expenseList)
 
@@ -70,6 +70,7 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository }: budgetVi
         )
 
         setTitle(title)
+        setCategory(categoryFound)
         setExpenseList(expenseListFormatted)
     }
 
@@ -127,7 +128,7 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository }: budgetVi
 
     const findCategory = (categoryId: number = 0, categoryList: Category[]) => {
         const category = categoryList.find(category => category.id === categoryId)
-        setCategory(category)
+        return category
     }
 
 

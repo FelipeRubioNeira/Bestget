@@ -6,6 +6,7 @@
 import IBudgetRepository from "../../data/repository/budgetRepository/IBudgetRepository"
 import IExpenseRespository from "../../data/repository/expenseRepository/IExpenseRepository"
 import { Budget } from "../../data/types/Budget"
+import { Expense } from "../../data/types/Expense"
 import { Validation, ValidationResult } from "../../data/types/Validation"
 import { isConnected } from "../../utils/Connection"
 import IValidation from "../interfaces/IValidation"
@@ -16,7 +17,7 @@ class EditBudgetUseCase implements IValidation {
         private expenseRespository: IExpenseRespository
     ) { }
 
-    async edit(budget: Budget): Promise<ValidationResult<void>> {
+    async edit(budget: Budget, expenses: Expense[]): Promise<ValidationResult<void>> {
 
         const validationResult: ValidationResult<void> = {
             isValid: true,
@@ -30,7 +31,17 @@ class EditBudgetUseCase implements IValidation {
         const result = await this.applyValidations(budget.name, budget.amount)
 
         if (result.isValid) {
-            this.budgetRespository.update(budget)
+
+            const promises = [this.budgetRespository.update(budget)]
+
+            if (budget.categoryId && expenses.length > 0) {
+                promises.push(
+                    this.expenseRespository.updateCategory(budget?.categoryId, expenses)
+                )
+            }
+
+            await Promise.all(promises)
+
 
         } else {
             validationResult.isValid = false
@@ -44,7 +55,7 @@ class EditBudgetUseCase implements IValidation {
 
     }
 
-     async applyValidations(name: string, amount: number): Promise<Validation> {
+    async applyValidations(name: string, amount: number): Promise<Validation> {
 
         let validationResult: Validation = {
             isValid: true,

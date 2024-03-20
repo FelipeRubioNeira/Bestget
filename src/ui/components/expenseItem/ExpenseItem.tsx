@@ -8,8 +8,7 @@ import { ExpenseUI } from '../../../data/types/Expense'
 import EditionIcons from '../editionIcons/EditionIcons'
 
 
-const ExpenseItem = ({ name, amount, category, editMode = false, onEdit, onDelete }: ExpenseUI) => {
-
+const ExpenseItem = ({ name, amount, category, editMode, onEdit, onDelete }: ExpenseUI) => {
 
 
     return (

@@ -47,7 +47,10 @@ const Budgets = ({ navigation, route }: BudgetsScreenProps) => {
 
             <FlatList
                 data={budgetViewModel.expenseList}
-                renderItem={({ item }) => <ExpenseItem {...item} />}
+                renderItem={({ item }) => <ExpenseItem
+                    {...item}
+                    category={budgetViewModel.category}
+                />}
                 showsVerticalScrollIndicator={false}
             />
 

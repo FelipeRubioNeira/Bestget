@@ -2,8 +2,8 @@ import { useEffect, useState } from "react"
 import { ExpensesCreateScreenProps } from "../../../navigation/NavigationParamList"
 import { Category } from "../../../data/types/Categoty"
 import CreateExpenseUseCase from "../../../domain/useCases/CreateExpenseUseCase"
-import { numberFormat } from "../../../utils/Convert"
-import { ExpenseCreate } from "../../../data/types/Expense"
+import { currencyFormat, numberFormat } from "../../../utils/Convert"
+import { Expense, ExpenseCreate } from "../../../data/types/Expense"
 import { ScreenRoutes } from "../../../navigation/Routes"
 import { getCurrentDate } from "../../../utils/Date"
 import { ChipItemProps } from "../../components/chipItem/ChipItem"
@@ -32,20 +32,22 @@ const useExpenseFormViewModel = (
     const {
         categoryList,
         budget,
+        expense
     } = route.params
 
 
     // ------------------- states ------------------- //
-    const [expenseCreateState, setExpenseCreateState] = useState<IExpenseState>({
+    const [expenseState, setExpenseState] = useState<IExpenseState>({
         expenseName: "",
         expenseAmount: "",
         categoryId: 0
     })
 
     const [categories, setCategories] = useState<Category[]>([])
-
     const [showChipItem, setShowChipItem] = useState<boolean>(false)
     const [chipItemProps, setChipItemProps] = useState<ChipItemProps>()
+
+
 
 
 
@@ -59,8 +61,26 @@ const useExpenseFormViewModel = (
         validateBudget(budget, categoryList)
     }, [budget])
 
+    useEffect(() => {
+        updateForm(expense)
+    }, [expense])
+
+
+
+
 
     // ------------------- methods ------------------- //
+    const updateForm = (expense: Expense | undefined) => {
+
+        if (expense) {
+            setExpenseState({
+                expenseName: expense.name,
+                expenseAmount: currencyFormat(expense.amount),
+                categoryId: expense.categoryId
+            })
+        }
+    }
+
     const validateBudget = (budget: Budget | undefined, categoryList: Category[]) => {
 
         if (budget) {
@@ -81,10 +101,9 @@ const useExpenseFormViewModel = (
 
     }
 
-
     const updateExpenseState = (state: StateName, value: StateType) => {
-        setExpenseCreateState({
-            ...expenseCreateState,
+        setExpenseState({
+            ...expenseState,
             [state]: value
         })
 
@@ -105,7 +124,6 @@ const useExpenseFormViewModel = (
     }
 
     const updateCategory = (newCategoryId: number = 0) => {
-
         updateExpenseState(
             "categoryId",
             newCategoryId
@@ -118,7 +136,7 @@ const useExpenseFormViewModel = (
 
         try {
 
-            const newExpense = getExpenseFormatted(expenseCreateState)
+            const newExpense = getExpenseFormatted(expenseState)
             const newExpenseId = await createExpenseUseCase.create(newExpense)
 
             const routeParams = {
@@ -144,9 +162,9 @@ const useExpenseFormViewModel = (
 
     }
 
-    const getExpenseFormatted = (expenseCreateState: IExpenseState) => {
+    const getExpenseFormatted = (expenseState: IExpenseState) => {
 
-        const { expenseAmount, expenseName, categoryId } = expenseCreateState
+        const { expenseAmount, expenseName, categoryId } = expenseState
 
         const amountInt = numberFormat(expenseAmount)
         const currentDate = getCurrentDate()
@@ -168,7 +186,7 @@ const useExpenseFormViewModel = (
         showChipItem,
         chipItemProps,
         categories,
-        expenseCreateState,
+        expenseState,
         updateExpenseName,
         updateExpenseAmount,
         updateCategory,

@@ -18,6 +18,7 @@ import ExpenseRepository from '../../../data/repository/expenseRepository/Expens
 
 const budgetRepository = new BudgetRepository()
 const expensesRepository = new ExpenseRepository()
+
 const createBudgetUseCase = new CreateBudgetUseCase(budgetRepository)
 
 const editBudgetUseCase = new EditBudgetUseCase(
@@ -33,7 +34,8 @@ const BudgetsFormScreen = ({ navigation, route }: BudgetsCreateScreenProps) => {
         navigation,
         route,
         createBudgetUseCase,
-        editBudgetUseCase
+        editBudgetUseCase,
+        expensesRepository
     })
 
     const {

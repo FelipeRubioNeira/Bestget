@@ -31,57 +31,59 @@ const ExpenseForm = ({ navigation, route }: ExpensesCreateScreenProps) => {
   const {
     expenseName,
     expenseAmount,
-  } = expensesCreateViewModel.expenseCreateState
+    categoryId
+  } = expensesCreateViewModel.expenseState
 
   return (
 
     <Screen>
 
-        <View>
+      <View>
 
-          <TextInputWithLabel
-            value={expenseName}
-            onChangeText={expensesCreateViewModel.updateExpenseName}
-            title="Nombre gasto:"
-            placeholder="Salida con amigos"
-          />
-
-          <Spacer marginVertical={"4%"} />
-
-          <TextInputWithLabel
-            value={expenseAmount}
-            onChangeText={expensesCreateViewModel.updateExpenseAmount}
-            title="Monto:"
-            placeholder="$45.000"
-            inputMode={InputType.NUMERIC}
-          />
-
-          {
-            expensesCreateViewModel.showChipItem ?
-              <ChipItem
-                disabled={true}
-                category={expensesCreateViewModel.chipItemProps?.category}
-                style={expensesCreateViewModel.chipItemProps?.style}
-              />
-
-              :
-
-              <ChipList
-                onPress={expensesCreateViewModel.updateCategory}
-                categories={expensesCreateViewModel.categories}
-              />
-          }
-
-
-        </View>
-
-        <Spacer marginVertical={"8%"} />
-
-
-        <SubmitButton
-          backgroundColor={Colors.YELLOW}
-          onPress={expensesCreateViewModel.saveExpense}
+        <TextInputWithLabel
+          value={expenseName}
+          onChangeText={expensesCreateViewModel.updateExpenseName}
+          title="Nombre gasto:"
+          placeholder="Salida con amigos"
         />
+
+        <Spacer marginVertical={"4%"} />
+
+        <TextInputWithLabel
+          value={expenseAmount}
+          onChangeText={expensesCreateViewModel.updateExpenseAmount}
+          title="Monto:"
+          placeholder="$45.000"
+          inputMode={InputType.NUMERIC}
+        />
+
+        {
+          expensesCreateViewModel.showChipItem ?
+            <ChipItem
+              disabled={true}
+              category={expensesCreateViewModel.chipItemProps?.category}
+              style={expensesCreateViewModel.chipItemProps?.style}
+            />
+
+            :
+
+            <ChipList
+              idSelected={categoryId}
+              onPress={expensesCreateViewModel.updateCategory}
+              categories={expensesCreateViewModel.categories}
+            />
+        }
+
+
+      </View>
+
+      <Spacer marginVertical={"8%"} />
+
+
+      <SubmitButton
+        backgroundColor={Colors.YELLOW}
+        onPress={expensesCreateViewModel.saveExpense}
+      />
 
     </Screen>
 

@@ -9,11 +9,14 @@ import { ScreenRoutes } from "../../../navigation/Routes"
 import { ButtonModal, ModalProps } from "../../components/modal/Modal"
 import { DefaultStyles } from "../../constants/Styles"
 import EditBudgetUseCase from "../../../domain/useCases/EditBudgetUseCase"
+import ExpenseRepository from "../../../data/repository/expenseRepository/ExpenseRepository"
+import { Expense } from "../../../data/types/Expense"
 
 
 type IBudgetCreateViewModel = {
     createBudgetUseCase: CreateBudgetUseCase,
-    editBudgetUseCase: EditBudgetUseCase
+    editBudgetUseCase: EditBudgetUseCase,
+    expensesRepository: ExpenseRepository
 } & BudgetsCreateScreenProps
 
 
@@ -31,7 +34,8 @@ const useBudgetsFormViewModel = ({
     route,
     navigation,
     createBudgetUseCase,
-    editBudgetUseCase
+    editBudgetUseCase,
+    expensesRepository
 }: IBudgetCreateViewModel) => {
 
 
@@ -44,6 +48,7 @@ const useBudgetsFormViewModel = ({
 
     // ------------------- states ------------------- //
     const [categories, setCategories] = useState<Category[]>([])
+    const [expenses, setExpenses] = useState<Expense[]>([])
 
     const [budgetState, setBudgetState] = useState<BudgetState>({
         budgetName: "",
@@ -65,7 +70,10 @@ const useBudgetsFormViewModel = ({
     }, [categoryList])
 
     useEffect(() => {
-        if (budget) updateForm(budget)
+        if (budget) {
+            updateForm(budget)
+            getExpenses(budget)
+        }
     }, [budget])
 
 
@@ -102,6 +110,13 @@ const useBudgetsFormViewModel = ({
         updateBudgetState("categoryId", categoryId)
     }
 
+    // ------------------- expenses ------------------- //
+    const getExpenses = async (budget: Budget) => {
+        const expenses = await expensesRepository.getByBudgetId(budget.id)
+        setExpenses(expenses)
+    }
+
+
     // ------------------- modal ------------------- //
     const showModal = (title: string, message: string, buttonList: ButtonModal[]) => {
 
@@ -123,7 +138,7 @@ const useBudgetsFormViewModel = ({
         if (budget) {
 
             // if category changes, show modal
-            if (hasCategoryChanged(budget?.categoryId, budgetState.categoryId)) {
+            if (hasCategoryChanged() && hasExpenses()) {
 
                 showModal(
                     "Cambio de categoría",
@@ -144,7 +159,6 @@ const useBudgetsFormViewModel = ({
                 // if category doesn't change, update budget
             } else updateBudget()
 
-
             // if budget doesn't exist, create budget
         } else createBudget()
 
@@ -164,7 +178,7 @@ const useBudgetsFormViewModel = ({
         }
 
 
-        const response = await editBudgetUseCase.edit(budgetEditted)
+        const response = await editBudgetUseCase.edit(budgetEditted, expenses)
 
         if (response.isValid) {
             navigation.replace(ScreenRoutes.BUDGET, {
@@ -189,8 +203,13 @@ const useBudgetsFormViewModel = ({
 
     }
 
-    const hasCategoryChanged = (previousCategory: number = 0, currentCategory: number = 0) => {
-        return previousCategory !== currentCategory
+    // currect category is different from the category in the budget
+    const hasCategoryChanged = () => {
+        return budget?.categoryId !== budgetState.categoryId
+    }
+
+    const hasExpenses = () => {
+        return expenses.length > 0
     }
 
     const createBudget = async () => {

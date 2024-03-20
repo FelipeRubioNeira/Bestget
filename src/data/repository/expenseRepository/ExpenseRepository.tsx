@@ -1,9 +1,8 @@
 import { Collections } from "../../collections/Collections";
-import { Budget } from "../../types/Budget";
 import { Expense, ExpenseCreate, ExpenseKeys } from "../../types/Expense";
 import IExpenseRespository from "./IExpenseRepository";
 import firestore from '@react-native-firebase/firestore';
-import QuerySnapshot from "@react-native-firebase/firestore";
+
 
 class ExpenseRepository implements IExpenseRespository {
 
@@ -60,7 +59,7 @@ class ExpenseRepository implements IExpenseRespository {
         }
     }
 
-    async getById(id: string): Promise<Expense[]> {
+    async getByBudgetId(id: string): Promise<Expense[]> {
 
         try {
 
@@ -153,6 +152,24 @@ class ExpenseRepository implements IExpenseRespository {
         }
     }
 
+    async updateCategory(categoryId: number, expenses: Expense[]): Promise<void> {
+
+        try {
+
+            const updatePromises = expenses.map(expense => {
+                return firestore()
+                    .collection(Collections.EXPENSE)
+                    .doc(expense.id)
+                    .update({ categoryId: categoryId })
+            })
+
+            await Promise.all(updatePromises)
+
+        } catch (error) {
+            console.error("error updateCategory", error);
+        }
+    }
+
     async delete(id: string): Promise<void> {
 
         try {
@@ -172,7 +189,7 @@ class ExpenseRepository implements IExpenseRespository {
 
         try {
 
-            const expenses = await this.getById(budgetId)
+            const expenses = await this.getByBudgetId(budgetId)
 
             const deletePromises = expenses.map(expense => {
                 return firestore()

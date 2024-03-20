@@ -189,16 +189,25 @@ const useBudgetExpensesViewModel = ({
         else return categories.find(category => category.id === categoryId)
     }
 
-    const getBudget = (id: string) => {
-        return budgetsExpenses.find(item => item.id === id && item.type === "Budget")
+    const convertToBudget = (item: BudgetUI): Budget => {
+        return convertTo<Budget>(item)
     }
 
-    function convertToBudget<T extends Budget | Expense>(item?: BudgetUI | ExpenseUI) {
+    const convertToExpense = (item: ExpenseUI, budgetId?: string): Expense => {
 
-        if (!item) return {} as Budget
+        const expense: Expense = {
+            ...convertTo<Expense>(item),
+            budgetId: budgetId || ""
+        }
+
+        return expense
+    }
+
+    function convertTo<T extends Budget | Expense>(item?: BudgetUI | ExpenseUI) {
+
+        if (!item) return {} as T
 
         const { id, name, amount, date, category } = item
-
         const amountInt = numberFormat(amount)
         const categoryId = category?.id || 0
 
@@ -207,8 +216,9 @@ const useBudgetExpensesViewModel = ({
             name: name,
             amount: amountInt,
             date: date,
-            categoryId: categoryId,
+            categoryId: categoryId
         } as T
+
     }
 
 
@@ -250,12 +260,11 @@ const useBudgetExpensesViewModel = ({
 
         setEditMode(false)
 
-        const budgetItem = getBudget(itemId)
-        const budget = convertToBudget<Budget>(budgetItem)
-
-
+        const item = findItem(itemId, type)
 
         if (type === "Budget") {
+
+            const budget = convertToBudget(item as BudgetUI)
 
             navigation.navigate(ScreenRoutes.BUDGET_FORM, {
                 categoryList: categories,
@@ -263,9 +272,14 @@ const useBudgetExpensesViewModel = ({
             })
 
         } else {
+
+            const expense = convertToExpense(item as ExpenseUI)
+
             navigation.navigate(ScreenRoutes.EXPENSES_FORM, {
                 categoryList: categories,
+                expense: expense
             })
+            
         }
 
     }
@@ -323,12 +337,12 @@ const useBudgetExpensesViewModel = ({
 
         setEditMode(false)
 
-        const itemToNavigate = createItemToNavigate(id, type)
+        const itemToNavigate = generateBudget(id)
 
         if (type === "Budget") {
 
             const navigationObject = {
-                budget: itemToNavigate as Budget,
+                budget: itemToNavigate,
                 categoryList: categoryList
             }
 
@@ -340,18 +354,18 @@ const useBudgetExpensesViewModel = ({
 
     }
 
-    const createItemToNavigate = (id: string, type: BudgetExpenseItemType) => {
+    const generateBudget = (id: string): Budget => {
 
-        const budgetOrExpensItem = findItem(id, type)
+        const budgetOrExpensItem = findItem(id, "Budget")
         const amountInt = numberFormat(budgetOrExpensItem?.amount)
 
 
-        let navigationObject = {
-            id: budgetOrExpensItem?.id as string,
-            name: budgetOrExpensItem?.name as string,
+        const navigationObject = {
+            id: budgetOrExpensItem?.id || "",
+            name: budgetOrExpensItem?.name || "",
             amount: amountInt,
-            categoryId: budgetOrExpensItem?.category?.id as number,
-            date: budgetOrExpensItem?.date as string
+            categoryId: budgetOrExpensItem?.category?.id,
+            date: budgetOrExpensItem?.date || "",
         }
 
         return navigationObject
