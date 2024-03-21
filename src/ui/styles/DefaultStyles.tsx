@@ -1,27 +1,16 @@
-import { ViewStyle } from 'react-native'
-import { Dimensions } from 'react-native'
-import { Colors } from './Colors'
-import { FontFamily } from './Fonts'
+import { StyleSheet } from "react-native";
+import { Styles } from "./Styles";
+import { Colors } from "../constants/Colors";
+import { FontFamily } from "../constants/Fonts";
 
-enum Styles {
 
-    BORDER_CIRCLE = 1000,
-    BORDER_RADIUS = 8,
-    BORDER_WIDTH = 1,
-    SCREEN_PADDING = 20,
-
-    HEIGHT = Dimensions.get('window').height,
-    WIDTH = Dimensions.get('window').width,
-
-}
-
-const DefaultStyles = Object.freeze({
+const DefaultStyles = StyleSheet.create({
 
     screen: {
         height: "100%",
         width: "100%",
         padding: Styles.SCREEN_PADDING,
-    } as ViewStyle, // an object act as a type
+    }, // an object act as a type
 
     shadow: {
         shadowColor: Colors.BLACK,
@@ -32,7 +21,7 @@ const DefaultStyles = Object.freeze({
         shadowOpacity: 0.17,
         shadowRadius: 3.05,
         elevation: 4
-    } as ViewStyle,
+    },
 
     listItemContainer: {
         flexDirection: 'row',
@@ -43,16 +32,13 @@ const DefaultStyles = Object.freeze({
         alignItems: 'center',
         paddingVertical: "4%",
         marginBottom: "4%",
-    } as ViewStyle,
+    },
 
     mainButton: {
         color: Colors.BLUE,
         fontFamily: FontFamily.BOLD
-    } as ViewStyle,
+    },
 
 })
 
-export {
-    Styles,
-    DefaultStyles
-}
+export default DefaultStyles

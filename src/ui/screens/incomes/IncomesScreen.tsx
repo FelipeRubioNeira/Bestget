@@ -1,6 +1,7 @@
 import { View, StyleSheet, FlatList } from 'react-native'
 import React from 'react'
-import { DefaultStyles, Styles } from '../../constants/Styles'
+import { Styles } from '../../styles/Styles'
+import DefaultStyles from '../../styles/DefaultStyles'
 import Label from '../../components/label/Label'
 import { Colors } from '../../constants/Colors'
 import { Strings } from '../../constants/Strings'

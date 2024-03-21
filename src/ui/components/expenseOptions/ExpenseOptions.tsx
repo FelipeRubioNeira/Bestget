@@ -3,8 +3,9 @@ import React from 'react'
 import Label from '../label/Label'
 import Spacer from '../spacer/Spacer'
 import { Colors } from '../../constants/Colors'
-import { Styles, DefaultStyles } from '../../constants/Styles'
+import { Styles } from '../../styles/Styles'
 import { FontFamily, FontSize } from '../../constants/Fonts'
+import DefaultStyles from '../../styles/DefaultStyles'
 
 const expenseIcon = require("../../../assets/icons/ic_sack.png")
 const budgetIcon = require("../../../assets/icons/ic_calculator_bold.png")
@@ -79,12 +80,13 @@ const ExpenseOptionItem = ({
 }: ExpenseOptionItemProps) => {
 
     return (
-        <View style={{
-            ...expenseOptionStyles.touchableOptionItem,
-            ...styles
-        }}
+        <TouchableOpacity
+            onPress={onPress}
+            style={{
+                ...expenseOptionStyles.touchableOptionItem,
+                ...styles
+            }}
         >
-
             <Label
                 value={title}
                 fontSize={FontSize.XXSMALL}
@@ -93,14 +95,14 @@ const ExpenseOptionItem = ({
 
             <Spacer marginVertical={"2%"} />
 
-            <TouchableOpacity onPress={onPress}>
+            <View>
                 <Image
                     source={image}
                     resizeMode='contain'
                     style={expenseOptionStyles.imageOptionItem}
                 />
-            </TouchableOpacity>
-        </View>
+            </View>
+        </TouchableOpacity >
     )
 
 }
@@ -122,6 +124,7 @@ const expenseOptionStyles = StyleSheet.create({
         backgroundColor: Colors.YELLOW,
         position: 'absolute',
         height: 80,
+        width: 80,
         aspectRatio: 1,
         borderRadius: Styles.HEIGHT,
         justifyContent: 'space-between',
@@ -134,7 +137,7 @@ const expenseOptionStyles = StyleSheet.create({
         width: 35,
         height: 35,
         alignSelf: 'center',
-        tintColor:Colors.BLACK
+        tintColor: Colors.BLACK
     }
 
 })

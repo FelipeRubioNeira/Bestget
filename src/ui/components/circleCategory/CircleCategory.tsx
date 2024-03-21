@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native'
 import React, { useEffect } from 'react'
-import { Styles } from '../../constants/Styles'
+import { Styles } from '../../styles/Styles'
 
 
 const CircleCategory = ({ color = "" }: { color?: string }) => {

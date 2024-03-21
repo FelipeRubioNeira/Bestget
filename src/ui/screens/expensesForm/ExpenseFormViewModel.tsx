@@ -206,6 +206,7 @@ const useExpenseFormViewModel = (
             }
 
             if (budget) {
+
                 navigation.navigate(ScreenRoutes.BUDGET, {
                     budget: budget,
                     ...routeParams
@@ -223,13 +224,26 @@ const useExpenseFormViewModel = (
     const editExpense = async () => {
 
         const expense = generateExpense()
-        const validationResult = await editExpenseUseCase.edit(expense)
+        const result = await editExpenseUseCase.edit(expense)
 
-        if (validationResult.isValid) {
-            navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, { ...route.params })
+
+        if (result.isValid) {
+
+            if (budget) {
+
+                navigation.navigate(ScreenRoutes.BUDGET, {
+                    budget: budget,
+                    categoryList,
+                    newExpenseId: expense.id
+                })
+
+            } else {
+                navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, { ...route.params })
+            }
+
 
         } else {
-            const { title, message } = validationResult.message
+            const { title, message } = result.message
             showModal(title, message)
         }
 

@@ -1,6 +1,6 @@
 import { Keyboard, StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 import React, { ReactNode } from 'react'
-import { DefaultStyles } from '../../constants/Styles'
+import DefaultStyles from '../../styles/DefaultStyles'
 
 const Screen = ({ children }: { children: ReactNode }) => {
     return (

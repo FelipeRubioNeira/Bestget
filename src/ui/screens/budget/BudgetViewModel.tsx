@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react"
 import { BudgetsScreenProps } from "../../../navigation/NavigationParamList"
-import { currencyFormat } from "../../../utils/Convert"
+import { currencyFormat, numberFormat } from "../../../utils/Convert"
 import { Category } from "../../../data/types/Categoty"
 import { ScreenRoutes } from "../../../navigation/Routes"
 import IExpenseRespository from "../../../data/repository/expenseRepository/IExpenseRepository"
 import { Expense, ExpenseUI } from "../../../data/types/Expense"
 import TouchableIcon from "../../components/touchableIcon/TouchableIcon"
+import { ButtonModal, ModalProps } from "../../components/modal/Modal"
+import DefaultStyles from "../../styles/DefaultStyles"
+import DeleteExpenseUseCase from "../../../domain/useCases/DeleteExpenseUseCase"
 
 const editIcon = require("../../../assets/icons/ic_edit.png")
 
@@ -17,11 +20,12 @@ type Title = {
 }
 
 type budgetViewModelProps = {
-    expensesRepository: IExpenseRespository
+    expensesRepository: IExpenseRespository,
+    deleteExpenseUseCase: DeleteExpenseUseCase
 } & BudgetsScreenProps
 
 
-const useBudgetsViewModel = ({ navigation, route, expensesRepository }: budgetViewModelProps) => {
+const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpenseUseCase }: budgetViewModelProps) => {
 
 
     // ----------- params ----------- //
@@ -36,6 +40,9 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository }: budgetVi
     const [category, setCategory] = useState<Category | undefined>()
     const [expenseList, setExpenseList] = useState<ExpenseUI[]>([])
 
+    // used to delete an expense
+    const [expenseId, setExpenseId] = useState<string>("")
+
     const [title, setTitle] = useState<Title>({
         main: "",
         available: "",
@@ -44,14 +51,28 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository }: budgetVi
 
     const [editMode, setEditMode] = useState(false)
 
+    const [modalState, setModalState] = useState<ModalProps>({
+        visible: false,
+        title: "",
+        message: "",
+        buttonList: []
+    })
+
 
 
 
     // ----------- effects ----------- //
 
     useEffect(() => {
-        getData()
-    }, [newExpenseId])
+
+        const unsubscribe = navigation.addListener('focus', () => {
+            getData()
+        })
+
+        return unsubscribe
+
+    }, [navigation])
+
 
     // we add the delete button to the header if there are budget or expenses
     useEffect(() => {
@@ -62,7 +83,7 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository }: budgetVi
                 return (
                     <TouchableIcon
                         image={editIcon}
-                        onPress={() => setEditMode(!editMode)}
+                        onPress={editMode ? turnOffEditMode : turnOnEditMode}
                     />
                 )
             }
@@ -97,8 +118,6 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository }: budgetVi
         setExpenseList(expenseListFormatted)
     }
 
-
-
     const getTotalExpenses = (expenseList: Expense[]) => {
 
         let totalExpenses = 0
@@ -108,7 +127,7 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository }: budgetVi
         return totalExpenses
     }
 
-    const applyFormat = (expenseList: Expense[]) => {
+    const applyFormat = (expenseList: Expense[]): ExpenseUI[] => {
 
         return expenseList.map(expense => {
 
@@ -151,6 +170,32 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository }: budgetVi
         return category
     }
 
+    const turnOnEditMode = () => {
+        setEditMode(true)
+    }
+
+    const turnOffEditMode = () => {
+        setEditMode(false)
+    }
+
+    // ----------- modal ----------- //
+    const showModal = (title: string, message: string, buttonList: ButtonModal[]) => {
+        setModalState({
+            visible: true,
+            title,
+            message,
+            buttonList: buttonList
+        })
+    }
+
+    const hideModal = () => {
+        setModalState({
+            ...modalState,
+            visible: false,
+        })
+    }
+
+
 
     // ----------- events ----------- //
     const onPressNewExpense = () => {
@@ -160,18 +205,103 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository }: budgetVi
         })
     }
 
-    const onPressEditExpense = (expense: Expense) => {}
+    const onPressEdit = (expenseId: string) => {
 
-    const onPressDeleteExpense = (expense: Expense) => {}
+        turnOffEditMode()
+
+        const expense = findExpense(expenseId)
+
+        navigation.navigate(ScreenRoutes.EXPENSES_FORM, {
+            expense,
+            categoryList,
+            budget
+        })
+
+    }
+
+    const onPressDelete = (expenseId: string) => {
+
+        setExpenseId(expenseId)
+
+        showModal(
+            "Eliminar gasto",
+            "¿Está seguro que desea eliminar este gasto?",
+            [
+                {
+                    text: "Aceptar",
+                    onPress: deleteExpense
+                },
+                {
+                    text: "Cancelar",
+                    onPress: hideModal,
+                    style: { ...DefaultStyles.mainButton }
+                }
+            ]
+        )
+
+    }
+
+    const deleteExpense = async () => {
+
+        hideModal()
+
+        const response = await deleteExpenseUseCase.delete(expenseId)
+
+        if (response.isValid) {
+            getData()
+
+        } else {
+
+            showModal(
+                response.message.title,
+                response.message.message,
+                [
+                    {
+                        text: "Aceptar",
+                        onPress: hideModal,
+                    }
+                ]
+            )
+        }
+    }
+
+
+    // ----------- utils ----------- //
+
+    const findExpense = (expenseId: string): Expense => {
+
+        const item = expenseList.find(expense => expense.id === expenseId)
+
+        if (item) {
+
+            const expense: Expense = {
+                id: item.id,
+                name: item.name,
+                amount: numberFormat(item.amount),
+                date: item.date,
+                categoryId: category?.id || 0,
+                budgetId: budget?.id
+            }
+
+            return expense
+
+        } else {
+            return {} as Expense
+        }
+
+    }
 
 
 
     // ----------- return ----------- //
     return {
+        modalState,
         title,
         category,
         expenseList,
         editMode,
+        onPressEdit,
+        onPressDelete,
 
         onPressNewExpense
     }

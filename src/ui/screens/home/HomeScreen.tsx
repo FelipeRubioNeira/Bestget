@@ -1,11 +1,11 @@
-import { SafeAreaView, StyleSheet, View } from 'react-native'
+import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native'
 import React from 'react'
 import Label from '../../components/label/Label'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 import MenuButton from '../../components/menuButton/MenuButton'
 import Spacer from '../../components/spacer/Spacer'
 import { Colors, DefaultStyles } from '../../constants/Index'
-import { IMenuArrayButtonsProps } from './HomeViewModel'
+import { ButtonHomeProps } from './HomeViewModel'
 import useHomeViewModel from './HomeViewModel'
 import { HomeScreenProps } from '../../../navigation/NavigationParamList'
 import IncomeRepository from '../../../data/repository/incomeRepository/IncomeRepository'
@@ -58,8 +58,7 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
 
 
                 <MenuArrayButton
-                    onPressBudgetsExpenses={homeViewModel.onPressBudgetsExpenses}
-                    onPressIncomes={homeViewModel.onPressIncomes}
+                    buttonArray={homeViewModel.buttonsHome}
                 />
 
 
@@ -69,29 +68,27 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
     )
 }
 
-const MenuArrayButton = ({
-    onPressBudgetsExpenses,
-    onPressIncomes
-}: IMenuArrayButtonsProps) => {
+const MenuArrayButton = ({ buttonArray }: { buttonArray: ButtonHomeProps[] }) => {
 
     return (
 
-        <View style={homeStyle.horizontalArrayButtons}>
+        <View>
 
-            <MenuButton
-                title="Gastos y Presupuestos"
-                onPress={onPressBudgetsExpenses}
-                backgroundColor={Colors.YELLOW}
-                titleColor={Colors.BLACK}
-            />
-
-            <Spacer marginHorizontal={"4%"} />
-
-            <MenuButton
-                title="Ingresos"
-                onPress={onPressIncomes}
-                backgroundColor={Colors.GREEN}
-                titleColor={Colors.BLACK}
+            <FlatList
+                data={buttonArray}
+                renderItem={({ item }) => (
+                    <View style={homeStyle.buttonContainer}>
+                        <MenuButton
+                            title={item.title}
+                            subTitle={item.subTitle}
+                            onPress={item.onPress}
+                            backgroundColor={item.backgroundColor}
+                            titleColor={item.titleColor}
+                        />
+                    </View>
+                )}
+                keyExtractor={item => item.title}
+                numColumns={2}
             />
 
         </View>
@@ -103,9 +100,10 @@ export default HomeScreen
 
 const homeStyle = StyleSheet.create({
 
-    horizontalArrayButtons: {
-        width: "100%",
-        flexDirection: "row",
+    buttonContainer: {
+        flex: 1,
+        margin: '2%',
         height: 150,
-    }
+    },
+
 })

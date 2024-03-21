@@ -117,7 +117,6 @@ class ExpenseRepository implements IExpenseRespository {
                 .where(ExpenseKeys.BUDGET_ID, "==", "")
                 .get()
 
-
             const expensesArray: Expense[] = []
 
             expensesFirebase.docs.forEach(doc => {

@@ -2,7 +2,8 @@
 
 import { Colors } from "./Colors";
 import { FontSize, FontFamily } from "./Fonts";
-import { Styles, DefaultStyles } from "./Styles";
+import { Styles } from "../styles/Styles";
+import DefaultStyles from "../styles/DefaultStyles";
 
 
 export {

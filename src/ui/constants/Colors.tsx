@@ -8,6 +8,8 @@ export enum Colors {
     GREEN = '#d9ead3',
     DARK_GREEN = '#acd19f',
     YELLOW = "#E7DEA4",
+    PURPLE = "#B5B3D3",
+    RED = "#E7A8A8",
     AQUA_MARINE = '#CFFDED',
     BLUE = '#4B7785',
 

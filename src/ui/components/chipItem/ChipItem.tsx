@@ -1,7 +1,7 @@
 import { StyleSheet, TouchableOpacity, ViewStyle } from 'react-native'
 import React from 'react'
 import Label from '../label/Label'
-import { Styles } from '../../constants/Styles'
+import { Styles } from '../../styles/Styles'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 import { Category } from '../../../data/types/Categoty'
 import useChipItemViewModel from './ChipItemViewModel'

@@ -17,7 +17,7 @@ import { ButtonModal, ModalProps } from "../../components/modal/Modal"
 import DeleteBudgetUseCase from "../../../domain/useCases/DeleteBudgetUseCase"
 import { ValidationResult } from "../../../data/types/Validation"
 import DeleteExpenseUseCase from "../../../domain/useCases/DeleteExpenseUseCase"
-import { DefaultStyles } from "../../constants/Styles"
+import DefaultStyles from "../../styles/DefaultStyles"
 
 const editIcon = require("../../../assets/icons/ic_edit.png")
 

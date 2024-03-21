@@ -1,6 +1,6 @@
 import { Image, StyleSheet, TouchableOpacity } from "react-native"
-import { Colors, FontFamily, Styles, DefaultStyles } from "../../constants/Index"
-import Label from "../label/Label"
+import { Colors, Styles } from "../../constants/Index"
+import DefaultStyles from "../../styles/DefaultStyles"
 
 const plusIcon = require('../../../assets/icons/ic_plus.png')
 

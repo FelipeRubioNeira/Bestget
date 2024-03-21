@@ -1,6 +1,7 @@
 import { FlatList, Image, ImageProps, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View, ViewStyle } from 'react-native'
 import React from 'react'
-import { DefaultStyles, Styles } from '../../constants/Styles'
+import { Styles } from '../../styles/Styles'
+import DefaultStyles from '../../styles/DefaultStyles'
 import HelpText from '../../components/helpText/Help'
 import { Strings } from '../../constants/Strings'
 import { FontFamily, FontSize } from '../../constants/Fonts'

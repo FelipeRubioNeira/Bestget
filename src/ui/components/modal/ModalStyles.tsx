@@ -1,7 +1,8 @@
 import { StyleSheet } from "react-native";
 import { Colors } from "../../constants/Colors";
-import { Styles, DefaultStyles } from "../../constants/Styles";
+import { Styles } from "../../styles/Styles";
 import { FontFamily, FontSize } from "../../constants/Fonts";
+import DefaultStyles from "../../styles/DefaultStyles";
 
 
 const ModalStyle = StyleSheet.create({
