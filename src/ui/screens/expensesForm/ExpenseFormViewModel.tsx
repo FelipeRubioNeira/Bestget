@@ -2,10 +2,10 @@ import { useEffect, useState } from "react"
 import { ExpensesCreateScreenProps } from "../../../navigation/NavigationParamList"
 import { Category } from "../../../data/types/Categoty"
 import CreateExpenseUseCase from "../../../domain/useCases/CreateExpenseUseCase"
-import { currencyFormat, numberFormat } from "../../../utils/Convert"
+import { currencyFormat, numberFormat } from "../../../utils/NumberFormat"
 import { Expense, ExpenseCreate } from "../../../data/types/Expense"
 import { ScreenRoutes } from "../../../navigation/Routes"
-import { getCurrentDate } from "../../../utils/Date"
+import { convertToIsoDate, convertToNormalDate, getCurrentDate } from "../../../utils/Date"
 import { ChipItemProps } from "../../components/chipItem/ChipItem"
 import { Budget } from "../../../data/types/Budget"
 import EditExpenseUseCase from "../../../domain/useCases/EditExpenseUseCase"
@@ -20,7 +20,8 @@ type ExpensesCreateViewModelProps = {
 interface IExpenseState {
     expenseName: string,
     expenseAmount: string,
-    categoryId: number | undefined
+    expenseDate: string,
+    categoryId: number | undefined,
 }
 
 type StateName = keyof IExpenseState
@@ -47,7 +48,8 @@ const useExpenseFormViewModel = (
     const [expenseState, setExpenseState] = useState<IExpenseState>({
         expenseName: "",
         expenseAmount: "",
-        categoryId: 0
+        categoryId: 0,
+        expenseDate: convertToNormalDate()
     })
 
     const [modalState, setModalState] = useState<ModalProps>({
@@ -83,7 +85,8 @@ const useExpenseFormViewModel = (
             setExpenseState({
                 expenseName: expense.name,
                 expenseAmount: currencyFormat(expense.amount),
-                categoryId: expense.categoryId
+                categoryId: expense.categoryId,
+                expenseDate: expense.date
             })
         }
     }
@@ -137,6 +140,16 @@ const useExpenseFormViewModel = (
         )
     }
 
+    const updateExpenseDate = (newDate: string) => {
+
+        updateExpenseState(
+            "expenseDate",
+            newDate
+        )
+
+
+    }
+
 
     const generateExpenseCreate = () => {
 
@@ -159,16 +172,17 @@ const useExpenseFormViewModel = (
 
     const generateExpense = () => {
 
-        const { expenseAmount, expenseName, categoryId } = expenseState
+        const { expenseAmount, expenseName, categoryId, expenseDate } = expenseState
 
         const amountInt = numberFormat(expenseAmount)
-        const currentDate = getCurrentDate()
+        const date = convertToIsoDate(expenseDate)
+
 
         const expenseCreated: Expense = {
             id: expense?.id || "",
             name: expenseName,
             amount: amountInt,
-            date: currentDate,
+            date: date,
             categoryId: categoryId || 0,
             budgetId: budget?.id || ""
         }
@@ -225,7 +239,6 @@ const useExpenseFormViewModel = (
 
         const expense = generateExpense()
         const result = await editExpenseUseCase.edit(expense)
-
 
         if (result.isValid) {
 
@@ -285,6 +298,7 @@ const useExpenseFormViewModel = (
         expenseState,
         updateExpenseName,
         updateExpenseAmount,
+        updateExpenseDate,
         updateCategory,
         saveExpense
 

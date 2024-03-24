@@ -31,18 +31,14 @@ const MenuButton = ({
         >
             <Label
                 value={title}
-                fontFamily={FontFamily.BOLD}
-                fontSize={FontSize.SMALL}
-                color={titleColor}
+                style={MenuButtonStyle.title}
             />
 
             {
                 subTitle &&
                 <Label
                     value={subTitle}
-                    fontFamily={FontFamily.BOLD}
-                    fontSize={FontSize.SMALL}
-                    color={titleColor}
+                    style={MenuButtonStyle.subtitle}
                 />
             }
 
@@ -62,6 +58,19 @@ const MenuButtonStyle = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         flex: 1,
+    },
+
+    title:{
+        fontFamily: FontFamily.BOLD,
+        fontSize: FontSize.SMALL,
+        color: Colors.BLACK,
+        textAlign: "center"
+    },
+    subtitle: {
+        fontFamily: FontFamily.BOLD,
+        fontSize: FontSize.SMALL,
+        color: Colors.BLACK,
+        textAlign: "center"
     }
 
 })

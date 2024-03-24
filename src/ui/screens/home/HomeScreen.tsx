@@ -34,7 +34,7 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
             <View style={DefaultStyles.screen}>
 
                 <Label
-                    value={"Hola Felipe"}
+                    value={"Hola Casita"}
                     fontSize={FontSize.LARGE}
                     fontFamily={FontFamily.BLACK}
                 />
@@ -69,9 +69,7 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
 }
 
 const MenuArrayButton = ({ buttonArray }: { buttonArray: ButtonHomeProps[] }) => {
-
     return (
-
         <View>
 
             <FlatList
@@ -93,7 +91,6 @@ const MenuArrayButton = ({ buttonArray }: { buttonArray: ButtonHomeProps[] }) =>
 
         </View>
     )
-
 }
 
 export default HomeScreen

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { BudgetsScreenProps } from "../../../navigation/NavigationParamList"
-import { currencyFormat, numberFormat } from "../../../utils/Convert"
+import { currencyFormat, numberFormat } from "../../../utils/NumberFormat"
 import { Category } from "../../../data/types/Categoty"
 import { ScreenRoutes } from "../../../navigation/Routes"
 import IExpenseRespository from "../../../data/repository/expenseRepository/IExpenseRepository"
@@ -9,6 +9,7 @@ import TouchableIcon from "../../components/touchableIcon/TouchableIcon"
 import { ButtonModal, ModalProps } from "../../components/modal/Modal"
 import DefaultStyles from "../../styles/DefaultStyles"
 import DeleteExpenseUseCase from "../../../domain/useCases/DeleteExpenseUseCase"
+import { convertToNormalDate } from "../../../utils/Date"
 
 const editIcon = require("../../../assets/icons/ic_edit.png")
 
@@ -32,7 +33,6 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
     const {
         budget,
         categoryList = [],
-        newExpenseId,
     } = route.params
 
 
@@ -135,7 +135,7 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
                 id: expense.id,
                 name: expense.name,
                 amount: currencyFormat(expense.amount),
-                date: expense.date,
+                date: convertToNormalDate(expense.date),
                 category: category,
             } as ExpenseUI
 

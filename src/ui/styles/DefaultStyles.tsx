@@ -10,7 +10,17 @@ const DefaultStyles = StyleSheet.create({
         height: "100%",
         width: "100%",
         padding: Styles.SCREEN_PADDING,
-    }, // an object act as a type
+    },
+
+    input: {
+        width: "100%",
+        height: 70,
+        borderWidth: 1,
+        borderColor: Colors.GRAY,
+        borderRadius: Styles.BORDER_RADIUS,
+        paddingHorizontal: 20,
+        justifyContent: 'center',
+    },
 
     shadow: {
         shadowColor: Colors.BLACK,

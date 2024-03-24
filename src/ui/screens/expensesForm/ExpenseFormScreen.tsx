@@ -14,6 +14,9 @@ import ChipItem from '../../components/chipItem/ChipItem'
 import Screen from '../../components/screen/Screen'
 import EditExpenseUseCase from '../../../domain/useCases/EditExpenseUseCase'
 import Modal from '../../components/modal/Modal'
+import CalendarButton from '../../components/calendarButton/CalendarButton'
+import Label from '../../components/label/Label'
+import { FontFamily, FontSize } from '../../constants/Fonts'
 
 
 const expenseRepository = new ExpenseRepository()
@@ -39,6 +42,7 @@ const ExpenseForm = ({ navigation, route }: ExpensesCreateScreenProps) => {
     updateExpenseName,
     updateExpenseAmount,
     updateCategory,
+    updateExpenseDate,
     saveExpense,
     chipItemProps
   } = expenseFormViewModel
@@ -66,6 +70,15 @@ const ExpenseForm = ({ navigation, route }: ExpensesCreateScreenProps) => {
           inputMode={InputType.NUMERIC}
         />
 
+        <Spacer marginVertical={"4%"} />
+
+
+        <Label value='Fecha:' fontSize={FontSize.SMALL}/>
+        <CalendarButton
+          value={expenseState.expenseDate}
+          onDayPress={updateExpenseDate}
+        />
+
         {
           hasBudget ?
             <ChipItem
@@ -82,7 +95,6 @@ const ExpenseForm = ({ navigation, route }: ExpensesCreateScreenProps) => {
               categories={categories}
             />
         }
-
 
       </View>
 

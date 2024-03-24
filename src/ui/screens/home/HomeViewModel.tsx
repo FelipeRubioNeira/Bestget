@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { HomeScreenProps } from "../../../navigation/NavigationParamList"
 import { ScreenRoutes } from "../../../navigation/Routes"
-import { currencyFormat } from "../../../utils/Convert"
+import { currencyFormat } from "../../../utils/NumberFormat"
 import { Income } from "../../../data/types/Income"
 import { Category } from "../../../data/types/Categoty"
 import IncomeRepository from "../../../data/repository/incomeRepository/IncomeRepository"
@@ -49,38 +49,7 @@ const useHomeViewModel = ({
     const [totalIncomes, setTotalIncomes] = useState(0)
     const [totalExpenses, setTotalExpenses] = useState(0)
 
-    const [buttonsHome, setButtonsHome] = useState<ButtonHomeProps[]>([
-        {
-            title: 'Gastos y Presupuestos',
-            subTitle: "",
-            onPress: () => onPressBudgetsExpenses(),
-            backgroundColor: Colors.YELLOW,
-            titleColor: Colors.BLACK,
-            type: "gastos"
-        },
-        {
-            title: 'Ingresos',
-            subTitle: "",
-            onPress: () => onPressIncomes(),
-            backgroundColor: Colors.GREEN,
-            titleColor: Colors.BLACK,
-            type: "ingresos"
-        },
-        {
-            title: 'Estadisticas',
-            onPress: () => onPressStatistics(),
-            backgroundColor: Colors.PURPLE,
-            titleColor: Colors.BLACK,
-            type: "estadisticas"
-        },
-        {
-            title: 'Mi Cuenta',
-            onPress: () => onPressProfile(),
-            backgroundColor: Colors.RED,
-            titleColor: Colors.BLACK,
-            type: "perfil"
-        },
-    ])
+    const [buttonsHome, setButtonsHome] = useState<ButtonHomeProps[]>([])
 
 
 
@@ -100,7 +69,7 @@ const useHomeViewModel = ({
     // ------------------ methods ------------------ //
     const getData = async () => {
 
-        const [totalIncomes, totalExpenses] = await Promise.all([
+        const [totalIncomes, totalExpenses, categories] = await Promise.all([
             getIncomes(),
             getExpenses(),
             getCategories(),
@@ -108,9 +77,11 @@ const useHomeViewModel = ({
 
         setTotalExpenses(totalExpenses)
         setTotalIncomes(totalIncomes)
+        setAllCategories(categories)
 
         setTotalremaining(currencyFormat(totalIncomes - totalExpenses))
 
+        generateButtons(totalExpenses, totalIncomes, categories)
 
     }
 
@@ -123,6 +94,43 @@ const useHomeViewModel = ({
         })
 
         return totalIncomes
+
+    }
+
+    const generateButtons = (expenses: number, incomes: number, categories: Category[]) => {
+
+        setButtonsHome([
+            {
+                title: 'Gastos y Presupuestos',
+                subTitle: `$${currencyFormat(expenses)}`,
+                onPress: () => onPressBudgetsExpenses(categories),
+                backgroundColor: Colors.YELLOW,
+                titleColor: Colors.BLACK,
+                type: "gastos"
+            },
+            {
+                title: 'Ingresos',
+                subTitle: `$${currencyFormat(incomes)}`,
+                onPress: () => onPressIncomes(),
+                backgroundColor: Colors.GREEN,
+                titleColor: Colors.BLACK,
+                type: "ingresos"
+            },
+            {
+                title: 'Estadisticas',
+                onPress: () => onPressStatistics(),
+                backgroundColor: Colors.PURPLE,
+                titleColor: Colors.BLACK,
+                type: "estadisticas"
+            },
+            {
+                title: 'Mi Cuenta',
+                onPress: () => onPressProfile(),
+                backgroundColor: Colors.RED,
+                titleColor: Colors.BLACK,
+                type: "perfil"
+            },
+        ])
 
     }
 
@@ -144,40 +152,13 @@ const useHomeViewModel = ({
 
     const getCategories = async () => {
         const categories = await categoryRepository.getAll()
-        setAllCategories(categories)
+        return categories
     }
 
+    const onPressBudgetsExpenses = (categories: Category[]) => {
 
-
-    // ------------------ user Events ------------------ //
-
-    const onPressItem = (item: MenuType) => {
-
-        switch (item) {
-
-            case "gastos":
-                onPressBudgetsExpenses()
-                break;
-
-            case "ingresos":
-                onPressIncomes()
-                break;
-
-            case "estadisticas":
-                onPressStatistics()
-                break;
-
-            case "perfil":
-                onPressProfile()
-                break;
-
-        }
-
-    }
-
-    const onPressBudgetsExpenses = () => {
         navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {
-            categoryList: allCategories,
+            categoryList: categories,
         })
     }
 
@@ -200,8 +181,6 @@ const useHomeViewModel = ({
         totalExpenses,
         totalIncomes,
         buttonsHome,
-
-        onPressItem,
     }
 
 }

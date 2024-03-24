@@ -1,7 +1,4 @@
-import { ViewStyle } from 'react-native'
 import { Dimensions } from 'react-native'
-import { Colors } from '../constants/Colors'
-import { FontFamily } from '../constants/Fonts'
 
 enum Styles {
 

@@ -30,7 +30,7 @@ export type NavigatorParamList = {
 
 
     [ScreenRoutes.BUDGET_EXPENSES]: {
-        categoryList?: Category[],
+        categoryList: Category[],
         newExpenseId?: string | undefined,
         newBudgetId?: string | undefined
     }

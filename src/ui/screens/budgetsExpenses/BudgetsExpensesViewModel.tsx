@@ -7,7 +7,7 @@ import { BudgetsExpensesScreenProps } from "../../../navigation/NavigationParamL
 import { ScreenRoutes } from "../../../navigation/Routes"
 import IExpenseRespository from "../../../data/repository/expenseRepository/IExpenseRepository"
 import { Expense, ExpenseUI } from "../../../data/types/Expense"
-import { currencyFormat, numberFormat } from "../../../utils/Convert"
+import { currencyFormat, numberFormat } from "../../../utils/NumberFormat"
 import { Category } from "../../../data/types/Categoty"
 import IBudgetRepository from "../../../data/repository/budgetRepository/IBudgetRepository"
 import { Budget, BudgetUI } from "../../../data/types/Budget"
@@ -18,6 +18,7 @@ import DeleteBudgetUseCase from "../../../domain/useCases/DeleteBudgetUseCase"
 import { ValidationResult } from "../../../data/types/Validation"
 import DeleteExpenseUseCase from "../../../domain/useCases/DeleteExpenseUseCase"
 import DefaultStyles from "../../styles/DefaultStyles"
+import { convertToNormalDate } from "../../../utils/Date"
 
 const editIcon = require("../../../assets/icons/ic_edit.png")
 
@@ -48,7 +49,7 @@ const useBudgetExpensesViewModel = ({
 
     // ----------- params ----------- //
     const {
-        categoryList = [],
+        categoryList,
         newExpenseId,
         newBudgetId
     } = route?.params || {}
@@ -88,12 +89,11 @@ const useBudgetExpensesViewModel = ({
 
         const unsubscribe = navigation.addListener('focus', () => {
             getData(categoryList)
-            setCategories(categoryList)
         })
 
         return unsubscribe;
 
-    }, [])
+    }, [navigation])
 
 
     useEffect(() => {
@@ -102,7 +102,7 @@ const useBudgetExpensesViewModel = ({
         getData(categoryList)
         setCategories(categoryList)
 
-    }, [newExpenseId, newBudgetId])
+    }, [categoryList, newExpenseId, newBudgetId])
 
 
     // we add the delete button to the header if there are budget or expenses
@@ -161,7 +161,10 @@ const useBudgetExpensesViewModel = ({
 
     }
 
-    function applyFormat<T extends Budget | Expense, U>(
+    function applyFormat<
+        T extends Budget | Expense,
+        U extends ExpenseUI | BudgetUI
+    >(
         items: T[],
         categories: Category[],
         type: BudgetOrExpense
@@ -179,7 +182,7 @@ const useBudgetExpensesViewModel = ({
                 name: name,
                 amount: amountFormatted,
                 category: category,
-                date: date,
+                date: convertToNormalDate(date),
                 type: type
             } as U
 

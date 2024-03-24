@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { IncomesCreateScreenProps } from "../../../navigation/NavigationParamList";
 import { ScreenRoutes } from "../../../navigation/Routes";
-import { currencyFormat, numberFormat } from "../../../utils/Convert";
+import { currencyFormat, numberFormat } from "../../../utils/NumberFormat";
 import { Message } from "../../../data/types/Message";
 import { Income } from "../../../data/types/Income";
 import CreateIncomeUseCase from "../../../domain/useCases/CreateIncomeUseCase";

@@ -1,4 +1,6 @@
-export const getCurrentDate = () => {
+
+// isoDate: AAAA-MM-DDTHH:MM:SS
+const getCurrentDate = () => {
 
     // Crear un objeto Date con la fecha y hora actual
     const now = new Date();
@@ -21,20 +23,55 @@ export const getCurrentDate = () => {
     // Formatear la fecha y hora actual según la zona horaria de Chile
     const formattedDateTime = formatter.format(now);
 
-    return convertToIsoString(formattedDateTime.replace(",", ""))
+    const dateTimeSplitted = formattedDateTime.split(" ")
+
+    const date = convertToAmericanDate(dateTimeSplitted[0])
+    return date + "T" + dateTimeSplitted[1]
 
 }
 
-const convertToIsoString = (dateTime: string) => {
+const convertToIsoDate = (date: string): string => {
 
-    const dateTimeArray = dateTime.split(" ")
+    let localDate = date
 
-    const dateArray = dateTimeArray[0].split("-")
-    const timeArray = dateTimeArray[1].split(":")
+    if (!localDate) {
+        return new Date().toISOString();
+    }
 
-    const date = dateArray[2] + "-" + dateArray[1] + "-" + dateArray[0]
-    const time = timeArray[0] + ":" + timeArray[1] + ":" + timeArray[2]
+    const [day, month, year] = localDate.split("-");
+    return `${year}-${month}-${day}T00:00:00`;
 
-    return date + "T" + time
+}
 
+
+const convertToNormalDate = (
+    date?: string | number | Date,
+    type: "normal" | "american" = "normal"
+): string => {
+
+    const parsedDate = new Date(date || new Date());
+
+    const day = parsedDate.getUTCDate().toLocaleString().padStart(2, '0');
+    const month = (parsedDate.getUTCMonth() + 1).toLocaleString().padStart(2, '0');
+    const year = parsedDate.getUTCFullYear();
+
+    if (type === "normal") return `${day}-${month}-${year}`;
+    else return `${year}-${month}-${day}`;
+
+}
+
+const convertToAmericanDate = (date: string = ""): string => {
+
+    if (!date) return date;
+
+    const [day, month, year] = date.split("-");
+    return `${year}-${month}-${day}`;
+}
+
+
+export {
+    getCurrentDate,
+    convertToNormalDate,
+    convertToAmericanDate,
+    convertToIsoDate
 }

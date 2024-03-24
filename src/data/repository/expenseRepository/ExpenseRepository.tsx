@@ -1,3 +1,4 @@
+import { sortByDate } from "../../../utils/Data";
 import { Collections } from "../../collections/Collections";
 import { Expense, ExpenseCreate, ExpenseKeys } from "../../types/Expense";
 import IExpenseRespository from "./IExpenseRepository";
@@ -110,14 +111,16 @@ class ExpenseRepository implements IExpenseRespository {
 
     async getWithoutBudget(): Promise<Expense[]> {
 
+
         try {
+
+            let expensesArray: Expense[] = []
 
             const expensesFirebase = await firestore()
                 .collection(Collections.EXPENSE)
                 .where(ExpenseKeys.BUDGET_ID, "==", "")
                 .get()
-
-            const expensesArray: Expense[] = []
+            
 
             expensesFirebase.docs.forEach(doc => {
 
@@ -133,6 +136,8 @@ class ExpenseRepository implements IExpenseRespository {
                 }
                 expensesArray.push(newExpense)
             })
+
+            expensesArray = sortByDate(expensesArray, ExpenseKeys.DATE, "asc")
 
             return expensesArray
 

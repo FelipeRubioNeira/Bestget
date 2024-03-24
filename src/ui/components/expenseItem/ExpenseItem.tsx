@@ -6,9 +6,10 @@ import DefaultStyles from '../../styles/DefaultStyles'
 import CircleCategory from '../circleCategory/CircleCategory'
 import { ExpenseUI } from '../../../data/types/Expense'
 import EditionIcons from '../editionIcons/EditionIcons'
+import { Colors } from '../../constants/Colors'
 
 
-const ExpenseItem = ({ name, amount, category, editMode, onEdit, onDelete }: ExpenseUI) => {
+const ExpenseItem = ({ name, amount, category, editMode, onEdit, onDelete, date }: ExpenseUI) => {
 
 
     return (
@@ -17,12 +18,23 @@ const ExpenseItem = ({ name, amount, category, editMode, onEdit, onDelete }: Exp
 
             <CircleCategory color={category?.color} />
 
-            <Label
-                value={name}
-                fontSize={FontSize.SMALL}
-                fontFamily={FontFamily.REGULAR}
-                style={expenseStyles.name}
-            />
+            <View>
+
+                <Label
+                    value={name}
+                    fontSize={FontSize.SMALL}
+                    fontFamily={FontFamily.REGULAR}
+                    style={expenseStyles.name}
+                />
+
+                <Label
+                    value={date}
+                    fontSize={FontSize.XSMALL}
+                    fontFamily={FontFamily.REGULAR}
+                    color={Colors.GRAY}
+                />
+
+            </View>
 
             {
                 editMode ?
