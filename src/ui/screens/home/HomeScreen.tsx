@@ -1,16 +1,20 @@
-import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native'
+import { FlatList, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import Label from '../../components/label/Label'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 import MenuButton from '../../components/menuButton/MenuButton'
 import Spacer from '../../components/spacer/Spacer'
-import { Colors, DefaultStyles } from '../../constants/Index'
+import { Colors, DefaultStyles, Styles } from '../../constants/Index'
 import { ButtonHomeProps } from './HomeViewModel'
 import useHomeViewModel from './HomeViewModel'
 import { HomeScreenProps } from '../../../navigation/NavigationParamList'
 import IncomeRepository from '../../../data/repository/incomeRepository/IncomeRepository'
 import CategoryRespository from '../../../data/repository/categoryRepository/CategoryRepository'
 import ExpenseRepository from '../../../data/repository/expenseRepository/ExpenseRepository'
+import BottomSheet from '../../components/bottomSheet/BottomSheet'
+import TouchableIcon from '../../components/touchableIcon/TouchableIcon'
+import Icons from '../../../assets/icons'
+import CurrentDate from '../../components/currentDate/CurrentDate'
 
 const incomeRepository = new IncomeRepository()
 const expenseRepository = new ExpenseRepository()
@@ -27,45 +31,75 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
         incomeRepository,
     })
 
+    const { 
+        bottomSheetState,
+        showBottomSheet
+     } = homeViewModel
+     
+
     return (
 
         <SafeAreaView>
-
             <View style={DefaultStyles.screen}>
 
-                <Label
-                    value={"Hola Casita"}
-                    fontSize={FontSize.LARGE}
-                    fontFamily={FontFamily.BLACK}
+                <Header total={homeViewModel.totalremaining} />
+
+                <Spacer marginVertical={"4%"} />
+
+                <CurrentDate
+                    date={bottomSheetState.date}
+                    showDate={showBottomSheet}
                 />
 
-                <Label
-                    value={"Tu saldo es de"}
-                    fontSize={FontSize.MEDIUM}
-                    fontFamily={FontFamily.BLACK}
-                    color={Colors.DARK_GRAY}
-                />
-
-                <Spacer marginVertical={"1%"} />
-
-                <Label
-                    value={"$" + homeViewModel.totalremaining}
-                    fontSize={FontSize.LARGE}
-                    fontFamily={FontFamily.BLACK}
-                />
-
-                <Spacer marginVertical={"8%"} />
-
+                <Spacer marginVertical={"4%"} />
 
                 <MenuArrayButton
                     buttonArray={homeViewModel.buttonsHome}
                 />
 
-
             </View>
+
+            <BottomSheet
+                visible={bottomSheetState.visible}
+                date={bottomSheetState.date}
+                onHide={homeViewModel.hideBottomSheet}
+                onConfirm={homeViewModel.confirmDate}
+            />
 
         </SafeAreaView>
     )
+}
+
+
+const Header = ({ total = "" }: { total: string }) => {
+
+    return (
+
+        <View>
+            <Label
+                value={"Hola Casita"}
+                fontSize={FontSize.LARGE}
+                fontFamily={FontFamily.BLACK}
+            />
+
+            <Label
+                value={"Tu saldo es de"}
+                fontSize={FontSize.MEDIUM}
+                fontFamily={FontFamily.BLACK}
+                color={Colors.DARK_GRAY}
+            />
+
+            <Spacer marginVertical={"1%"} />
+
+            <Label
+                value={"$" + total}
+                fontSize={FontSize.LARGE}
+                fontFamily={FontFamily.BLACK}
+            />
+
+        </View>
+    )
+
 }
 
 const MenuArrayButton = ({ buttonArray }: { buttonArray: ButtonHomeProps[] }) => {

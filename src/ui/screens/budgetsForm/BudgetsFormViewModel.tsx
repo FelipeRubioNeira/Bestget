@@ -4,13 +4,13 @@ import { Category } from "../../../data/types/Categoty"
 import CreateBudgetUseCase from "../../../domain/useCases/CreateBudgetUseCase"
 import { Budget, BudgetCreate } from "../../../data/types/Budget"
 import { currencyFormat, numberFormat } from "../../../utils/NumberFormat"
-import { getCurrentDate } from "../../../utils/Date"
 import { ScreenRoutes } from "../../../navigation/Routes"
 import { ButtonModal, ModalProps } from "../../components/modal/Modal"
 import DefaultStyles from "../../styles/DefaultStyles"
 import EditBudgetUseCase from "../../../domain/useCases/EditBudgetUseCase"
 import ExpenseRepository from "../../../data/repository/expenseRepository/ExpenseRepository"
 import { Expense } from "../../../data/types/Expense"
+import DateTime from "../../../utils/DateTime"
 
 
 type IBudgetCreateViewModel = {
@@ -177,7 +177,7 @@ const useBudgetsFormViewModel = ({
             name: budgetState.budgetName,
             amount: numberFormat(budgetState.budgetAmount),
             categoryId: budgetState?.categoryId || 0,
-            date: getCurrentDate()
+            date: new DateTime().date
         }
 
 
@@ -221,7 +221,7 @@ const useBudgetsFormViewModel = ({
             name: budgetState.budgetName,
             amount: numberFormat(budgetState.budgetAmount),
             categoryId: budgetState.categoryId,
-            date: getCurrentDate()
+            date: new DateTime().date
         }
 
         // 2- upload budget and budget expenses

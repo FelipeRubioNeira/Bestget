@@ -1,4 +1,5 @@
 import { Collections } from "../../collections/Collections";
+import { DateInterval } from "../../types/DateInterval";
 import { Income, IncomeCreate } from "../../types/Income";
 import { IIncomeRepository } from "./IIncomeRepository";
 import firestore from '@react-native-firebase/firestore';
@@ -24,11 +25,15 @@ class IncomeRepository implements IIncomeRepository {
         }
     }
 
-    public async getAll(): Promise<Income[]> {
+    public async getAll({initialDate, finalDate}: DateInterval): Promise<Income[]> {
 
         try {
 
-            const incomes = await firestore().collection(Collections.INCOME).get()
+            const incomes = await firestore()
+                .collection(Collections.INCOME)
+                .where("date", ">=", initialDate)
+                .where("date", "<", finalDate)
+                .get()
 
             const incomesArray: Income[] = []
 
@@ -37,7 +42,8 @@ class IncomeRepository implements IIncomeRepository {
                 const newIncome: Income = {
                     id: doc.id,
                     name: doc.data().name,
-                    amount: doc.data().amount
+                    amount: doc.data().amount,
+                    date: doc.data().date
                 }
 
                 incomesArray.push(newIncome)
@@ -52,11 +58,11 @@ class IncomeRepository implements IIncomeRepository {
 
     }
 
-    public async getTotal(): Promise<number> {
+    public async getTotal(date:DateInterval): Promise<number> {
 
-        const incomes = await this.getAll()
-
+        const incomes = await this.getAll(date)
         let totalIncomes = 0
+
         incomes.forEach(income => {
             totalIncomes += income.amount
         })
@@ -69,13 +75,14 @@ class IncomeRepository implements IIncomeRepository {
 
         try {
 
-            const result = await firestore()
+            await firestore()
                 .collection(Collections.INCOME)
                 .doc(income.id)
                 .update({
                     name: income.name,
-                    amount: income.amount
-                })
+                    amount: income.amount,
+                    date: income.date
+                } as Income)
 
         } catch (error) {
             console.error("error IncomesCreateDataSource", error);

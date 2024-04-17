@@ -57,7 +57,6 @@ export type NavigatorParamList = {
         expenseList?: Expense[],
     }
 
-
 }
 
 

@@ -5,12 +5,14 @@ import { currencyFormat, numberFormat } from "../../../utils/NumberFormat";
 import { Message } from "../../../data/types/Message";
 import { Income } from "../../../data/types/Income";
 import CreateIncomeUseCase from "../../../domain/useCases/CreateIncomeUseCase";
-import IncomeEditUseCase from "../../../domain/useCases/EditIncomeUsecase";
+import editIncomeUseCase from "../../../domain/useCases/editIncomeUseCase";
+import { getCurrentDate } from "../../../utils/DateTime";
+import { ValidationResult } from "../../../data/types/Validation";
 
 
 type IIncomesCreateViewModel = {
     createIncomeUseCase: CreateIncomeUseCase,
-    editIncomeEUseCase: IncomeEditUseCase
+    editIncomeUseCase: editIncomeUseCase
 } & IncomesCreateScreenProps
 
 
@@ -18,7 +20,7 @@ const useIncomeFormViewModel = ({
     navigation,
     route,
     createIncomeUseCase,
-    editIncomeEUseCase,
+    editIncomeUseCase,
 }: IIncomesCreateViewModel) => {
 
 
@@ -61,15 +63,23 @@ const useIncomeFormViewModel = ({
 
         try {
 
-            let response;
+
+            let response: ValidationResult<string> = {
+                isValid: false, result: "", message: {
+                    message: "",
+                    title: ""
+                }
+            }
+
 
             // 1. If is an edition
             if (income?.id) {
 
-                response = await editIncomeEUseCase.edit({
+                response = await editIncomeUseCase.edit({
                     id: income.id,
                     name: incomeName,
-                    amount: numberFormat(incomeAmount)
+                    amount: numberFormat(incomeAmount),
+                    date: getCurrentDate()
                 })
 
                 // 2. if is a new income
@@ -77,7 +87,8 @@ const useIncomeFormViewModel = ({
 
                 response = await createIncomeUseCase.create({
                     name: incomeName,
-                    amount: numberFormat(incomeAmount)
+                    amount: numberFormat(incomeAmount),
+                    date: getCurrentDate()
                 })
 
             }

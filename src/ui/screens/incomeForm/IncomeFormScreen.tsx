@@ -19,7 +19,7 @@ import CreateIncomeUseCase from '../../../domain/useCases/CreateIncomeUseCase'
 // dependency injection 
 const incomeDataSource = new IncomeRepository()
 const createIncomeUseCase = new CreateIncomeUseCase(incomeDataSource)
-const editIncomeEUseCase = new EditIncomeUseCase(incomeDataSource)
+const editIncomeUseCase = new EditIncomeUseCase(incomeDataSource)
 
 
 const IncomeFormScreen = ({ navigation, route }: IncomesCreateScreenProps) => {
@@ -29,7 +29,7 @@ const IncomeFormScreen = ({ navigation, route }: IncomesCreateScreenProps) => {
     navigation,
     route,
     createIncomeUseCase,
-    editIncomeEUseCase,
+    editIncomeUseCase,
   })
 
   return (

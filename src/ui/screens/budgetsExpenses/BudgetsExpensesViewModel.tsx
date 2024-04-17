@@ -18,7 +18,7 @@ import DeleteBudgetUseCase from "../../../domain/useCases/DeleteBudgetUseCase"
 import { ValidationResult } from "../../../data/types/Validation"
 import DeleteExpenseUseCase from "../../../domain/useCases/DeleteExpenseUseCase"
 import DefaultStyles from "../../styles/DefaultStyles"
-import { convertToNormalDate } from "../../../utils/Date"
+import { convertToNormalDate } from "../../../utils/DateTime"
 
 const editIcon = require("../../../assets/icons/ic_edit.png")
 

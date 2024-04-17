@@ -44,8 +44,9 @@ const EditionIcons = ({
 const editionStyle = StyleSheet.create({
     container: {
         flexDirection: "row",
-        justifyContent:"flex-end",
-        flex:1,
+        justifyContent:"space-between",
+        alignItems:"center",
+        width: 70,
         height: "100%",
     }
 })

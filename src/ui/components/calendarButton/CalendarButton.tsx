@@ -1,4 +1,4 @@
-import { TextStyle, TouchableOpacity } from "react-native"
+import { Keyboard, TextStyle, TouchableOpacity } from "react-native"
 import Label from "../label/Label"
 import { FontSize } from "../../constants/Fonts"
 import { Colors } from "../../constants/Colors"
@@ -31,6 +31,7 @@ const CalendarButton = ({
             <TouchableOpacity
                 onPress={() => {
                     setCalendarVisible(!calendarVisible)
+                    Keyboard.dismiss()
                 }}
                 disabled={disabled}
                 style={DefaultStyles.input}

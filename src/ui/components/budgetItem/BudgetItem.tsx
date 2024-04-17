@@ -1,4 +1,4 @@
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Image, StyleSheet, TouchableOpacity, Vibration, View } from 'react-native'
 import React from 'react'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 import Label from '../label/Label'
@@ -18,6 +18,9 @@ const BudgetItem = ({ name, amount, category, onPress, editMode, onEdit, onDelet
 
         <TouchableOpacity
             onPress={onPress}
+            onLongPress={()=>{
+                Vibration.vibrate(35)
+            }}
             style={DefaultStyles.listItemContainer}
         >
 

@@ -18,7 +18,7 @@ const ExpenseItem = ({ name, amount, category, editMode, onEdit, onDelete, date 
 
             <CircleCategory color={category?.color} />
 
-            <View>
+            <View style={{flex:1}}>
 
                 <Label
                     value={name}

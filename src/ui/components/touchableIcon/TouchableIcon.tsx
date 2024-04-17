@@ -6,17 +6,22 @@ import { Colors } from '../../constants/Colors'
 export type TouchableIconProps = {
     image: ImageSourcePropType,
     color?: string,
-    onPress?: () => void
+    onPress?: () => void,
+    disabled?: boolean
 }
 
 const TouchableIcon = ({
     image,
     color = Colors.BLACK,
     onPress,
+    disabled = false
 }: TouchableIconProps) => {
 
     return (
-        <TouchableOpacity onPress={onPress}>
+        <TouchableOpacity
+            onPress={onPress}
+            disabled={disabled}
+        >
             <Image
                 source={image}
                 style={touchableStyles.image}

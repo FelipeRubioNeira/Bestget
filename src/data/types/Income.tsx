@@ -4,11 +4,13 @@ type Income = {
     id: string,
     name: string,
     amount: number,
+    date:string,
 }
 
 type IncomeCreate = {
     name: string,
     amount: number,
+    date:string,
 }
 
 type IncomeUI = {

@@ -8,6 +8,9 @@ import IncomeRepository from "../../../data/repository/incomeRepository/IncomeRe
 import ICategoryRepository from "../../../data/repository/categoryRepository/ICategoryRespository"
 import IExpenseRespository from "../../../data/repository/expenseRepository/IExpenseRepository"
 import { Colors } from "../../constants/Colors"
+import DateTime from "../../../utils/DateTime"
+import { DateInterval } from "../../../data/types/DateInterval"
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry"
 
 
 
@@ -30,6 +33,10 @@ type HomeViewModelProps = {
     categoryRepository: ICategoryRepository,
 } & HomeScreenProps
 
+type BottomSheetState = {
+    visible: boolean,
+    date: string
+}
 
 
 const useHomeViewModel = ({
@@ -51,28 +58,37 @@ const useHomeViewModel = ({
 
     const [buttonsHome, setButtonsHome] = useState<ButtonHomeProps[]>([])
 
+    const [bottomSheetState, setBottomSheetState] = useState<BottomSheetState>({
+        visible: false,
+        date: ""
+    })
+
 
 
     // ------------------ effects ------------------ //
+    useEffect(() => {
+        const dateInterval = getCurrentDate()
+        getData(dateInterval)
+    }, [])
 
     useEffect(() => {
-
         const unsubscribe = navigation.addListener('focus', () => {
-            getData()
+            const dateInterval = getCurrentDate()
+            getData(dateInterval)
         })
-
         return unsubscribe;
 
     }, [navigation])
 
 
     // ------------------ methods ------------------ //
-    const getData = async () => {
+    const getData = async (dateInterval: DateInterval) => {
 
         const [totalIncomes, totalExpenses, categories] = await Promise.all([
-            getIncomes(),
+            getIncomes(dateInterval),
             getExpenses(),
             getCategories(),
+
         ])
 
         setTotalExpenses(totalExpenses)
@@ -83,6 +99,27 @@ const useHomeViewModel = ({
 
         generateButtons(totalExpenses, totalIncomes, categories)
 
+    }
+
+    // ------------------ repository methods ------------------ //
+
+    const getIncomes = async (dateInterval: DateInterval) => {
+
+        const allIncomes = await incomeRepository.getAll(dateInterval)
+        const totalIncomes = calculateTotalAmount(allIncomes)
+
+        setAllIncomes(allIncomes)
+
+        return totalIncomes
+    }
+
+    const getExpenses = async () => {
+        return expenseRepository.getTotal()
+    }
+
+    const getCategories = async () => {
+        const categories = await categoryRepository.getAll()
+        return categories
     }
 
     const calculateTotalAmount = (incomes: Income[]) => {
@@ -134,26 +171,8 @@ const useHomeViewModel = ({
 
     }
 
-    // ------------------ repository methods ------------------ //
 
-    const getIncomes = async () => {
-
-        const allIncomes = await incomeRepository.getAll()
-        const totalIncomes = calculateTotalAmount(allIncomes)
-
-        setAllIncomes(allIncomes)
-
-        return totalIncomes
-    }
-
-    const getExpenses = async () => {
-        return expenseRepository.getTotal()
-    }
-
-    const getCategories = async () => {
-        const categories = await categoryRepository.getAll()
-        return categories
-    }
+    // ------------------ navigation methods ------------------ //
 
     const onPressBudgetsExpenses = (categories: Category[]) => {
 
@@ -173,14 +192,74 @@ const useHomeViewModel = ({
     const onPressProfile = () => { }
 
 
+    // ------------------ bottom Sheets ------------------ //
+    const getCurrentDate = (): DateInterval => {
+
+        const dateTime = new DateTime().date
+
+        setBottomSheetState({
+            ...bottomSheetState,
+            date: dateTime,
+        })
+
+        return {
+            initialDate: dateTime,
+            finalDate: getNextMonth(dateTime)
+        }
+
+
+    }
+
+    const showBottomSheet = () => {
+        setBottomSheetState({
+            ...bottomSheetState,
+            visible: true,
+        })
+    }
+
+    const hideBottomSheet = () => {
+        setBottomSheetState({
+            ...bottomSheetState,
+            visible: false,
+        })
+    }
+
+    const confirmDate = (newDate: string) => {
+
+        setBottomSheetState({
+            visible: false,
+            date: newDate,
+        })
+
+        const newDateInterval: DateInterval = {
+            initialDate: newDate,
+            finalDate: getNextMonth(newDate)
+        }
+
+        getData(newDateInterval)
+
+    }
+
+    const getNextMonth = (date: string): string => {
+        const dateTime = new DateTime(date)
+        return dateTime.getNextMonth(date)
+    }
+
+
+
+
     // ------------------ return ------------------ //
     return {
+        bottomSheetState,
         totalremaining,
         allIncomes,
         allCategories,
         totalExpenses,
         totalIncomes,
         buttonsHome,
+        showBottomSheet,
+        hideBottomSheet,
+        confirmDate
     }
 
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Calendar, } from 'react-native-calendars';
-import { convertToAmericanDate, convertToNormalDate } from '../../../utils/Date';
+import { convertToAmericanDate, convertToNormalDate } from '../../../utils/DateTime';
 import { Colors } from '../../constants/Colors';
 import { Styles } from '../../styles/Styles';
 import DefaultStyles from '../../styles/DefaultStyles';

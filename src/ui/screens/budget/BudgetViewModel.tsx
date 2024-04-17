@@ -9,7 +9,7 @@ import TouchableIcon from "../../components/touchableIcon/TouchableIcon"
 import { ButtonModal, ModalProps } from "../../components/modal/Modal"
 import DefaultStyles from "../../styles/DefaultStyles"
 import DeleteExpenseUseCase from "../../../domain/useCases/DeleteExpenseUseCase"
-import { convertToNormalDate } from "../../../utils/Date"
+import { convertToNormalDate } from "../../../utils/DateTime"
 
 const editIcon = require("../../../assets/icons/ic_edit.png")
 

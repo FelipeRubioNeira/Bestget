@@ -104,7 +104,7 @@ const IncomeItem = ({ name, amount, editMode, onEdit, onDelete }: IncomeUI) => {
   return (
 
     <View
-      style={incomesScreenStyle.incomeItem}
+      style={DefaultStyles.listItemContainer}
     >
 
       <Label
@@ -145,6 +145,7 @@ const incomesScreenStyle = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    borderWidth:1
   },
 
 
