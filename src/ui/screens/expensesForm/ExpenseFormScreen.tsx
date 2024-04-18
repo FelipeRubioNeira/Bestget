@@ -1,5 +1,5 @@
-import { View } from 'react-native'
 import React from 'react'
+import { View } from 'react-native'
 import Spacer from '../../components/spacer/Spacer'
 import SubmitButton from '../../components/submitButton/SubmitButton'
 import TextInputWithLabel from '../../components/textInputWithLabel/TextInputWithLabel'
@@ -16,13 +16,13 @@ import EditExpenseUseCase from '../../../domain/useCases/EditExpenseUseCase'
 import Modal from '../../components/modal/Modal'
 import CalendarButton from '../../components/calendarButton/CalendarButton'
 import Label from '../../components/label/Label'
-import { FontFamily, FontSize } from '../../constants/Fonts'
+import { FontSize } from '../../constants/Fonts'
 
 
 const expenseRepository = new ExpenseRepository()
-
 const createExpenseUseCase = new CreateExpenseUseCase(expenseRepository)
 const editExpenseUseCase = new EditExpenseUseCase(expenseRepository)
+
 
 const ExpenseForm = ({ navigation, route }: ExpensesCreateScreenProps) => {
 

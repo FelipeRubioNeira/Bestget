@@ -1,17 +1,20 @@
 import { Collections } from "../../collections/Collections";
 import { Budget, BudgetCreate, BudgetKeys } from "../../types/Budget";
+import { DateInterval } from "../../types/DateInterval";
 import IBudgetRepository from "./IBudgetRepository";
 import firestore from '@react-native-firebase/firestore';
 
 
 class BudgetRepository implements IBudgetRepository {
 
-    async getAll(): Promise<Budget[]> {
+    async getAll({ initialDate, finalDate }: DateInterval): Promise<Budget[]> {
 
         try {
 
             const budgetsFirebase = await firestore()
                 .collection(Collections.BUDGET)
+                .where(BudgetKeys.DATE, ">=", initialDate)
+                .where(BudgetKeys.DATE, "<", finalDate)
                 .orderBy(BudgetKeys.DATE, "desc")
                 .get()
 

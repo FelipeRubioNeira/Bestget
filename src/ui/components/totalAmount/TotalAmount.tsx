@@ -1,4 +1,4 @@
-
+import React from "react"
 import { StyleSheet, View } from "react-native"
 import { Styles, Colors, FontFamily } from "../../constants/Index"
 import Label from "../label/Label"
@@ -22,7 +22,7 @@ const TotalAmount = ({
         <View style={{ ...totalAmountStyles.container, backgroundColor: color }}>
 
             <Label
-                value={`${label} total`}
+                value={label}
                 fontFamily={FontFamily.BLACK}
             />
             <Label

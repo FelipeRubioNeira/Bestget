@@ -1,7 +1,8 @@
-import { StyleSheet, Text, TextStyle, ViewStyle } from 'react-native'
 import React from 'react'
+import { StyleSheet, Text, TextStyle } from 'react-native'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 import { Colors } from '../../constants/Colors'
+
 
 export interface ILabel {
     value: string | undefined

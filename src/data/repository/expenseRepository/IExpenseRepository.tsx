@@ -1,4 +1,4 @@
-import { Budget } from "../../types/Budget"
+import { DateInterval } from "../../types/DateInterval"
 import { Expense, ExpenseCreate } from "../../types/Expense"
 
 
@@ -9,9 +9,9 @@ interface IExpenseRespository {
 
     getAll: () => Promise<Expense[]>
     getByBudgetId: (id: string) => Promise<Expense[]>
-    getWithoutBudget: () => Promise<Expense[]>
+    getWithoutBudget: (date:DateInterval) => Promise<Expense[]>
 
-    getTotal: () => Promise<number>
+    getTotal: (date:DateInterval) => Promise<number>
 
     updateCategory: (categoryId: number, expenses: Expense[]) => Promise<void>
 

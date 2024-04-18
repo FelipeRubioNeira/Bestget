@@ -1,7 +1,7 @@
 /*
     View model for the Expenses screen
 */
-
+import React from "react"
 import { useEffect, useState } from "react"
 import { BudgetsExpensesScreenProps } from "../../../navigation/NavigationParamList"
 import { ScreenRoutes } from "../../../navigation/Routes"
@@ -18,9 +18,9 @@ import DeleteBudgetUseCase from "../../../domain/useCases/DeleteBudgetUseCase"
 import { ValidationResult } from "../../../data/types/Validation"
 import DeleteExpenseUseCase from "../../../domain/useCases/DeleteExpenseUseCase"
 import DefaultStyles from "../../styles/DefaultStyles"
-import { convertToNormalDate } from "../../../utils/DateTime"
-
-const editIcon = require("../../../assets/icons/ic_edit.png")
+import { DateInterval } from "../../../data/types/DateInterval"
+import DateTime from "../../../utils/DateTime"
+import Icons from "../../../assets/icons"
 
 
 // ----------- interfaces and types ----------- //
@@ -51,8 +51,10 @@ const useBudgetExpensesViewModel = ({
     const {
         categoryList,
         newExpenseId,
-        newBudgetId
+        newBudgetId,
+        dateInterval
     } = route?.params || {}
+
 
 
 
@@ -88,7 +90,7 @@ const useBudgetExpensesViewModel = ({
     useEffect(() => {
 
         const unsubscribe = navigation.addListener('focus', () => {
-            getData(categoryList)
+            getData(categoryList, dateInterval)
         })
 
         return unsubscribe;
@@ -99,7 +101,7 @@ const useBudgetExpensesViewModel = ({
     useEffect(() => {
 
         if (!newExpenseId && newExpenseId) return
-        getData(categoryList)
+        getData(categoryList, dateInterval)
         setCategories(categoryList)
 
     }, [categoryList, newExpenseId, newBudgetId])
@@ -113,7 +115,7 @@ const useBudgetExpensesViewModel = ({
                 if (budgetsExpenses.length === 0) return null
                 return (
                     <TouchableIcon
-                        image={editIcon}
+                        image={Icons.edit}
                         onPress={() => setEditMode(!editMode)}
                     />
                 )
@@ -130,15 +132,15 @@ const useBudgetExpensesViewModel = ({
 
 
     // ----------- get data ----------- //
-    const getData = async (categoryList: Category[]) => {
+    const getData = async (categoryList: Category[], dateInterval: DateInterval) => {
 
         setLoading(true)
 
         //1 - getExpenses and getCategories
         const [budgets, expenses, total] = await Promise.all([
-            budgetRepository.getAll(),
-            expenseRepository.getWithoutBudget(),
-            expenseRepository.getTotal()
+            budgetRepository.getAll(dateInterval),
+            expenseRepository.getWithoutBudget(dateInterval),
+            expenseRepository.getTotal(dateInterval)
         ])
 
 
@@ -170,9 +172,14 @@ const useBudgetExpensesViewModel = ({
         type: BudgetOrExpense
     ) {
 
+        
+
         return items.map(item => {
 
             const { id, name, amount, date, categoryId } = item as T
+
+            const dateTime = new DateTime(date)
+            const normalDate = dateTime.convertToNormalDate(dateTime.date)
 
             const category = findCategory(categoryId, categories)
             const amountFormatted = currencyFormat(amount)
@@ -182,7 +189,7 @@ const useBudgetExpensesViewModel = ({
                 name: name,
                 amount: amountFormatted,
                 category: category,
-                date: convertToNormalDate(date),
+                date: normalDate,
                 type: type
             } as U
 
@@ -278,7 +285,8 @@ const useBudgetExpensesViewModel = ({
 
             navigation.navigate(ScreenRoutes.BUDGET_FORM, {
                 categoryList: categories,
-                budget: budget
+                budget: budget,
+                dateInterval: dateInterval
             })
 
         } else {
@@ -287,7 +295,8 @@ const useBudgetExpensesViewModel = ({
 
             navigation.navigate(ScreenRoutes.EXPENSES_FORM, {
                 categoryList: categories,
-                expense: expense
+                expense: expense,
+                dateInterval: dateInterval
             })
 
         }
@@ -358,7 +367,7 @@ const useBudgetExpensesViewModel = ({
         }
 
         // finally we update the data
-        await getData(categoryList)
+        await getData(categoryList, dateInterval)
 
     }
 
@@ -369,7 +378,8 @@ const useBudgetExpensesViewModel = ({
         setEditMode(false)
         onHideExpenseOptions()
         navigation.navigate(ScreenRoutes.EXPENSES_FORM, {
-            categoryList: categories
+            categoryList: categories,
+            dateInterval: dateInterval
         })
     }
 
@@ -377,7 +387,8 @@ const useBudgetExpensesViewModel = ({
         setEditMode(false)
         onHideExpenseOptions()
         navigation.navigate(ScreenRoutes.BUDGET_FORM, {
-            categoryList: categories
+            categoryList: categories,
+            dateInterval: dateInterval
         })
     }
 
@@ -391,7 +402,8 @@ const useBudgetExpensesViewModel = ({
 
             const navigationObject = {
                 budget: itemToNavigate,
-                categoryList: categoryList
+                categoryList: categoryList,
+                dateInterval
             }
 
             navigation.navigate(ScreenRoutes.BUDGET, navigationObject)

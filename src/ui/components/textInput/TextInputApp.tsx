@@ -1,5 +1,6 @@
+import React from "react"
 import { StyleSheet, TextInput } from "react-native"
-import { Colors, FontFamily, FontSize, Styles, DefaultStyles } from "../../constants/Index"
+import { Colors, FontFamily, FontSize, DefaultStyles } from "../../constants/Index"
 import useTextInputViewModel, { ITextInput } from "./TextInputViewModel"
 
 

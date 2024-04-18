@@ -1,6 +1,6 @@
 import { IIncomeRepository } from "../../data/repository/incomeRepository/IIncomeRepository";
 import { ValidationResult } from "../../data/types/Validation";
-import { isConnected, validateConnection } from "../../utils/Connection";
+import { validateConnection } from "../../utils/Connection";
 
 class DeleteIncomeUseCase {
     constructor(private incomeRepository: IIncomeRepository) { }

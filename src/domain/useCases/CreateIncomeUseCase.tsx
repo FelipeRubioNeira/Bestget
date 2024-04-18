@@ -1,7 +1,7 @@
 import { IIncomeRepository } from "../../data/repository/incomeRepository/IIncomeRepository";
 import { IncomeCreate } from "../../data/types/Income";
 import { Validation, ValidationResult } from "../../data/types/Validation";
-import { isConnected, validateConnection } from "../../utils/Connection";
+import { validateConnection } from "../../utils/Connection";
 import { validateInputs } from "../../utils/Inputs";
 
 
@@ -11,6 +11,7 @@ class CreateIncomeUseCase  {
 
 
     public async create(newIncome: IncomeCreate): Promise<ValidationResult<string>> {
+
 
         // 1. we create a validation result object
         const validationResult: ValidationResult<string> = {
@@ -57,7 +58,7 @@ class CreateIncomeUseCase  {
 
         for (const validation of validationArray) {
 
-            let result = await validation()
+            const result = await validation()
 
             if (!result.isValid) {
                 validationResult = result

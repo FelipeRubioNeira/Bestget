@@ -69,7 +69,7 @@ class EditBudgetUseCase  {
 
         for (const validation of validationArray) {
 
-            let result = await validation()
+            const result = await validation()
 
             if (result.isValid === false) {
                 validationResult = result

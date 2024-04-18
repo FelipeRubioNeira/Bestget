@@ -1,14 +1,16 @@
+import React from "react"
 import { Image, StyleSheet, TouchableOpacity } from "react-native"
 import { Colors, Styles } from "../../constants/Index"
 import DefaultStyles from "../../styles/DefaultStyles"
+import Icons from "../../../assets/icons"
 
-const plusIcon = require('../../../assets/icons/ic_plus.png')
 
 interface IButtonAdd {
     visible?: boolean,
     backgroundColor?: string,
     onPress?: () => void
 }
+
 
 const ButtonAdd = ({
     visible = true,
@@ -25,7 +27,7 @@ const ButtonAdd = ({
                 backgroundColor: backgroundColor
             }}>
             <Image
-                source={plusIcon}
+                source={Icons.plus}
                 style={{
                     width: 25,
                     height: 25,

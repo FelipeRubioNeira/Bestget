@@ -13,6 +13,7 @@ import ExpenseItem from '../../components/expenseItem/ExpenseItem'
 import Modal from '../../components/modal/Modal'
 import DeleteExpenseUseCase from '../../../domain/useCases/DeleteExpenseUseCase'
 
+
 const expensesRepository = new ExpenseRepository()
 const deleteExpenseUseCase = new DeleteExpenseUseCase(expensesRepository)
 

@@ -1,3 +1,4 @@
+import React from "react"
 import { useEffect, useState } from "react"
 import { BudgetsScreenProps } from "../../../navigation/NavigationParamList"
 import { currencyFormat, numberFormat } from "../../../utils/NumberFormat"
@@ -9,9 +10,9 @@ import TouchableIcon from "../../components/touchableIcon/TouchableIcon"
 import { ButtonModal, ModalProps } from "../../components/modal/Modal"
 import DefaultStyles from "../../styles/DefaultStyles"
 import DeleteExpenseUseCase from "../../../domain/useCases/DeleteExpenseUseCase"
-import { convertToNormalDate } from "../../../utils/DateTime"
+import Icons from "../../../assets/icons"
+import DateTime from "../../../utils/DateTime"
 
-const editIcon = require("../../../assets/icons/ic_edit.png")
 
 
 type Title = {
@@ -33,6 +34,7 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
     const {
         budget,
         categoryList = [],
+        dateInterval
     } = route.params
 
 
@@ -82,7 +84,7 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
                 if (expenseList.length === 0) return null
                 return (
                     <TouchableIcon
-                        image={editIcon}
+                        image={Icons.edit}
                         onPress={editMode ? turnOffEditMode : turnOnEditMode}
                     />
                 )
@@ -129,13 +131,16 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
 
     const applyFormat = (expenseList: Expense[]): ExpenseUI[] => {
 
+        const dateTime = new DateTime()
+
         return expenseList.map(expense => {
+
 
             const newExpenseFormatted = {
                 id: expense.id,
                 name: expense.name,
                 amount: currencyFormat(expense.amount),
-                date: convertToNormalDate(expense.date),
+                date: dateTime.convertToNormalDate(expense.date),
                 category: category,
             } as ExpenseUI
 
@@ -201,7 +206,8 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
     const onPressNewExpense = () => {
         navigation.navigate(ScreenRoutes.EXPENSES_FORM, {
             budget,
-            categoryList
+            categoryList,
+            dateInterval
         })
     }
 
@@ -214,7 +220,8 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
         navigation.navigate(ScreenRoutes.EXPENSES_FORM, {
             expense,
             categoryList,
-            budget
+            budget,
+            dateInterval
         })
 
     }

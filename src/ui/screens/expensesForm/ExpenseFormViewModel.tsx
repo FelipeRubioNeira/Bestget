@@ -5,11 +5,11 @@ import CreateExpenseUseCase from "../../../domain/useCases/CreateExpenseUseCase"
 import { currencyFormat, numberFormat } from "../../../utils/NumberFormat"
 import { Expense, ExpenseCreate } from "../../../data/types/Expense"
 import { ScreenRoutes } from "../../../navigation/Routes"
-import { convertToIsoDate, convertToNormalDate, getCurrentDate } from "../../../utils/DateTime"
 import { ChipItemProps } from "../../components/chipItem/ChipItem"
 import { Budget } from "../../../data/types/Budget"
 import EditExpenseUseCase from "../../../domain/useCases/EditExpenseUseCase"
 import { ModalProps } from "../../components/modal/Modal"
+import DateTime from "../../../utils/DateTime"
 
 type ExpensesCreateViewModelProps = {
     createExpenseUseCase: CreateExpenseUseCase,
@@ -36,7 +36,8 @@ const useExpenseFormViewModel = (
     const {
         categoryList,
         budget,
-        expense
+        expense,
+        dateInterval
     } = route.params
 
 
@@ -49,7 +50,7 @@ const useExpenseFormViewModel = (
         expenseName: "",
         expenseAmount: "",
         categoryId: 0,
-        expenseDate: convertToNormalDate()
+        expenseDate: ""
     })
 
     const [modalState, setModalState] = useState<ModalProps>({
@@ -156,12 +157,12 @@ const useExpenseFormViewModel = (
         const { expenseAmount, expenseName, categoryId } = expenseState
 
         const amountInt = numberFormat(expenseAmount)
-        const currentDate = getCurrentDate()
+        const dateTime = new DateTime()
 
         const expenseCreated: ExpenseCreate = {
             name: expenseName,
             amount: amountInt,
-            date: currentDate,
+            date: dateTime.date,
             categoryId: categoryId || 0,
             budgetId: budget?.id || ""
         }
@@ -175,14 +176,13 @@ const useExpenseFormViewModel = (
         const { expenseAmount, expenseName, categoryId, expenseDate } = expenseState
 
         const amountInt = numberFormat(expenseAmount)
-        const date = convertToIsoDate(expenseDate)
-
+        const dateTime = new DateTime(expenseDate)
 
         const expenseCreated: Expense = {
             id: expense?.id || "",
             name: expenseName,
             amount: amountInt,
-            date: date,
+            date: dateTime.date,
             categoryId: categoryId || 0,
             budgetId: budget?.id || ""
         }
@@ -208,7 +208,7 @@ const useExpenseFormViewModel = (
 
     const createExpense = async () => {
 
-        let expense = generateExpenseCreate()
+        const expense = generateExpenseCreate()
 
         const result = await createExpenseUseCase.create(expense)
 
@@ -216,7 +216,8 @@ const useExpenseFormViewModel = (
 
             const routeParams = {
                 categoryList,
-                newExpenseId: result.result
+                newExpenseId: result.result,
+                dateInterval
             }
 
             if (budget) {
@@ -247,7 +248,8 @@ const useExpenseFormViewModel = (
                 navigation.navigate(ScreenRoutes.BUDGET, {
                     budget: budget,
                     categoryList,
-                    newExpenseId: expense.id
+                    newExpenseId: expense.id,
+                    dateInterval
                 })
 
             } else {

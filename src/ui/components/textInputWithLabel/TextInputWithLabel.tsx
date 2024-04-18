@@ -1,3 +1,4 @@
+import React from "react"
 import { InputModeOptions, View } from "react-native"
 import Label from "../label/Label"
 import { FontSize } from "../../constants/Fonts"

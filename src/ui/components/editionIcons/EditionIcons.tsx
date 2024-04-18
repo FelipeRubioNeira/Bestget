@@ -3,9 +3,9 @@ import React from 'react'
 import TouchableIcon from '../touchableIcon/TouchableIcon'
 import { Colors } from '../../constants/Colors'
 import Spacer from '../spacer/Spacer'
+import Icons from '../../../assets/icons'
 
-const minusIcon = require("../../../assets/icons/ic_delete_circle.png")
-const editIcon = require("../../../assets/icons/ic_edit_circle.png")
+
 
 type EditionIconsProps = {
     onEdit?: () => void,
@@ -23,7 +23,7 @@ const EditionIcons = ({
         <View style={editionStyle.container}>
 
             <TouchableIcon
-                image={editIcon}
+                image={Icons.editCircle}
                 color={Colors.CHIP_SAVINGS}
                 onPress={onEdit}
             />
@@ -31,7 +31,7 @@ const EditionIcons = ({
             <Spacer marginHorizontal={"4%"}/>
 
             <TouchableIcon
-                image={minusIcon}
+                image={Icons.deleteCircle}
                 color={Colors.CHIP_DEBTS}
                 onPress={onDelete}
             />

@@ -3,7 +3,7 @@ import React from 'react'
 import DefaultStyles from '../../styles/DefaultStyles'
 import HelpText from '../../components/helpText/Help'
 import { Strings } from '../../constants/Strings'
-import { FontFamily, FontSize } from '../../constants/Fonts'
+import { FontSize } from '../../constants/Fonts'
 import { Colors } from '../../constants/Colors'
 import TotalAmount from '../../components/totalAmount/TotalAmount'
 import { BudgetsExpensesScreenProps } from '../../../navigation/NavigationParamList'
@@ -26,7 +26,7 @@ import DeleteExpenseUseCase from '../../../domain/useCases/DeleteExpenseUseCase'
 const budgetRepository = new BudgetRepository()
 const expenseRepository = new ExpenseRepository()
 
-const deleteExpenseUseCase  = new DeleteExpenseUseCase(expenseRepository)
+const deleteExpenseUseCase = new DeleteExpenseUseCase(expenseRepository)
 
 const deleteBudgetUseCase = new DeleteBudgetUseCase(
     budgetRepository,
@@ -105,7 +105,7 @@ const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps
                 />
 
                 <TotalAmount
-                    label="Gasto"
+                    label="Gasto total"
                     amount={totalAmount}
                     color={Colors.YELLOW}
                 />

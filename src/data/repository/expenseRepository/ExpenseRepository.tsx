@@ -1,5 +1,6 @@
 import { sortByDate } from "../../../utils/Data";
 import { Collections } from "../../collections/Collections";
+import { DateInterval } from "../../types/DateInterval";
 import { Expense, ExpenseCreate, ExpenseKeys } from "../../types/Expense";
 import IExpenseRespository from "./IExpenseRepository";
 import firestore from '@react-native-firebase/firestore';
@@ -109,8 +110,7 @@ class ExpenseRepository implements IExpenseRespository {
         }
     }
 
-    async getWithoutBudget(): Promise<Expense[]> {
-
+    async getWithoutBudget({ initialDate, finalDate }: DateInterval): Promise<Expense[]> {
 
         try {
 
@@ -119,8 +119,10 @@ class ExpenseRepository implements IExpenseRespository {
             const expensesFirebase = await firestore()
                 .collection(Collections.EXPENSE)
                 .where(ExpenseKeys.BUDGET_ID, "==", "")
+                .where(ExpenseKeys.DATE, ">=", initialDate)
+                .where(ExpenseKeys.DATE, "<", finalDate)
                 .get()
-            
+
 
             expensesFirebase.docs.forEach(doc => {
 
@@ -147,12 +149,14 @@ class ExpenseRepository implements IExpenseRespository {
         }
     }
 
-    async getTotal(): Promise<number> {
+    async getTotal({ initialDate, finalDate }: DateInterval): Promise<number> {
 
         try {
 
             const expensesFirebase = await firestore()
                 .collection(Collections.EXPENSE)
+                .where(ExpenseKeys.DATE, ">=", initialDate)
+                .where(ExpenseKeys.DATE, "<", finalDate)
                 .get()
 
             let total = 0

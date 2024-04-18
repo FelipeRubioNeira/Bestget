@@ -38,6 +38,10 @@ const useExpensesViewModel = ({
 }: ExpensesViewModelProps) => {
 
 
+    // ----------- params ----------- //
+    const { dateInterval } = route.params
+
+
     // ----------- states ----------- //
     const [totalAmount, setTotalAmount] = useState("0")
 
@@ -102,7 +106,7 @@ const useExpensesViewModel = ({
 
         const expensesFormatted = expenses.map(expense => {
 
-            let category = findCategory(expense.categoryId, categories)
+            const category = findCategory(expense.categoryId, categories)
 
             const ExpenseItem: ExpenseItem = {
                 name: expense.name,
@@ -138,14 +142,16 @@ const useExpensesViewModel = ({
     const onAddExpense = () => {
         onHideExpenseOptions()
         navigation.navigate(ScreenRoutes.EXPENSES_FORM, {
-            categoryList: categories
+            categoryList: categories,
+            dateInterval
         })
     }
 
     const onAddBudget = () => {
         onHideExpenseOptions()
         navigation.navigate(ScreenRoutes.BUDGET_FORM, {
-            categoryList: categories
+            categoryList: categories,
+            dateInterval
         })
     }
 

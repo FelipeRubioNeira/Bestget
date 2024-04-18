@@ -4,20 +4,35 @@ class DateTime {
 
     date: string;
 
+    // default returns a iso string date
     constructor(date?: Date | string) {
         const inicialDate = date instanceof Date ? date : new Date(date || new Date());
         this.date = this.getCurrentDate(inicialDate)
         return this;
     }
 
-    getCurrentDate = (date:Date): string => {
+    getStartOfMonth = (date: string): string => {
+        const { year, month } = this.separateDate(date);
+        return `${year}-${month}-01T00:00:00`
+    }
+
+    convertToNormalDate = (date: string): string => {
+        const { year, month, day } = this.separateDate(date);
+        return `${day}-${month}-${year}`;
+    }
+
+    convertToAmericanDate = (date: string): string => {
+        const { year, month, day } = this.separateDate(date);
+        return `${year}-${month}-${day}`;
+    }
+
+    getCurrentDate = (date: Date): string => {
         const localTimezone = this.getLocalTimezone();
         const formatedDate = this.formatDate(localTimezone, date);
         const newDate = this.generateIsoStringDate(formatedDate);
 
         return newDate
     }
-
 
     getMonth = (date?: string): string => {
 
@@ -31,7 +46,7 @@ class DateTime {
 
     getNextMonth = (date: string): string => {
 
-        if(!date) return this.getCurrentDate(new Date())
+        if (!date) return this.getCurrentDate(new Date())
 
         const currentDate = new Date(date)
 

@@ -1,7 +1,7 @@
 import IBudgetRepository from "../../data/repository/budgetRepository/IBudgetRepository";
 import IExpenseRespository from "../../data/repository/expenseRepository/IExpenseRepository";
 import { ValidationResult } from "../../data/types/Validation";
-import { isConnected, validateConnection } from "../../utils/Connection";
+import { validateConnection } from "../../utils/Connection";
 
 class DeleteBudgetUseCase {
     constructor(

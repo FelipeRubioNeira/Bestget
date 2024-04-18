@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { HomeScreenProps } from "../../../navigation/NavigationParamList"
 import { ScreenRoutes } from "../../../navigation/Routes"
 import { currencyFormat } from "../../../utils/NumberFormat"
@@ -10,7 +10,6 @@ import IExpenseRespository from "../../../data/repository/expenseRepository/IExp
 import { Colors } from "../../constants/Colors"
 import DateTime from "../../../utils/DateTime"
 import { DateInterval } from "../../../data/types/DateInterval"
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry"
 
 
 
@@ -63,6 +62,13 @@ const useHomeViewModel = ({
         date: ""
     })
 
+    const dateInterval = useRef<DateInterval>({
+        initialDate: "",
+        finalDate: ""
+    })
+
+    const [loading, setLoading] = useState(false)
+
 
 
     // ------------------ effects ------------------ //
@@ -71,24 +77,16 @@ const useHomeViewModel = ({
         getData(dateInterval)
     }, [])
 
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            const dateInterval = getCurrentDate()
-            getData(dateInterval)
-        })
-        return unsubscribe;
-
-    }, [navigation])
-
 
     // ------------------ methods ------------------ //
     const getData = async (dateInterval: DateInterval) => {
 
+        setLoading(true)
+
         const [totalIncomes, totalExpenses, categories] = await Promise.all([
             getIncomes(dateInterval),
-            getExpenses(),
+            getExpenses(dateInterval),
             getCategories(),
-
         ])
 
         setTotalExpenses(totalExpenses)
@@ -98,6 +96,8 @@ const useHomeViewModel = ({
         setTotalremaining(currencyFormat(totalIncomes - totalExpenses))
 
         generateButtons(totalExpenses, totalIncomes, categories)
+
+        setLoading(false)
 
     }
 
@@ -113,8 +113,8 @@ const useHomeViewModel = ({
         return totalIncomes
     }
 
-    const getExpenses = async () => {
-        return expenseRepository.getTotal()
+    const getExpenses = async (dateInterval: DateInterval) => {
+        return expenseRepository.getTotal(dateInterval)
     }
 
     const getCategories = async () => {
@@ -175,15 +175,16 @@ const useHomeViewModel = ({
     // ------------------ navigation methods ------------------ //
 
     const onPressBudgetsExpenses = (categories: Category[]) => {
-
         navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {
             categoryList: categories,
+            dateInterval: dateInterval.current
         })
     }
 
     const onPressIncomes = () => {
         navigation.navigate(ScreenRoutes.INCOMES, {
-            incomes: allIncomes
+            incomes: allIncomes,
+            dateInterval: dateInterval.current
         })
     }
 
@@ -195,16 +196,25 @@ const useHomeViewModel = ({
     // ------------------ bottom Sheets ------------------ //
     const getCurrentDate = (): DateInterval => {
 
-        const dateTime = new DateTime().date
+        const dateTime = new DateTime()
+        const startOfMonth = dateTime.getStartOfMonth(dateTime.date)
+
 
         setBottomSheetState({
             ...bottomSheetState,
-            date: dateTime,
+            date: startOfMonth,
         })
 
+        const nextMonth = getNextMonth(startOfMonth)
+
+        dateInterval.current = {
+            initialDate: startOfMonth,
+            finalDate: nextMonth
+        }
+
         return {
-            initialDate: dateTime,
-            finalDate: getNextMonth(dateTime)
+            initialDate: startOfMonth,
+            finalDate: nextMonth
         }
 
 
@@ -236,6 +246,7 @@ const useHomeViewModel = ({
             finalDate: getNextMonth(newDate)
         }
 
+        dateInterval.current = newDateInterval
         getData(newDateInterval)
 
     }
@@ -250,6 +261,7 @@ const useHomeViewModel = ({
 
     // ------------------ return ------------------ //
     return {
+        loading,
         bottomSheetState,
         totalremaining,
         allIncomes,

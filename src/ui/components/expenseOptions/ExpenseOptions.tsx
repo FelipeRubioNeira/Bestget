@@ -6,9 +6,7 @@ import { Colors } from '../../constants/Colors'
 import { Styles } from '../../styles/Styles'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 import DefaultStyles from '../../styles/DefaultStyles'
-
-const expenseIcon = require("../../../assets/icons/ic_sack.png")
-const budgetIcon = require("../../../assets/icons/ic_calculator_bold.png")
+import Icons from '../../../assets/icons'
 
 
 interface ExpenseOptionsProps {
@@ -49,7 +47,7 @@ const ExpenseOptions = ({
                 <ExpenseOptionItem
                     title='Gasto'
                     onPress={onPressOutcome}
-                    image={expenseIcon}
+                    image={Icons.expense}
                     styles={{
                         right: 0,
                         bottom: 100,
@@ -59,7 +57,7 @@ const ExpenseOptions = ({
                 <ExpenseOptionItem
                     title='Plan'
                     onPress={onPressBudget}
-                    image={budgetIcon}
+                    image={Icons.budget}
                     styles={{
                         bottom: 0,
                         right: 100,

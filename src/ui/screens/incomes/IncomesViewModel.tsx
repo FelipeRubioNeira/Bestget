@@ -13,7 +13,7 @@
     calling the "onDeleteIncome" method from this view model.
 */
 
-
+import React from "react"
 import { useEffect, useState } from "react"
 import { IncomesScreenProps } from "../../../navigation/NavigationParamList"
 import { ScreenRoutes } from "../../../navigation/Routes"
@@ -25,9 +25,9 @@ import TouchableIcon from "../../components/touchableIcon/TouchableIcon"
 import DeleteIncomeUseCase from "../../../domain/useCases/DeleteIncomeUseCase"
 import { Colors } from "../../constants/Colors"
 import { FontFamily } from "../../constants/Fonts"
+import { DateInterval } from "../../../data/types/DateInterval"
+import Icons from "../../../assets/icons"
 
-
-const editIcon = require("../../../assets/icons/ic_edit.png")
 
 
 type IIncomesViewModel = {
@@ -48,8 +48,10 @@ const useIncomesViewModel = ({
     // ------------------- route ------------------- //
     const {
         incomes = [],
-        newIncomeId = 0
+        newIncomeId = 0,
+        dateInterval
     } = route.params
+
 
 
     // ------------------- states ------------------- //
@@ -80,9 +82,8 @@ const useIncomesViewModel = ({
 
     // 2. if a new income is created, we update the list
     useEffect(() => {
-
         const unsubscribe = navigation.addListener('focus', async () => {
-            const incomes = await getIncomes()
+            const incomes = await getIncomes(dateInterval)
             setIncomeParams(incomes)
             generateIncomeList(incomes)
         });
@@ -100,7 +101,7 @@ const useIncomesViewModel = ({
                 if (incomeParams.length === 0) return null
                 return (
                     <TouchableIcon
-                        image={editIcon}
+                        image={Icons.edit}
                         onPress={onPressDeleteHeaderIcon}
                     />
                 )
@@ -112,11 +113,12 @@ const useIncomesViewModel = ({
 
 
     // ------------------- methods ------------------- //
-    const getIncomes = async (): Promise<Income[]> => {
-        return incomesRepository.getAll()
+    const getIncomes = async (dateInterval: DateInterval): Promise<Income[]> => {
+        return incomesRepository.getAll(dateInterval)
     }
 
     const generateIncomeList = async (incomes: Income[] = []) => {
+
         try {
 
             if (incomes.length == 0) {
@@ -170,7 +172,10 @@ const useIncomesViewModel = ({
 
     const navigateIncomeCreate = () => {
         turnOffDeleteMode()
-        navigation.navigate(ScreenRoutes.INCOME_FORM, { income: undefined })
+        navigation.navigate(ScreenRoutes.INCOME_FORM, {
+            income: undefined,
+            dateInterval
+        })
     }
 
 
@@ -201,7 +206,7 @@ const useIncomesViewModel = ({
         const response = await deleteIncomeUseCase.delete(deleteIncomeId)
 
         if (response.isValid) {
-            const newIncomesList = await getIncomes()
+            const newIncomesList = await getIncomes(dateInterval)
 
             setIncomeParams(newIncomesList)
             generateIncomeList(newIncomesList)
@@ -221,7 +226,10 @@ const useIncomesViewModel = ({
     const onPressEdit = (id: string) => {
         turnOffDeleteMode()
         const income = incomeParams.find(income => income.id === id)
-        navigation.navigate(ScreenRoutes.INCOME_FORM, { income })
+        navigation.navigate(ScreenRoutes.INCOME_FORM, {
+            income,
+            dateInterval
+        })
     }
 
     // onPress on flatlist item

@@ -1,13 +1,12 @@
-import { Image, StyleSheet, TouchableOpacity, Vibration, View } from 'react-native'
 import React from 'react'
+import { Image, StyleSheet, TouchableOpacity, Vibration } from 'react-native'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 import Label from '../label/Label'
 import DefaultStyles from '../../styles/DefaultStyles'
 import { Colors } from '../../constants/Colors'
 import { BudgetUI } from '../../../data/types/Budget'
 import EditionIcons from '../editionIcons/EditionIcons'
-
-const budgetIcon = require("../../../assets/icons/ic_calculator_bold.png")
+import Icons from '../../../assets/icons'
 
 
 
@@ -56,7 +55,7 @@ const IconBudget = ({ color = Colors.WHITE }: { color?: string }) => {
     return (
 
         <Image
-            source={budgetIcon}
+            source={Icons.budget}
             style={{
                 ...budgetStyles.icon,
                 tintColor: color,

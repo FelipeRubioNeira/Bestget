@@ -1,7 +1,7 @@
 
 export const currencyFormat = (value: number | string): string => {
 
-    let number = value.toString().replace(/\./g, '');
+    const number = value.toString().replace(/\./g, '');
 
     // Separar la parte entera y la parte decimal
     const partes = number.split(',');

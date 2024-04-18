@@ -55,6 +55,7 @@ const ExpenseScreen = ({ navigation, route }: ExpenseScreenProps) => {
         categoryRepository
     })
 
+
     return (
 
         <>

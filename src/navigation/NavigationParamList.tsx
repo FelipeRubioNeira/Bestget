@@ -11,6 +11,7 @@ import { Category } from "../data/types/Categoty";
 import { Budget } from "../data/types/Budget";
 import { Income } from "../data/types/Income";
 import { Expense } from "../data/types/Expense";
+import { DateInterval } from "../data/types/DateInterval";
 
 
 
@@ -23,38 +24,48 @@ export type NavigatorParamList = {
 
     [ScreenRoutes.INCOMES]: {
         incomes?: Income[],
-        newIncomeId?: string | undefined
+        newIncomeId?: string | undefined,
+        dateInterval:DateInterval
     }
 
-    [ScreenRoutes.INCOME_FORM]: { income?: Income }
+    [ScreenRoutes.INCOME_FORM]: {
+        income?: Income,
+        dateInterval: DateInterval
+    }
 
 
     [ScreenRoutes.BUDGET_EXPENSES]: {
         categoryList: Category[],
         newExpenseId?: string | undefined,
-        newBudgetId?: string | undefined
+        newBudgetId?: string | undefined,
+        dateInterval: DateInterval
     }
 
     [ScreenRoutes.BUDGET_FORM]: {
         categoryList: Category[],
-        budget?: Budget
+        budget?: Budget,
+        dateInterval: DateInterval
     }
+
     [ScreenRoutes.BUDGET]: {
         categoryList?: Category[],
         budget: Budget,
-        newExpenseId?: string | undefined
+        newExpenseId?: string | undefined,
+        dateInterval: DateInterval
     }
 
 
     [ScreenRoutes.EXPENSES_FORM]: {
         categoryList: Category[],
         budget?: Budget, // if we are creating an expense from a budget
-        expense?: Expense // if we are editing an expense
+        expense?: Expense, // if we are editing an expense
+        dateInterval: DateInterval
     }
 
     [ScreenRoutes.EXPENSE]: {
         newExpenseId?: string | undefined
         expenseList?: Expense[],
+        dateInterval: DateInterval
     }
 
 }

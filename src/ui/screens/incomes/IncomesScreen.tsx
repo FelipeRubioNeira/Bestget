@@ -1,6 +1,5 @@
-import { View, StyleSheet, FlatList } from 'react-native'
+import { View, FlatList } from 'react-native'
 import React from 'react'
-import { Styles } from '../../styles/Styles'
 import DefaultStyles from '../../styles/DefaultStyles'
 import Label from '../../components/label/Label'
 import { Colors } from '../../constants/Colors'
@@ -133,20 +132,3 @@ const IncomeItem = ({ name, amount, editMode, onEdit, onDelete }: IncomeUI) => {
 
 export default IncomesScreen
 
-const incomesScreenStyle = StyleSheet.create({
-
-  incomeItem: {
-    width: "100%",
-    height: 60,
-    borderBottomWidth: 1,
-    paddingHorizontal: 10,
-    borderColor: Colors.GRAY,
-    borderRadius: Styles.BORDER_RADIUS,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderWidth:1
-  },
-
-
-})

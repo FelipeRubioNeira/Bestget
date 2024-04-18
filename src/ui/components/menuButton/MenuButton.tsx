@@ -1,16 +1,16 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { Styles } from '../../styles/Styles'
 import { Colors } from '../../constants/Colors'
 import Label from '../label/Label'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 
+
 interface IMenuButtonProps {
     title: string,
     subTitle?: string,
     onPress?: () => void,
     backgroundColor?: string,
-    titleColor?: string,
 }
 
 const MenuButton = ({
@@ -18,7 +18,6 @@ const MenuButton = ({
     subTitle = "",
     onPress = () => { },
     backgroundColor = Colors.GRAY,
-    titleColor = Colors.WHITE
 }: IMenuButtonProps) => {
 
     return (

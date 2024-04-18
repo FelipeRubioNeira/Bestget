@@ -6,8 +6,8 @@ import { Message } from "../../../data/types/Message";
 import { Income } from "../../../data/types/Income";
 import CreateIncomeUseCase from "../../../domain/useCases/CreateIncomeUseCase";
 import editIncomeUseCase from "../../../domain/useCases/editIncomeUseCase";
-import { getCurrentDate } from "../../../utils/DateTime";
 import { ValidationResult } from "../../../data/types/Validation";
+import DateTime from "../../../utils/DateTime";
 
 
 type IIncomesCreateViewModel = {
@@ -25,7 +25,7 @@ const useIncomeFormViewModel = ({
 
 
     // ------------------- route-params ------------------- //
-    const { income } = route.params
+    const { income, dateInterval } = route.params
 
 
     // ------------------- states ------------------- //
@@ -63,6 +63,7 @@ const useIncomeFormViewModel = ({
 
         try {
 
+            const dateTime = new DateTime().date
 
             let response: ValidationResult<string> = {
                 isValid: false, result: "", message: {
@@ -79,7 +80,7 @@ const useIncomeFormViewModel = ({
                     id: income.id,
                     name: incomeName,
                     amount: numberFormat(incomeAmount),
-                    date: getCurrentDate()
+                    date: dateTime
                 })
 
                 // 2. if is a new income
@@ -88,7 +89,7 @@ const useIncomeFormViewModel = ({
                 response = await createIncomeUseCase.create({
                     name: incomeName,
                     amount: numberFormat(incomeAmount),
-                    date: getCurrentDate()
+                    date: dateTime
                 })
 
             }
@@ -97,6 +98,7 @@ const useIncomeFormViewModel = ({
             if (response?.isValid) {
                 navigation.navigate(ScreenRoutes.INCOMES, {
                     newIncomeId: response.result,
+                    dateInterval
                 })
 
             } else showModalAlert(response?.message)
@@ -108,6 +110,7 @@ const useIncomeFormViewModel = ({
 
     }
 
+    // ------------------- modal alert ------------------- //
     const showModalAlert = (message: Message = { message: "", title: "" }) => {
         setModalState({
             visible: true,

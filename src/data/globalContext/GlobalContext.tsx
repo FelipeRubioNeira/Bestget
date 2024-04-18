@@ -1,3 +1,4 @@
+import React from "react";
 import { createContext, useContext, useReducer } from "react";
 import globalReducer from "./GlobalReducer";
 
@@ -27,12 +28,12 @@ export const ProviderContextComponent = ({ children }: { children: React.ReactNo
 
     return (
         <GlobalContext.Provider
-            children={children}
             value={{
                 isDarkMode: state.isDarkMode,
                 toggleDarkMode: toggleDarkMode
-            }}
-        />
+            }}>
+            {children}
+        </GlobalContext.Provider>
 
     )
 }

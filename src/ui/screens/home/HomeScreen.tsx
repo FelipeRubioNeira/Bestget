@@ -1,10 +1,10 @@
-import { FlatList, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native'
 import React from 'react'
 import Label from '../../components/label/Label'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 import MenuButton from '../../components/menuButton/MenuButton'
 import Spacer from '../../components/spacer/Spacer'
-import { Colors, DefaultStyles, Styles } from '../../constants/Index'
+import { Colors, DefaultStyles } from '../../constants/Index'
 import { ButtonHomeProps } from './HomeViewModel'
 import useHomeViewModel from './HomeViewModel'
 import { HomeScreenProps } from '../../../navigation/NavigationParamList'
@@ -12,9 +12,8 @@ import IncomeRepository from '../../../data/repository/incomeRepository/IncomeRe
 import CategoryRespository from '../../../data/repository/categoryRepository/CategoryRepository'
 import ExpenseRepository from '../../../data/repository/expenseRepository/ExpenseRepository'
 import BottomSheet from '../../components/bottomSheet/BottomSheet'
-import TouchableIcon from '../../components/touchableIcon/TouchableIcon'
-import Icons from '../../../assets/icons'
 import CurrentDate from '../../components/currentDate/CurrentDate'
+import Loading from '../../components/loading/Loading'
 
 const incomeRepository = new IncomeRepository()
 const expenseRepository = new ExpenseRepository()
@@ -65,6 +64,7 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
                 onHide={homeViewModel.hideBottomSheet}
                 onConfirm={homeViewModel.confirmDate}
             />
+            <Loading visible={homeViewModel.loading} />
 
         </SafeAreaView>
     )
@@ -115,7 +115,6 @@ const MenuArrayButton = ({ buttonArray }: { buttonArray: ButtonHomeProps[] }) =>
                             subTitle={item.subTitle}
                             onPress={item.onPress}
                             backgroundColor={item.backgroundColor}
-                            titleColor={item.titleColor}
                         />
                     </View>
                 )}
