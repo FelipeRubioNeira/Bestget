@@ -11,6 +11,9 @@ import EditExpenseUseCase from "../../../domain/useCases/EditExpenseUseCase"
 import { ModalProps } from "../../components/modal/Modal"
 import DateTime from "../../../utils/DateTime"
 
+const dateTime = new DateTime()
+
+
 type ExpensesCreateViewModelProps = {
     createExpenseUseCase: CreateExpenseUseCase,
     editExpenseUseCase: EditExpenseUseCase
@@ -50,7 +53,7 @@ const useExpenseFormViewModel = (
         expenseName: "",
         expenseAmount: "",
         categoryId: 0,
-        expenseDate: ""
+        expenseDate: dateTime.convertToNormalDate(dateTime.date)
     })
 
     const [modalState, setModalState] = useState<ModalProps>({
@@ -82,14 +85,15 @@ const useExpenseFormViewModel = (
     // ------------------- methods ------------------- //
     const updateForm = (expense: Expense | undefined) => {
 
-        if (expense) {
-            setExpenseState({
-                expenseName: expense.name,
-                expenseAmount: currencyFormat(expense.amount),
-                categoryId: expense.categoryId,
-                expenseDate: expense.date
-            })
-        }
+        if (!expense) return
+
+        setExpenseState({
+            expenseName: expense.name,
+            expenseAmount: currencyFormat(expense.amount),
+            categoryId: expense.categoryId,
+            expenseDate: expense.date
+        })
+
     }
 
     const validateBudget = (budget: Budget | undefined, categoryList: Category[]) => {
@@ -117,7 +121,6 @@ const useExpenseFormViewModel = (
             ...expenseState,
             [state]: value
         })
-
     }
 
     const updateExpenseName = (newExpenseName: string) => {

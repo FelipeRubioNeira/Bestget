@@ -28,7 +28,6 @@ const CalendarButton = ({
     return (
 
         <>
-
             <TouchableOpacity
                 onPress={() => {
                     setCalendarVisible(!calendarVisible)

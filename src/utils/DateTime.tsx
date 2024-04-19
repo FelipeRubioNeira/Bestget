@@ -5,12 +5,17 @@ class DateTime {
     date: string;
 
     // default returns a iso string date
-    constructor(date?: Date | string) {
-        const inicialDate = date instanceof Date ? date : new Date(date || new Date());
+    constructor(date?: Date | string | number) {
+        const inicialDate = new Date(date || Date.now());
         this.date = this.getCurrentDate(inicialDate)
         return this;
     }
 
+    getTime = (date: string): string => {
+        const { hour, minute,second } = this.separateDate(date);
+        return `${hour}:${minute}:${second}`;
+    }
+    
     getStartOfMonth = (date: string): string => {
         const { year, month } = this.separateDate(date);
         return `${year}-${month}-01T00:00:00`

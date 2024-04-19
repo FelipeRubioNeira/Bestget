@@ -8,7 +8,6 @@ import { NavigatorParamList } from '../NavigationParamList'
 import {
     HomeScreen,
     IncomesScreen,
-    ExpenseScreen
 } from '../../ui/screens/Index'
 
 import { ScreenRoutes } from '../Routes';
@@ -62,13 +61,6 @@ const MainNavigator = () => {
                     options={ScreenOptions.EXPENSE}
                 />
 
-
-                {/* EXPENSE screen */}
-                <Stack.Screen
-                    component={ExpenseScreen}
-                    name={ScreenRoutes.EXPENSE}
-                    options={ScreenOptions.EXPENSE}
-                />
 
                 <Stack.Screen
                     component={ExpenseForm}

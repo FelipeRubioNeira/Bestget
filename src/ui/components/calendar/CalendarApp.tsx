@@ -8,6 +8,7 @@ import DateTime from '../../../utils/DateTime';
 
 type CalendarProps = {
   visible?: boolean,
+  value:string
   onDayPress: (day: string) => void,
   onCancel?: () => void
 }
@@ -34,8 +35,9 @@ const CalendarApp = ({
 
           style={calendarStyles.calendar}
 
-          onDayPress={date => {
-            const normalDate = dateTime.convertToNormalDate(date.dateString)
+          onDayPress={({dateString}) => {
+            const newDate = new DateTime(`${dateString}T00:00:00`)
+            const normalDate = dateTime.convertToNormalDate(newDate.date)
             onDayPress(normalDate)
           }}
 

@@ -12,6 +12,7 @@ import ExpenseRepository from "../../../data/repository/expenseRepository/Expens
 import { Expense } from "../../../data/types/Expense"
 import DateTime from "../../../utils/DateTime"
 
+const dateTime = new DateTime()
 
 type IBudgetCreateViewModel = {
     createBudgetUseCase: CreateBudgetUseCase,
@@ -23,7 +24,8 @@ type IBudgetCreateViewModel = {
 interface BudgetState {
     budgetName: string,
     budgetAmount: string,
-    categoryId: number
+    budgetDate: string
+    categoryId: number,
 }
 
 type StateName = keyof BudgetState
@@ -43,11 +45,12 @@ const useBudgetsFormViewModel = ({
 
     const {
         categoryList = [],
-        budget
+        budget,
+        dateInterval
     } = route.params || {}
 
 
-    
+
 
     // ------------------- states ------------------- //
     const [categories, setCategories] = useState<Category[]>([])
@@ -56,7 +59,8 @@ const useBudgetsFormViewModel = ({
     const [budgetState, setBudgetState] = useState<BudgetState>({
         budgetName: "",
         budgetAmount: "",
-        categoryId: 0
+        categoryId: 0,
+        budgetDate: dateTime.convertToNormalDate(dateTime.date)
     })
 
     const [modalState, setModalState] = useState<ModalProps>({
@@ -89,7 +93,8 @@ const useBudgetsFormViewModel = ({
         setBudgetState({
             budgetName: budget.name,
             budgetAmount: currencyFormat(budget.amount),
-            categoryId: budget?.categoryId || 0
+            categoryId: budget?.categoryId || 0,
+            budgetDate: budget.date
         })
 
     }
@@ -111,6 +116,10 @@ const useBudgetsFormViewModel = ({
 
     const updateCategory = (categoryId: number) => {
         updateBudgetState("categoryId", categoryId)
+    }
+
+    const updateBudgetDate = (newDate: string) => {
+        updateBudgetState("budgetDate", newDate)
     }
 
     // ------------------- expenses ------------------- //
@@ -186,6 +195,7 @@ const useBudgetsFormViewModel = ({
         if (response.isValid) {
             navigation.replace(ScreenRoutes.BUDGET_EXPENSES, {
                 categoryList: categories,
+                dateInterval
             })
 
         } else {
@@ -232,7 +242,8 @@ const useBudgetsFormViewModel = ({
 
             navigation.replace(ScreenRoutes.BUDGET, {
                 categoryList: categories,
-                budget: newBudget
+                budget: newBudget,
+                dateInterval
             })
 
         } else {
@@ -249,6 +260,7 @@ const useBudgetsFormViewModel = ({
         updateBudgetName,
         updateBudgetAmount,
         updateCategory,
+        updateBudgetDate,
         onSubmit
 
     }

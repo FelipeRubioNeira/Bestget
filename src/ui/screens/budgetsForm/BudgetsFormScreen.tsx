@@ -14,6 +14,9 @@ import Screen from '../../components/screen/Screen'
 import Modal from '../../components/modal/Modal'
 import EditBudgetUseCase from '../../../domain/useCases/EditBudgetUseCase'
 import ExpenseRepository from '../../../data/repository/expenseRepository/ExpenseRepository'
+import Label from '../../components/label/Label'
+import CalendarButton from '../../components/calendarButton/CalendarButton'
+import { FontSize } from '../../constants/Fonts'
 
 
 const budgetRepository = new BudgetRepository()
@@ -44,8 +47,9 @@ const BudgetsFormScreen = ({ navigation, route }: BudgetsCreateScreenProps) => {
         updateBudgetName,
         updateBudgetAmount,
         updateCategory,
+        updateBudgetDate,
         categories,
-        onSubmit
+        onSubmit,
     } = budgetsCreateViewModel
 
 
@@ -69,6 +73,16 @@ const BudgetsFormScreen = ({ navigation, route }: BudgetsCreateScreenProps) => {
                     placeholder="$120.000"
                     inputMode={InputType.NUMERIC}
                 />
+
+                <Spacer marginVertical={"4%"} />
+
+                <Label value='Fecha:' fontSize={FontSize.SMALL} />
+                <CalendarButton
+                    value={budgetState.budgetDate}
+                    onDayPress={updateBudgetDate}
+                />
+
+                <Spacer marginVertical={"2%"} />
 
                 <ChipList
                     idSelected={budgetState.categoryId}
