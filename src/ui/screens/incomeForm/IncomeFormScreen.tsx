@@ -14,6 +14,10 @@ import Screen from '../../components/screen/Screen'
 
 import EditIncomeUseCase from '../../../domain/useCases/EditIncomeUsecase'
 import CreateIncomeUseCase from '../../../domain/useCases/CreateIncomeUseCase'
+import Label from '../../components/label/Label'
+import CalendarButton from '../../components/calendarButton/CalendarButton'
+import { FontSize } from '../../constants/Fonts'
+import CalendarWithLabel from '../../components/calendarWithLabel/CalendarWithLabel'
 
 
 // dependency injection 
@@ -32,14 +36,24 @@ const IncomeFormScreen = ({ navigation, route }: IncomesCreateScreenProps) => {
     editIncomeUseCase,
   })
 
+  const {
+    incomeName,
+    incomeAmount,
+    incomeDate,
+
+    updateIncomeName,
+    updateIncomeAmount,
+    updateIncomeDate,
+  } = incomesCreateViewModel
+
   return (
 
     <Screen>
 
       <View>
         <TextInputWithLabel
-          value={incomesCreateViewModel.incomeName}
-          onChangeText={incomesCreateViewModel.updateIncomeName}
+          value={incomeName}
+          onChangeText={updateIncomeName}
           title="Nombre ingreso:"
           placeholder="Ingreso de trabajo"
         />
@@ -47,13 +61,24 @@ const IncomeFormScreen = ({ navigation, route }: IncomesCreateScreenProps) => {
         <Spacer marginVertical={"4%"} />
 
         <TextInputWithLabel
-          value={incomesCreateViewModel.incomeAmount}
-          onChangeText={incomesCreateViewModel.updateIncomeAmount}
+          value={incomeAmount}
+          onChangeText={updateIncomeAmount}
           title="Monto:"
           placeholder="$100.000"
           inputMode={InputType.NUMERIC}
         />
+
+        <Spacer marginVertical={"4%"} />
+
+        <CalendarWithLabel
+          value={incomeDate}
+          onChangeDay={updateIncomeDate}
+        />
+
+
       </View>
+
+
 
       <Spacer marginVertical={"8%"} />
 

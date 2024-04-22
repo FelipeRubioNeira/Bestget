@@ -23,9 +23,7 @@ export type NavigatorParamList = {
     [ScreenRoutes.HOME]: undefined
 
     [ScreenRoutes.INCOMES]: {
-        incomes?: Income[],
-        newIncomeId?: string | undefined,
-        dateInterval:DateInterval
+        incomeId?: string | undefined,
     }
 
     [ScreenRoutes.INCOME_FORM]: {

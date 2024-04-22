@@ -11,15 +11,19 @@ class DateTime {
         return this;
     }
 
-    getTime = (date: string): string => {
-        const { hour, minute,second } = this.separateDate(date);
+    getTime = (date?: string): string => {
+        const newDate = date || this.date;
+        const { hour, minute, second } = this.separateDate(newDate);
         return `${hour}:${minute}:${second}`;
     }
-    
+
     getStartOfMonth = (date: string): string => {
         const { year, month } = this.separateDate(date);
         return `${year}-${month}-01T00:00:00`
     }
+
+
+    // ------------------- change the orden ------------------- //
 
     convertToNormalDate = (date: string): string => {
         const { year, month, day } = this.separateDate(date);
@@ -30,6 +34,9 @@ class DateTime {
         const { year, month, day } = this.separateDate(date);
         return `${year}-${month}-${day}`;
     }
+
+    // ------------------- change the orden ------------------- //
+
 
     getCurrentDate = (date: Date): string => {
         const localTimezone = this.getLocalTimezone();
@@ -96,10 +103,21 @@ class DateTime {
         }
 
 
+        // 28-03-2024 08:08:56 or 2024-03-28T08:08:56
         const dateArray = date.split(separtor)
 
+        // 28-03-2024 or 2024-03-28
         const dateSplitted = dateArray[0].split("-")
-        const timeSplitted = dateArray[1].split(":")
+
+
+        
+        // Check if time is present
+        const timeExists = dateArray.length > 1
+
+        // 08:08:56
+        const timeSplitted = timeExists ? dateArray[1].split(":") : ["00", "00", "00"]
+
+
 
         const year = isoFormat ? dateSplitted[0] : dateSplitted[2]
         const month = dateSplitted[1]

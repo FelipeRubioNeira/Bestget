@@ -1,21 +1,20 @@
 import { GlobalContextType } from "./GlobalContext"
+import { ActionType, Actions } from "./ActionTypes"
 
+const globalReducer = (
+    state: GlobalContextType,
+    { type, payload }: ActionType
+) => {
 
-type ActionType = {
-    type: 'TOGGLE_DARK_MODE',
-    payload?: string | number | boolean
-}
+    switch (type) {
 
+        case Actions.UPDATE_DATE_INTERVAL:
+            return { ...state, dateInterval: payload }
 
-const globalReducer = (state: GlobalContextType, action: ActionType) => {
+        case Actions.UPDATE_INCOMES:
+            return { ...state, incomesContext: payload }
 
-    switch (action.type) {
-
-        case 'TOGGLE_DARK_MODE':
-            return { ...state, isDarkMode: !state.isDarkMode }
-
-        default:
-            return state
+        default: return state
 
     }
 }

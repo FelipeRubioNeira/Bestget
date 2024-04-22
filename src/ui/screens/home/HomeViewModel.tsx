@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { HomeScreenProps } from "../../../navigation/NavigationParamList"
 import { ScreenRoutes } from "../../../navigation/Routes"
 import { currencyFormat } from "../../../utils/NumberFormat"
@@ -10,7 +10,7 @@ import IExpenseRespository from "../../../data/repository/expenseRepository/IExp
 import { Colors } from "../../constants/Colors"
 import DateTime from "../../../utils/DateTime"
 import { DateInterval } from "../../../data/types/DateInterval"
-
+import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
 
 
 // ------------------ types ------------------ //
@@ -24,7 +24,6 @@ export type ButtonHomeProps = {
     titleColor: string
     type: MenuType
 }
-
 
 type HomeViewModelProps = {
     incomeRepository: IncomeRepository,
@@ -46,10 +45,20 @@ const useHomeViewModel = ({
 }: HomeViewModelProps) => {
 
 
+    // ------------------ context ------------------ //
+    const {
+        dateInterval,
+        updateDateIntervalContext,
+
+        incomesContext,
+        updateIncomesContext
+    } = useGlobalContext()
+
+
+
     // ------------------ states ------------------ //
     const [totalremaining, setTotalremaining] = useState("0")
 
-    const [allIncomes, setAllIncomes] = useState<Income[]>([])
     const [allCategories, setAllCategories] = useState<Category[]>([])
 
     const [totalIncomes, setTotalIncomes] = useState(0)
@@ -62,14 +71,9 @@ const useHomeViewModel = ({
         date: ""
     })
 
-    const dateInterval = useRef<DateInterval>({
-        initialDate: "",
-        finalDate: ""
-    })
-
     const [loading, setLoading] = useState(false)
 
-
+    
 
     // ------------------ effects ------------------ //
     useEffect(() => {
@@ -77,23 +81,35 @@ const useHomeViewModel = ({
         getData(dateInterval)
     }, [])
 
+    useEffect(() => {
+        refreshIncomesData()
+    }, [incomesContext])
+
+
+
+
+
+
 
     // ------------------ methods ------------------ //
     const getData = async (dateInterval: DateInterval) => {
 
         setLoading(true)
 
-        const [totalIncomes, totalExpenses, categories] = await Promise.all([
+        const [incomes, totalExpenses, categories] = await Promise.all([
             getIncomes(dateInterval),
             getExpenses(dateInterval),
             getCategories(),
         ])
 
-        setTotalExpenses(totalExpenses)
+
+        const totalIncomes = calculateTotalAmount(incomes)
+
         setTotalIncomes(totalIncomes)
+        setTotalExpenses(totalExpenses)
         setAllCategories(categories)
 
-        setTotalremaining(currencyFormat(totalIncomes - totalExpenses))
+        updateTotalRemaining(totalIncomes, totalExpenses)
 
         generateButtons(totalExpenses, totalIncomes, categories)
 
@@ -101,16 +117,25 @@ const useHomeViewModel = ({
 
     }
 
+    const refreshIncomesData = async () => {
+
+        const totalIncomesAmount = calculateTotalAmount(incomesContext)
+
+        setTotalIncomes(totalIncomesAmount)
+        generateButtons(totalExpenses, totalIncomesAmount, allCategories)
+        updateTotalRemaining(totalIncomesAmount, totalExpenses)
+
+    }
+
+    const updateTotalRemaining = (totalIncomes: number, totalExpenses: number) => {
+        setTotalremaining(currencyFormat(totalIncomes - totalExpenses))
+    }
+
     // ------------------ repository methods ------------------ //
-
     const getIncomes = async (dateInterval: DateInterval) => {
-
-        const allIncomes = await incomeRepository.getAll(dateInterval)
-        const totalIncomes = calculateTotalAmount(allIncomes)
-
-        setAllIncomes(allIncomes)
-
-        return totalIncomes
+        const incomes = await incomeRepository.getAll(dateInterval)
+        updateIncomesContext(incomes)
+        return incomes
     }
 
     const getExpenses = async (dateInterval: DateInterval) => {
@@ -177,15 +202,12 @@ const useHomeViewModel = ({
     const onPressBudgetsExpenses = (categories: Category[]) => {
         navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {
             categoryList: categories,
-            dateInterval: dateInterval.current
+            dateInterval: dateInterval
         })
     }
 
     const onPressIncomes = () => {
-        navigation.navigate(ScreenRoutes.INCOMES, {
-            incomes: allIncomes,
-            dateInterval: dateInterval.current
-        })
+        navigation.navigate(ScreenRoutes.INCOMES, {})
     }
 
     const onPressStatistics = () => { }
@@ -207,10 +229,12 @@ const useHomeViewModel = ({
 
         const nextMonth = getNextMonth(startOfMonth)
 
-        dateInterval.current = {
+
+        updateDateIntervalContext({
             initialDate: startOfMonth,
             finalDate: nextMonth
-        }
+        })
+
 
         return {
             initialDate: startOfMonth,
@@ -246,7 +270,7 @@ const useHomeViewModel = ({
             finalDate: getNextMonth(newDate)
         }
 
-        dateInterval.current = newDateInterval
+        updateDateIntervalContext(newDateInterval)
         getData(newDateInterval)
 
     }
@@ -264,7 +288,7 @@ const useHomeViewModel = ({
         loading,
         bottomSheetState,
         totalremaining,
-        allIncomes,
+        allIncomes: incomesContext,
         allCategories,
         totalExpenses,
         totalIncomes,

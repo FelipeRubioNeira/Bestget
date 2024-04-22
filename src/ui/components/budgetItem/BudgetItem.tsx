@@ -17,14 +17,13 @@ const BudgetItem = ({ name, amount, category, onPress, editMode, onEdit, onDelet
 
         <TouchableOpacity
             onPress={onPress}
-            onLongPress={()=>{
+            onLongPress={() => {
                 Vibration.vibrate(35)
             }}
             style={DefaultStyles.listItemContainer}
         >
 
             <IconBudget color={category?.color} />
-
 
             <Label
                 value={name}
@@ -50,7 +49,9 @@ const BudgetItem = ({ name, amount, category, onPress, editMode, onEdit, onDelet
     )
 }
 
-const IconBudget = ({ color = Colors.WHITE }: { color?: string }) => {
+const IconBudget = (props: { color?: string }) => {
+
+    const { color = Colors.GRAY } = props
 
     return (
 

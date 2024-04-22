@@ -1,14 +1,5 @@
 import { Category } from "./Categoty";
 
-type Expense = {
-    id: string;
-    name: string;
-    amount: number;
-    date: string;
-    categoryId: number;
-    budgetId: string;
-}
-
 type ExpenseCreate = {
     name: string;
     amount: number;
@@ -16,6 +7,9 @@ type ExpenseCreate = {
     date: string;
     budgetId: string;
 }
+
+
+type Expense = { id: string } & ExpenseCreate
 
 type ExpenseUI = {
     id: string,

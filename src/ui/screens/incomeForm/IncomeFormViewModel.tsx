@@ -8,6 +8,10 @@ import CreateIncomeUseCase from "../../../domain/useCases/CreateIncomeUseCase";
 import editIncomeUseCase from "../../../domain/useCases/editIncomeUseCase";
 import { ValidationResult } from "../../../data/types/Validation";
 import DateTime from "../../../utils/DateTime";
+import { useGlobalContext } from "../../../data/globalContext/GlobalContext";
+
+
+const dateTime = new DateTime()
 
 
 type IIncomesCreateViewModel = {
@@ -23,14 +27,21 @@ const useIncomeFormViewModel = ({
     editIncomeUseCase,
 }: IIncomesCreateViewModel) => {
 
+    // ------------------- context------------------- //
+    const { } = useGlobalContext()
+
 
     // ------------------- route-params ------------------- //
-    const { income, dateInterval } = route.params
+    const { income } = route.params
 
 
     // ------------------- states ------------------- //
-    const [incomeName, setIncomeName] = useState<string>("")
-    const [incomeAmount, setIncomeAmount] = useState<string>("")
+    const [incomeState, setIncomeState] = useState({
+        incomeName: "",
+        incomeAmount: "",
+        incomeDate: dateTime.convertToNormalDate(dateTime.date)
+    })
+
     const [modalState, setModalState] = useState({
         visible: false,
         title: "",
@@ -46,24 +57,43 @@ const useIncomeFormViewModel = ({
 
 
     // ------------------- methods ------------------- //
-    const updateForm = ({ name = "", amount = 0 }: Income) => {
-        setIncomeName(name)
-        setIncomeAmount(currencyFormat(amount))
+    const updateForm = ({ name, amount, date }: Income) => {
+        setIncomeState({
+            ...incomeState,
+            incomeName: name,
+            incomeAmount: currencyFormat(amount),
+            incomeDate: dateTime.convertToNormalDate(date)
+        })
     }
 
     const updateIncomeName = (newIncomeName: string) => {
-        setIncomeName(newIncomeName)
+        setIncomeState({
+            ...incomeState,
+            incomeName: newIncomeName
+        })
     }
 
     const updateIncomeAmount = (newIncomeAmount: string) => {
-        setIncomeAmount(newIncomeAmount)
+        setIncomeState({
+            ...incomeState,
+            incomeAmount: newIncomeAmount
+        })
+    }
+
+    const updateIncomeDate = (newIncomeDate: string) => {
+        setIncomeState({
+            ...incomeState,
+            incomeDate: newIncomeDate
+        })
     }
 
     const saveIncome = async () => {
 
-        try {
+        const currentTime = new DateTime().getTime()
+        const currentDate = dateTime.convertToAmericanDate(incomeState.incomeDate)
+        const isoDateTime = `${currentDate}T${currentTime}`
 
-            const dateTime = new DateTime().date
+        try {
 
             let response: ValidationResult<string> = {
                 isValid: false, result: "", message: {
@@ -72,33 +102,27 @@ const useIncomeFormViewModel = ({
                 }
             }
 
+            const newIncome = {
+                name: incomeState.incomeName,
+                amount: numberFormat(incomeState.incomeAmount),
+                date: isoDateTime
+            }
+
 
             // 1. If is an edition
             if (income?.id) {
-
                 response = await editIncomeUseCase.edit({
                     id: income.id,
-                    name: incomeName,
-                    amount: numberFormat(incomeAmount),
-                    date: dateTime
+                    ...newIncome
                 })
 
                 // 2. if is a new income
-            } else {
-
-                response = await createIncomeUseCase.create({
-                    name: incomeName,
-                    amount: numberFormat(incomeAmount),
-                    date: dateTime
-                })
-
-            }
+            } else response = await createIncomeUseCase.create(newIncome)
 
 
             if (response?.isValid) {
                 navigation.navigate(ScreenRoutes.INCOMES, {
-                    newIncomeId: response.result,
-                    dateInterval
+                    incomeId: response.result,
                 })
 
             } else showModalAlert(response?.message)
@@ -132,11 +156,16 @@ const useIncomeFormViewModel = ({
     // ------------------- return ------------------- //
     return {
         modalState,
-        incomeName, updateIncomeName,
-        incomeAmount, updateIncomeAmount,
+
+        incomeName: incomeState.incomeName,
+        incomeAmount: incomeState.incomeAmount,
+        incomeDate: incomeState.incomeDate,
+        updateIncomeAmount,
+        updateIncomeName,
+        updateIncomeDate,
 
         saveIncome,
-        hideModalAlert
+        hideModalAlert,
     }
 
 

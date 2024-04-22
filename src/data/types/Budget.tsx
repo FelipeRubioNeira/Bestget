@@ -1,19 +1,13 @@
 import { Category } from "./Categoty"
 
-type Budget = {
-    id: string,
-    name: string
-    amount: number
-    date: string
-    categoryId?: number,
-}
-
 type BudgetCreate = {
     name: string
     amount: number
     date: string
     categoryId?: number,
 }
+
+type Budget = { id: string } & BudgetCreate
 
 
 type BudgetUI = {

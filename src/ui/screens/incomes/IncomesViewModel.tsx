@@ -27,6 +27,7 @@ import { Colors } from "../../constants/Colors"
 import { FontFamily } from "../../constants/Fonts"
 import { DateInterval } from "../../../data/types/DateInterval"
 import Icons from "../../../assets/icons"
+import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
 
 
 
@@ -45,18 +46,22 @@ const useIncomesViewModel = ({
 }: IIncomesViewModel) => {
 
 
-    // ------------------- route ------------------- //
+    // ------------------- context ------------------- //
     const {
-        incomes = [],
-        newIncomeId = 0,
-        dateInterval
-    } = route.params
+        incomesContext,
+        updateIncomesContext,
+        dateInterval,
+    } = useGlobalContext()
+
+
+    // ------------------- route ------------------- //
+    const { incomeId } = route.params
+
 
 
 
     // ------------------- states ------------------- //
-    const [incomeParams, setIncomeParams] = useState<Income[]>([])
-    const [allIncomes, setAllIncomes] = useState<IncomeUI[]>([])
+    const [allIncomes, setAllIncomes] = useState<IncomeUI[]>()
 
     const [totalAmount, setTotalAmount] = useState<string>("0")
     const [editMode, setEditMode] = useState<boolean>(false)
@@ -68,37 +73,14 @@ const useIncomesViewModel = ({
         buttonList: []
     })
 
-    const [deleteIncomeId, setDeleteIncomeId] = useState<string>("")
 
 
     // ------------------- effects ------------------- //
-
-    // 1. generate the list of incomes
-    useEffect(() => {
-        setIncomeParams(incomes)
-        generateIncomeList(incomes)
-    }, [])
-
-
-    // 2. if a new income is created, we update the list
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', async () => {
-            const incomes = await getIncomes(dateInterval)
-            setIncomeParams(incomes)
-            generateIncomeList(incomes)
-        });
-
-        return unsubscribe;
-
-    }, [newIncomeId])
-
-
     // we add the delete button to the header if there are incomes
     useEffect(() => {
-
         navigation.setOptions({
             headerRight: () => {
-                if (incomeParams.length === 0) return null
+                if (incomesContext.length === 0) return null
                 return (
                     <TouchableIcon
                         image={Icons.edit}
@@ -108,13 +90,41 @@ const useIncomesViewModel = ({
             }
         })
 
-    }, [editMode, incomeParams])
+    }, [editMode, incomesContext])
+
+
+    // if we have a new income or changes in one, we regenerate the list
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            if (!incomeId) return
+            getIncomesFromRepository(dateInterval)
+                .then(initializeIncomeData)
+
+        })
+
+        return unsubscribe
+
+    }, [navigation, incomeId])
+
+
+
+    // generate the list of incomes if we sence a change in the incomes context length
+    useEffect(() => {
+        initializeIncomeData(incomesContext)
+    }, [incomesContext.length])
+
+
 
 
 
     // ------------------- methods ------------------- //
-    const getIncomes = async (dateInterval: DateInterval): Promise<Income[]> => {
+    const getIncomesFromRepository = async (dateInterval: DateInterval): Promise<Income[]> => {
         return incomesRepository.getAll(dateInterval)
+    }
+
+    const initializeIncomeData = (incomes: Income[]) => {
+        updateIncomesContext(incomes)
+        generateIncomeList(incomes)
     }
 
     const generateIncomeList = async (incomes: Income[] = []) => {
@@ -173,7 +183,6 @@ const useIncomesViewModel = ({
     const navigateIncomeCreate = () => {
         turnOffDeleteMode()
         navigation.navigate(ScreenRoutes.INCOME_FORM, {
-            income: undefined,
             dateInterval
         })
     }
@@ -199,49 +208,32 @@ const useIncomesViewModel = ({
         setEditMode(false)
     }
 
-    const deleteIncome = async () => {
 
-        hideAlert()
-
-        const response = await deleteIncomeUseCase.delete(deleteIncomeId)
-
-        if (response.isValid) {
-            const newIncomesList = await getIncomes(dateInterval)
-
-            setIncomeParams(newIncomesList)
-            generateIncomeList(newIncomesList)
-
-        } else {
-            showAlert(
-                response.message.title,
-                response.message.message, [{ text: 'Aceptar', onPress: hideAlert }]
-            )
-        }
-
-
-
-    }
 
     // ------------------- edit event ------------------- //
-    const onPressEdit = (id: string) => {
+    const onPressEdit = (incomeId: string) => {
+
         turnOffDeleteMode()
-        const income = incomeParams.find(income => income.id === id)
+
+        const income = incomesContext.find(income => income.id === incomeId)
+
         navigation.navigate(ScreenRoutes.INCOME_FORM, {
             income,
             dateInterval
         })
+
     }
 
     // onPress on flatlist item
-    const onPressDelete = (id: string) => {
-        setDeleteIncomeId(id)
+    const onPressDelete = (incomeId: string) => {
+
         showAlert(
             "Eliminar ingreso",
             "¿Estás seguro que deseas eliminar este ingreso?",
             [
                 {
                     text: 'Aceptar',
-                    onPress: deleteIncome,
+                    onPress: () => deleteIncome(incomeId),
                 },
                 {
                     text: 'Cancelar',
@@ -269,6 +261,31 @@ const useIncomesViewModel = ({
         })
     }
 
+
+    // ------------------- use Case ------------------- //
+    const deleteIncome = async (incomeId: string) => {
+
+        hideAlert()
+
+        const response = await deleteIncomeUseCase.delete(incomeId)
+
+        if (response.isValid) {
+
+            const newIncomesList = await getIncomesFromRepository(dateInterval)
+
+            updateIncomesContext(newIncomesList)
+            generateIncomeList(newIncomesList)
+
+        } else {
+            showAlert(
+                response.message.title,
+                response.message.message, [{ text: 'Aceptar', onPress: hideAlert }]
+            )
+        }
+
+
+
+    }
 
 
 

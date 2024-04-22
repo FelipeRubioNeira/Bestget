@@ -23,7 +23,7 @@ import DateTime from "../../../utils/DateTime"
 import Icons from "../../../assets/icons"
 
 
-// ----------- interfaces and types ----------- //
+// ----------- types ----------- //
 
 type ExpensesViewModelProps = {
     expenseRepository: IExpenseRespository,
@@ -79,10 +79,6 @@ const useBudgetExpensesViewModel = ({
         buttonList: []
     })
 
-    const [selectedItemToDelete, setSelectedItemToDelete] = useState({
-        id: "",
-        type: "Budget" as BudgetExpenseType
-    })
 
 
 
@@ -172,7 +168,7 @@ const useBudgetExpensesViewModel = ({
         type: BudgetOrExpense
     ) {
 
-        
+
 
         return items.map(item => {
 
@@ -305,17 +301,19 @@ const useBudgetExpensesViewModel = ({
 
     const onPressDelete = (itemId: string, type: BudgetExpenseType) => {
 
+
         const budgetMessage = "¿Estás seguro que deseas eliminar este presupuesto? Se eliminarán todos los gastos asociados."
         const expenseMessage = "¿Estás seguro que deseas eliminar este gasto?"
 
         const message = type === "Budget" ? budgetMessage : expenseMessage
+
 
         showAlert(
             "Eliminar",
             message,
             [{
                 text: 'Aceptar',
-                onPress: deleteItem,
+                onPress: () => deleteItem(itemId, type),
             },
             {
                 text: 'Cancelar',
@@ -324,13 +322,10 @@ const useBudgetExpensesViewModel = ({
             }]
         )
 
-        setSelectedItemToDelete({
-            id: itemId,
-            type: type
-        })
+
     }
 
-    const deleteItem = async () => {
+    const deleteItem = async (itemId: string, type: BudgetExpenseType) => {
 
         hideAlert()
 
@@ -349,9 +344,9 @@ const useBudgetExpensesViewModel = ({
 
 
         // if the item to delete is a budget, we delete all the expenses associated with it
-        if (selectedItemToDelete.type === "Budget") {
+        if (type === "Budget") {
 
-            validationResult = await deleteBudgetUseCase.delete(selectedItemToDelete.id)
+            validationResult = await deleteBudgetUseCase.delete(itemId)
 
             const { title, message } = validationResult.message
             if (!validationResult.isValid) showAlert(title, message, buttonItem)
@@ -360,7 +355,7 @@ const useBudgetExpensesViewModel = ({
         // if the item to delete is an expense
         else {
 
-            validationResult = await deleteExpenseUseCase.delete(selectedItemToDelete.id)
+            validationResult = await deleteExpenseUseCase.delete(itemId)
 
             const { title, message } = validationResult.message
             if (!validationResult.isValid) showAlert(title, message, buttonItem)

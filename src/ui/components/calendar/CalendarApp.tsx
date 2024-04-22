@@ -19,10 +19,8 @@ const CalendarApp = ({
   onCancel = () => { }
 }: CalendarProps) => {
 
-
   const dateTime = new DateTime()
   const americanFormat = dateTime.convertToAmericanDate(dateTime.date)
-  const finalDate =  americanFormat
 
   if (!visible) return null
   return (
@@ -42,7 +40,7 @@ const CalendarApp = ({
           }}
 
           markedDates={{
-            [finalDate]: { selected: true, selectedColor: Colors.YELLOW }
+            [americanFormat]: { selected: true, selectedColor: Colors.YELLOW }
           }}
 
         />
