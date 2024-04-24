@@ -3,13 +3,15 @@ import { ExpensesCreateScreenProps } from "../../../navigation/NavigationParamLi
 import { Category } from "../../../data/types/Categoty"
 import CreateExpenseUseCase from "../../../domain/useCases/CreateExpenseUseCase"
 import { currencyFormat, numberFormat } from "../../../utils/NumberFormat"
-import { Expense, ExpenseCreate } from "../../../data/types/Expense"
+import { Expense } from "../../../data/types/Expense"
 import { ScreenRoutes } from "../../../navigation/Routes"
 import { ChipItemProps } from "../../components/chipItem/ChipItem"
 import { Budget } from "../../../data/types/Budget"
 import EditExpenseUseCase from "../../../domain/useCases/EditExpenseUseCase"
 import { ModalProps } from "../../components/modal/Modal"
 import DateTime from "../../../utils/DateTime"
+import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
+import useEventBus from "../../../data/globalContext/events/EventBus"
 
 const dateTime = new DateTime()
 
@@ -36,16 +38,24 @@ const useExpenseFormViewModel = (
 ) => {
 
 
+    // ------------------- context ------------------- //
     const {
-        categoryList,
+        categoriesContext
+    } = useGlobalContext()
+
+
+    // ------------------- params ------------------- //
+    const {
         budget,
         expense,
-        dateInterval
     } = route.params
 
 
+    // ------------------- hooks ------------------- //
+    const {emmitEvent} = useEventBus()
+
+
     // ------------------- states ------------------- //
-    const [categories, setCategories] = useState<Category[]>([])
     const [hasBudget, setHasBudget] = useState<boolean>(false)
     const [chipItemProps, setChipItemProps] = useState<ChipItemProps>()
 
@@ -67,11 +77,7 @@ const useExpenseFormViewModel = (
 
     // ------------------- effects ------------------- //
     useEffect(() => {
-        setCategories(categoryList)
-    }, [categoryList])
-
-    useEffect(() => {
-        validateBudget(budget, categoryList)
+        validateBudget(budget, categoriesContext)
     }, [budget])
 
     useEffect(() => {
@@ -145,49 +151,30 @@ const useExpenseFormViewModel = (
     }
 
     const updateExpenseDate = (newDate: string) => {
-
         updateExpenseState(
             "expenseDate",
             newDate
         )
-
-
     }
 
 
-    const generateExpenseCreate = () => {
-
-        const { expenseAmount, expenseName, categoryId } = expenseState
-
-        const amountInt = numberFormat(expenseAmount)
-        const dateTime = new DateTime()
-
-        const expenseCreated: ExpenseCreate = {
-            name: expenseName,
-            amount: amountInt,
-            date: dateTime.date,
-            categoryId: categoryId || 0,
-            budgetId: budget?.id || ""
-        }
-
-        return expenseCreated
-
-    }
-
-    const generateExpense = () => {
+    const generateExpense = (id?:string) => {
 
         const { expenseAmount, expenseName, categoryId, expenseDate } = expenseState
 
         const amountInt = numberFormat(expenseAmount)
-        const dateTime = new DateTime(expenseDate)
+        const newDate = dateTime.getIsoDateTime(expenseDate)
 
-        const expenseCreated: Expense = {
-            id: expense?.id || "",
+        const expenseCreated = {
             name: expenseName,
             amount: amountInt,
-            date: dateTime.date,
+            budgetId: budget?.id || "",
             categoryId: categoryId || 0,
-            budgetId: budget?.id || ""
+            date: newDate,
+        } as Expense
+
+        if (id) {
+            expenseCreated.id = id;
         }
 
         return expenseCreated
@@ -195,42 +182,30 @@ const useExpenseFormViewModel = (
     }
 
 
+
     // => create new expense
     const saveExpense = async () => {
-
-
-        if (expense) { // edit
-            editExpense()
-
-        } else { // create
-            createExpense()
-        }
-
+        if (expense) editExpense(expense)
+        else createExpense()
     }
 
 
     const createExpense = async () => {
 
-        const expense = generateExpenseCreate()
-
-        const result = await createExpenseUseCase.create(expense)
+        const newExpense = generateExpense()
+        const result = await createExpenseUseCase.create(newExpense, emmitEvent)
 
         if (result.isValid) {
 
-            const routeParams = {
-                categoryList,
-                newExpenseId: result.result,
-                dateInterval
-            }
-
             if (budget) {
-
                 navigation.navigate(ScreenRoutes.BUDGET, {
                     budget: budget,
-                    ...routeParams
+                    newExpenseId: result.result
                 })
 
-            } else navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, { ...routeParams })
+            } else navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {
+                newExpenseId: result.result
+            })
 
         } else {
             const { title, message } = result.message
@@ -239,24 +214,23 @@ const useExpenseFormViewModel = (
 
     }
 
-    const editExpense = async () => {
+    const editExpense = async (expense: Expense) => {
 
-        const expense = generateExpense()
-        const result = await editExpenseUseCase.edit(expense)
+        const newExpense = generateExpense(expense?.id)
+        const result = await editExpenseUseCase.edit(newExpense, emmitEvent)
 
         if (result.isValid) {
 
             if (budget) {
-
                 navigation.navigate(ScreenRoutes.BUDGET, {
                     budget: budget,
-                    categoryList,
-                    newExpenseId: expense.id,
-                    dateInterval
+                    newExpenseId: newExpense.id,
                 })
 
             } else {
-                navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, { ...route.params })
+                navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {
+                    newExpenseId: newExpense.id,
+                })
             }
 
 
@@ -299,7 +273,7 @@ const useExpenseFormViewModel = (
         modalState,
         hasBudget,
         chipItemProps,
-        categories,
+        categories: categoriesContext,
         expenseState,
         updateExpenseName,
         updateExpenseAmount,

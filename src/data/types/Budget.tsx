@@ -17,8 +17,8 @@ type BudgetUI = {
     date: string,
     category: Category | undefined
     type: "Budget",
-    onPress?: () => void, // navigate
     editMode?: boolean, // delete / edit 
+    onPress?: () => void, // navigate
     onEdit?: () => void,
     onDelete?: () => void,
 }

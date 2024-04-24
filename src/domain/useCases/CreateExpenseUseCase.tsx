@@ -1,3 +1,4 @@
+import { EventNames } from "../../data/globalContext/events/EventNames";
 import IExpenseRespository from "../../data/repository/expenseRepository/IExpenseRepository";
 import { ExpenseCreate } from "../../data/types/Expense";
 import { Validation, ValidationResult } from "../../data/types/Validation";
@@ -8,7 +9,10 @@ import { validateInputs } from "../../utils/Inputs";
 class CreateExpenseUseCase {
     constructor(private expenseRepository: IExpenseRespository) { }
 
-    async create(expense: ExpenseCreate): Promise<ValidationResult<string>> {
+    async create(
+        expense: ExpenseCreate,
+        emmitEvent: (eventName: EventNames, payload: any) => void
+    ): Promise<ValidationResult<string>> {
 
         const validationResult: ValidationResult<string> = {
             isValid: true,
@@ -24,6 +28,7 @@ class CreateExpenseUseCase {
         if (result.isValid) {
             const expenseId = await this.expenseRepository.create(expense)
             validationResult.result = expenseId
+            emmitEvent(EventNames.EXPENSE_CREATED, expense)
 
         } else {
             

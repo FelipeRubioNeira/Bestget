@@ -21,6 +21,7 @@ import DefaultStyles from "../../styles/DefaultStyles"
 import { DateInterval } from "../../../data/types/DateInterval"
 import DateTime from "../../../utils/DateTime"
 import Icons from "../../../assets/icons"
+import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
 
 
 // ----------- types ----------- //
@@ -46,13 +47,22 @@ const useBudgetExpensesViewModel = ({
 }: ExpensesViewModelProps) => {
 
 
+    // ----------- context ----------- //
+    const {
+        dateInterval,
+        expensesContext,
+        updateExpensesContext,
+        budgetsContext,
+        updateBudgetsContext,
+        categoriesContext
+    } = useGlobalContext()
+
+
 
     // ----------- params ----------- //
     const {
-        categoryList,
         newExpenseId,
         newBudgetId,
-        dateInterval
     } = route?.params || {}
 
 
@@ -63,8 +73,6 @@ const useBudgetExpensesViewModel = ({
 
     const [buttonAddVisible, setButtonAddVisible] = useState(true)
     const [ExpenseOptionsVisible, setExpenseOptionsVisble] = useState(false)
-
-    const [categories, setCategories] = useState<Category[]>([])
 
     const [budgetsExpenses, setBudgetsExpenses] = useState<(BudgetUI | ExpenseUI)[]>([])
 
@@ -83,26 +91,6 @@ const useBudgetExpensesViewModel = ({
 
 
     // ----------- effects ----------- //
-    useEffect(() => {
-
-        const unsubscribe = navigation.addListener('focus', () => {
-            getData(categoryList, dateInterval)
-        })
-
-        return unsubscribe;
-
-    }, [navigation])
-
-
-    useEffect(() => {
-
-        if (!newExpenseId && newExpenseId) return
-        getData(categoryList, dateInterval)
-        setCategories(categoryList)
-
-    }, [categoryList, newExpenseId, newBudgetId])
-
-
     // we add the delete button to the header if there are budget or expenses
     useEffect(() => {
 
@@ -121,42 +109,93 @@ const useBudgetExpensesViewModel = ({
     }, [budgetsExpenses, editMode])
 
 
+    // first time we mount the component
+    useEffect(() => {
+        formatData(
+            expensesContext,
+            budgetsContext,
+            categoriesContext
+        )
+    }, [expensesContext, budgetsContext])
+
+
+    // when we navigate from create or edit
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            if (!newExpenseId && !newExpenseId) return
+            getData(dateInterval)
+
+        })
+
+        return unsubscribe;
+
+    }, [navigation, newExpenseId, newBudgetId])
 
 
 
-    // ----------- methods ----------- //
 
 
-    // ----------- get data ----------- //
-    const getData = async (categoryList: Category[], dateInterval: DateInterval) => {
+
+
+
+
+
+    // ------------------ data methods ------------------ //
+
+    const getData = async (dateInterval: DateInterval) => {
 
         setLoading(true)
 
-        //1 - getExpenses and getCategories
-        const [budgets, expenses, total] = await Promise.all([
-            budgetRepository.getAll(dateInterval),
-            expenseRepository.getWithoutBudget(dateInterval),
-            expenseRepository.getTotal(dateInterval)
+        // 1- getExpenses and budgets
+        const [expenses, budgets] = await Promise.all([
+            getExpenses(dateInterval),
+            getBudgets(dateInterval),
         ])
 
+        formatData(expenses, budgets, categoriesContext)
 
-        //3 - calculateTotalAmount
-        const totalCurrency = currencyFormat(total)
-        setTotalAmount(totalCurrency)
-
-
-        // 4 - fill the lists
-        const budgetsList = applyFormat<Budget, BudgetUI>(budgets, categoryList, "Budget")
-        const expensesList = applyFormat<Expense, ExpenseUI>(expenses, categoryList, "Expense")
-
-
-        setBudgetsExpenses([
-            ...budgetsList,
-            ...expensesList
-        ])
 
         setLoading(false)
 
+    }
+
+    const getExpenses = async (dateInterval: DateInterval): Promise<Expense[]> => {
+        const expenses = await expenseRepository.getAll(dateInterval)
+        updateExpensesContext(expenses)
+        return expenses
+    }
+
+    const getBudgets = async (dateInterval: DateInterval): Promise<Budget[]> => {
+        const budgets = await budgetRepository.getAll(dateInterval)
+        updateBudgetsContext(budgets)
+        return budgets
+    }
+
+    const formatData = async (expenses: Expense[], budgets: Budget[], categories: Category[]) => {
+
+        const expensesWithoutBudget = expenses.filter(expense => !expense.budgetId)
+
+        const expensesList = applyFormat<Expense, ExpenseUI>(expensesWithoutBudget, categories, "Expense")
+        const budgetsList = applyFormat<Budget, BudgetUI>(budgets, categories, "Budget")
+
+
+        const totalExpenses = currencyFormat(calculateTotalExpenses(expensesContext))
+        setTotalAmount(totalExpenses)
+
+
+        setBudgetsExpenses([
+            ...expensesList,
+            ...budgetsList
+        ])
+
+    }
+
+
+
+    const calculateTotalExpenses = (expenses: Expense[]): number => {
+        let total = 0
+        expenses.forEach(expense => total += expense.amount)
+        return total
     }
 
     function applyFormat<
@@ -167,7 +206,6 @@ const useBudgetExpensesViewModel = ({
         categories: Category[],
         type: BudgetOrExpense
     ) {
-
 
 
         return items.map(item => {
@@ -234,23 +272,14 @@ const useBudgetExpensesViewModel = ({
     }
 
 
-    // ----------- ui interaction ----------- //
-    const onShowExpenseOptions = () => {
-        setButtonAddVisible(false)
-        setExpenseOptionsVisble(true)
-    }
 
-    const onHideExpenseOptions = () => {
-        setButtonAddVisible(true)
-        setExpenseOptionsVisble(false)
-    }
-
+    // -------------------- utils ------------------- //
     const findItem = (id: string, type: BudgetExpenseType) => {
         return budgetsExpenses.find(item => item.id === id && item.type == type);
     }
 
 
-    // ----------- modal ----------- //
+    // ------------------ modal ------------------ //
     const showAlert = (title: string, message: string, buttonList: ButtonModal[]) => {
         setModalState({
             title: title,
@@ -276,23 +305,13 @@ const useBudgetExpensesViewModel = ({
         const item = findItem(itemId, type)
 
         if (type === "Budget") {
-
-            const budget = convertToBudget(item as BudgetUI)
-
-            navigation.navigate(ScreenRoutes.BUDGET_FORM, {
-                categoryList: categories,
-                budget: budget,
-                dateInterval: dateInterval
-            })
+            const budgetUI = convertToBudget(item as BudgetUI)
+            navigation.navigate(ScreenRoutes.BUDGET_FORM, { budget: budgetUI })
 
         } else {
-
             const expense = convertToExpense(item as ExpenseUI)
-
             navigation.navigate(ScreenRoutes.EXPENSES_FORM, {
-                categoryList: categories,
                 expense: expense,
-                dateInterval: dateInterval
             })
 
         }
@@ -352,6 +371,7 @@ const useBudgetExpensesViewModel = ({
             if (!validationResult.isValid) showAlert(title, message, buttonItem)
 
         }
+
         // if the item to delete is an expense
         else {
 
@@ -362,29 +382,23 @@ const useBudgetExpensesViewModel = ({
         }
 
         // finally we update the data
-        await getData(categoryList, dateInterval)
+        await getData(dateInterval)
 
     }
 
 
 
-    // ----------- navigation ----------- //
+    // ---------------------- navigation ---------------------- //
     const onAddExpense = () => {
         setEditMode(false)
         onHideExpenseOptions()
-        navigation.navigate(ScreenRoutes.EXPENSES_FORM, {
-            categoryList: categories,
-            dateInterval: dateInterval
-        })
+        navigation.navigate(ScreenRoutes.EXPENSES_FORM, {})
     }
 
     const onAddBudget = () => {
         setEditMode(false)
         onHideExpenseOptions()
-        navigation.navigate(ScreenRoutes.BUDGET_FORM, {
-            categoryList: categories,
-            dateInterval: dateInterval
-        })
+        navigation.navigate(ScreenRoutes.BUDGET_FORM, {})
     }
 
     const onPressItem = (id: string, type: BudgetExpenseType) => {
@@ -395,16 +409,13 @@ const useBudgetExpensesViewModel = ({
 
         if (type === "Budget") {
 
-            const navigationObject = {
+            navigation.navigate(ScreenRoutes.BUDGET, {
                 budget: itemToNavigate,
-                categoryList: categoryList,
-                dateInterval
-            }
-
-            navigation.navigate(ScreenRoutes.BUDGET, navigationObject)
+            })
 
         } else {
             // type === "Expense"
+            // ... future implementation
         }
 
     }
@@ -428,12 +439,24 @@ const useBudgetExpensesViewModel = ({
     }
 
 
+    // ------------------ UI ------------------ //
+    const onShowExpenseOptions = () => {
+        setButtonAddVisible(false)
+        setExpenseOptionsVisble(true)
+    }
+
+    const onHideExpenseOptions = () => {
+        setButtonAddVisible(true)
+        setExpenseOptionsVisble(false)
+    }
+
+
     // ----------- return ----------- //
     return {
         modalState,
         editMode,
         loading,
-        categories,
+        categories: categoriesContext,
         buttonAddVisible,
         ExpenseOptionsVisible,
         totalAmount,

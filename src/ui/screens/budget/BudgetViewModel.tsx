@@ -12,6 +12,7 @@ import DefaultStyles from "../../styles/DefaultStyles"
 import DeleteExpenseUseCase from "../../../domain/useCases/DeleteExpenseUseCase"
 import Icons from "../../../assets/icons"
 import DateTime from "../../../utils/DateTime"
+import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
 
 
 
@@ -29,11 +30,13 @@ type budgetViewModelProps = {
 
 const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpenseUseCase }: budgetViewModelProps) => {
 
+    // ----------- context ----------- //
+    const {categoriesContext}= useGlobalContext()
+
 
     // ----------- params ----------- //
     const {
         budget,
-        categoryList = [],
         dateInterval
     } = route.params
 
@@ -66,7 +69,6 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
     // ----------- effects ----------- //
 
     useEffect(() => {
-
         const unsubscribe = navigation.addListener('focus', () => {
             getData()
         })
@@ -102,12 +104,11 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
 
     const getData = async () => {
 
-        const categoryFound = findCategory(budget?.categoryId, categoryList)
+        const categoryFound = findCategory(budget?.categoryId, categoriesContext)
 
         const expenseList = await expensesRepository.getByBudgetId(budget.id)
         const expenseListFormatted = applyFormat(expenseList)
         const totalExpenses = getTotalExpenses(expenseList)
-
 
         const title = generateTitle(
             budget.amount,
@@ -206,7 +207,6 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
     const onPressNewExpense = () => {
         navigation.navigate(ScreenRoutes.EXPENSES_FORM, {
             budget,
-            categoryList,
             dateInterval
         })
     }
@@ -219,7 +219,6 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
 
         navigation.navigate(ScreenRoutes.EXPENSES_FORM, {
             expense,
-            categoryList,
             budget,
             dateInterval
         })

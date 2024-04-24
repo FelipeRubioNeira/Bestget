@@ -8,7 +8,6 @@ import CreateIncomeUseCase from "../../../domain/useCases/CreateIncomeUseCase";
 import editIncomeUseCase from "../../../domain/useCases/editIncomeUseCase";
 import { ValidationResult } from "../../../data/types/Validation";
 import DateTime from "../../../utils/DateTime";
-import { useGlobalContext } from "../../../data/globalContext/GlobalContext";
 
 
 const dateTime = new DateTime()
@@ -27,8 +26,10 @@ const useIncomeFormViewModel = ({
     editIncomeUseCase,
 }: IIncomesCreateViewModel) => {
 
+
+
     // ------------------- context------------------- //
-    const { } = useGlobalContext()
+
 
 
     // ------------------- route-params ------------------- //

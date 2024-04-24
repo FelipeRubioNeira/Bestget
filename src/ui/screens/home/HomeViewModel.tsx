@@ -11,6 +11,8 @@ import { Colors } from "../../constants/Colors"
 import DateTime from "../../../utils/DateTime"
 import { DateInterval } from "../../../data/types/DateInterval"
 import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
+import IBudgetRepository from "../../../data/repository/budgetRepository/IBudgetRepository"
+import { Expense } from "../../../data/types/Expense"
 
 
 // ------------------ types ------------------ //
@@ -28,6 +30,7 @@ export type ButtonHomeProps = {
 type HomeViewModelProps = {
     incomeRepository: IncomeRepository,
     expenseRepository: IExpenseRespository,
+    budgetRepository: IBudgetRepository,
     categoryRepository: ICategoryRepository,
 } & HomeScreenProps
 
@@ -41,6 +44,7 @@ const useHomeViewModel = ({
     navigation,
     incomeRepository,
     expenseRepository,
+    budgetRepository,
     categoryRepository,
 }: HomeViewModelProps) => {
 
@@ -50,16 +54,28 @@ const useHomeViewModel = ({
         dateInterval,
         updateDateIntervalContext,
 
+        // incomes
         incomesContext,
-        updateIncomesContext
+        updateIncomesContext,
+
+        // expenses
+        expensesContext,
+        updateExpensesContext,
+
+        // budgets
+        budgetsContext,
+        updateBudgetsContext,
+
+        // categories
+        categoriesContext,
+        updateCategoriesContext
+
     } = useGlobalContext()
 
 
 
     // ------------------ states ------------------ //
     const [totalremaining, setTotalremaining] = useState("0")
-
-    const [allCategories, setAllCategories] = useState<Category[]>([])
 
     const [totalIncomes, setTotalIncomes] = useState(0)
     const [totalExpenses, setTotalExpenses] = useState(0)
@@ -73,7 +89,7 @@ const useHomeViewModel = ({
 
     const [loading, setLoading] = useState(false)
 
-    
+
 
     // ------------------ effects ------------------ //
     useEffect(() => {
@@ -82,8 +98,12 @@ const useHomeViewModel = ({
     }, [])
 
     useEffect(() => {
-        refreshIncomesData()
+        refreshIncomesData(incomesContext)
     }, [incomesContext])
+
+    useEffect(() => {
+        refreshExpensesData(expensesContext)
+    }, [expensesContext])
 
 
 
@@ -96,36 +116,54 @@ const useHomeViewModel = ({
 
         setLoading(true)
 
-        const [incomes, totalExpenses, categories] = await Promise.all([
+        const [
+            categories,
+            incomes,
+            expenses,
+        ] = await Promise.all([
+            getCategories(),
             getIncomes(dateInterval),
             getExpenses(dateInterval),
-            getCategories(),
+            getBudgets(dateInterval),
         ])
 
-
         const totalIncomes = calculateTotalAmount(incomes)
+        const totalExpenses = calculateTotalExpenses(expenses)
 
         setTotalIncomes(totalIncomes)
         setTotalExpenses(totalExpenses)
-        setAllCategories(categories)
+
 
         updateTotalRemaining(totalIncomes, totalExpenses)
-
         generateButtons(totalExpenses, totalIncomes, categories)
 
         setLoading(false)
 
     }
 
-    const refreshIncomesData = async () => {
-
-        const totalIncomesAmount = calculateTotalAmount(incomesContext)
+    const refreshIncomesData = async (incomes: Income[]) => {
+        const totalIncomesAmount = calculateTotalAmount(incomes)
 
         setTotalIncomes(totalIncomesAmount)
-        generateButtons(totalExpenses, totalIncomesAmount, allCategories)
+        generateButtons(totalExpenses, totalIncomesAmount, categoriesContext)
         updateTotalRemaining(totalIncomesAmount, totalExpenses)
 
     }
+
+    const refreshExpensesData = async (expenses: Expense[]) => {
+        const totalExpensesAmount = calculateTotalExpenses(expenses)
+
+        setTotalExpenses(totalExpensesAmount)
+        generateButtons(totalExpensesAmount, totalIncomes, categoriesContext)
+        updateTotalRemaining(totalIncomes, totalExpensesAmount)
+
+    }
+
+    const refreshBudgetsData = async () => {
+
+    }
+
+
 
     const updateTotalRemaining = (totalIncomes: number, totalExpenses: number) => {
         setTotalremaining(currencyFormat(totalIncomes - totalExpenses))
@@ -139,24 +177,37 @@ const useHomeViewModel = ({
     }
 
     const getExpenses = async (dateInterval: DateInterval) => {
-        return expenseRepository.getTotal(dateInterval)
+        const expenses = await expenseRepository.getAll(dateInterval)
+        updateExpensesContext(expenses)
+        return expenses
+    }
+
+    const getBudgets = async (dateInterval: DateInterval) => {
+        const budgets = await budgetRepository.getAll(dateInterval)
+        updateBudgetsContext(budgets)
+        return budgets
     }
 
     const getCategories = async () => {
         const categories = await categoryRepository.getAll()
+        updateCategoriesContext(categories)
         return categories
     }
 
+    // ------------------ calculate totals ------------------ //
     const calculateTotalAmount = (incomes: Income[]) => {
-
         let totalIncomes = 0
-
-        incomes.forEach(income => {
-            totalIncomes += income.amount
-        })
+        incomes.forEach(income => totalIncomes += income.amount)
 
         return totalIncomes
 
+    }
+
+    const calculateTotalExpenses = (expenses: Expense[]) => {
+        let totalExpenses = 0
+        expenses.forEach(expense => totalExpenses += expense.amount)
+
+        return totalExpenses
     }
 
     const generateButtons = (expenses: number, incomes: number, categories: Category[]) => {
@@ -165,7 +216,7 @@ const useHomeViewModel = ({
             {
                 title: 'Gastos y Presupuestos',
                 subTitle: `$${currencyFormat(expenses)}`,
-                onPress: () => onPressBudgetsExpenses(categories),
+                onPress: () => onPressBudgetsExpenses(),
                 backgroundColor: Colors.YELLOW,
                 titleColor: Colors.BLACK,
                 type: "gastos"
@@ -199,11 +250,8 @@ const useHomeViewModel = ({
 
     // ------------------ navigation methods ------------------ //
 
-    const onPressBudgetsExpenses = (categories: Category[]) => {
-        navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {
-            categoryList: categories,
-            dateInterval: dateInterval
-        })
+    const onPressBudgetsExpenses = () => {
+        navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {})
     }
 
     const onPressIncomes = () => {
@@ -289,7 +337,7 @@ const useHomeViewModel = ({
         bottomSheetState,
         totalremaining,
         allIncomes: incomesContext,
-        allCategories,
+        allCategories: categoriesContext,
         totalExpenses,
         totalIncomes,
         buttonsHome,

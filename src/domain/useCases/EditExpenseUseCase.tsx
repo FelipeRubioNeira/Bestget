@@ -1,3 +1,4 @@
+import { EventNames } from "../../data/globalContext/events/EventNames";
 import IExpenseRespository from "../../data/repository/expenseRepository/IExpenseRepository";
 import { Expense } from "../../data/types/Expense";
 import { Validation, ValidationResult } from "../../data/types/Validation";
@@ -7,20 +8,27 @@ import { validateInputs } from "../../utils/Inputs";
 class EditExpenseUseCase {
     constructor(private readonly expenseRepository: IExpenseRespository) { }
 
-    async edit(expense: Expense): Promise<ValidationResult<void>> {
+    async edit(
+        expense: Expense,
+        emmitEvent: (eventName: EventNames, payload: any) => void
+     ): Promise<ValidationResult<string>> {
 
-        const validationResult: ValidationResult<void> = {
+        const validationResult: ValidationResult<string> = {
             isValid: true,
             message: {
                 title: "",
                 message: "",
-            }
+            },
+            result: ""
         }
 
         const result = await this.applyValidations(expense.name, expense.amount)
 
         if (result.isValid) {
             await this.expenseRepository.edit(expense)
+            validationResult.result = expense.id
+
+            emmitEvent(EventNames.EXPENSE_EDITED, expense)
 
         } else {
             

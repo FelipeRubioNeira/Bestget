@@ -28,42 +28,32 @@ export type NavigatorParamList = {
 
     [ScreenRoutes.INCOME_FORM]: {
         income?: Income,
-        dateInterval: DateInterval
     }
 
 
     [ScreenRoutes.BUDGET_EXPENSES]: {
-        categoryList: Category[],
         newExpenseId?: string | undefined,
         newBudgetId?: string | undefined,
-        dateInterval: DateInterval
     }
 
     [ScreenRoutes.BUDGET_FORM]: {
-        categoryList: Category[],
         budget?: Budget,
-        dateInterval: DateInterval
     }
 
     [ScreenRoutes.BUDGET]: {
-        categoryList?: Category[],
         budget: Budget,
         newExpenseId?: string | undefined,
-        dateInterval: DateInterval
     }
 
 
     [ScreenRoutes.EXPENSES_FORM]: {
-        categoryList: Category[],
         budget?: Budget, // if we are creating an expense from a budget
         expense?: Expense, // if we are editing an expense
-        dateInterval: DateInterval
     }
 
     [ScreenRoutes.EXPENSE]: {
         newExpenseId?: string | undefined
         expenseList?: Expense[],
-        dateInterval: DateInterval
     }
 
 }

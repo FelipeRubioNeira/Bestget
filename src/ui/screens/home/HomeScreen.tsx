@@ -14,9 +14,11 @@ import ExpenseRepository from '../../../data/repository/expenseRepository/Expens
 import BottomSheet from '../../components/bottomSheet/BottomSheet'
 import CurrentDate from '../../components/currentDate/CurrentDate'
 import Loading from '../../components/loading/Loading'
+import BudgetRepository from '../../../data/repository/budgetRepository/BudgetRepository'
 
 const incomeRepository = new IncomeRepository()
 const expenseRepository = new ExpenseRepository()
+const budgetRepository = new BudgetRepository()
 const categoryRepository = new CategoryRespository()
 
 
@@ -27,6 +29,7 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
         route,
         categoryRepository,
         expenseRepository,
+        budgetRepository,
         incomeRepository,
     })
 

@@ -5,8 +5,11 @@ import { DateInterval } from "../types/DateInterval";
 import DateTime from "../../utils/DateTime";
 import { Actions } from "./ActionTypes";
 import { EventEmitter } from 'eventemitter3';
-import { EventNames } from "./EventTypes";
+import { EventNames } from "./events/EventNames";
 import { Income } from "../types/Income";
+import { Expense } from "../types/Expense";
+import { Budget } from "../types/Budget";
+import { Category } from "../types/Categoty";
 
 
 const dateTime = new DateTime()
@@ -14,16 +17,25 @@ const dateTime = new DateTime()
 
 // 1- Create a context
 export type GlobalContextType = {
+
+    //date interval
     dateInterval: DateInterval,
     updateDateIntervalContext: (dateInterval: DateInterval) => void,
 
+    //imcomes
     incomesContext: Income[],
     updateIncomesContext: (incomes: Income[]) => void,
 
-    eventEmitter: EventEmitter,
-    emitIncomeEvent: () => void,
-    addIncomeListener: (callback: () => void) =>()=> void,
-    
+    // expenses
+    expensesContext: Expense[],
+    updateExpensesContext: (expenses: Expense[]) => void,
+
+    // budgets
+    budgetsContext: Budget[],
+    updateBudgetsContext: (budgets: Budget[]) => void,
+
+    categoriesContext: Category[],
+    updateCategoriesContext: (categories: Category[]) => void,
 
 }
 
@@ -31,18 +43,29 @@ export type GlobalContextType = {
 // 1.1- Default values
 const DefaultGlobalContext: GlobalContextType = {
 
+    //date interval
     dateInterval: {
         initialDate: dateTime.date, // current date
         finalDate: dateTime.getNextMonth(dateTime.date) // next month
     },
     updateDateIntervalContext: () => { },
 
+    //incomes
     incomesContext: [],
     updateIncomesContext: () => { },
 
-    eventEmitter: new EventEmitter(),
-    emitIncomeEvent: () => { },
-    addIncomeListener: () => () => { }
+    //expenses
+    expensesContext: [],
+    updateExpensesContext: () => { },
+
+    //budgets
+    budgetsContext: [],
+    updateBudgetsContext: () => { },
+
+    // categories
+    categoriesContext: [],
+    updateCategoriesContext: () => { },
+
 }
 
 const GlobalContext = createContext(DefaultGlobalContext)
@@ -56,13 +79,6 @@ export const GlobalContextProvider = ({ children }: { children: React.ReactNode 
     const [state, dispatch] = useReducer(globalReducer, DefaultGlobalContext)
 
 
-    // ----------------- Effects ----------------- //
-    useEffect(() => {
-        return () => {
-            state.eventEmitter.removeAllListeners()
-        }
-    }, [state.eventEmitter]);
-
 
     // ----------------- Actions ----------------- //
     const updateDateIntervalContext = (dateInterval: DateInterval) => {
@@ -73,18 +89,17 @@ export const GlobalContextProvider = ({ children }: { children: React.ReactNode 
         dispatch({ type: Actions.UPDATE_INCOMES, payload: incomes })
     }
 
-
-    // ----------------- Emitters ----------------- //
-    const emitIncomeEvent = () => {
-        state.eventEmitter.emit(EventNames.INCOME_EVENT)
+    const updateExpensesContext = (expenses: Expense[]) => {
+        dispatch({ type: Actions.UPDATE_EXPENSES, payload: expenses })
     }
 
-    const addIncomeListener = (callback: () => void) => {
-        state.eventEmitter.addListener(EventNames.INCOME_EVENT, callback);
-        return () => state.eventEmitter.removeListener(EventNames.INCOME_EVENT, callback);
+    const updateBudgetsContext = (budgets: Budget[]) => {
+        dispatch({ type: Actions.UPDATE_BUDGETS, payload: budgets })
     }
 
-
+    const updateCategoriesContext = (categories: Category[]) => {
+        dispatch({ type: Actions.UPDATE_CATEGORIES, payload: categories })
+    }
 
 
 
@@ -93,15 +108,26 @@ export const GlobalContextProvider = ({ children }: { children: React.ReactNode 
     return (
         <GlobalContext.Provider
             value={{
+
+                //date interval
                 dateInterval: state.dateInterval,
                 updateDateIntervalContext,
 
+                //incomes
                 incomesContext: state.incomesContext,
                 updateIncomesContext,
 
-                eventEmitter: state.eventEmitter,
-                emitIncomeEvent,
-                addIncomeListener
+                //expenses
+                expensesContext: state.expensesContext,
+                updateExpensesContext,
+
+                //budgets
+                budgetsContext: state.budgetsContext,
+                updateBudgetsContext,
+
+                //categories
+                categoriesContext: state.categoriesContext,
+                updateCategoriesContext,
 
             }}>
             {children}

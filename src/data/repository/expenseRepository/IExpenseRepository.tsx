@@ -7,6 +7,7 @@ interface IExpenseRespository {
 
     edit: (expense: Expense) => Promise<void>
 
+    getAll: (date:DateInterval) => Promise<Expense[]>
     getByBudgetId: (id: string) => Promise<Expense[]>
     getWithoutBudget: (date:DateInterval) => Promise<Expense[]>
 

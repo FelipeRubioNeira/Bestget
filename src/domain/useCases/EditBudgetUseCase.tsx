@@ -3,6 +3,7 @@
     and all expenses related to it
  */
 
+import { EventNames } from "../../data/globalContext/events/EventNames"
 import IBudgetRepository from "../../data/repository/budgetRepository/IBudgetRepository"
 import IExpenseRespository from "../../data/repository/expenseRepository/IExpenseRepository"
 import { Budget } from "../../data/types/Budget"
@@ -11,13 +12,17 @@ import { Validation, ValidationResult } from "../../data/types/Validation"
 import { isConnected } from "../../utils/Connection"
 
 
-class EditBudgetUseCase  {
+class EditBudgetUseCase {
     constructor(
         private budgetRespository: IBudgetRepository,
         private expenseRespository: IExpenseRespository
     ) { }
 
-    async edit(budget: Budget, expenses: Expense[]): Promise<ValidationResult<void>> {
+    async edit(
+        budget: Budget,
+        expenses: Expense[],
+        eventEmitter: (eventName: EventNames, payload: any) => void // callback to emit events
+    ): Promise<ValidationResult<void>> {
 
         const validationResult: ValidationResult<void> = {
             isValid: true,
@@ -40,6 +45,8 @@ class EditBudgetUseCase  {
                 )
             }
 
+            eventEmitter(EventNames.BUDGET_EDITED, budget)
+
             await Promise.all(promises)
 
 
@@ -55,6 +62,9 @@ class EditBudgetUseCase  {
 
     }
 
+
+    // ------------------- validations ------------------- //
+    
     async applyValidations(name: string, amount: number): Promise<Validation> {
 
         let validationResult: Validation = {
@@ -79,9 +89,8 @@ class EditBudgetUseCase  {
 
         return validationResult
     }
-
-    // ------------------- validations ------------------- //
-    validateInputs = (name = "", amount = 0): Validation => {
+    
+    private validateInputs = (name = "", amount = 0): Validation => {
 
         const result: Validation = {
             isValid: true,

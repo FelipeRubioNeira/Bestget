@@ -12,6 +12,7 @@ import ExpenseRepository from "../../../data/repository/expenseRepository/Expens
 import { Expense } from "../../../data/types/Expense"
 import DateTime from "../../../utils/DateTime"
 import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
+import useEventBus from "../../../data/globalContext/events/EventBus"
 
 
 const dateTime = new DateTime()
@@ -42,24 +43,26 @@ const useBudgetsFormViewModel = ({
     expensesRepository
 }: IBudgetCreateViewModel) => {
 
-    // ------------------- context ------------------- //
 
+    // ------------------- context ------------------- //
+    const { 
+        categoriesContext,
+     } = useGlobalContext()
 
 
 
     // ------------------- params ------------------- //
-
     const {
-        categoryList = [],
         budget,
-        dateInterval
     } = route.params || {}
 
+
+    // ------------------- hooks ------------------- //
+    const {emmitEvent} = useEventBus()
 
 
 
     // ------------------- states ------------------- //
-    const [categories, setCategories] = useState<Category[]>([])
     const [expenses, setExpenses] = useState<Expense[]>([])
 
     const [budgetState, setBudgetState] = useState<BudgetState>({
@@ -78,10 +81,6 @@ const useBudgetsFormViewModel = ({
 
 
     // ------------------- effects ------------------- //
-    useEffect(() => {
-        setCategories(categoryList)
-    }, [categoryList])
-
     useEffect(() => {
         if (budget) {
             updateForm(budget)
@@ -187,22 +186,21 @@ const useBudgetsFormViewModel = ({
 
         hideModal()
 
+        const date = dateTime.getIsoDateTime(budgetState.budgetDate)
+
         const budgetEditted = {
             id: budget?.id || "",
             name: budgetState.budgetName,
             amount: numberFormat(budgetState.budgetAmount),
             categoryId: budgetState?.categoryId || 0,
-            date: new DateTime().date
+            date: date
         }
 
 
-        const response = await editBudgetUseCase.edit(budgetEditted, expenses)
+        const response = await editBudgetUseCase.edit(budgetEditted, expenses, emmitEvent)
 
         if (response.isValid) {
-            navigation.replace(ScreenRoutes.BUDGET_EXPENSES, {
-                categoryList: categories,
-                dateInterval
-            })
+            navigation.replace(ScreenRoutes.BUDGET_EXPENSES, {})
 
         } else {
 
@@ -232,28 +230,37 @@ const useBudgetsFormViewModel = ({
 
     const createBudget = async () => {
 
+        const date = dateTime.getIsoDateTime(budgetState.budgetDate)
+
         // 1- create budget
         const budgetCreate: BudgetCreate = {
             name: budgetState.budgetName,
             amount: numberFormat(budgetState.budgetAmount),
             categoryId: budgetState.categoryId,
-            date: new DateTime().date
+            date: date
         }
 
         // 2- upload budget and budget expenses
-        const newBudget = await createBudgetUseCase.createBudget(budgetCreate)
+        const {isValid, result, message} = await createBudgetUseCase.createBudget(budgetCreate, emmitEvent)
 
 
-        if (newBudget) {
-
+        if (isValid && result) {
             navigation.replace(ScreenRoutes.BUDGET, {
-                categoryList: categories,
-                budget: newBudget,
-                dateInterval
+                budget: result,
             })
 
         } else {
-            console.error("Error creating budget")
+
+           showModal(
+                message.title,
+                message.message,
+                [
+                    {
+                        text: "Continuar",
+                        onPress: () => setModalState({ ...modalState, visible: false }),
+                    },
+                ]
+           )
         }
 
     }
@@ -261,7 +268,7 @@ const useBudgetsFormViewModel = ({
     // ------------------- return ------------------- //
     return {
         modalState,
-        categories,
+        categories: categoriesContext,
         budgetState,
         updateBudgetName,
         updateBudgetAmount,

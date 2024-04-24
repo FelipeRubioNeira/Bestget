@@ -35,6 +35,19 @@ class DateTime {
         return `${year}-${month}-${day}`;
     }
 
+    getIsoDateTime = (date: string): string => {
+
+        const { year, month, day, hour, minute, second } = this.separateDate(date);
+
+        let newDate = `${year}-${month}-${day}`
+
+        if (hour === "00" && minute === "00" && second === "00") {
+            return `${newDate}T${this.getTime()}`
+
+        } else return `${newDate}T${hour}:${minute}:${second}`
+
+    }
+
     // ------------------- change the orden ------------------- //
 
 
@@ -81,6 +94,9 @@ class DateTime {
         return year;
     }
 
+
+    // ------------------- private methods ------------------- //
+
     private separateDate = (date: string = "") => {
 
         if (!date) return {
@@ -110,7 +126,7 @@ class DateTime {
         const dateSplitted = dateArray[0].split("-")
 
 
-        
+
         // Check if time is present
         const timeExists = dateArray.length > 1
 

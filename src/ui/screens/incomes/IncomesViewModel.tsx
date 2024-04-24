@@ -48,9 +48,9 @@ const useIncomesViewModel = ({
 
     // ------------------- context ------------------- //
     const {
+        dateInterval,
         incomesContext,
         updateIncomesContext,
-        dateInterval,
     } = useGlobalContext()
 
 
@@ -99,7 +99,6 @@ const useIncomesViewModel = ({
             if (!incomeId) return
             getIncomesFromRepository(dateInterval)
                 .then(initializeIncomeData)
-
         })
 
         return unsubscribe
@@ -182,9 +181,7 @@ const useIncomesViewModel = ({
 
     const navigateIncomeCreate = () => {
         turnOffDeleteMode()
-        navigation.navigate(ScreenRoutes.INCOME_FORM, {
-            dateInterval
-        })
+        navigation.navigate(ScreenRoutes.INCOME_FORM, {})
     }
 
 
@@ -219,7 +216,6 @@ const useIncomesViewModel = ({
 
         navigation.navigate(ScreenRoutes.INCOME_FORM, {
             income,
-            dateInterval
         })
 
     }

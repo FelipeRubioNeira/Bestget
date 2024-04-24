@@ -1,4 +1,7 @@
+import { Budget } from "../types/Budget";
+import { Category } from "../types/Categoty";
 import { DateInterval } from "../types/DateInterval";
+import { Expense } from "../types/Expense";
 import { Income } from "../types/Income";
 
 
@@ -6,6 +9,9 @@ import { Income } from "../types/Income";
 enum Actions {
     UPDATE_DATE_INTERVAL = 'UPDATE_DATE_INTERVAL',
     UPDATE_INCOMES = 'UPDATE_INCOMES',
+    UPDATE_EXPENSES = 'UPDATE_EXPENSES',
+    UPDATE_BUDGETS = 'UPDATE_BUDGETS',
+    UPDATE_CATEGORIES = 'UPDATE_CATEGORIES',
 }
 
 
@@ -20,11 +26,26 @@ type UpdateIncomesAction = {
     payload: Income[];
 }
 
+type UpdateExpensesAction = {
+    type: Actions.UPDATE_EXPENSES;
+    payload: Expense[];
+}
+
+type UpdateBudgetsAction = {
+    type: Actions.UPDATE_BUDGETS;
+    payload: Budget[];
+}
+
+type UpdateCategoriesAction = {
+    type: Actions.UPDATE_CATEGORIES;
+    payload: Category[];
+}
 
 
 
 // ----------------- Action Type ----------------- //
-type ActionType = updateDateIntervalContextAction | UpdateIncomesAction
+type ActionType = updateDateIntervalContextAction | UpdateIncomesAction |
+    UpdateExpensesAction | UpdateBudgetsAction | UpdateCategoriesAction;
 
 
 

@@ -41,6 +41,42 @@ class ExpenseRepository implements IExpenseRespository {
         }
     }
 
+    async getAll({ initialDate, finalDate }: DateInterval): Promise<Expense[]> {
+
+        try {
+
+            const expensesFirebase = await firestore()
+                .collection(Collections.EXPENSE)
+                .where(ExpenseKeys.DATE, ">=", initialDate)
+                .where(ExpenseKeys.DATE, "<", finalDate)
+                .get()
+
+            const expensesArray = [] as Expense[]
+
+            expensesFirebase.docs.forEach(doc => {
+
+                const { name, amount, categoryId, date, budgetId } = doc.data() as Expense
+
+                const newExpense: Expense = {
+                    id: doc.id,
+                    name: name,
+                    amount: amount,
+                    date: date,
+                    categoryId,
+                    budgetId
+                }
+                expensesArray.push(newExpense)
+            })
+
+            return expensesArray
+
+        } catch (error) {
+            console.error("error getExpenses", error);
+            return []
+        }
+
+    }
+
     async getByBudgetId(id: string): Promise<Expense[]> {
 
         try {
