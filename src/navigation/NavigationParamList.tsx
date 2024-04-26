@@ -7,12 +7,9 @@
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { NavigatorRoutes, ScreenRoutes } from "./Routes";
-import { Category } from "../data/types/Categoty";
 import { Budget } from "../data/types/Budget";
 import { Income } from "../data/types/Income";
 import { Expense } from "../data/types/Expense";
-import { DateInterval } from "../data/types/DateInterval";
-
 
 
 

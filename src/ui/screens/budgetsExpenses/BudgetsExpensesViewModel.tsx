@@ -22,6 +22,9 @@ import { DateInterval } from "../../../data/types/DateInterval"
 import DateTime from "../../../utils/DateTime"
 import Icons from "../../../assets/icons"
 import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
+import { useEventBus } from "../../../data/globalContext/events/EventBus"
+import { Event } from "../../../data/globalContext/events/EventBusReducer"
+
 
 
 // ----------- types ----------- //
@@ -39,7 +42,6 @@ export type BudgetOrExpense = "Budget" | "Expense"
 // ----------- view model ----------- //
 const useBudgetExpensesViewModel = ({
     navigation,
-    route,
     expenseRepository,
     budgetRepository,
     deleteBudgetUseCase,
@@ -48,6 +50,15 @@ const useBudgetExpensesViewModel = ({
 
 
     // ----------- context ----------- //
+
+    const {
+        budgetsQueue,
+        expensesQueue,
+        consumeBudgetsQueue,
+        consumeExpensesQueue
+    } = useEventBus()
+
+
     const {
         dateInterval,
         expensesContext,
@@ -59,11 +70,10 @@ const useBudgetExpensesViewModel = ({
 
 
 
+
+
     // ----------- params ----------- //
-    const {
-        newExpenseId,
-        newBudgetId,
-    } = route?.params || {}
+
 
 
 
@@ -90,10 +100,11 @@ const useBudgetExpensesViewModel = ({
 
 
 
-    // ----------- effects ----------- //
-    // we add the delete button to the header if there are budget or expenses
-    useEffect(() => {
+    // ------------------ effects ------------------ //
 
+
+    // header right button
+    useEffect(() => {
         navigation.setOptions({
             headerRight: () => {
                 if (budgetsExpenses.length === 0) return null
@@ -109,27 +120,33 @@ const useBudgetExpensesViewModel = ({
     }, [budgetsExpenses, editMode])
 
 
-    // first time we mount the component
+    // first time we mount the component and when we change expenses or budgets
     useEffect(() => {
-        formatData(
-            expensesContext,
-            budgetsContext,
-            categoriesContext
-        )
-    }, [expensesContext, budgetsContext])
+        formatData({
+            expenses: expensesContext,
+            budgets: budgetsContext,
+            categories: categoriesContext
+        })
+    }, [])
 
 
-    // when we navigate from create or edit
+    //when we navigate from create or edit
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            if (!newExpenseId && !newExpenseId) return
-            getData(dateInterval)
-
+            handleEvents({
+                expensesQueue,
+                budgetsQueue
+            })
         })
 
         return unsubscribe;
 
-    }, [navigation, newExpenseId, newBudgetId])
+    }, [
+        navigation,         // navigation
+        budgetsQueue,        // event of budget created on budget form
+        expensesQueue        // event of expense created base on budget 
+    ])
+
 
 
 
@@ -141,6 +158,48 @@ const useBudgetExpensesViewModel = ({
 
 
     // ------------------ data methods ------------------ //
+    const handleEvents = async (queues: {
+        budgetsQueue: Event[],
+        expensesQueue: Event[]
+    }) => {
+
+        const { budgetsQueue, expensesQueue } = queues
+
+        setLoading(true)
+
+
+        const [newBudgets, newExpenses] = await Promise.all([
+            budgetsQueue.length > 0 ? updateBudgets() : Promise.resolve([]),
+            expensesQueue.length > 0 ? updateExpenses() : Promise.resolve([])
+        ]);
+
+        const data = {
+            ...(newBudgets.length > 0 && { budgets: newBudgets }),
+            ...(newExpenses.length > 0 && { expenses: newExpenses })
+        }
+
+        // we get keys from object to know if there is data
+        const thereIsData = Object.keys(data).length > 0
+
+        if (!thereIsData) return setLoading(false)
+
+
+        formatData(data)
+        setLoading(false)
+
+
+    }
+
+    const updateBudgets = async () => {
+        consumeBudgetsQueue()
+        return getBudgets(dateInterval)
+    }
+
+    const updateExpenses = async () => {
+        consumeExpensesQueue()
+        return getExpenses(dateInterval)
+    }
+
 
     const getData = async (dateInterval: DateInterval) => {
 
@@ -152,7 +211,11 @@ const useBudgetExpensesViewModel = ({
             getBudgets(dateInterval),
         ])
 
-        formatData(expenses, budgets, categoriesContext)
+        formatData({
+            expenses,
+            budgets,
+            categories: categoriesContext
+        })
 
 
         setLoading(false)
@@ -171,17 +234,32 @@ const useBudgetExpensesViewModel = ({
         return budgets
     }
 
-    const formatData = async (expenses: Expense[], budgets: Budget[], categories: Category[]) => {
 
-        const expensesWithoutBudget = expenses.filter(expense => !expense.budgetId)
+    // ------------------ format data ------------------ //
+    const formatData = async (data: {
+        budgets?: Budget[],
+        expenses?: Expense[],
+        categories?: Category[]
+    }) => {
 
-        const expensesList = applyFormat<Expense, ExpenseUI>(expensesWithoutBudget, categories, "Expense")
+
+        // if we don't receive data, we use the context
+        const {
+            expenses = expensesContext,
+            budgets = budgetsContext,
+            categories = categoriesContext
+        } = data
+
+
+        const expensesWithoutBudget = getExpensesWithoutBudget(expenses)
         const budgetsList = applyFormat<Budget, BudgetUI>(budgets, categories, "Budget")
+        const expensesList = applyFormat<Expense, ExpenseUI>(expensesWithoutBudget, categories, "Expense")
 
+        const totalExpenses = currencyFormat(
+            calculateTotalExpenses(expenses)
+        )
 
-        const totalExpenses = currencyFormat(calculateTotalExpenses(expensesContext))
         setTotalAmount(totalExpenses)
-
 
         setBudgetsExpenses([
             ...expensesList,
@@ -190,7 +268,9 @@ const useBudgetExpensesViewModel = ({
 
     }
 
-
+    const getExpensesWithoutBudget = (expenses: Expense[]): Expense[] => {
+        return expenses.filter(expense => !expense.budgetId)
+    }
 
     const calculateTotalExpenses = (expenses: Expense[]): number => {
         let total = 0

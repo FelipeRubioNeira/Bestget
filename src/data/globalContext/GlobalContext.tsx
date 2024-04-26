@@ -1,11 +1,9 @@
-import React, { useEffect } from "react";
+import React, { ReactNode } from "react";
 import { createContext, useContext, useReducer } from "react";
 import globalReducer from "./GlobalReducer";
 import { DateInterval } from "../types/DateInterval";
 import DateTime from "../../utils/DateTime";
 import { Actions } from "./ActionTypes";
-import { EventEmitter } from 'eventemitter3';
-import { EventNames } from "./events/EventNames";
 import { Income } from "../types/Income";
 import { Expense } from "../types/Expense";
 import { Budget } from "../types/Budget";
@@ -72,7 +70,7 @@ const GlobalContext = createContext(DefaultGlobalContext)
 
 
 // 2- Create a provider
-export const GlobalContextProvider = ({ children }: { children: React.ReactNode }) => {
+export const GlobalContextProvider = ({ children }: { children: ReactNode }) => {
 
 
     // ----------------- Reducer ----------------- //

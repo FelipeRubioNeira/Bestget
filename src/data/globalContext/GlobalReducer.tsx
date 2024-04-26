@@ -1,6 +1,7 @@
 import { GlobalContextType } from "./GlobalContext"
 import { ActionType, Actions } from "./ActionTypes"
 
+
 const globalReducer = (
     state: GlobalContextType,
     { type, payload }: ActionType
@@ -22,7 +23,6 @@ const globalReducer = (
 
         case Actions.UPDATE_CATEGORIES:
             return { ...state, categoriesContext: payload }
-
 
         default: return state
 

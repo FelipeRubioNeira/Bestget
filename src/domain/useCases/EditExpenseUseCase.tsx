@@ -5,6 +5,7 @@ import { Validation, ValidationResult } from "../../data/types/Validation";
 import { validateConnection } from "../../utils/Connection";
 import { validateInputs } from "../../utils/Inputs";
 
+
 class EditExpenseUseCase {
     constructor(private readonly expenseRepository: IExpenseRespository) { }
 

@@ -1,18 +1,28 @@
 import EventEmitter from "eventemitter3";
 import { EventNames } from "./EventNames";
-import { useEffect, useState } from "react";
+import { ReactNode, createContext, useContext, useEffect, useReducer } from "react";
+import eventBusReducer, { defaultEventBusState } from "./EventBusReducer";
 
+
+
+
+// -- Event Emitter -- //
 const eventEmitter = new EventEmitter()
 
-const useEventBus = () => {
 
 
-    // ----------------- event queue----------------- //
-    const [budgetCreatedQueue, setBudgetCreatedQueue] = useState([])
-    const [expenseCreatedQueue, setExpenseCreatedQueue] = useState([])
+// ----------------- context ----------------- //
+export const EventBus = createContext(defaultEventBusState)
 
 
-    
+// ----------------- provider ----------------- //
+export const EventBusProvider = ({ children }: { children: ReactNode }) => {
+
+
+    // ----------------- state ----------------- //
+    const [state, dispatch] = useReducer(eventBusReducer, defaultEventBusState)
+
+
     const events = [
         EventNames.BUDGET_CREATED,
         EventNames.BUDGET_EDITED,
@@ -22,7 +32,6 @@ const useEventBus = () => {
         EventNames.EXPENSE_DELETED,
         // ... more events
     ]
-
 
 
     // ----------------- exange ----------------- //
@@ -49,22 +58,35 @@ const useEventBus = () => {
     // ----------------- event handler  ----------------- //
     const handleEvents = (event: {
         eventName: EventNames, // name of the event
-        payload: any // data of the event
     }) => {
+        dispatch(event.eventName)
+    }
 
-        console.log("Event received: ", event.eventName, event.payload);
+    const consumeBudgetsQueue = () => {
+        dispatch(EventNames.CONSUME_BUDGET_QUEUE)
+    }
+
+    const consumeExpensesQueue = () => {
+        dispatch(EventNames.CONSUME_EXPENSE_QUEUE)
 
     }
 
+    return (
+        <EventBus.Provider value={{
+            budgetsQueue: state.budgetsQueue,
+            expensesQueue: state.expensesQueue,
+            emmitEvent,
+            consumeBudgetsQueue,
+            consumeExpensesQueue
+        }}>
+            {children}
+        </EventBus.Provider>
+    )
 
-
-    return {
-        emmitEvent,
-
-    }
 
 
 }
 
 
-export default useEventBus
+// ----------------- useEventBus ----------------- //
+export const useEventBus = () => useContext(EventBus)

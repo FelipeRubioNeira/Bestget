@@ -22,15 +22,15 @@ class EditBudgetUseCase {
         budget: Budget,
         expenses: Expense[],
         eventEmitter: (eventName: EventNames, payload: any) => void // callback to emit events
-    ): Promise<ValidationResult<void>> {
+    ): Promise<ValidationResult<Budget>> {
 
-        const validationResult: ValidationResult<void> = {
+        const validationResult: ValidationResult<Budget> = {
             isValid: true,
             message: {
                 title: "",
                 message: "",
             },
-            result: undefined,
+            result: budget,
         }
 
         const result = await this.applyValidations(budget.name, budget.amount)
@@ -64,7 +64,7 @@ class EditBudgetUseCase {
 
 
     // ------------------- validations ------------------- //
-    
+
     async applyValidations(name: string, amount: number): Promise<Validation> {
 
         let validationResult: Validation = {
@@ -89,7 +89,7 @@ class EditBudgetUseCase {
 
         return validationResult
     }
-    
+
     private validateInputs = (name = "", amount = 0): Validation => {
 
         const result: Validation = {

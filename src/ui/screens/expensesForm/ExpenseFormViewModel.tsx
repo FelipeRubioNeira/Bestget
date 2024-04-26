@@ -11,7 +11,7 @@ import EditExpenseUseCase from "../../../domain/useCases/EditExpenseUseCase"
 import { ModalProps } from "../../components/modal/Modal"
 import DateTime from "../../../utils/DateTime"
 import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
-import useEventBus from "../../../data/globalContext/events/EventBus"
+import { useEventBus } from "../../../data/globalContext/events/EventBus"
 
 const dateTime = new DateTime()
 
@@ -39,6 +39,8 @@ const useExpenseFormViewModel = (
 
 
     // ------------------- context ------------------- //
+    const {emmitEvent} = useEventBus()
+
     const {
         categoriesContext
     } = useGlobalContext()
@@ -50,9 +52,6 @@ const useExpenseFormViewModel = (
         expense,
     } = route.params
 
-
-    // ------------------- hooks ------------------- //
-    const {emmitEvent} = useEventBus()
 
 
     // ------------------- states ------------------- //

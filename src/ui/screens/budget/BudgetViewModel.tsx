@@ -31,13 +31,14 @@ type budgetViewModelProps = {
 const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpenseUseCase }: budgetViewModelProps) => {
 
     // ----------- context ----------- //
-    const {categoriesContext}= useGlobalContext()
+    const {
+        categoriesContext
+    }= useGlobalContext()
 
 
     // ----------- params ----------- //
     const {
         budget,
-        dateInterval
     } = route.params
 
 
@@ -207,7 +208,6 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
     const onPressNewExpense = () => {
         navigation.navigate(ScreenRoutes.EXPENSES_FORM, {
             budget,
-            dateInterval
         })
     }
 
@@ -220,7 +220,6 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
         navigation.navigate(ScreenRoutes.EXPENSES_FORM, {
             expense,
             budget,
-            dateInterval
         })
 
     }

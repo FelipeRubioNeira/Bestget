@@ -92,15 +92,21 @@ const useHomeViewModel = ({
 
 
     // ------------------ effects ------------------ //
+
+    // get current date and fetch data
     useEffect(() => {
         const dateInterval = getCurrentDate()
         getData(dateInterval)
     }, [])
 
+
+    // refresh data when incomes change
     useEffect(() => {
         refreshIncomesData(incomesContext)
     }, [incomesContext])
 
+
+    // refresh data when expenses change
     useEffect(() => {
         refreshExpensesData(expensesContext)
     }, [expensesContext])

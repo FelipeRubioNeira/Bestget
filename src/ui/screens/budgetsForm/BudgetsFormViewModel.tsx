@@ -12,7 +12,8 @@ import ExpenseRepository from "../../../data/repository/expenseRepository/Expens
 import { Expense } from "../../../data/types/Expense"
 import DateTime from "../../../utils/DateTime"
 import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
-import useEventBus from "../../../data/globalContext/events/EventBus"
+import { useEventBus } from "../../../data/globalContext/events/EventBus"
+
 
 
 const dateTime = new DateTime()
@@ -199,8 +200,11 @@ const useBudgetsFormViewModel = ({
 
         const response = await editBudgetUseCase.edit(budgetEditted, expenses, emmitEvent)
 
+
         if (response.isValid) {
-            navigation.replace(ScreenRoutes.BUDGET_EXPENSES, {})
+            navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {
+                newBudgetId: response.result?.id
+            })
 
         } else {
 
