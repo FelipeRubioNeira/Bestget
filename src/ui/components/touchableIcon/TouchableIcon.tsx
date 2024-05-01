@@ -1,4 +1,4 @@
-import { Image, ImageSourcePropType, StyleSheet, TouchableOpacity } from 'react-native'
+import { Image, ImageSourcePropType, ImageStyle, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native'
 import React from 'react'
 import { Colors } from '../../constants/Colors'
 
@@ -7,14 +7,16 @@ export type TouchableIconProps = {
     image: ImageSourcePropType,
     color?: string,
     onPress?: () => void,
-    disabled?: boolean
+    disabled?: boolean,
+    style?: ImageStyle
 }
 
 const TouchableIcon = ({
     image,
     color = Colors.BLACK,
     onPress,
-    disabled = false
+    disabled = false,
+    style,
 }: TouchableIconProps) => {
 
     return (
@@ -24,7 +26,10 @@ const TouchableIcon = ({
         >
             <Image
                 source={image}
-                style={touchableStyles.image}
+                style={{
+                    ...touchableStyles.image,
+                    ...style
+                }}
                 resizeMode="center"
                 tintColor={color}
             />

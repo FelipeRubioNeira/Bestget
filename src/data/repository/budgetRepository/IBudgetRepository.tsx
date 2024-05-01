@@ -7,6 +7,7 @@ interface IBudgetRepository {
     getAll: (date: DateInterval) => Promise<Budget[]>
     delete: (id: string) => Promise<void>
     update: (budget: Budget) => Promise<void>
+    count: (date: DateInterval) => Promise<number>
 }
 
 export default IBudgetRepository

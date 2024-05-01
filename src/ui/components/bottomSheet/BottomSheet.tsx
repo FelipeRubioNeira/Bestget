@@ -6,11 +6,14 @@ import ButtonApp from '../buttonApp/ButtonApp'
 import HorizontalSelector from '../horizontalSelector/HorizontalSelector'
 import useBottomSheetViewModel from './ButtomSheetViewModel'
 import BottomStyles from './BottomStyles'
+import { Colors } from '../../constants/Colors'
+
 
 
 type BottomSheetProps = {
     visible: boolean,
     date: string,
+    onChange: (date: string) => void,
     onConfirm: (date: string) => void,
     onHide: () => void,
     onCopy?: () => void,
@@ -26,6 +29,7 @@ const BottomSheet = ({
     onCopy,
     onPaste,
     onDelete,
+    onChange,
     onConfirm
 }: BottomSheetProps) => {
 
@@ -36,7 +40,7 @@ const BottomSheet = ({
         years,
         onConfirmViewModel,
         updateDate,
-    } = useBottomSheetViewModel({ onConfirm, date })
+    } = useBottomSheetViewModel({ date, onChange })
 
 
     if (!visible) return null
@@ -48,10 +52,10 @@ const BottomSheet = ({
 
                 <View style={BottomStyles.container}>
 
-                    <Actions
-                        onCopy={() => console.log("copiar")}
-                        onPaste={() => console.log("pegar")}
-                        onDelete={() => console.log("eliminar")}
+                    <ButtonApp
+                        title="Aceptar"
+                        onPress={() => onConfirmViewModel(onConfirm)}
+                        buttonStyle={{ backgroundColor: Colors.LIGHT_GRAY }}
                     />
 
                     <Spacer marginVertical={"2%"} />
@@ -74,10 +78,20 @@ const BottomSheet = ({
 
                     <Spacer marginVertical={"4%"} />
 
-                    <ButtonApp
-                        title="Aceptar"
-                        onPress={onConfirmViewModel}
+                    <Actions
+                        onCopy={onCopy}
+                        onPaste={onPaste}
+                        onDelete={() => console.log("eliminar")}
                     />
+
+                    {/* <Spacer marginVertical={"4%"} />
+
+                    <TouchableIcon
+                        image={Icons.dots}
+                        style={{ alignSelf: "center" }}
+                    />
+
+                    <Spacer marginVertical={"2%"} /> */}
 
                 </View>
 

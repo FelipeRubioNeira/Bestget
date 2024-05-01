@@ -4,7 +4,7 @@ import DateTime from "../../../utils/DateTime"
 
 type BottomSheetViewModel = {
     date: string,
-    onConfirm: (date: string) => void,
+    onChange: (date: string) => void
 }
 
 const months: DataItem[] = [{
@@ -76,7 +76,7 @@ const years: DataItem[] = [
     }
 ]
 
-const useBottomSheetViewModel = ({ onConfirm, date }: BottomSheetViewModel) => {
+const useBottomSheetViewModel = ({ date, onChange }: BottomSheetViewModel) => {
 
 
     // ------------------ state ------------------ //
@@ -100,21 +100,35 @@ const useBottomSheetViewModel = ({ onConfirm, date }: BottomSheetViewModel) => {
 
     }, [date])
 
-    
+
     // ------------------ methods ------------------ //
     const updateDate = (yearIndex?: number, monthIndex?: number,) => {
+
+        const yearIndexValue = yearIndex ?? currentDate.yearIndex
+        const monthIndexValue = monthIndex ?? currentDate.monthIndex
+
         setCurrentDateState({
-            yearIndex: yearIndex ?? currentDate.yearIndex,
-            monthIndex: monthIndex ?? currentDate.monthIndex,
+            yearIndex: yearIndexValue,
+            monthIndex: monthIndexValue,
         })
+
+        // onChange date
+        const dateTime = getDate(yearIndexValue, monthIndexValue)
+        onChange(dateTime)
+
     }
 
-    const onConfirmViewModel = () => {
-
-        const yearValue = Number(years[currentDate.yearIndex].value)
-        const dateTime = new DateTime(new Date(yearValue, currentDate.monthIndex, 1)).date
-
+    const onConfirmViewModel = (onConfirm: (date: string) => void) => {
+        const dateTime = getDate(currentDate.yearIndex, currentDate.monthIndex)
         onConfirm(dateTime)
+    }
+
+    const getDate = (yearIndex: number, monthIndex: number) => {
+        const yearValue = Number(years[yearIndex].value)
+        const dateTime = new DateTime(new Date(yearValue, monthIndex, 1)).date
+
+        return dateTime
+
     }
 
 

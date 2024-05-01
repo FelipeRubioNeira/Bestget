@@ -95,6 +95,25 @@ class BudgetRepository implements IBudgetRepository {
 
     }
 
+    async count({ initialDate, finalDate }: DateInterval): Promise<number> {
+            
+            try {
+    
+                const budgetCount = await firestore()
+                    .collection(Collections.BUDGET)
+                    .where(BudgetKeys.DATE, ">=", initialDate)
+                    .where(BudgetKeys.DATE, "<", finalDate)
+                    .count()
+                    .get()
+    
+                return budgetCount.data().count
+    
+            } catch (error) {
+                console.error("error BudgetRepository count", error);
+                return 0
+            }
+    }
+
 }
 
 export default BudgetRepository

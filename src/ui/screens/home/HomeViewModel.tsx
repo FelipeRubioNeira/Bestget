@@ -13,6 +13,13 @@ import { DateInterval } from "../../../data/types/DateInterval"
 import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
 import IBudgetRepository from "../../../data/repository/budgetRepository/IBudgetRepository"
 import { Expense } from "../../../data/types/Expense"
+import CopyMonthUseCase from "../../../domain/useCases/CopyMonthUseCase"
+import { ModalButtonList, ModalProps } from "../../components/modal/Modal"
+import { ToastProps, ToastType } from "../../components/toast/Toast"
+import PasteMonthUseCase, { PasteType } from "../../../domain/useCases/pasteMonthUseCase"
+import { FontFamily, FontSize } from "../../constants/Fonts"
+
+const dateTime = new DateTime()
 
 
 // ------------------ types ------------------ //
@@ -32,6 +39,8 @@ type HomeViewModelProps = {
     expenseRepository: IExpenseRespository,
     budgetRepository: IBudgetRepository,
     categoryRepository: ICategoryRepository,
+    copyMonthUseCase: CopyMonthUseCase,
+    pasteMonthUseCase: PasteMonthUseCase,
 } & HomeScreenProps
 
 type BottomSheetState = {
@@ -46,6 +55,8 @@ const useHomeViewModel = ({
     expenseRepository,
     budgetRepository,
     categoryRepository,
+    copyMonthUseCase,
+    pasteMonthUseCase
 }: HomeViewModelProps) => {
 
 
@@ -68,7 +79,7 @@ const useHomeViewModel = ({
 
         // categories
         categoriesContext,
-        updateCategoriesContext
+        updateCategoriesContext,
 
     } = useGlobalContext()
 
@@ -76,18 +87,53 @@ const useHomeViewModel = ({
 
     // ------------------ states ------------------ //
     const [totalremaining, setTotalremaining] = useState("0")
-
     const [totalIncomes, setTotalIncomes] = useState(0)
     const [totalExpenses, setTotalExpenses] = useState(0)
 
+    // ------------------ buttons ------------------ //
     const [buttonsHome, setButtonsHome] = useState<ButtonHomeProps[]>([])
 
+    // ------------------ bottom sheet ------------------ //
     const [bottomSheetState, setBottomSheetState] = useState<BottomSheetState>({
         visible: false,
         date: ""
     })
 
+    // ------------------ copy paste and delete ------------------ //
+
+    // this storage all changes of the date interval
+    const [operationDate, setOperacionDate] = useState<DateInterval>({
+        initialDate: "",
+        finalDate: ""
+    })
+
+    const [copiedMonth, setCopiedMonth] = useState<DateInterval>({
+        initialDate: "",
+        finalDate: "",
+    })
+
+
+
+
+
+    // ------------------ loading ------------------ //
     const [loading, setLoading] = useState(false)
+
+    // ------------------ toast ------------------ //
+    const [toastState, setToastState] = useState<ToastProps>({
+        visible: false,
+        message: "",
+        type: "success"
+    })
+
+    // ------------------ modal ------------------ //
+    const [modalState, setModalState] = useState<ModalProps>({
+        visible: false,
+        title: "",
+        message: "",
+        buttonList: []
+    })
+
 
 
 
@@ -120,7 +166,7 @@ const useHomeViewModel = ({
     // ------------------ methods ------------------ //
     const getData = async (dateInterval: DateInterval) => {
 
-        setLoading(true)
+        showLoading()
 
         const [
             categories,
@@ -143,7 +189,7 @@ const useHomeViewModel = ({
         updateTotalRemaining(totalIncomes, totalExpenses)
         generateButtons(totalExpenses, totalIncomes, categories)
 
-        setLoading(false)
+        hideLoading()
 
     }
 
@@ -164,12 +210,6 @@ const useHomeViewModel = ({
         updateTotalRemaining(totalIncomes, totalExpensesAmount)
 
     }
-
-    const refreshBudgetsData = async () => {
-
-    }
-
-
 
     const updateTotalRemaining = (totalIncomes: number, totalExpenses: number) => {
         setTotalremaining(currencyFormat(totalIncomes - totalExpenses))
@@ -272,9 +312,7 @@ const useHomeViewModel = ({
     // ------------------ bottom Sheets ------------------ //
     const getCurrentDate = (): DateInterval => {
 
-        const dateTime = new DateTime()
         const startOfMonth = dateTime.getStartOfMonth(dateTime.date)
-
 
         setBottomSheetState({
             ...bottomSheetState,
@@ -299,6 +337,7 @@ const useHomeViewModel = ({
     }
 
     const showBottomSheet = () => {
+
         setBottomSheetState({
             ...bottomSheetState,
             visible: true,
@@ -330,16 +369,223 @@ const useHomeViewModel = ({
     }
 
     const getNextMonth = (date: string): string => {
-        const dateTime = new DateTime(date)
         return dateTime.getNextMonth(date)
     }
+
+
+    // ------------------ modal ------------------ //
+    const showModal = (title: string, message: string, buttonList: ModalButtonList[]) => {
+        setModalState({
+            visible: true,
+            title,
+            message,
+            buttonList: buttonList
+        })
+    }
+
+    const hideModal = () => {
+        setModalState({
+            ...modalState,
+            visible: false
+        })
+    }
+
+
+    // ------------------ toast ------------------ //
+    const showToast = (message: string, type: ToastType) => {
+        setToastState({
+            visible: true,
+            message,
+            type
+        })
+    }
+
+    const hideToast = () => {
+        setToastState({
+            ...toastState,
+            visible: false
+        })
+    }
+
+
+
+    // ------------------ copy paste and delete ------------------ //
+
+    const onChangeOperationDate = (newDate: string) => {
+
+        const nextMonth = dateTime.getNextMonth(newDate)
+
+        setOperacionDate({
+            initialDate: newDate,
+            finalDate: nextMonth
+        })
+    }
+
+    const onCopyMonth = async () => {
+
+        showLoading()
+
+        const { isValid, errorMessage } = await copyMonthUseCase.execute(operationDate)
+
+        hideLoading()
+
+        if (!isValid) {
+            clearCopiedMonth()
+            showModal("Error", errorMessage, [
+                {
+                    text: "Aceptar",
+                    onPress: hideModal
+                }
+            ])
+
+        } else {
+            setCopiedMonth(operationDate)
+            showToast("Se ha copiado el mes", "success")
+        }
+
+    }
+
+    const clearCopiedMonth = () => {
+        setCopiedMonth({
+            initialDate: "",
+            finalDate: "",
+        })
+    }
+
+    /** shows a modal to confirm the paste month */
+    const onPasteMonth = () => {
+
+        showModal(
+            "Pegar mes",
+            "Está a punto de pegar toda la información de un mes a otro. ¿Está seguro que desea continuar?",
+            [
+                {
+                    text: "Aceptar",
+                    onPress: ()=>{
+                        validatePasteAction()
+                        hideModal()
+                    }
+                },
+                {
+                    text: "Cancelar",
+                    onPress: hideModal,
+                    style: { fontFamily: FontFamily.BOLD, color: Colors.BLUE }
+                },
+            ]
+        )
+
+    }
+
+    /**
+     * Usually we validate all the data in use case, but in this case we need to show a modal
+     * and options to the user, so we need to validate here
+     **/
+    const validatePasteAction = async () => {
+
+        let errorMessage = ""
+        let buttonList: ModalButtonList[] = []
+
+        showLoading()
+
+        const [
+            dateValidation, // a negative outcome may render the operation invalid,
+            pasteMonthValidation, // validate if there is data where we want to paste
+        ] = await Promise.all([
+            pasteMonthUseCase.applyValidations(operationDate, copiedMonth),
+            pasteMonthUseCase.isThereData(operationDate),
+        ])
+
+        hideLoading()
+
+
+        if (!dateValidation.isValid) {
+
+            errorMessage = dateValidation.errorMessage
+
+            buttonList = [
+                {
+                    text: "Aceptar",
+                    onPress: hideModal
+                }
+            ]
+
+            showModal("Error", errorMessage, buttonList)
+
+        } else if (!pasteMonthValidation.isValid) {
+
+            errorMessage = pasteMonthValidation.errorMessage
+            buttonList = [
+                {
+                    text: "Reemplazar",
+                    onPress: () => pasteMonth("overwrite"),
+                    style: { fontSize: FontSize.XSMALL }
+                },
+                {
+                    text: "Combinar",
+                    onPress: () => pasteMonth("combine"),
+                    style: { fontSize: FontSize.XSMALL }
+                },
+                {
+                    text: "Cancelar",
+                    onPress: hideModal,
+                    style: {
+                        fontSize: FontSize.XSMALL,
+                        fontFamily: FontFamily.BOLD,
+                        color: Colors.BLUE
+                    }
+                },
+            ]
+
+            showModal("Error", errorMessage, buttonList)
+
+        } else pasteMonth("overwrite")
+
+
+
+    }
+
+
+    const pasteMonth = async (pasteType: PasteType) => {
+
+        hideModal()
+        showLoading()
+
+        const { isValid, errorMessage } = await pasteMonthUseCase.execute(
+            operationDate, 
+            copiedMonth, 
+            pasteType 
+        )
+
+        hideLoading()
+
+        if (!isValid) {
+            showModal("Error", errorMessage, [
+                {
+                    text: "Aceptar",
+                    onPress: hideModal
+                }
+            ])
+
+        } else showToast("Se ha pegado el mes", "success")
+
+        clearCopiedMonth()
+
+    }
+
+
+
+    // ------------------ loading ------------------ //
+    const showLoading = () => setLoading(true)
+
+    const hideLoading = () => setLoading(false)
+
 
 
 
 
     // ------------------ return ------------------ //
     return {
-        loading,
+
         bottomSheetState,
         totalremaining,
         allIncomes: incomesContext,
@@ -347,9 +593,25 @@ const useHomeViewModel = ({
         totalExpenses,
         totalIncomes,
         buttonsHome,
+
+        // botom sheet
         showBottomSheet,
+        confirmDate,
         hideBottomSheet,
-        confirmDate
+        onChangeOperationDate,
+        // copy paste and delete
+        onCopyMonth,
+        onPasteMonth,
+
+        // modal
+        modalState,
+
+        // toast
+        hideToast,
+        toastState,
+
+        // loading
+        loading,
     }
 
 }

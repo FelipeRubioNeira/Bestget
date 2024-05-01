@@ -20,7 +20,7 @@ import { ScreenRoutes } from "../../../navigation/Routes"
 import { Income, IncomeUI } from "../../../data/types/Income"
 import { currencyFormat } from "../../../utils/NumberFormat"
 import { IIncomeRepository } from "../../../data/repository/incomeRepository/IIncomeRepository"
-import { ButtonModal, ModalProps } from "../../components/modal/Modal"
+import { ModalButtonList, ModalProps } from "../../components/modal/Modal"
 import TouchableIcon from "../../components/touchableIcon/TouchableIcon"
 import DeleteIncomeUseCase from "../../../domain/useCases/DeleteIncomeUseCase"
 import { Colors } from "../../constants/Colors"
@@ -240,7 +240,7 @@ const useIncomesViewModel = ({
         )
     }
 
-    const showAlert = (title: string, message: string, buttonList: ButtonModal[]) => {
+    const showAlert = (title: string, message: string, buttonList: ModalButtonList[]) => {
 
         setModalState({
             visible: true,

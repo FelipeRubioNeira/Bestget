@@ -5,7 +5,7 @@ import CreateBudgetUseCase from "../../../domain/useCases/CreateBudgetUseCase"
 import { Budget, BudgetCreate } from "../../../data/types/Budget"
 import { currencyFormat, numberFormat } from "../../../utils/NumberFormat"
 import { ScreenRoutes } from "../../../navigation/Routes"
-import { ButtonModal, ModalProps } from "../../components/modal/Modal"
+import { ModalButtonList, ModalProps } from "../../components/modal/Modal"
 import DefaultStyles from "../../styles/DefaultStyles"
 import EditBudgetUseCase from "../../../domain/useCases/EditBudgetUseCase"
 import ExpenseRepository from "../../../data/repository/expenseRepository/ExpenseRepository"
@@ -136,7 +136,7 @@ const useBudgetsFormViewModel = ({
 
 
     // ------------------- modal ------------------- //
-    const showModal = (title: string, message: string, buttonList: ButtonModal[]) => {
+    const showModal = (title: string, message: string, buttonList: ModalButtonList[]) => {
 
         setModalState({
             visible: true,
@@ -198,7 +198,7 @@ const useBudgetsFormViewModel = ({
         }
 
 
-        const response = await editBudgetUseCase.edit(budgetEditted, expenses, emmitEvent)
+        const response = await editBudgetUseCase.execute(budgetEditted, expenses, emmitEvent)
 
 
         if (response.isValid) {

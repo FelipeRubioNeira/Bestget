@@ -12,6 +12,7 @@ enum Actions {
     UPDATE_EXPENSES = 'UPDATE_EXPENSES',
     UPDATE_BUDGETS = 'UPDATE_BUDGETS',
     UPDATE_CATEGORIES = 'UPDATE_CATEGORIES',
+    UPDATE_COPIED_MONTH = 'UPDATE_COPIED_MONTH'
 }
 
 
@@ -41,11 +42,16 @@ type UpdateCategoriesAction = {
     payload: Category[];
 }
 
+type UpdateCopiedMonthAction = {
+    type: Actions.UPDATE_COPIED_MONTH;
+    payload: DateInterval;
+}
+
 
 
 // ----------------- Action Type ----------------- //
 type ActionType = updateDateIntervalContextAction | UpdateIncomesAction |
-    UpdateExpensesAction | UpdateBudgetsAction | UpdateCategoriesAction;
+    UpdateExpensesAction | UpdateBudgetsAction | UpdateCategoriesAction | UpdateCopiedMonthAction;
 
 
 

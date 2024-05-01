@@ -27,7 +27,7 @@ class ExpenseRepository implements IExpenseRespository {
 
     }
 
-    async edit(expense: Expense): Promise<void> {
+    async update(expense: Expense): Promise<void> {
 
         try {
 
@@ -226,6 +226,26 @@ class ExpenseRepository implements IExpenseRespository {
 
         } catch (error) {
             console.error("error deleteByBudgetId", error);
+        }
+
+    }
+
+    async count ({ initialDate, finalDate }: DateInterval): Promise<number> {
+
+        try {
+
+            const expenseCount = await firestore()
+                .collection(Collections.EXPENSE)
+                .where(ExpenseKeys.DATE, ">=", initialDate)
+                .where(ExpenseKeys.DATE, "<", finalDate)
+                .count()
+                .get()
+
+            return expenseCount.data().count
+
+        } catch (error) {
+            console.error("error countExpenses", error);
+            return 0
         }
 
     }

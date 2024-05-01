@@ -22,6 +22,18 @@ class DateTime {
         return `${year}-${month}-01T00:00:00`
     }
 
+    compareDates = (firstDate: string, secondDate: string): number => {
+
+        const date1 = new Date(firstDate);
+        const date2 = new Date(secondDate);
+    
+        // -1 si date1 es anterior a date2
+        //  0 si date1 es igual a date2
+        //  1 si date1 es posterior a date2
+        return date1 < date2 ? -1 : date1 > date2 ? 1 : 0;
+
+    }
+
 
     // ------------------- change the orden ------------------- //
 

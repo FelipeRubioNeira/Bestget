@@ -10,6 +10,8 @@ const Icons = {
     expense: require('../icons/ic_sack.png'),
     budget: require('../icons/ic_calculator_bold.png'),
     plus: require('../icons/ic_plus.png'),
+    dots: require('../icons/ic_dots.png'),
+    check: require('../icons/ic_check.png'),
 }
 
 export default Icons

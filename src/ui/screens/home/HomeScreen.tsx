@@ -1,28 +1,52 @@
-import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native'
+import { FlatList, SafeAreaView, View } from 'react-native'
 import React from 'react'
-import Label from '../../components/label/Label'
-import { FontFamily, FontSize } from '../../constants/Fonts'
 import MenuButton from '../../components/menuButton/MenuButton'
 import Spacer from '../../components/spacer/Spacer'
-import { Colors, DefaultStyles } from '../../constants/Index'
+import { DefaultStyles } from '../../constants/Index'
 import { ButtonHomeProps } from './HomeViewModel'
-import useHomeViewModel from './HomeViewModel'
 import { HomeScreenProps } from '../../../navigation/NavigationParamList'
-import IncomeRepository from '../../../data/repository/incomeRepository/IncomeRepository'
-import CategoryRespository from '../../../data/repository/categoryRepository/CategoryRepository'
-import ExpenseRepository from '../../../data/repository/expenseRepository/ExpenseRepository'
+import useHomeViewModel from './HomeViewModel'
 import BottomSheet from '../../components/bottomSheet/BottomSheet'
 import CurrentDate from '../../components/currentDate/CurrentDate'
 import Loading from '../../components/loading/Loading'
 import BudgetRepository from '../../../data/repository/budgetRepository/BudgetRepository'
+import HomeHeader from '../../components/homeHeader/homeHeader'
+import Toast from '../../components/toast/Toast'
+import HomeStyles from './HomeStyles'
+import Modal from '../../components/modal/Modal'
+import IncomeRepository from '../../../data/repository/incomeRepository/IncomeRepository'
+import CategoryRespository from '../../../data/repository/categoryRepository/CategoryRepository'
+import ExpenseRepository from '../../../data/repository/expenseRepository/ExpenseRepository'
+import CopyMonthUseCase from '../../../domain/useCases/CopyMonthUseCase'
+import PasteMonthUseCase from '../../../domain/useCases/PasteMonthUseCase'
 
+
+
+// ------------------- repositories ------------------- //
 const incomeRepository = new IncomeRepository()
 const expenseRepository = new ExpenseRepository()
 const budgetRepository = new BudgetRepository()
 const categoryRepository = new CategoryRespository()
 
 
+// ------------------- use cases ------------------- //
+const copyMonthUseCase = new CopyMonthUseCase(
+    incomeRepository,
+    budgetRepository,
+    expenseRepository
+)
+
+const pasteMonthUseCase = new PasteMonthUseCase(
+    incomeRepository,
+    budgetRepository,
+    expenseRepository
+)
+
+
+
+// ------------------- Home Screen ------------------- //
 const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
+
 
     const homeViewModel = useHomeViewModel({
         navigation,
@@ -31,20 +55,30 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
         expenseRepository,
         budgetRepository,
         incomeRepository,
+        copyMonthUseCase,
+        pasteMonthUseCase,
     })
 
-    const { 
+
+    const {
         bottomSheetState,
-        showBottomSheet
-     } = homeViewModel
-     
+        showBottomSheet,
+        totalremaining,
+        hideToast,
+        modalState,
+        toastState
+    } = homeViewModel
+
 
     return (
 
         <SafeAreaView>
             <View style={DefaultStyles.screen}>
 
-                <Header total={homeViewModel.totalremaining} />
+                <HomeHeader
+                    name='Hola Casita'
+                    total={totalremaining}
+                />
 
                 <Spacer marginVertical={"4%"} />
 
@@ -55,7 +89,7 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
 
                 <Spacer marginVertical={"4%"} />
 
-                <MenuArrayButton
+                <MenuListButton
                     buttonArray={homeViewModel.buttonsHome}
                 />
 
@@ -65,54 +99,40 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
                 visible={bottomSheetState.visible}
                 date={bottomSheetState.date}
                 onHide={homeViewModel.hideBottomSheet}
+                onChange={homeViewModel.onChangeOperationDate}
                 onConfirm={homeViewModel.confirmDate}
+                onCopy={homeViewModel.onCopyMonth}
+                onPaste={homeViewModel.onPasteMonth}
             />
+
+            <Toast
+                message={toastState.message}
+                visible={toastState.visible}
+                type={toastState.type}
+                hideToast={hideToast}
+            />
+
             <Loading visible={homeViewModel.loading} />
+
+            <Modal
+                visible={modalState.visible}
+                title={modalState.title}
+                message={modalState.message}
+                buttonList={modalState.buttonList}
+            />
 
         </SafeAreaView>
     )
 }
 
-
-const Header = ({ total = "" }: { total: string }) => {
-
-    return (
-
-        <View>
-            <Label
-                value={"Hola Casita"}
-                fontSize={FontSize.LARGE}
-                fontFamily={FontFamily.BLACK}
-            />
-
-            <Label
-                value={"Tu saldo es de"}
-                fontSize={FontSize.MEDIUM}
-                fontFamily={FontFamily.BLACK}
-                color={Colors.DARK_GRAY}
-            />
-
-            <Spacer marginVertical={"1%"} />
-
-            <Label
-                value={"$" + total}
-                fontSize={FontSize.LARGE}
-                fontFamily={FontFamily.BLACK}
-            />
-
-        </View>
-    )
-
-}
-
-const MenuArrayButton = ({ buttonArray }: { buttonArray: ButtonHomeProps[] }) => {
+// lista de botones u opciones
+const MenuListButton = ({ buttonArray }: { buttonArray: ButtonHomeProps[] }) => {
     return (
         <View>
-
             <FlatList
                 data={buttonArray}
                 renderItem={({ item }) => (
-                    <View style={homeStyle.buttonContainer}>
+                    <View style={HomeStyles.buttonContainer}>
                         <MenuButton
                             title={item.title}
                             subTitle={item.subTitle}
@@ -130,13 +150,3 @@ const MenuArrayButton = ({ buttonArray }: { buttonArray: ButtonHomeProps[] }) =>
 }
 
 export default HomeScreen
-
-const homeStyle = StyleSheet.create({
-
-    buttonContainer: {
-        flex: 1,
-        margin: '2%',
-        height: 150,
-    },
-
-})

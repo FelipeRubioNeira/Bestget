@@ -24,6 +24,9 @@ const globalReducer = (
         case Actions.UPDATE_CATEGORIES:
             return { ...state, categoriesContext: payload }
 
+        case Actions.UPDATE_COPIED_MONTH:
+            return { ...state, copiedMonth: payload }
+
         default: return state
 
     }

@@ -7,7 +7,7 @@ import { ScreenRoutes } from "../../../navigation/Routes"
 import IExpenseRespository from "../../../data/repository/expenseRepository/IExpenseRepository"
 import { Expense, ExpenseUI } from "../../../data/types/Expense"
 import TouchableIcon from "../../components/touchableIcon/TouchableIcon"
-import { ButtonModal, ModalProps } from "../../components/modal/Modal"
+import { ModalButtonList, ModalProps } from "../../components/modal/Modal"
 import DefaultStyles from "../../styles/DefaultStyles"
 import DeleteExpenseUseCase from "../../../domain/useCases/DeleteExpenseUseCase"
 import Icons from "../../../assets/icons"
@@ -186,7 +186,7 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
     }
 
     // ----------- modal ----------- //
-    const showModal = (title: string, message: string, buttonList: ButtonModal[]) => {
+    const showModal = (title: string, message: string, buttonList: ModalButtonList[]) => {
         setModalState({
             visible: true,
             title,

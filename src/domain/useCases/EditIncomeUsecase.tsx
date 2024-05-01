@@ -22,7 +22,7 @@ class IncomeEditUseCase {
         const result = await this.applyValidations(income.name, income.amount)
 
         if (result.isValid) {
-            await this.incomeRepository.edit(income);
+            await this.incomeRepository.update(income);
             validationResult.result = income.id
 
         } else {

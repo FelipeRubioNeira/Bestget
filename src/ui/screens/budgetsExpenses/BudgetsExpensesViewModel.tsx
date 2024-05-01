@@ -13,7 +13,7 @@ import IBudgetRepository from "../../../data/repository/budgetRepository/IBudget
 import { Budget, BudgetUI } from "../../../data/types/Budget"
 import { BudgetExpenseType } from "../../../data/types/BudgetExpense"
 import TouchableIcon from "../../components/touchableIcon/TouchableIcon"
-import { ButtonModal, ModalProps } from "../../components/modal/Modal"
+import { ModalButtonList, ModalProps } from "../../components/modal/Modal"
 import DeleteBudgetUseCase from "../../../domain/useCases/DeleteBudgetUseCase"
 import { ValidationResult } from "../../../data/types/Validation"
 import DeleteExpenseUseCase from "../../../domain/useCases/DeleteExpenseUseCase"
@@ -360,7 +360,7 @@ const useBudgetExpensesViewModel = ({
 
 
     // ------------------ modal ------------------ //
-    const showAlert = (title: string, message: string, buttonList: ButtonModal[]) => {
+    const showAlert = (title: string, message: string, buttonList: ModalButtonList[]) => {
         setModalState({
             title: title,
             message: message,
@@ -436,7 +436,7 @@ const useBudgetExpensesViewModel = ({
             },
         }
 
-        const buttonItem: ButtonModal[] = [{
+        const buttonItem: ModalButtonList[] = [{
             text: "Aceptar",
             onPress: hideAlert,
         }]

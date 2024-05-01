@@ -16,7 +16,7 @@ const dateTime = new DateTime()
 // 1- Create a context
 export type GlobalContextType = {
 
-    //date interval
+    //current date interval
     dateInterval: DateInterval,
     updateDateIntervalContext: (dateInterval: DateInterval) => void,
 
@@ -98,8 +98,6 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
     const updateCategoriesContext = (categories: Category[]) => {
         dispatch({ type: Actions.UPDATE_CATEGORIES, payload: categories })
     }
-
-
 
 
     // ----------------- Render ----------------- //

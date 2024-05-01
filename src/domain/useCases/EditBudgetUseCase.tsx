@@ -18,7 +18,7 @@ class EditBudgetUseCase {
         private expenseRespository: IExpenseRespository
     ) { }
 
-    async edit(
+    async execute(
         budget: Budget,
         expenses: Expense[],
         eventEmitter: (eventName: EventNames, payload: any) => void // callback to emit events

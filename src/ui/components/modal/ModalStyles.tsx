@@ -18,7 +18,7 @@ const ModalStyle = StyleSheet.create({
         bottom: 0,
     },
     container: {
-        width: "90%",
+        width: "95%",
         borderRadius: Styles.BORDER_RADIUS,
         backgroundColor: Colors.WHITE,
         ...DefaultStyles.shadow
@@ -59,7 +59,15 @@ const ModalStyle = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center"
+    },
+    modalSeparator: {
+        borderWidth: 0.2,
+        height: "60%",
+        alignSelf: "center",
+        marginHorizontal: "1%",
+        borderColor:Colors.DARK_GRAY
     }
+
 
 })
 

@@ -1,5 +1,5 @@
 import { TextStyle, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Colors } from '../../constants/Colors'
 import Label from '../label/Label'
 import { FontFamily, FontSize } from '../../constants/Fonts'
@@ -7,7 +7,7 @@ import ModalStyle from './ModalStyles'
 
 
 // ----------- types ------------ //
-export type ButtonModal = {
+export type ModalButtonList = {
     text: string,
     onPress: () => void,
     style?: TextStyle
@@ -15,7 +15,7 @@ export type ButtonModal = {
 
 type BodyProps = {
     message: string,
-    buttonList?: ButtonModal[]
+    buttonList?: ModalButtonList[]
 }
 
 export type ModalProps = {
@@ -81,23 +81,26 @@ const Body = ({ message = "", buttonList = [] }: BodyProps) => {
 
 }
 
-const ButtonList = ({ buttonList }: { buttonList?: ButtonModal[] }) => {
+const ButtonList = ({ buttonList }: { buttonList?: ModalButtonList[] }) => {
 
     if (!buttonList) return null
     return (
         <View style={ModalStyle.ButtonListContainer}>
             {
-                buttonList.map((button, index) => <ButtonItem
-                    key={index}
-                    {...button}
-                />)
+                buttonList.map((button, index) => <Fragment key={index}>
+                    <ButtonItem
+                        key={index}
+                        {...button}
+                    />
+                    {index < buttonList.length - 1 && <View key={index + "separator"} style={ModalStyle.modalSeparator} />}
+                </Fragment>)
             }
         </View>
     )
 
 }
 
-const ButtonItem = ({ text, onPress, style }: ButtonModal) => {
+const ButtonItem = ({ text, onPress, style }: ModalButtonList) => {
 
     return (
         <TouchableOpacity

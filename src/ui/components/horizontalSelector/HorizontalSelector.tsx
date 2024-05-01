@@ -36,16 +36,17 @@ const HorizontalSelector = ({ title, data, onChangeValue, indexValue }: Horizont
     const scrollToIndex = (index: number) => {
         setCurrentIndex(index);
         ref.current?.scrollToIndex({ index, animated: true });
-
-        return onChangeValue(index)
     }
 
     const updateMovement = (type: typePress) => {
+
         const movement = type === "left" ? -1 : 1;
         const minimumIndex = Math.min(currentIndex + movement, data.length - 1)
         const newIndex = Math.max(0, minimumIndex);
 
         scrollToIndex(newIndex)
+
+        return onChangeValue(newIndex)
 
     }
 
