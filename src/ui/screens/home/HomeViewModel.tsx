@@ -18,6 +18,8 @@ import { ModalButtonList, ModalProps } from "../../components/modal/Modal"
 import { ToastProps, ToastType } from "../../components/toast/Toast"
 import PasteMonthUseCase, { PasteType } from "../../../domain/useCases/pasteMonthUseCase"
 import { FontFamily, FontSize } from "../../constants/Fonts"
+import DefaultStyles from "../../styles/DefaultStyles"
+import DeleteMothUseCase from "../../../domain/useCases/DeleteMonthUseCase"
 
 const dateTime = new DateTime()
 
@@ -41,6 +43,7 @@ type HomeViewModelProps = {
     categoryRepository: ICategoryRepository,
     copyMonthUseCase: CopyMonthUseCase,
     pasteMonthUseCase: PasteMonthUseCase,
+    deleteMonthUseCase: DeleteMothUseCase,
 } & HomeScreenProps
 
 type BottomSheetState = {
@@ -56,7 +59,8 @@ const useHomeViewModel = ({
     budgetRepository,
     categoryRepository,
     copyMonthUseCase,
-    pasteMonthUseCase
+    pasteMonthUseCase,
+    deleteMonthUseCase,
 }: HomeViewModelProps) => {
 
 
@@ -295,7 +299,6 @@ const useHomeViewModel = ({
 
 
     // ------------------ navigation methods ------------------ //
-
     const onPressBudgetsExpenses = () => {
         navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {})
     }
@@ -309,7 +312,19 @@ const useHomeViewModel = ({
     const onPressProfile = () => { }
 
 
-    // ------------------ bottom Sheets ------------------ //
+
+
+    // ------------------ botom sheet ------------------ //
+    const onChangeOperationDate = (newDate: string) => {
+
+        const nextMonth = dateTime.getNextMonth(newDate)
+
+        setOperacionDate({
+            initialDate: newDate,
+            finalDate: nextMonth
+        })
+    }
+
     const getCurrentDate = (): DateInterval => {
 
         const startOfMonth = dateTime.getStartOfMonth(dateTime.date)
@@ -373,65 +388,19 @@ const useHomeViewModel = ({
     }
 
 
-    // ------------------ modal ------------------ //
-    const showModal = (title: string, message: string, buttonList: ModalButtonList[]) => {
-        setModalState({
-            visible: true,
-            title,
-            message,
-            buttonList: buttonList
-        })
-    }
-
-    const hideModal = () => {
-        setModalState({
-            ...modalState,
-            visible: false
-        })
-    }
-
-
-    // ------------------ toast ------------------ //
-    const showToast = (message: string, type: ToastType) => {
-        setToastState({
-            visible: true,
-            message,
-            type
-        })
-    }
-
-    const hideToast = () => {
-        setToastState({
-            ...toastState,
-            visible: false
-        })
-    }
-
-
 
     // ------------------ copy paste and delete ------------------ //
-
-    const onChangeOperationDate = (newDate: string) => {
-
-        const nextMonth = dateTime.getNextMonth(newDate)
-
-        setOperacionDate({
-            initialDate: newDate,
-            finalDate: nextMonth
-        })
-    }
-
     const onCopyMonth = async () => {
 
         showLoading()
 
-        const { isValid, errorMessage } = await copyMonthUseCase.execute(operationDate)
+        const { isValid, message } = await copyMonthUseCase.execute(operationDate)
 
         hideLoading()
 
         if (!isValid) {
             clearCopiedMonth()
-            showModal("Error", errorMessage, [
+            showModal("Error", message, [
                 {
                     text: "Aceptar",
                     onPress: hideModal
@@ -461,7 +430,7 @@ const useHomeViewModel = ({
             [
                 {
                     text: "Aceptar",
-                    onPress: ()=>{
+                    onPress: () => {
                         validatePasteAction()
                         hideModal()
                     }
@@ -469,7 +438,7 @@ const useHomeViewModel = ({
                 {
                     text: "Cancelar",
                     onPress: hideModal,
-                    style: { fontFamily: FontFamily.BOLD, color: Colors.BLUE }
+                    style: { ...DefaultStyles.highlightedText }
                 },
             ]
         )
@@ -482,14 +451,14 @@ const useHomeViewModel = ({
      **/
     const validatePasteAction = async () => {
 
-        let errorMessage = ""
+        let message = ""
         let buttonList: ModalButtonList[] = []
 
         showLoading()
 
         const [
             dateValidation, // a negative outcome may render the operation invalid,
-            pasteMonthValidation, // validate if there is data where we want to paste
+            isThereDataValidation, // validate if there is data where we want to paste
         ] = await Promise.all([
             pasteMonthUseCase.applyValidations(operationDate, copiedMonth),
             pasteMonthUseCase.isThereData(operationDate),
@@ -500,7 +469,7 @@ const useHomeViewModel = ({
 
         if (!dateValidation.isValid) {
 
-            errorMessage = dateValidation.errorMessage
+            message = dateValidation.message
 
             buttonList = [
                 {
@@ -509,11 +478,11 @@ const useHomeViewModel = ({
                 }
             ]
 
-            showModal("Error", errorMessage, buttonList)
+            showModal("Error", message, buttonList)
 
-        } else if (!pasteMonthValidation.isValid) {
+        } else if (!isThereDataValidation.isValid) {
 
-            errorMessage = pasteMonthValidation.errorMessage
+            message = isThereDataValidation.message
             buttonList = [
                 {
                     text: "Reemplazar",
@@ -530,13 +499,12 @@ const useHomeViewModel = ({
                     onPress: hideModal,
                     style: {
                         fontSize: FontSize.XSMALL,
-                        fontFamily: FontFamily.BOLD,
-                        color: Colors.BLUE
+                        ...DefaultStyles.highlightedText
                     }
                 },
             ]
 
-            showModal("Error", errorMessage, buttonList)
+            showModal("Error", message, buttonList)
 
         } else pasteMonth("overwrite")
 
@@ -544,33 +512,86 @@ const useHomeViewModel = ({
 
     }
 
-
     const pasteMonth = async (pasteType: PasteType) => {
 
         hideModal()
         showLoading()
 
-        const { isValid, errorMessage } = await pasteMonthUseCase.execute(
-            operationDate, 
-            copiedMonth, 
-            pasteType 
+        const { isValid, message } = await pasteMonthUseCase.execute(
+            operationDate,
+            copiedMonth,
+            pasteType
         )
 
         hideLoading()
 
-        if (!isValid) {
-            showModal("Error", errorMessage, [
+        if (isValid) {
+            showToast("Se ha pegado el mes", "success")
+
+        } else {
+            showModal("Error", message, [
                 {
                     text: "Aceptar",
                     onPress: hideModal
                 }
             ])
+        }
 
-        } else showToast("Se ha pegado el mes", "success")
 
         clearCopiedMonth()
 
     }
+
+    /* Each time we delete a month, we ask the user to confirm the action */
+    const onDeleteMonth = () => {
+
+        showModal(
+            "Eliminar mes",
+            "Está a punto de eliminar toda la información de un mes. ¿Está seguro que desea continuar?",
+            [
+                {
+                    text: "Aceptar",
+                    onPress: deleteMonth
+                },
+                {
+                    text: "Cancelar",
+                    onPress: hideModal,
+                    style: { ...DefaultStyles.highlightedText }
+                },
+            ]
+        )
+
+    }
+
+    const deleteMonth = async () => {
+
+        hideModal()
+        showLoading()
+
+        // 1- delete all data from the month
+        const { isValid, message } = await deleteMonthUseCase.execute(operationDate)
+
+        // 2- fetch data again
+        await getData(operationDate)
+
+        hideLoading()
+
+        if (isValid) {
+            showToast("Se ha eliminado el mes", "success")
+
+        } else {
+            showModal("Error", message, [
+                {
+                    text: "Aceptar",
+                    onPress: hideModal
+                }
+            ])
+        }
+
+    }
+
+
+
 
 
 
@@ -578,6 +599,41 @@ const useHomeViewModel = ({
     const showLoading = () => setLoading(true)
 
     const hideLoading = () => setLoading(false)
+
+
+    // ------------------ toast ------------------ //
+    const showToast = (message: string, type: ToastType) => {
+        setToastState({
+            visible: true,
+            message,
+            type
+        })
+    }
+
+    const hideToast = () => {
+        setToastState({
+            ...toastState,
+            visible: false
+        })
+    }
+
+
+    // ------------------ modal ------------------ //
+    const showModal = (title: string, message: string, buttonList: ModalButtonList[]) => {
+        setModalState({
+            visible: true,
+            title,
+            message,
+            buttonList: buttonList
+        })
+    }
+
+    const hideModal = () => {
+        setModalState({
+            ...modalState,
+            visible: false
+        })
+    }
 
 
 
@@ -599,9 +655,11 @@ const useHomeViewModel = ({
         confirmDate,
         hideBottomSheet,
         onChangeOperationDate,
+
         // copy paste and delete
         onCopyMonth,
         onPasteMonth,
+        onDeleteMonth,
 
         // modal
         modalState,

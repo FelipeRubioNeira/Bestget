@@ -10,14 +10,14 @@ const validateConnection = async (): Promise<Validation> => {
 
     const result: Validation = {
         isValid: true,
-        errorMessage: "",
+        message: "",
     }
 
     const isConnectedResult = await isConnected()
 
     if (!isConnectedResult) {
         result.isValid = false
-        result.errorMessage = "Verifique su conexión a internet y vuelva a intentarlo."
+        result.message = "Verifique su conexión a internet y vuelva a intentarlo."
     }
 
     return result

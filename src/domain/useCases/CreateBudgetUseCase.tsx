@@ -33,7 +33,7 @@ class CreateBudgetUseCase {
             validationResult.isValid = false
             validationResult.message = {
                 title: "Error al guardar el presupuesto.",
-                message: result.errorMessage,
+                message: result.message,
             }
 
         }
@@ -50,7 +50,7 @@ class CreateBudgetUseCase {
 
         let validationResult: Validation = {
             isValid: true,
-            errorMessage: ""
+            message: ""
         }
 
         const validationArray = [
@@ -75,17 +75,17 @@ class CreateBudgetUseCase {
 
         const result: Validation = {
             isValid: true,
-            errorMessage: "",
+            message: "",
         }
 
 
         if (name.trim() === "") {
             result.isValid = false
-            result.errorMessage = "El nombre de su presupuesto no puede estar vacío."
+            result.message = "El nombre de su presupuesto no puede estar vacío."
 
         } else if (amount === 0) {
             result.isValid = false
-            result.errorMessage = "El monto de su presupuesto debe ser mayor que $0."
+            result.message = "El monto de su presupuesto debe ser mayor que $0."
         }
 
         return result
@@ -96,14 +96,14 @@ class CreateBudgetUseCase {
 
         const result: Validation = {
             isValid: true,
-            errorMessage: "",
+            message: "",
         }
 
         const isConnectedResult = await isConnected()
 
         if (!isConnectedResult) {
             result.isValid = false
-            result.errorMessage = "Verifique su conexión a internet y vuelva a intentarlo."
+            result.message = "Verifique su conexión a internet y vuelva a intentarlo."
         }
 
         return result

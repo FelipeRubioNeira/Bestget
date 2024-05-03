@@ -48,6 +48,10 @@ const DefaultStyles = StyleSheet.create({
         color: Colors.BLUE,
         fontFamily: FontFamily.BOLD
     },
+    highlightedText:{
+        color: Colors.BLUE,
+        fontFamily: FontFamily.BOLD
+    }
 
 })
 

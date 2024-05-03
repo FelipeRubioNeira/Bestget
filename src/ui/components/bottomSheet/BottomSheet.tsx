@@ -81,7 +81,7 @@ const BottomSheet = ({
                     <Actions
                         onCopy={onCopy}
                         onPaste={onPaste}
-                        onDelete={() => console.log("eliminar")}
+                        onDelete={onDelete}
                     />
 
                     {/* <Spacer marginVertical={"4%"} />

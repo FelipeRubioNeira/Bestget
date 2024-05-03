@@ -36,7 +36,7 @@ class EditExpenseUseCase {
             validationResult.isValid = false
             validationResult.message = {
                 title: "Error al guardar el gasto.",
-                message: result.errorMessage,
+                message: result.message,
             }
         }
 
@@ -49,7 +49,7 @@ class EditExpenseUseCase {
 
         const validationResult = {
             isValid: true,
-            errorMessage: ""
+            message: ""
         }
 
 
@@ -64,7 +64,7 @@ class EditExpenseUseCase {
 
             if (!result.isValid) {
                 validationResult.isValid = false
-                validationResult.errorMessage = result.errorMessage
+                validationResult.message = result.message
             }
         }
 

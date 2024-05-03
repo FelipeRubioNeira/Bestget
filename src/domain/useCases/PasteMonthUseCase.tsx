@@ -27,26 +27,28 @@ class PasteMonthUseCase {
 
         const validation: Validation = {
             isValid: true,
-            errorMessage: "",
+            message: "",
         }
 
         try {
-
 
             // if pasteType is overwrite, delete all data from operationDate
             if (pasteType === "overwrite") {
                 await this.incomeRepository.deleteTransaction(operationDate)
             }
-            
+
             await this.incomeRepository.copyTransaction(copiedMonth, operationDate)
 
+
         } catch (error) {
+
+            console.log("error PasteMonthUseCase", error);
+            
+
             validation.isValid = false
-            validation.errorMessage = "Ha ocurrido un error al pegar los datos. Intente nuevamente."
+            validation.message = "Ha ocurrido un error al pegar los datos. Intente nuevamente."
 
         }
-
-
 
         return validation
 
@@ -56,7 +58,7 @@ class PasteMonthUseCase {
 
         const validationResult: Validation = {
             isValid: true,
-            errorMessage: "",
+            message: "",
         }
 
 
@@ -67,10 +69,10 @@ class PasteMonthUseCase {
 
         for (const validation of validatations) {
 
-            const { isValid, errorMessage } = await validation()
+            const { isValid, message } = await validation()
 
             validationResult.isValid = isValid
-            validationResult.errorMessage = errorMessage
+            validationResult.message = message
 
         }
 
@@ -83,7 +85,7 @@ class PasteMonthUseCase {
 
         const result: Validation = {
             isValid: true,
-            errorMessage: "",
+            message: "",
         }
 
         const [
@@ -99,7 +101,7 @@ class PasteMonthUseCase {
 
         if (incomeCount > 0 || budgetCount > 0 || expenseCount > 0) {
             result.isValid = false
-            result.errorMessage = "Existen datos previos en este mes. ¿Desea reemplazar, combinar o cancelar la operación?."
+            result.message = "Existen datos previos en este mes. ¿Desea reemplazar, combinar o cancelar la operación?."
         }
 
         return result
@@ -110,14 +112,14 @@ class PasteMonthUseCase {
 
         const result: Validation = {
             isValid: true,
-            errorMessage: "",
+            message: "",
         }
 
         const isConnectedResult = await isConnected()
 
         if (!isConnectedResult) {
             result.isValid = false
-            result.errorMessage = "Verifique su conexión a internet y vuelva a intentarlo."
+            result.message = "Verifique su conexión a internet y vuelva a intentarlo."
         }
 
         return result
@@ -127,16 +129,16 @@ class PasteMonthUseCase {
 
         const result: Validation = {
             isValid: true,
-            errorMessage: "",
+            message: "",
         }
 
         if (!copiedMonth.initialDate || !copiedMonth.finalDate) {
             result.isValid = false
-            result.errorMessage = "Antes de pegar, es necesario copiar un mes."
+            result.message = "Antes de pegar, es necesario copiar un mes."
 
         } else if (dateTime.compareDates(operationDate.initialDate, copiedMonth.initialDate) === 0) {
             result.isValid = false
-            result.errorMessage = "No se puede pegar un mes en el mismo mes."
+            result.message = "No se puede pegar un mes en el mismo mes."
         }
 
         return result

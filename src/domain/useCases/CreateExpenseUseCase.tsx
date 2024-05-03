@@ -35,7 +35,7 @@ class CreateExpenseUseCase {
             validationResult.isValid = false
             validationResult.message = {
                 title: "Error al guardar el gasto.",
-                message: result.errorMessage
+                message: result.message
             }
 
         }
@@ -49,7 +49,7 @@ class CreateExpenseUseCase {
 
         const validationResult: Validation = {
             isValid: true,
-            errorMessage: ""
+            message: ""
         }
 
         const validationArray = [
@@ -63,7 +63,7 @@ class CreateExpenseUseCase {
 
             if (!result.isValid) {
                 validationResult.isValid = false
-                validationResult.errorMessage = result.errorMessage
+                validationResult.message = result.message
             }
         }
 

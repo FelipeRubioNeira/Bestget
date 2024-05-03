@@ -24,7 +24,7 @@ class CopyMonthUseCase {
 
         const validationResult: Validation = {
             isValid: true,
-            errorMessage: "",
+            message: "",
         }
 
 
@@ -35,10 +35,10 @@ class CopyMonthUseCase {
 
         for (const validation of validatations) {
 
-            const { isValid, errorMessage } = await validation()
+            const { isValid, message } = await validation()
 
             validationResult.isValid = isValid
-            validationResult.errorMessage = errorMessage
+            validationResult.message = message
 
         }
 
@@ -51,14 +51,14 @@ class CopyMonthUseCase {
 
         const result: Validation = {
             isValid: true,
-            errorMessage: "",
+            message: "",
         }
 
         const isConnectedResult = await isConnected()
 
         if (!isConnectedResult) {
             result.isValid = false
-            result.errorMessage = "Verifique su conexión a internet y vuelva a intentarlo."
+            result.message = "Verifique su conexión a internet y vuelva a intentarlo."
         }
 
         return result
@@ -68,7 +68,7 @@ class CopyMonthUseCase {
 
         const result: Validation = {
             isValid: true,
-            errorMessage: "",
+            message: "",
         }
 
         const [
@@ -84,7 +84,7 @@ class CopyMonthUseCase {
 
         if (incomeCount === 0 || budgetCount === 0 || expenseCount === 0) {
             result.isValid = false
-            result.errorMessage = "Este mes no tiene datos para copiar."
+            result.message = "Este mes no tiene datos para copiar."
         }
 
         return result

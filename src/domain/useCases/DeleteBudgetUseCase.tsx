@@ -34,7 +34,7 @@ class DeleteBudgetUseCase {
             validationResult.isValid = false
             validationResult.message = {
                 title: "Error",
-                message: validation.errorMessage
+                message: validation.message
             }
 
         }

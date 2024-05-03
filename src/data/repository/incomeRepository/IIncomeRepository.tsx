@@ -2,6 +2,9 @@ import { DateInterval } from "../../types/DateInterval";
 import { Income, IncomeCreate } from "../../types/Income";
 
 export interface IIncomeRepository {
+
+     /* all these methods are in charge of manipulating 
+     individual data */
      create: (income: IncomeCreate) => Promise<string>
      getAll: (date:DateInterval) => Promise<Income[]>
      getTotal: (date:DateInterval) => Promise<number>
@@ -12,4 +15,5 @@ export interface IIncomeRepository {
      // ----------------- transactions ----------------- //
      copyTransaction: (from: DateInterval, to: DateInterval,) => Promise<void>
      deleteTransaction: (date: DateInterval) => Promise<void>
+     
 }

@@ -19,6 +19,7 @@ import CategoryRespository from '../../../data/repository/categoryRepository/Cat
 import ExpenseRepository from '../../../data/repository/expenseRepository/ExpenseRepository'
 import CopyMonthUseCase from '../../../domain/useCases/CopyMonthUseCase'
 import PasteMonthUseCase from '../../../domain/useCases/PasteMonthUseCase'
+import DeleteMothUseCase from '../../../domain/useCases/DeleteMonthUseCase'
 
 
 
@@ -42,6 +43,12 @@ const pasteMonthUseCase = new PasteMonthUseCase(
     expenseRepository
 )
 
+const deleteMonthUseCase = new DeleteMothUseCase(
+    incomeRepository,
+    budgetRepository,
+    expenseRepository
+)
+
 
 
 // ------------------- Home Screen ------------------- //
@@ -57,6 +64,7 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
         incomeRepository,
         copyMonthUseCase,
         pasteMonthUseCase,
+        deleteMonthUseCase
     })
 
 
@@ -103,6 +111,7 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
                 onConfirm={homeViewModel.confirmDate}
                 onCopy={homeViewModel.onCopyMonth}
                 onPaste={homeViewModel.onPasteMonth}
+                onDelete={homeViewModel.onDeleteMonth}
             />
 
             <Toast

@@ -35,7 +35,7 @@ class CreateIncomeUseCase  {
             validationResult.isValid = false
             validationResult.message = {
                 title: "Error al guardar el ingreso.",
-                message: result.errorMessage,
+                message: result.message,
             }
         }
 
@@ -48,7 +48,7 @@ class CreateIncomeUseCase  {
 
         let validationResult: Validation = {
             isValid: true,
-            errorMessage: ""
+            message: ""
         }
 
         const validationArray = [

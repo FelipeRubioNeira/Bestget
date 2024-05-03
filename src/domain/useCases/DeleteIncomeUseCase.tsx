@@ -25,7 +25,7 @@ class DeleteIncomeUseCase {
             validationResult.isValid = false
             validationResult.message = {
                 title: "Error al eliminar el ingreso.",
-                message: result.errorMessage
+                message: result.message
             }
         }
 
