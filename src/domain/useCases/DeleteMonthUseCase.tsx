@@ -20,7 +20,9 @@ class DeleteMothUseCase {
 
         try {
             await Promise.all([
-                this.incomeRepository.deleteTransaction(dateInterval)
+                this.incomeRepository.deleteTransaction(dateInterval),
+                this.budgetRepository.deleteTransaction(dateInterval),
+                this.expenseRepository.deleteTransaction(dateInterval)
             ])
             
         } catch (error) {

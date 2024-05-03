@@ -230,7 +230,7 @@ class ExpenseRepository implements IExpenseRespository {
 
     }
 
-    async count ({ initialDate, finalDate }: DateInterval): Promise<number> {
+    async count({ initialDate, finalDate }: DateInterval): Promise<number> {
 
         try {
 
@@ -251,7 +251,63 @@ class ExpenseRepository implements IExpenseRespository {
     }
 
 
-    // ----------- helpers ----------- //
+    // ----------------- transactions ----------------- //
+
+    async copyTransaction(from: DateInterval, to: DateInterval): Promise<void> {
+
+        try {
+
+            const db = firestore()
+
+            await db.runTransaction(async transaction => {
+
+                const expensesRef = db.collection(Collections.EXPENSE)
+                const expenses = await this.getAll(from)
+
+                expenses.forEach(expense => {
+
+                    const newExpense:ExpenseCreate = {
+                        name: expense.name,
+                        amount: expense.amount,
+                        categoryId: expense.categoryId,
+                        date: expense.date,
+                        budgetId: expense.budgetId
+                    }
+
+                    transaction.set(expensesRef.doc(), newExpense)
+                })
+
+            })
+
+        } catch (error) {
+            console.error("error copyTransaction", error);
+        }
+
+    }
+
+    async deleteTransaction(date: DateInterval): Promise<void> {
+
+        try {
+
+            const db = firestore()
+
+            await db.runTransaction(async transaction => {
+
+                const expensesRef = db.collection(Collections.EXPENSE)
+                const expenses = await this.getAll(date)
+
+                expenses.forEach(expense => {
+                    transaction.delete(expensesRef.doc(expense.id))
+                })
+
+            })
+
+
+        } catch (error) {
+            console.error("error deleteTransaction", error);
+        }
+
+    }
 
 
 }

@@ -34,16 +34,24 @@ class PasteMonthUseCase {
 
             // if pasteType is overwrite, delete all data from operationDate
             if (pasteType === "overwrite") {
-                await this.incomeRepository.deleteTransaction(operationDate)
+                await Promise.all([
+                    this.incomeRepository.deleteTransaction(operationDate),
+                    this.budgetRepository.deleteTransaction(operationDate),
+                    this.expenseRepository.deleteTransaction(operationDate)
+                ])
             }
 
-            await this.incomeRepository.copyTransaction(copiedMonth, operationDate)
+            await Promise.all([
+                this.incomeRepository.copyTransaction(copiedMonth, operationDate),
+                this.budgetRepository.copyTransaction(copiedMonth, operationDate),
+                this.expenseRepository.copyTransaction(copiedMonth, operationDate)
+            ])
 
 
         } catch (error) {
 
             console.log("error PasteMonthUseCase", error);
-            
+
 
             validation.isValid = false
             validation.message = "Ha ocurrido un error al pegar los datos. Intente nuevamente."

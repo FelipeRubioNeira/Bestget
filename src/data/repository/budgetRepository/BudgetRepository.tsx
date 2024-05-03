@@ -96,22 +96,79 @@ class BudgetRepository implements IBudgetRepository {
     }
 
     async count({ initialDate, finalDate }: DateInterval): Promise<number> {
-            
-            try {
-    
-                const budgetCount = await firestore()
-                    .collection(Collections.BUDGET)
-                    .where(BudgetKeys.DATE, ">=", initialDate)
-                    .where(BudgetKeys.DATE, "<", finalDate)
-                    .count()
-                    .get()
-    
-                return budgetCount.data().count
-    
-            } catch (error) {
-                console.error("error BudgetRepository count", error);
-                return 0
-            }
+
+        try {
+
+            const budgetCount = await firestore()
+                .collection(Collections.BUDGET)
+                .where(BudgetKeys.DATE, ">=", initialDate)
+                .where(BudgetKeys.DATE, "<", finalDate)
+                .count()
+                .get()
+
+            return budgetCount.data().count
+
+        } catch (error) {
+            console.error("error BudgetRepository count", error);
+            return 0
+        }
+    }
+
+
+    // ----------------- transactions ----------------- //
+
+    async copyTransaction(from: DateInterval, to: DateInterval): Promise<void> {
+
+        try {
+
+            const db = firestore()
+
+            await db.runTransaction(async transaction => {
+
+                const budgetsRef = db.collection(Collections.BUDGET)
+                const budgets = await this.getAll(from)
+
+                budgets.forEach(budget => {
+
+                    const newBudget: BudgetCreate = {
+                        name: budget.name,
+                        amount: budget.amount,
+                        categoryId: budget.categoryId,
+                        date: to.initialDate
+                    }
+
+                    transaction.set(budgetsRef.doc(), newBudget)
+                })
+
+            });
+
+        } catch (error) {
+            console.error("error BudgetRepository copyTransaction", error);
+        }
+
+    }
+
+    async deleteTransaction(date: DateInterval): Promise<void> {
+
+        try {
+
+            const db = firestore()
+
+            await db.runTransaction(async transaction => {
+
+                const budgetsRef = db.collection(Collections.BUDGET)
+                const budgets = await this.getAll(date)
+
+                budgets.forEach(budget => {
+                    transaction.delete(budgetsRef.doc(budget.id))
+                })
+
+            });
+
+        } catch (error) {
+            console.error("error BudgetRepository deleteTransaction", error);
+        }
+
     }
 
 }

@@ -137,7 +137,6 @@ class IncomeRepository implements IIncomeRepository {
 
                 // get ref from collection
                 const incomeRef = db.collection(Collections.INCOME);
-
                 const incomes = await this.getAll(from)
 
                 incomes.forEach(income => {
@@ -170,7 +169,6 @@ class IncomeRepository implements IIncomeRepository {
 
                 // get ref from collection
                 const incomeRef = db.collection(Collections.INCOME);
-
                 const incomes = await this.getAll(date)
 
                 incomes.forEach(income => {

@@ -3,6 +3,7 @@ import { Expense, ExpenseCreate } from "../../types/Expense"
 
 
 interface IExpenseRespository {
+
     create: (expense: ExpenseCreate) => Promise<string>
 
     update: (expense: Expense) => Promise<void>
@@ -19,6 +20,12 @@ interface IExpenseRespository {
     deleteByBudgetId: (budgetId: string) => Promise<void>
 
     count: (date: DateInterval) => Promise<number>
+
+
+    // ----------------- transactions ----------------- //
+    copyTransaction: (from: DateInterval, to: DateInterval) => Promise<void>
+    deleteTransaction: (date: DateInterval) => Promise<void>
+
 }
 
 export default IExpenseRespository
