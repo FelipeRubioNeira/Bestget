@@ -45,9 +45,7 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
     // ----------- states ----------- //
     const [category, setCategory] = useState<Category | undefined>()
     const [expenseList, setExpenseList] = useState<ExpenseUI[]>([])
-
-    // used to delete an expense
-    const [expenseId, setExpenseId] = useState<string>("")
+    
 
     const [title, setTitle] = useState<Title>({
         main: "",
@@ -225,15 +223,13 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
 
     const onPressDelete = (expenseId: string) => {
 
-        setExpenseId(expenseId)
-
         showModal(
             "Eliminar gasto",
             "¿Está seguro que desea eliminar este gasto?",
             [
                 {
                     text: "Aceptar",
-                    onPress: deleteExpense
+                    onPress: ()=> deleteExpense(expenseId)
                 },
                 {
                     text: "Cancelar",
@@ -245,7 +241,7 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
 
     }
 
-    const deleteExpense = async () => {
+    const deleteExpense = async (expenseId: string) => {
 
         hideModal()
 
