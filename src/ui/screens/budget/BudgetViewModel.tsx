@@ -13,6 +13,7 @@ import DeleteExpenseUseCase from "../../../domain/useCases/DeleteExpenseUseCase"
 import Icons from "../../../assets/icons"
 import DateTime from "../../../utils/DateTime"
 import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
+import { useEventBus } from "../../../data/globalContext/events/EventBus"
 
 
 
@@ -31,9 +32,11 @@ type budgetViewModelProps = {
 const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpenseUseCase }: budgetViewModelProps) => {
 
     // ----------- context ----------- //
-    const {
-        categoriesContext
-    } = useGlobalContext()
+    const { categoriesContext } = useGlobalContext()
+
+
+    // ----------- event bud ----------- //
+    const { emmitEvent } = useEventBus()
 
 
     // ----------- params ----------- //
@@ -42,10 +45,11 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
     } = route.params
 
 
+
     // ----------- states ----------- //
     const [category, setCategory] = useState<Category | undefined>()
     const [expenseList, setExpenseList] = useState<ExpenseUI[]>([])
-    
+
 
     const [title, setTitle] = useState<Title>({
         main: "",
@@ -229,7 +233,7 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
             [
                 {
                     text: "Aceptar",
-                    onPress: ()=> deleteExpense(expenseId)
+                    onPress: () => deleteExpense(expenseId)
                 },
                 {
                     text: "Cancelar",
@@ -245,7 +249,7 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
 
         hideModal()
 
-        const response = await deleteExpenseUseCase.delete(expenseId)
+        const response = await deleteExpenseUseCase.delete(expenseId, emmitEvent)
 
         if (response.isValid) {
             getData()

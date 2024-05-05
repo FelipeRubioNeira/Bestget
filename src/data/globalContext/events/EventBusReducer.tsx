@@ -30,6 +30,9 @@ export const defaultEventBusState: EventBusState = {
 // ----------------- reducer ----------------- //
 const eventBusReducer = (state: EventBusState, eventName: EventNames) => {
 
+    console.log("Evento recibido: ", eventName);
+    
+
     switch (eventName) {
 
         // budget cases

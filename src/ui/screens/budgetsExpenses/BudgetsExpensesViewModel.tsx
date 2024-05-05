@@ -55,6 +55,7 @@ const useBudgetExpensesViewModel = ({
     // ----------- context ----------- //
 
     const {
+        emmitEvent,
         budgetsQueue,
         expensesQueue,
         consumeBudgetsQueue,
@@ -70,14 +71,6 @@ const useBudgetExpensesViewModel = ({
         updateBudgetsContext,
         categoriesContext
     } = useGlobalContext()
-
-
-
-
-
-    // ----------- params ----------- //
-
-
 
 
 
@@ -206,7 +199,7 @@ const useBudgetExpensesViewModel = ({
         expensesQueue: Event[]
     }) => {
 
-        const thereAreNewBudgetExpenses = queues.expensesQueue.some(event => event.eventName === EventNames.EXPENSE_CREATED_FROM_BUDGET)
+        const thereAreNewBudgetExpenses = queues.expensesQueue.some(event => event.eventName.includes("FROM.BUDGET"))
 
         if (queues.budgetsQueue.length > 0 || thereAreNewBudgetExpenses) {
             return updateBudgets();
@@ -507,8 +500,7 @@ const useBudgetExpensesViewModel = ({
 
         // if the item to delete is an expense
         else {
-
-            validationResult = await deleteExpenseUseCase.delete(itemId)
+            validationResult = await deleteExpenseUseCase.delete(itemId, emmitEvent)
 
             const { title, message } = validationResult.message
             if (!validationResult.isValid) showAlert(title, message, buttonItem)

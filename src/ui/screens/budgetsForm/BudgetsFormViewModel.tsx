@@ -188,16 +188,17 @@ const useBudgetsFormViewModel = ({
 
         const date = dateTime.getIsoDateTime(budgetState.budgetDate)
 
-        const budgetEditted = {
+        const budgetEdited:Budget = {
             id: budget?.id || "",
             name: budgetState.budgetName,
             amount: numberFormat(budgetState.budgetAmount),
             categoryId: budgetState?.categoryId || 0,
-            date: date
+            date: date,
+            remaining: budget?.remaining || 0
         }
 
 
-        const response = await editBudgetUseCase.execute(budgetEditted, expenses, emmitEvent)
+        const response = await editBudgetUseCase.execute(budgetEdited, expenses, emmitEvent)
 
 
         if (response.isValid) {
