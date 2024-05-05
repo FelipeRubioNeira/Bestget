@@ -3,7 +3,7 @@ import { createContext, useContext, useReducer } from "react";
 import globalReducer from "./GlobalReducer";
 import { DateInterval } from "../types/DateInterval";
 import DateTime from "../../utils/DateTime";
-import { Actions } from "./ActionTypes";
+import { Actions } from "./events/ActionTypes";
 import { Income } from "../types/Income";
 import { Expense } from "../types/Expense";
 import { Budget } from "../types/Budget";

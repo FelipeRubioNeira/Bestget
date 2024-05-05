@@ -20,6 +20,7 @@ import ExpenseRepository from '../../../data/repository/expenseRepository/Expens
 import CopyMonthUseCase from '../../../domain/useCases/CopyMonthUseCase'
 import PasteMonthUseCase from '../../../domain/useCases/PasteMonthUseCase'
 import DeleteMothUseCase from '../../../domain/useCases/DeleteMonthUseCase'
+import BudgetExpenseRepository from '../../../data/repository/budgetExpenseRepository/BudgetExpenseRepository'
 
 
 
@@ -28,6 +29,7 @@ const incomeRepository = new IncomeRepository()
 const expenseRepository = new ExpenseRepository()
 const budgetRepository = new BudgetRepository()
 const categoryRepository = new CategoryRespository()
+const budgetExpenseRepository = new BudgetExpenseRepository()
 
 
 // ------------------- use cases ------------------- //
@@ -58,10 +60,14 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
     const homeViewModel = useHomeViewModel({
         navigation,
         route,
+        // repositories
         categoryRepository,
         expenseRepository,
         budgetRepository,
         incomeRepository,
+        budgetExpenseRepository,
+
+        // use cases
         copyMonthUseCase,
         pasteMonthUseCase,
         deleteMonthUseCase

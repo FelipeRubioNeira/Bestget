@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, StyleSheet, TouchableOpacity, Vibration } from 'react-native'
+import { Image, StyleSheet, TouchableOpacity, Vibration, View } from 'react-native'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 import Label from '../label/Label'
 import DefaultStyles from '../../styles/DefaultStyles'
@@ -10,7 +10,7 @@ import Icons from '../../../assets/icons'
 
 
 
-const BudgetItem = ({ name, amount, category, onPress, editMode, onEdit, onDelete }: BudgetUI) => {
+const BudgetItem = ({ name, amount, category, remaining, onPress, editMode, onEdit, onDelete }: BudgetUI) => {
 
 
     return (
@@ -38,10 +38,16 @@ const BudgetItem = ({ name, amount, category, onPress, editMode, onEdit, onDelet
                     />
                     :
 
-                    <Label
-                        value={"$" + amount}
-                        style={budgetStyles.amount}
-                    />
+                    <View style={{ flexDirection: "column" }}>
+                        <Label
+                            value={"$" + remaining}
+                            style={budgetStyles.remainingAmount}
+                        />
+                        <Label
+                            value={"$" + amount}
+                            style={budgetStyles.amount}
+                        />
+                    </View>
             }
 
 
@@ -66,6 +72,10 @@ const IconBudget = (props: { color?: string }) => {
     )
 }
 
+
+
+
+// ------------------- Styles ------------------- //
 const budgetStyles = StyleSheet.create({
 
     icon: {
@@ -78,13 +88,22 @@ const budgetStyles = StyleSheet.create({
         fontSize: FontSize.SMALL,
         fontFamily: FontFamily.REGULAR,
     },
-    amount: {
+    remainingAmount: {
         flex: 1,
         height: "100%",
         fontSize: FontSize.SMALL,
         fontFamily: FontFamily.BOLD,
         textAlign: "right",
-        verticalAlign: "middle"
+        verticalAlign: "middle",
+    },
+    amount: {
+        flex: 1,
+        height: "100%",
+        textAlign: "right",
+        verticalAlign: "middle",
+        fontSize: FontSize.XSMALL,
+        fontFamily: FontFamily.REGULAR,
+        color: Colors.GRAY,
     }
 })
 

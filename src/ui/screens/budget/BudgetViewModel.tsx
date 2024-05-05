@@ -33,7 +33,7 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
     // ----------- context ----------- //
     const {
         categoriesContext
-    }= useGlobalContext()
+    } = useGlobalContext()
 
 
     // ----------- params ----------- //
@@ -68,20 +68,8 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
 
 
     // ----------- effects ----------- //
-
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            getData()
-        })
-
-        return unsubscribe
-
-    }, [navigation])
-
-
     // we add the delete button to the header if there are budget or expenses
     useEffect(() => {
-
         navigation.setOptions({
             headerRight: () => {
                 if (expenseList.length === 0) return null
@@ -96,6 +84,16 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
 
     }, [expenseList, editMode])
 
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            getData()
+        })
+
+        return unsubscribe
+
+    }, [navigation])
+
+
 
 
 
@@ -105,6 +103,7 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
 
     const getData = async () => {
 
+        // category and color
         const categoryFound = findCategory(budget?.categoryId, categoriesContext)
 
         const expenseList = await expensesRepository.getByBudgetId(budget.id)

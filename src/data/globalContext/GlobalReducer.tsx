@@ -1,5 +1,5 @@
 import { GlobalContextType } from "./GlobalContext"
-import { ActionType, Actions } from "./ActionTypes"
+import { ActionType, Actions } from "./events/ActionTypes"
 
 
 const globalReducer = (

@@ -1,3 +1,4 @@
+import React from "react";
 import EventEmitter from "eventemitter3";
 import { EventNames } from "./EventNames";
 import { ReactNode, createContext, useContext, useEffect, useReducer } from "react";
@@ -23,15 +24,8 @@ export const EventBusProvider = ({ children }: { children: ReactNode }) => {
     const [state, dispatch] = useReducer(eventBusReducer, defaultEventBusState)
 
 
-    const events = [
-        EventNames.BUDGET_CREATED,
-        EventNames.BUDGET_EDITED,
-        EventNames.BUDGET_DELETED,
-        EventNames.EXPENSE_CREATED,
-        EventNames.EXPENSE_EDITED,
-        EventNames.EXPENSE_DELETED,
-        // ... more events
-    ]
+    // ----------------- events ----------------- //
+    const events: EventNames[] = Object.values(EventNames)
 
 
     // ----------------- exange ----------------- //

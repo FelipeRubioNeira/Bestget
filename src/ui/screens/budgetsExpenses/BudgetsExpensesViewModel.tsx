@@ -24,14 +24,17 @@ import Icons from "../../../assets/icons"
 import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
 import { useEventBus } from "../../../data/globalContext/events/EventBus"
 import { Event } from "../../../data/globalContext/events/EventBusReducer"
+import BudgetExpenseRepository from "../../../data/repository/budgetExpenseRepository/BudgetExpenseRepository"
+import { EventNames } from "../../../data/globalContext/events/EventNames"
 
-
+const dateTime = new DateTime()
 
 // ----------- types ----------- //
 
 type ExpensesViewModelProps = {
     expenseRepository: IExpenseRespository,
     budgetRepository: IBudgetRepository,
+    budgetExpenseRepository: BudgetExpenseRepository,
     deleteBudgetUseCase: DeleteBudgetUseCase,
     deleteExpenseUseCase: DeleteExpenseUseCase,
 } & BudgetsExpensesScreenProps
@@ -43,7 +46,7 @@ export type BudgetOrExpense = "Budget" | "Expense"
 const useBudgetExpensesViewModel = ({
     navigation,
     expenseRepository,
-    budgetRepository,
+    budgetExpenseRepository,
     deleteBudgetUseCase,
     deleteExpenseUseCase
 }: ExpensesViewModelProps) => {
@@ -101,7 +104,6 @@ const useBudgetExpensesViewModel = ({
 
 
     // ------------------ effects ------------------ //
-
 
     // header right button
     useEffect(() => {
@@ -163,32 +165,55 @@ const useBudgetExpensesViewModel = ({
         expensesQueue: Event[]
     }) => {
 
-        const { budgetsQueue, expensesQueue } = queues
-
         setLoading(true)
 
-
-        const [newBudgets, newExpenses] = await Promise.all([
-            budgetsQueue.length > 0 ? updateBudgets() : Promise.resolve([]),
-            expensesQueue.length > 0 ? updateExpenses() : Promise.resolve([])
-        ]);
-
-        const data = {
-            ...(newBudgets.length > 0 && { budgets: newBudgets }),
-            ...(newExpenses.length > 0 && { expenses: newExpenses })
-        }
+        const dataToFormat = await evaluateEvents(queues)
 
         // we get keys from object to know if there is data
-        const thereIsData = Object.keys(data).length > 0
+        const thereIsData = Object.keys(dataToFormat).length > 0
 
         if (!thereIsData) return setLoading(false)
 
-
-        formatData(data)
+        formatData(dataToFormat)
         setLoading(false)
 
 
     }
+
+
+    // evaluate events and return new data if there are
+    const evaluateEvents = async (queues: {
+        budgetsQueue: Event[],
+        expensesQueue: Event[]
+    }) => {
+
+        const [newBudgets, newExpenses] = await Promise.all([
+            updateBudgetsIfNeeded(queues),
+            queues.expensesQueue.length > 0 ? updateExpenses() : Promise.resolve([])
+        ]);
+
+        const dataToFormat = {
+            ...(newBudgets.length > 0 && { budgets: newBudgets }),
+            ...(newExpenses.length > 0 && { expenses: newExpenses })
+        }
+
+        return dataToFormat
+
+    }
+
+    const updateBudgetsIfNeeded = async (queues: {
+        budgetsQueue: Event[],
+        expensesQueue: Event[]
+    }) => {
+
+        const thereAreNewBudgetExpenses = queues.expensesQueue.some(event => event.eventName === EventNames.EXPENSE_CREATED_FROM_BUDGET)
+
+        if (queues.budgetsQueue.length > 0 || thereAreNewBudgetExpenses) {
+            return updateBudgets();
+        }
+
+        return Promise.resolve([]);
+    };
 
     const updateBudgets = async () => {
         consumeBudgetsQueue()
@@ -199,7 +224,6 @@ const useBudgetExpensesViewModel = ({
         consumeExpensesQueue()
         return getExpenses(dateInterval)
     }
-
 
     const getData = async (dateInterval: DateInterval) => {
 
@@ -229,9 +253,9 @@ const useBudgetExpensesViewModel = ({
     }
 
     const getBudgets = async (dateInterval: DateInterval): Promise<Budget[]> => {
-        const budgets = await budgetRepository.getAll(dateInterval)
-        updateBudgetsContext(budgets)
-        return budgets
+        const budgetWithRemaining = await budgetExpenseRepository.getAllWithRemaining(dateInterval)
+        updateBudgetsContext(budgetWithRemaining)
+        return budgetWithRemaining
     }
 
 
@@ -252,7 +276,7 @@ const useBudgetExpensesViewModel = ({
 
 
         const expensesWithoutBudget = getExpensesWithoutBudget(expenses)
-        const budgetsList = applyFormat<Budget, BudgetUI>(budgets, categories, "Budget")
+        const budgetsList = applyBudgetFormat(budgets, categories)
         const expensesList = applyFormat<Expense, ExpenseUI>(expensesWithoutBudget, categories, "Expense")
 
         const totalExpenses = currencyFormat(
@@ -276,6 +300,36 @@ const useBudgetExpensesViewModel = ({
         let total = 0
         expenses.forEach(expense => total += expense.amount)
         return total
+    }
+
+    const applyBudgetFormat = (budgets: Budget[], categories: Category[]): BudgetUI[] => {
+
+
+        return budgets.map(budget => {
+
+            const { id, name, amount, date, categoryId, remaining } = budget
+
+            const normalDate = dateTime.convertToNormalDate(date)
+
+
+            const category = findCategory(categoryId, categories)
+            const amountFormatted = currencyFormat(amount)
+            const remainingFormatted = currencyFormat(remaining || 0)
+
+            const newBudgetUI: BudgetUI = {
+                id: id,
+                name: name,
+                amount: amountFormatted,
+                category: category,
+                date: normalDate,
+                remaining: remainingFormatted,
+                type: "Budget"
+            }
+
+            return newBudgetUI
+
+        })
+
     }
 
     function applyFormat<
@@ -357,7 +411,6 @@ const useBudgetExpensesViewModel = ({
     const findItem = (id: string, type: BudgetExpenseType) => {
         return budgetsExpenses.find(item => item.id === id && item.type == type);
     }
-
 
     // ------------------ modal ------------------ //
     const showAlert = (title: string, message: string, buttonList: ModalButtonList[]) => {
@@ -485,36 +538,34 @@ const useBudgetExpensesViewModel = ({
 
         setEditMode(false)
 
-        const itemToNavigate = generateBudget(id)
+        const budget = generateBudget(id)
 
+        // just we can navigate to budget
         if (type === "Budget") {
-
             navigation.navigate(ScreenRoutes.BUDGET, {
-                budget: itemToNavigate,
+                budget: budget,
             })
 
-        } else {
-            // type === "Expense"
-            // ... future implementation
         }
 
     }
 
     const generateBudget = (id: string): Budget => {
 
-        const budgetOrExpensItem = findItem(id, "Budget")
-        const amountInt = numberFormat(budgetOrExpensItem?.amount)
+        const budgetFinded = findItem(id, "Budget") as BudgetUI
+        const amountInt = numberFormat(budgetFinded?.amount)
+        const remainingInt = numberFormat(budgetFinded?.remaining)
 
-
-        const navigationObject = {
-            id: budgetOrExpensItem?.id || "",
-            name: budgetOrExpensItem?.name || "",
+        const budget: Budget = {
+            id: budgetFinded?.id || "",
+            name: budgetFinded?.name || "",
             amount: amountInt,
-            categoryId: budgetOrExpensItem?.category?.id,
-            date: budgetOrExpensItem?.date || "",
+            categoryId: budgetFinded?.category?.id,
+            date: budgetFinded?.date || "",
+            remaining: remainingInt
         }
 
-        return navigationObject
+        return budget
 
     }
 

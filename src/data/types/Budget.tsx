@@ -7,7 +7,10 @@ type BudgetCreate = {
     categoryId?: number,
 }
 
-type Budget = { id: string } & BudgetCreate
+type Budget = { 
+    id: string,
+    remaining: number
+ } & BudgetCreate
 
 
 type BudgetUI = {
@@ -17,7 +20,8 @@ type BudgetUI = {
     date: string,
     category: Category | undefined
     type: "Budget",
-    editMode?: boolean, // delete / edit 
+    editMode?: boolean, // delete / edit,
+    remaining: string,
     onPress?: () => void, // navigate
     onEdit?: () => void,
     onDelete?: () => void,

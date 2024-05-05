@@ -17,9 +17,10 @@ import CopyMonthUseCase from "../../../domain/useCases/CopyMonthUseCase"
 import { ModalButtonList, ModalProps } from "../../components/modal/Modal"
 import { ToastProps, ToastType } from "../../components/toast/Toast"
 import PasteMonthUseCase, { PasteType } from "../../../domain/useCases/pasteMonthUseCase"
-import { FontFamily, FontSize } from "../../constants/Fonts"
+import {  FontSize } from "../../constants/Fonts"
 import DefaultStyles from "../../styles/DefaultStyles"
 import DeleteMothUseCase from "../../../domain/useCases/DeleteMonthUseCase"
+import IBudgetExpenseRepository from "../../../data/repository/budgetExpenseRepository/IBudgetExpenseRepository"
 
 const dateTime = new DateTime()
 
@@ -37,10 +38,14 @@ export type ButtonHomeProps = {
 }
 
 type HomeViewModelProps = {
+    //repositories
     incomeRepository: IncomeRepository,
     expenseRepository: IExpenseRespository,
     budgetRepository: IBudgetRepository,
     categoryRepository: ICategoryRepository,
+    budgetExpenseRepository: IBudgetExpenseRepository,
+
+    // use cases
     copyMonthUseCase: CopyMonthUseCase,
     pasteMonthUseCase: PasteMonthUseCase,
     deleteMonthUseCase: DeleteMothUseCase,
@@ -54,10 +59,14 @@ type BottomSheetState = {
 
 const useHomeViewModel = ({
     navigation,
+
+    // repositories
     incomeRepository,
     expenseRepository,
-    budgetRepository,
     categoryRepository,
+    budgetExpenseRepository,
+
+    // use cases
     copyMonthUseCase,
     pasteMonthUseCase,
     deleteMonthUseCase,
@@ -66,7 +75,6 @@ const useHomeViewModel = ({
 
     // ------------------ context ------------------ //
     const {
-        dateInterval,
         updateDateIntervalContext,
 
         // incomes
@@ -78,7 +86,6 @@ const useHomeViewModel = ({
         updateExpensesContext,
 
         // budgets
-        budgetsContext,
         updateBudgetsContext,
 
         // categories
@@ -233,9 +240,9 @@ const useHomeViewModel = ({
     }
 
     const getBudgets = async (dateInterval: DateInterval) => {
-        const budgets = await budgetRepository.getAll(dateInterval)
-        updateBudgetsContext(budgets)
-        return budgets
+        const budgetWithRemaining = await budgetExpenseRepository.getAllWithRemaining(dateInterval)
+        updateBudgetsContext(budgetWithRemaining)
+        return budgetWithRemaining
     }
 
     const getCategories = async () => {

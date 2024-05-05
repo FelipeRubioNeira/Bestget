@@ -270,7 +270,7 @@ class ExpenseRepository implements IExpenseRespository {
                         name: expense.name,
                         amount: expense.amount,
                         categoryId: expense.categoryId,
-                        date: expense.date,
+                        date: to.initialDate,
                         budgetId: expense.budgetId
                     }
 

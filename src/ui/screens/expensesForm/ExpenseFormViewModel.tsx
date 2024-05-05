@@ -39,7 +39,7 @@ const useExpenseFormViewModel = (
 
 
     // ------------------- context ------------------- //
-    const {emmitEvent} = useEventBus()
+    const { emmitEvent } = useEventBus()
 
     const {
         categoriesContext
@@ -51,6 +51,8 @@ const useExpenseFormViewModel = (
         budget,
         expense,
     } = route.params
+    
+
 
 
 
@@ -157,7 +159,7 @@ const useExpenseFormViewModel = (
     }
 
 
-    const generateExpense = (id?:string) => {
+    const generateExpense = (id?: string) => {
 
         const { expenseAmount, expenseName, categoryId, expenseDate } = expenseState
 
@@ -192,7 +194,11 @@ const useExpenseFormViewModel = (
     const createExpense = async () => {
 
         const newExpense = generateExpense()
-        const result = await createExpenseUseCase.create(newExpense, emmitEvent)
+        const result = await createExpenseUseCase.create(
+            newExpense,
+            budget,
+            emmitEvent
+        )
 
         if (result.isValid) {
 

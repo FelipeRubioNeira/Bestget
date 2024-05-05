@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import { BudgetsCreateScreenProps } from "../../../navigation/NavigationParamList"
-import { Category } from "../../../data/types/Categoty"
 import CreateBudgetUseCase from "../../../domain/useCases/CreateBudgetUseCase"
 import { Budget, BudgetCreate } from "../../../data/types/Budget"
 import { currencyFormat, numberFormat } from "../../../utils/NumberFormat"

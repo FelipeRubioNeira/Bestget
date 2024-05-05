@@ -14,9 +14,6 @@ import Screen from '../../components/screen/Screen'
 
 import EditIncomeUseCase from '../../../domain/useCases/EditIncomeUsecase'
 import CreateIncomeUseCase from '../../../domain/useCases/CreateIncomeUseCase'
-import Label from '../../components/label/Label'
-import CalendarButton from '../../components/calendarButton/CalendarButton'
-import { FontSize } from '../../constants/Fonts'
 import CalendarWithLabel from '../../components/calendarWithLabel/CalendarWithLabel'
 
 

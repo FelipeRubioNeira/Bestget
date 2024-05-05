@@ -1,8 +1,8 @@
-import { Budget } from "../types/Budget";
-import { Category } from "../types/Categoty";
-import { DateInterval } from "../types/DateInterval";
-import { Expense } from "../types/Expense";
-import { Income } from "../types/Income";
+import { Budget } from "../../types/Budget";
+import { Category } from "../../types/Categoty";
+import { DateInterval } from "../../types/DateInterval";
+import { Expense } from "../../types/Expense";
+import { Income } from "../../types/Income";
 
 
 // ----------------- Actions ----------------- //

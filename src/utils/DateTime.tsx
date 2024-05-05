@@ -51,7 +51,7 @@ class DateTime {
 
         const { year, month, day, hour, minute, second } = this.separateDate(date);
 
-        let newDate = `${year}-${month}-${day}`
+        const newDate = `${year}-${month}-${day}`
 
         if (hour === "00" && minute === "00" && second === "00") {
             return `${newDate}T${this.getTime()}`

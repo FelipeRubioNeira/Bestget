@@ -49,13 +49,8 @@ class PasteMonthUseCase {
 
 
         } catch (error) {
-
-            console.log("error PasteMonthUseCase", error);
-
-
             validation.isValid = false
             validation.message = "Ha ocurrido un error al pegar los datos. Intente nuevamente."
-
         }
 
         return validation
