@@ -37,11 +37,22 @@ class DateTime {
 
     // ------------------- change the orden ------------------- //
 
+    /**
+     * 
+     * @param date 2024-03-28 or 2024-03-28T08:08:56
+     * @returns 28-03-2024
+     */
     convertToNormalDate = (date: string): string => {
         const { year, month, day } = this.separateDate(date);
         return `${day}-${month}-${year}`;
     }
 
+
+    /**
+     * 
+     * @param date 28-03-2024
+     * @returns 2024-03-28
+     */
     convertToAmericanDate = (date: string): string => {
         const { year, month, day } = this.separateDate(date);
         return `${year}-${month}-${day}`;
@@ -61,8 +72,6 @@ class DateTime {
     }
 
     // ------------------- change the orden ------------------- //
-
-
     getCurrentDate = (date: Date): string => {
         const localTimezone = this.getLocalTimezone();
         const formatedDate = this.formatDate(localTimezone, date);
@@ -104,6 +113,18 @@ class DateTime {
 
         const { year } = this.separateDate(date);
         return year;
+    }
+
+    /**
+     * @param inicialDate Usually current date or initial date: Ex: 2020-03-28T00:00:00
+     * @param finalDate usually future or paste date: Ex: 2024-10-28T00:00:00
+     * @returns Initial day with the moth and year of the finalDate: Ex: 2024-10-28T00:00:00
+     */
+    mergeDate = (inicialDate: string, finalDate: string): string => {
+        const { day, hour,minute, second } = this.separateDate(inicialDate);
+        const { year, month } = this.separateDate(finalDate);
+
+        return `${year}-${month}-${day}T${hour}:${minute}:${second}`
     }
 
 

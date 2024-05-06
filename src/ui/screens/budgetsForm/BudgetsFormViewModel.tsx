@@ -14,8 +14,8 @@ import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
 import { useEventBus } from "../../../data/globalContext/events/EventBus"
 
 
-
 const dateTime = new DateTime()
+
 
 type IBudgetCreateViewModel = {
     createBudgetUseCase: CreateBudgetUseCase,
@@ -46,6 +46,7 @@ const useBudgetsFormViewModel = ({
 
     // ------------------- context ------------------- //
     const { 
+        dateInterval,
         categoriesContext,
      } = useGlobalContext()
 
@@ -69,7 +70,7 @@ const useBudgetsFormViewModel = ({
         budgetName: "",
         budgetAmount: "",
         categoryId: 0,
-        budgetDate: dateTime.convertToNormalDate(dateTime.date)
+        budgetDate: dateTime.mergeDate(dateTime.date, dateInterval.initialDate)
     })
 
     const [modalState, setModalState] = useState<ModalProps>({

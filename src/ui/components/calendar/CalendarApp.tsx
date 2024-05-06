@@ -6,6 +6,8 @@ import DefaultStyles from '../../styles/DefaultStyles';
 import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import DateTime from '../../../utils/DateTime';
 
+const dateTime = new DateTime()
+
 type CalendarProps = {
   visible?: boolean,
   value:string
@@ -15,12 +17,12 @@ type CalendarProps = {
 
 const CalendarApp = ({
   visible,
+  value = dateTime.date,
   onDayPress = () => { },
   onCancel = () => { }
 }: CalendarProps) => {
 
-  const dateTime = new DateTime()
-  const americanFormat = dateTime.convertToAmericanDate(dateTime.date)
+  const americanFormat = dateTime.convertToAmericanDate(value || dateTime.date)
 
   if (!visible) return null
   return (
@@ -31,13 +33,13 @@ const CalendarApp = ({
 
         <Calendar
 
-          style={calendarStyles.calendar}
-
           onDayPress={({dateString}) => {
             const newDate = new DateTime(`${dateString}T00:00:00`)
             const normalDate = dateTime.convertToNormalDate(newDate.date)
             onDayPress(normalDate)
           }}
+
+          style={calendarStyles.calendar}
 
           markedDates={{
             [americanFormat]: { selected: true, selectedColor: Colors.YELLOW }

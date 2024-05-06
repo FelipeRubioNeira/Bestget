@@ -6,6 +6,7 @@ import { Colors } from "../../constants/Colors"
 import DefaultStyles from "../../styles/DefaultStyles"
 import CalendarApp from "../calendar/CalendarApp"
 import { useState } from "react"
+import useCalendarButtonViewModel from "./CalendarButonViewModel"
 
 
 type CalendarButtonProps = {
@@ -16,13 +17,20 @@ type CalendarButtonProps = {
 }
 
 const CalendarButton = ({
-    value = "dd-mm-aaaa",
+    value = "AAAA-MM-DDT00:00:00.000",
     onDayPress = () => { },
     disabled = false,
     style = {},
 }: CalendarButtonProps) => {
 
-    const [calendarVisible, setCalendarVisible] = useState(false)
+    const {
+        formattedDate,
+        calendarVisible,
+        showCalendar,
+        hideCalendar
+    } = useCalendarButtonViewModel({
+        date: value
+    })
 
 
     return (
@@ -30,7 +38,7 @@ const CalendarButton = ({
         <>
             <TouchableOpacity
                 onPress={() => {
-                    setCalendarVisible(!calendarVisible)
+                    showCalendar()
                     Keyboard.dismiss()
                 }}
                 disabled={disabled}
@@ -38,7 +46,7 @@ const CalendarButton = ({
             >
 
                 <Label
-                    value={value}
+                    value={formattedDate}
                     fontSize={FontSize.SMALL}
                     color={Colors.BLACK}
                     style={{
@@ -52,11 +60,11 @@ const CalendarButton = ({
             <CalendarApp
                 visible={calendarVisible}
                 value={value}
-                onDayPress={day=>{
+                onDayPress={day => {
                     onDayPress(day)
-                    setCalendarVisible(false)
+                    hideCalendar()
                 }}
-                onCancel={() => setCalendarVisible(false)}
+                onCancel={hideCalendar}
             />
         </>
 

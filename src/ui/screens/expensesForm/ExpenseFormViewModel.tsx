@@ -42,6 +42,7 @@ const useExpenseFormViewModel = (
     const { emmitEvent } = useEventBus()
 
     const {
+        dateInterval,
         categoriesContext
     } = useGlobalContext()
 
@@ -51,7 +52,7 @@ const useExpenseFormViewModel = (
         budget,
         expense,
     } = route.params
-    
+
 
 
 
@@ -64,7 +65,7 @@ const useExpenseFormViewModel = (
         expenseName: "",
         expenseAmount: "",
         categoryId: 0,
-        expenseDate: dateTime.convertToNormalDate(dateTime.date)
+        expenseDate: dateTime.mergeDate(dateTime.date, dateInterval.initialDate)
     })
 
     const [modalState, setModalState] = useState<ModalProps>({

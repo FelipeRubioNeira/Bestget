@@ -8,6 +8,7 @@ import CreateIncomeUseCase from "../../../domain/useCases/CreateIncomeUseCase";
 import editIncomeUseCase from "../../../domain/useCases/editIncomeUseCase";
 import { ValidationResult } from "../../../data/types/Validation";
 import DateTime from "../../../utils/DateTime";
+import { useGlobalContext } from "../../../data/globalContext/GlobalContext";
 
 
 const dateTime = new DateTime()
@@ -29,7 +30,7 @@ const useIncomeFormViewModel = ({
 
 
     // ------------------- context------------------- //
-
+    const { dateInterval} = useGlobalContext()
 
 
     // ------------------- route-params ------------------- //
@@ -40,7 +41,7 @@ const useIncomeFormViewModel = ({
     const [incomeState, setIncomeState] = useState({
         incomeName: "",
         incomeAmount: "",
-        incomeDate: dateTime.convertToNormalDate(dateTime.date)
+        incomeDate: dateTime.mergeDate(dateTime.date, dateInterval.initialDate)
     })
 
     const [modalState, setModalState] = useState({

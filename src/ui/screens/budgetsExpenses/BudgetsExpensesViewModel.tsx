@@ -25,7 +25,7 @@ import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
 import { useEventBus } from "../../../data/globalContext/events/EventBus"
 import { Event } from "../../../data/globalContext/events/EventBusReducer"
 import BudgetExpenseRepository from "../../../data/repository/budgetExpenseRepository/BudgetExpenseRepository"
-import { EventNames } from "../../../data/globalContext/events/EventNames"
+
 
 const dateTime = new DateTime()
 
