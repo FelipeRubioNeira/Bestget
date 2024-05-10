@@ -9,7 +9,7 @@ type BudgetCreate = {
 
 type Budget = { 
     id: string,
-    remaining: number
+    remaining?: number
  } & BudgetCreate
 
 

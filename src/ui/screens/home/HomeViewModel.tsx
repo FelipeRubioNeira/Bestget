@@ -3,7 +3,6 @@ import { HomeScreenProps } from "../../../navigation/NavigationParamList"
 import { ScreenRoutes } from "../../../navigation/Routes"
 import { currencyFormat } from "../../../utils/NumberFormat"
 import { Income } from "../../../data/types/Income"
-import { Category } from "../../../data/types/Categoty"
 import IncomeRepository from "../../../data/repository/incomeRepository/IncomeRepository"
 import ICategoryRepository from "../../../data/repository/categoryRepository/ICategoryRespository"
 import IExpenseRespository from "../../../data/repository/expenseRepository/IExpenseRepository"
@@ -17,10 +16,11 @@ import CopyMonthUseCase from "../../../domain/useCases/CopyMonthUseCase"
 import { ModalButtonList, ModalProps } from "../../components/modal/Modal"
 import { ToastProps, ToastType } from "../../components/toast/Toast"
 import PasteMonthUseCase, { PasteType } from "../../../domain/useCases/pasteMonthUseCase"
-import {  FontSize } from "../../constants/Fonts"
+import { FontSize } from "../../constants/Fonts"
 import DefaultStyles from "../../styles/DefaultStyles"
 import DeleteMothUseCase from "../../../domain/useCases/DeleteMonthUseCase"
-import IBudgetExpenseRepository from "../../../data/repository/budgetExpenseRepository/IBudgetExpenseRepository"
+import BudgetExpenseUnitOfWork from "../../../data/unitOfWork/BudgetExpenseUnitOfWork"
+
 
 const dateTime = new DateTime()
 
@@ -38,12 +38,14 @@ export type ButtonHomeProps = {
 }
 
 type HomeViewModelProps = {
-    //repositories
+    // repositories
     incomeRepository: IncomeRepository,
     expenseRepository: IExpenseRespository,
     budgetRepository: IBudgetRepository,
     categoryRepository: ICategoryRepository,
-    budgetExpenseRepository: IBudgetExpenseRepository,
+
+    // unitOfWork
+    budgetExpenseUnitOfWork: BudgetExpenseUnitOfWork,
 
     // use cases
     copyMonthUseCase: CopyMonthUseCase,
@@ -64,7 +66,9 @@ const useHomeViewModel = ({
     incomeRepository,
     expenseRepository,
     categoryRepository,
-    budgetExpenseRepository,
+
+    // unitOfWork
+    budgetExpenseUnitOfWork,
 
     // use cases
     copyMonthUseCase,
@@ -180,14 +184,13 @@ const useHomeViewModel = ({
         showLoading()
 
         const [
-            categories,
             incomes,
             expenses,
         ] = await Promise.all([
-            getCategories(),
             getIncomes(dateInterval),
             getExpenses(dateInterval),
             getBudgets(dateInterval),
+            getCategories()
         ])
 
         const totalIncomes = calculateTotalAmount(incomes)
@@ -198,7 +201,7 @@ const useHomeViewModel = ({
 
 
         updateTotalRemaining(totalIncomes, totalExpenses)
-        generateButtons(totalExpenses, totalIncomes, categories)
+        generateButtons(totalExpenses, totalIncomes)
 
         hideLoading()
 
@@ -208,7 +211,7 @@ const useHomeViewModel = ({
         const totalIncomesAmount = calculateTotalAmount(incomes)
 
         setTotalIncomes(totalIncomesAmount)
-        generateButtons(totalExpenses, totalIncomesAmount, categoriesContext)
+        generateButtons(totalExpenses, totalIncomesAmount)
         updateTotalRemaining(totalIncomesAmount, totalExpenses)
 
     }
@@ -217,7 +220,7 @@ const useHomeViewModel = ({
         const totalExpensesAmount = calculateTotalExpenses(expenses)
 
         setTotalExpenses(totalExpensesAmount)
-        generateButtons(totalExpensesAmount, totalIncomes, categoriesContext)
+        generateButtons(totalExpensesAmount, totalIncomes)
         updateTotalRemaining(totalIncomes, totalExpensesAmount)
 
     }
@@ -240,9 +243,9 @@ const useHomeViewModel = ({
     }
 
     const getBudgets = async (dateInterval: DateInterval) => {
-        const budgetWithRemaining = await budgetExpenseRepository.getAllWithRemaining(dateInterval)
-        updateBudgetsContext(budgetWithRemaining)
-        return budgetWithRemaining
+        const budgestWithRemaining = await budgetExpenseUnitOfWork.getBudgetsWithRemaining(dateInterval)
+        updateBudgetsContext(budgestWithRemaining)
+        return budgestWithRemaining
     }
 
     const getCategories = async () => {
@@ -267,7 +270,7 @@ const useHomeViewModel = ({
         return totalExpenses
     }
 
-    const generateButtons = (expenses: number, incomes: number, categories: Category[]) => {
+    const generateButtons = (expenses: number, incomes: number) => {
 
         setButtonsHome([
             {

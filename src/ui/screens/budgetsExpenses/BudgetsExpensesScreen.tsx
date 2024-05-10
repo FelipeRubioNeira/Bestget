@@ -20,13 +20,17 @@ import ExpenseOptions from '../../components/expenseOptions/ExpenseOptions'
 import Modal from '../../components/modal/Modal'
 import DeleteBudgetUseCase from '../../../domain/useCases/DeleteBudgetUseCase'
 import DeleteExpenseUseCase from '../../../domain/useCases/DeleteExpenseUseCase'
-import BudgetExpenseRepository from '../../../data/repository/budgetExpenseRepository/BudgetExpenseRepository'
+import BudgetExpenseUnitOfWork from '../../../data/unitOfWork/BudgetExpenseUnitOfWork'
 
 
 
 const budgetRepository = new BudgetRepository()
 const expenseRepository = new ExpenseRepository()
-const budgetExpenseRepository = new BudgetExpenseRepository()
+
+const budgetExpenseUnitOfWork = new BudgetExpenseUnitOfWork(
+    budgetRepository,
+    expenseRepository
+)
 
 const deleteExpenseUseCase = new DeleteExpenseUseCase(expenseRepository)
 
@@ -46,7 +50,7 @@ const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps
         route,
         expenseRepository,
         budgetRepository,
-        budgetExpenseRepository,
+        budgetExpenseUnitOfWork,
         deleteBudgetUseCase,
         deleteExpenseUseCase,
     })
@@ -98,8 +102,8 @@ const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps
 
     return (
         <>
+    
             <View style={DefaultStyles.screen}>
-
 
                 <HelpText
                     value={Strings.expenses}

@@ -44,15 +44,14 @@ export const EventBusProvider = ({ children }: { children: ReactNode }) => {
 
 
     // ----------------- Emit event ----------------- //
+    // TODO add a type to the payload
     const emmitEvent = (eventName: EventNames, payload: any) => {
         eventEmitter.emit(eventName, { eventName, payload })
     }
 
 
     // ----------------- event handler  ----------------- //
-    const handleEvents = (event: {
-        eventName: EventNames, // name of the event
-    }) => {
+    const handleEvents = (event: { eventName: EventNames }) => { // name of the event
         dispatch(event.eventName)
     }
 

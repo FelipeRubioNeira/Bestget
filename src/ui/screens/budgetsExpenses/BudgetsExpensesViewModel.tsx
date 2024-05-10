@@ -24,7 +24,7 @@ import Icons from "../../../assets/icons"
 import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
 import { useEventBus } from "../../../data/globalContext/events/EventBus"
 import { Event } from "../../../data/globalContext/events/EventBusReducer"
-import BudgetExpenseRepository from "../../../data/repository/budgetExpenseRepository/BudgetExpenseRepository"
+import BudgetExpenseUnitOfWork from "../../../data/unitOfWork/BudgetExpenseUnitOfWork"
 
 
 const dateTime = new DateTime()
@@ -34,7 +34,7 @@ const dateTime = new DateTime()
 type ExpensesViewModelProps = {
     expenseRepository: IExpenseRespository,
     budgetRepository: IBudgetRepository,
-    budgetExpenseRepository: BudgetExpenseRepository,
+    budgetExpenseUnitOfWork: BudgetExpenseUnitOfWork,
     deleteBudgetUseCase: DeleteBudgetUseCase,
     deleteExpenseUseCase: DeleteExpenseUseCase,
 } & BudgetsExpensesScreenProps
@@ -46,7 +46,7 @@ export type BudgetOrExpense = "Budget" | "Expense"
 const useBudgetExpensesViewModel = ({
     navigation,
     expenseRepository,
-    budgetExpenseRepository,
+    budgetExpenseUnitOfWork,
     deleteBudgetUseCase,
     deleteExpenseUseCase
 }: ExpensesViewModelProps) => {
@@ -246,9 +246,9 @@ const useBudgetExpensesViewModel = ({
     }
 
     const getBudgets = async (dateInterval: DateInterval): Promise<Budget[]> => {
-        const budgetWithRemaining = await budgetExpenseRepository.getAllWithRemaining(dateInterval)
-        updateBudgetsContext(budgetWithRemaining)
-        return budgetWithRemaining
+        const budgetsWithRemaing = await budgetExpenseUnitOfWork.getBudgetsWithRemaining(dateInterval)
+        updateBudgetsContext(budgetsWithRemaing)
+        return budgetsWithRemaing
     }
 
 

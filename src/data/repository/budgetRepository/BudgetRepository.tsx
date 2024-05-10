@@ -27,7 +27,7 @@ class BudgetRepository implements IBudgetRepository {
                     name: name,
                     amount: amount,
                     categoryId: categoryId,
-                    date: date
+                    date: date,
                 }
 
                 return newBudget

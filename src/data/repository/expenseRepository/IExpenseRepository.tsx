@@ -8,11 +8,13 @@ interface IExpenseRespository {
 
     update: (expense: Expense) => Promise<void>
 
-    getAll: (date:DateInterval) => Promise<Expense[]>
+    getAll: (date: DateInterval) => Promise<Expense[]>
     getByBudgetId: (id: string) => Promise<Expense[]>
-    getWithoutBudget: (date:DateInterval) => Promise<Expense[]>
+    getAllByBudgetId: (id: string[]) => Promise<Expense[]>
 
-    getTotal: (date:DateInterval) => Promise<number>
+    getWithoutBudget: (date: DateInterval) => Promise<Expense[]>
+
+    getTotal: (date: DateInterval) => Promise<number>
 
     updateCategory: (categoryId: number, expenses: Expense[]) => Promise<void>
 

@@ -1,4 +1,3 @@
-import { sortByDate } from "../../../utils/Data";
 import { Collections } from "../../collections/Collections";
 import { DateInterval } from "../../types/DateInterval";
 import { Expense, ExpenseCreate, ExpenseKeys } from "../../types/Expense";
@@ -112,21 +111,53 @@ class ExpenseRepository implements IExpenseRespository {
         }
     }
 
-    async getWithoutBudget({ initialDate, finalDate }: DateInterval): Promise<Expense[]> {
+    async getAllByBudgetId(budgetIds: string[]): Promise<Expense[]> {
+
 
         try {
 
-            let expensesArray: Expense[] = []
+            const expensesDoc = await firestore().collection(Collections.EXPENSE)
+                .where(ExpenseKeys.BUDGET_ID, "in", budgetIds)
+                .get()
+
+            return expensesDoc.docs.map(doc => {
+
+                const { amount, name, date, budgetId, categoryId } = doc.data() as Expense
+
+                const expense: Expense = {
+                    id: doc.id,
+                    amount: amount,
+                    name: name,
+                    date: date,
+                    budgetId: budgetId,
+                    categoryId: categoryId
+                }
+
+                return expense
+
+            })
+
+
+        } catch (error) {
+            console.error("error getAllByBudgetId", error);
+            return []
+        }
+    }
+
+    async getWithoutBudget({ initialDate, finalDate }: DateInterval): Promise<Expense[]> {
+
+        try {
 
             const expensesFirebase = await firestore()
                 .collection(Collections.EXPENSE)
                 .where(ExpenseKeys.BUDGET_ID, "==", "")
                 .where(ExpenseKeys.DATE, ">=", initialDate)
                 .where(ExpenseKeys.DATE, "<", finalDate)
+                .orderBy(ExpenseKeys.DATE, "asc")
                 .get()
 
 
-            expensesFirebase.docs.forEach(doc => {
+            return expensesFirebase.docs.map(doc => {
 
                 const { name, amount, categoryId, date, budgetId } = doc.data() as Expense
 
@@ -138,12 +169,9 @@ class ExpenseRepository implements IExpenseRespository {
                     categoryId,
                     budgetId
                 }
-                expensesArray.push(newExpense)
+                
+                return newExpense
             })
-
-            expensesArray = sortByDate(expensesArray, ExpenseKeys.DATE, "asc")
-
-            return expensesArray
 
         } catch (error) {
             console.error("error getExpensesById", error);
@@ -266,7 +294,7 @@ class ExpenseRepository implements IExpenseRespository {
 
                 expenses.forEach(expense => {
 
-                    const newExpense:ExpenseCreate = {
+                    const newExpense: ExpenseCreate = {
                         name: expense.name,
                         amount: expense.amount,
                         categoryId: expense.categoryId,

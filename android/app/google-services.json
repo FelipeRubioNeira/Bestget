@@ -12,7 +12,20 @@
           "package_name": "com.bestget"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "104630043190-rpdcra7ragagrrvms6krn06ujked4jnn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bestget",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "104630043190-8u6epmlanp20gl2ka9e50ep95295a6r9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAF8pSXWMrvxf2JzXeHEx61ptkICEu93kg"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "104630043190-8u6epmlanp20gl2ka9e50ep95295a6r9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "104630043190-17p4vgou0gg712fr3finpuqi5ip0k46c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.bestget"
+              }
+            }
+          ]
         }
       }
     }

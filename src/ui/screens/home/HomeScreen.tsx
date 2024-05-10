@@ -1,5 +1,5 @@
-import { FlatList, SafeAreaView, View } from 'react-native'
 import React from 'react'
+import { FlatList, SafeAreaView, View } from 'react-native'
 import MenuButton from '../../components/menuButton/MenuButton'
 import Spacer from '../../components/spacer/Spacer'
 import { DefaultStyles } from '../../constants/Index'
@@ -20,8 +20,13 @@ import ExpenseRepository from '../../../data/repository/expenseRepository/Expens
 import CopyMonthUseCase from '../../../domain/useCases/CopyMonthUseCase'
 import PasteMonthUseCase from '../../../domain/useCases/PasteMonthUseCase'
 import DeleteMothUseCase from '../../../domain/useCases/DeleteMonthUseCase'
-import BudgetExpenseRepository from '../../../data/repository/budgetExpenseRepository/BudgetExpenseRepository'
+import BudgetExpenseUnitOfWork from '../../../data/unitOfWork/BudgetExpenseUnitOfWork'
 
+
+// ------------------- google sign in ------------------- //
+
+
+// ------------------- google sign in ------------------- //
 
 
 // ------------------- repositories ------------------- //
@@ -29,7 +34,10 @@ const incomeRepository = new IncomeRepository()
 const expenseRepository = new ExpenseRepository()
 const budgetRepository = new BudgetRepository()
 const categoryRepository = new CategoryRespository()
-const budgetExpenseRepository = new BudgetExpenseRepository()
+const budgetExpenseUnitOfWork = new BudgetExpenseUnitOfWork(
+    budgetRepository,
+    expenseRepository
+)
 
 
 // ------------------- use cases ------------------- //
@@ -65,7 +73,10 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
         expenseRepository,
         budgetRepository,
         incomeRepository,
-        budgetExpenseRepository,
+
+        // unitOfWork
+        budgetExpenseUnitOfWork,
+
 
         // use cases
         copyMonthUseCase,

@@ -108,7 +108,7 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
         // category and color
         const categoryFound = findCategory(budget?.categoryId, categoriesContext)
 
-        const expenseList = await expensesRepository.getByBudgetId(budget.id)
+        const expenseList = await getExpensesByBudgetId(budget.id)
         const expenseListFormatted = applyFormat(expenseList)
         const totalExpenses = getTotalExpenses(expenseList)
 
@@ -121,6 +121,10 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
         setTitle(title)
         setCategory(categoryFound)
         setExpenseList(expenseListFormatted)
+    }
+
+    const getExpensesByBudgetId = async (budgetId: string) => {
+        return expensesRepository.getByBudgetId(budgetId)
     }
 
     const getTotalExpenses = (expenseList: Expense[]) => {
