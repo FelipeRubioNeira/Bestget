@@ -12,7 +12,7 @@ const Loading = ({ visible }: ILoadingProps) => {
     if (!visible) return null
     return (
         <View style={loadingStyle.screen}>
-            <ActivityIndicator size="large" color={Colors.CHIP_DEBTS} />
+            <ActivityIndicator size="large" color={Colors.DARK_GRAY} />
         </View>
     )
 }

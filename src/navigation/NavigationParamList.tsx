@@ -17,6 +17,8 @@ export type NavigatorParamList = {
 
     [NavigatorRoutes.HOME]: undefined
 
+    [ScreenRoutes.LOGIN]: undefined
+
     [ScreenRoutes.HOME]: undefined
 
     [ScreenRoutes.INCOMES]: {
@@ -64,6 +66,12 @@ export type HomeNavigatorProps = NativeStackScreenProps<
 
 
 // ------------------ props screens ------------------ //
+
+// login screen props
+export type LoginScreenProps = NativeStackScreenProps<
+    NavigatorParamList,
+    ScreenRoutes.LOGIN
+>
 
 // home screen props (main screen)
 export type HomeScreenProps = NativeStackScreenProps<

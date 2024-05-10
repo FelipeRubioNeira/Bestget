@@ -17,6 +17,7 @@ import ExpenseForm from '../../ui/screens/expensesForm/ExpenseFormScreen';
 import BudgetsFormScreen from '../../ui/screens/budgetsForm/BudgetsFormScreen';
 import BudgetScreen from '../../ui/screens/budget/BudgetScreen';
 import BudgetsExpensesScreen from '../../ui/screens/budgetsExpenses/BudgetsExpensesScreen';
+import LoginScreen from '../../ui/screens/login/LoginScreen';
 
 
 
@@ -31,16 +32,21 @@ const MainNavigator = () => {
     return (
 
         <NavigationContainer>
-            <Stack.Navigator initialRouteName={ScreenRoutes.HOME}>
+            <Stack.Navigator initialRouteName={ScreenRoutes.LOGIN}>
 
-                {/* home screen */}
+
+            <Stack.Screen
+                    component={LoginScreen}
+                    name={ScreenRoutes.LOGIN}
+                    options={ScreenOptions.login}
+                />
+
                 <Stack.Screen
                     component={HomeScreen}
                     name={ScreenRoutes.HOME}
                     options={ScreenOptions.home}
                 />
 
-                {/* incomes screens */}
                 <Stack.Screen
                     component={IncomesScreen}
                     name={ScreenRoutes.INCOMES}
@@ -53,8 +59,6 @@ const MainNavigator = () => {
                     options={ScreenOptions.incomesCreate}
                 />
 
-
-                {/* BUDGET EXPENSE screen */}
                 <Stack.Screen
                     component={BudgetsExpensesScreen}
                     name={ScreenRoutes.BUDGET_EXPENSES}

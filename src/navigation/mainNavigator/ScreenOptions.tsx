@@ -8,6 +8,11 @@ import { FontFamily } from "../../ui/constants/Fonts";
 
 const ScreenOptions = Object.freeze({
 
+    login: {
+        headerShown: false,
+        title: "Login",
+    },
+
     home: {
         headerShown: false,
         title: "Inicio",

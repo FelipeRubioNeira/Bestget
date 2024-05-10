@@ -2,6 +2,7 @@
 
 export enum ScreenRoutes {
 
+    LOGIN = "LOGIN",
     HOME = "HOME",
     INCOMES = "INCOMES",
     INCOME_FORM = "INCOME_FORM",
@@ -12,7 +13,7 @@ export enum ScreenRoutes {
     EXPENSES_FORM = "EXPENSES_FORM",
 
     BUDGET = "BUDGET",
-    BUDGET_FORM= "BUDGET_FORM",
+    BUDGET_FORM = "BUDGET_FORM",
 }
 
 export enum NavigatorRoutes {
