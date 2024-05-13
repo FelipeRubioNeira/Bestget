@@ -13,7 +13,7 @@ import IBudgetRepository from "../../../data/repository/budgetRepository/IBudget
 import { Budget, BudgetUI } from "../../../data/types/Budget"
 import { BudgetExpenseType } from "../../../data/types/BudgetExpense"
 import TouchableIcon from "../../components/touchableIcon/TouchableIcon"
-import { ModalButtonList, ModalProps } from "../../components/modal/Modal"
+import useModalViewModel, { ModalButtonList } from "../../components/modal/ModalViewModel"
 import DeleteBudgetUseCase from "../../../domain/useCases/DeleteBudgetUseCase"
 import { ValidationResult } from "../../../data/types/Validation"
 import DeleteExpenseUseCase from "../../../domain/useCases/DeleteExpenseUseCase"
@@ -42,7 +42,7 @@ type ExpensesViewModelProps = {
 export type BudgetOrExpense = "Budget" | "Expense"
 
 
-// ----------- view model ----------- //
+// ------------------ view model ------------------ //
 const useBudgetExpensesViewModel = ({
     navigation,
     expenseRepository,
@@ -52,8 +52,7 @@ const useBudgetExpensesViewModel = ({
 }: ExpensesViewModelProps) => {
 
 
-    // ----------- context ----------- //
-
+    // ------------------ context ------------------ //
     const {
         emmitEvent,
         budgetsQueue,
@@ -74,7 +73,7 @@ const useBudgetExpensesViewModel = ({
 
 
 
-    // ----------- states ----------- //
+    // ------------------ states ------------------ //
     const [totalAmount, setTotalAmount] = useState("0")
 
     const [buttonAddVisible, setButtonAddVisible] = useState(true)
@@ -86,12 +85,10 @@ const useBudgetExpensesViewModel = ({
 
     const [editMode, setEditMode] = useState(false)
 
-    const [modalState, setModalState] = useState<ModalProps>({
-        visible: false,
-        title: "",
-        message: "",
-        buttonList: []
-    })
+
+
+    // ------------------ hooks ------------------ //
+    const { hideModal, showModal, modalState } = useModalViewModel()
 
 
 
@@ -405,23 +402,6 @@ const useBudgetExpensesViewModel = ({
         return budgetsExpenses.find(item => item.id === id && item.type == type);
     }
 
-    // ------------------ modal ------------------ //
-    const showAlert = (title: string, message: string, buttonList: ModalButtonList[]) => {
-        setModalState({
-            title: title,
-            message: message,
-            buttonList: buttonList,
-            visible: true,
-        })
-    }
-
-    const hideAlert = () => {
-        setModalState({
-            ...modalState,
-            visible: false,
-        })
-    }
-
 
     // ----------- onPress flatList items ----------- //
     const onPressEdit = (itemId: string, type: BudgetExpenseType) => {
@@ -453,7 +433,7 @@ const useBudgetExpensesViewModel = ({
         const message = type === "Budget" ? budgetMessage : expenseMessage
 
 
-        showAlert(
+        showModal(
             "Eliminar",
             message,
             [{
@@ -462,7 +442,7 @@ const useBudgetExpensesViewModel = ({
             },
             {
                 text: 'Cancelar',
-                onPress: hideAlert,
+                onPress: hideModal,
                 style: DefaultStyles.mainButton
             }]
         )
@@ -472,7 +452,7 @@ const useBudgetExpensesViewModel = ({
 
     const deleteItem = async (itemId: string, type: BudgetExpenseType) => {
 
-        hideAlert()
+        hideModal()
 
         let validationResult: ValidationResult<void> = {
             isValid: true,
@@ -484,7 +464,7 @@ const useBudgetExpensesViewModel = ({
 
         const buttonItem: ModalButtonList[] = [{
             text: "Aceptar",
-            onPress: hideAlert,
+            onPress: hideModal,
         }]
 
 
@@ -494,7 +474,7 @@ const useBudgetExpensesViewModel = ({
             validationResult = await deleteBudgetUseCase.delete(itemId)
 
             const { title, message } = validationResult.message
-            if (!validationResult.isValid) showAlert(title, message, buttonItem)
+            if (!validationResult.isValid) showModal(title, message, buttonItem)
 
         }
 
@@ -503,7 +483,7 @@ const useBudgetExpensesViewModel = ({
             validationResult = await deleteExpenseUseCase.delete(itemId, emmitEvent)
 
             const { title, message } = validationResult.message
-            if (!validationResult.isValid) showAlert(title, message, buttonItem)
+            if (!validationResult.isValid) showModal(title, message, buttonItem)
         }
 
         // finally we update the data
@@ -594,8 +574,8 @@ const useBudgetExpensesViewModel = ({
         onPressEdit,
         onPressDelete,
         deleteItem,
-        showAlert,
-        hideAlert,
+        showModal,
+        hideModal,
     }
 
 }

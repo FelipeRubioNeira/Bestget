@@ -4,7 +4,7 @@ import CreateBudgetUseCase from "../../../domain/useCases/CreateBudgetUseCase"
 import { Budget, BudgetCreate } from "../../../data/types/Budget"
 import { currencyFormat, numberFormat } from "../../../utils/NumberFormat"
 import { ScreenRoutes } from "../../../navigation/Routes"
-import { ModalButtonList, ModalProps } from "../../components/modal/Modal"
+import useModalViewModel from "../../components/modal/ModalViewModel"
 import DefaultStyles from "../../styles/DefaultStyles"
 import EditBudgetUseCase from "../../../domain/useCases/EditBudgetUseCase"
 import ExpenseRepository from "../../../data/repository/expenseRepository/ExpenseRepository"
@@ -45,10 +45,10 @@ const useBudgetsFormViewModel = ({
 
 
     // ------------------- context ------------------- //
-    const { 
+    const {
         dateInterval,
         categoriesContext,
-     } = useGlobalContext()
+    } = useGlobalContext()
 
 
 
@@ -59,7 +59,8 @@ const useBudgetsFormViewModel = ({
 
 
     // ------------------- hooks ------------------- //
-    const {emmitEvent} = useEventBus()
+    const { emmitEvent } = useEventBus()
+    const { showModal, hideModal, modalState } = useModalViewModel()
 
 
 
@@ -73,12 +74,7 @@ const useBudgetsFormViewModel = ({
         budgetDate: dateTime.mergeDate(dateTime.date, dateInterval.initialDate)
     })
 
-    const [modalState, setModalState] = useState<ModalProps>({
-        visible: false,
-        title: "",
-        message: "",
-        buttonList: []
-    })
+
 
 
     // ------------------- effects ------------------- //
@@ -135,21 +131,6 @@ const useBudgetsFormViewModel = ({
     }
 
 
-    // ------------------- modal ------------------- //
-    const showModal = (title: string, message: string, buttonList: ModalButtonList[]) => {
-
-        setModalState({
-            visible: true,
-            title: title,
-            message: message,
-            buttonList: buttonList
-        })
-    }
-
-    const hideModal = () => {
-        setModalState({ ...modalState, visible: false })
-    }
-
     const onSubmit = async () => {
 
         // if budget exists, update budget
@@ -168,7 +149,7 @@ const useBudgetsFormViewModel = ({
                         },
                         {
                             text: "Cancelar",
-                            onPress: () => setModalState({ ...modalState, visible: false }),
+                            onPress: hideModal,
                             style: DefaultStyles.mainButton
                         },
                     ]
@@ -189,7 +170,7 @@ const useBudgetsFormViewModel = ({
 
         const date = dateTime.getIsoDateTime(budgetState.budgetDate)
 
-        const budgetEdited:Budget = {
+        const budgetEdited: Budget = {
             id: budget?.id || "",
             name: budgetState.budgetName,
             amount: numberFormat(budgetState.budgetAmount),
@@ -215,7 +196,7 @@ const useBudgetsFormViewModel = ({
                 [
                     {
                         text: "Continuar",
-                        onPress: () => setModalState({ ...modalState, visible: false }),
+                        onPress: hideModal,
                     },
                 ]
 
@@ -246,7 +227,7 @@ const useBudgetsFormViewModel = ({
         }
 
         // 2- upload budget and budget expenses
-        const {isValid, result, message} = await createBudgetUseCase.createBudget(budgetCreate, emmitEvent)
+        const { isValid, result, message } = await createBudgetUseCase.createBudget(budgetCreate, emmitEvent)
 
 
         if (isValid && result) {
@@ -256,16 +237,16 @@ const useBudgetsFormViewModel = ({
 
         } else {
 
-           showModal(
+            showModal(
                 message.title,
                 message.message,
                 [
                     {
                         text: "Continuar",
-                        onPress: () => setModalState({ ...modalState, visible: false }),
+                        onPress: hideModal,
                     },
                 ]
-           )
+            )
         }
 
     }

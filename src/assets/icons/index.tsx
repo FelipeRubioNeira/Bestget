@@ -15,6 +15,7 @@ const Icons = {
 
     wallet: require('../icons/ic_wallet.png'),
     piggyBank: require('../icons/ic_piggy_bank.png'),
+    google: require('../icons/ic_google.png'),
 
 }
 

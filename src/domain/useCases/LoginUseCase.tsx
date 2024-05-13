@@ -1,12 +1,12 @@
-import { User } from "@react-native-google-signin/google-signin";
 import ILoginRepository from "../../data/repository/loginRepository/ILoginRepository";
 import { Validation } from "../../data/types/Validation"
 import { validateConnection } from "../../utils/Connection";
+import UserApp from "../../data/types/User";
 
 
 class LoginUseCase {
 
-    async execute(loginRepository: ILoginRepository<User>) {
+    async execute(loginRepository: ILoginRepository<UserApp>) {
 
         const validation = await this.applyValidations()
 

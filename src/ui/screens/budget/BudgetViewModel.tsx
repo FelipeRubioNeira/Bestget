@@ -7,7 +7,7 @@ import { ScreenRoutes } from "../../../navigation/Routes"
 import IExpenseRespository from "../../../data/repository/expenseRepository/IExpenseRepository"
 import { Expense, ExpenseUI } from "../../../data/types/Expense"
 import TouchableIcon from "../../components/touchableIcon/TouchableIcon"
-import { ModalButtonList, ModalProps } from "../../components/modal/Modal"
+import useModalViewModel from "../../components/modal/ModalViewModel"
 import DefaultStyles from "../../styles/DefaultStyles"
 import DeleteExpenseUseCase from "../../../domain/useCases/DeleteExpenseUseCase"
 import Icons from "../../../assets/icons"
@@ -46,7 +46,7 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
 
 
 
-    // ----------- states ----------- //
+    // ------------------ states ------------------ //
     const [category, setCategory] = useState<Category | undefined>()
     const [expenseList, setExpenseList] = useState<ExpenseUI[]>([])
 
@@ -59,12 +59,9 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
 
     const [editMode, setEditMode] = useState(false)
 
-    const [modalState, setModalState] = useState<ModalProps>({
-        visible: false,
-        title: "",
-        message: "",
-        buttonList: []
-    })
+
+    // ------------------ hooks ------------------ //
+    const { hideModal, showModal, modalState } = useModalViewModel()
 
 
 
@@ -189,24 +186,6 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
     const turnOffEditMode = () => {
         setEditMode(false)
     }
-
-    // ----------- modal ----------- //
-    const showModal = (title: string, message: string, buttonList: ModalButtonList[]) => {
-        setModalState({
-            visible: true,
-            title,
-            message,
-            buttonList: buttonList
-        })
-    }
-
-    const hideModal = () => {
-        setModalState({
-            ...modalState,
-            visible: false,
-        })
-    }
-
 
 
     // ----------- events ----------- //

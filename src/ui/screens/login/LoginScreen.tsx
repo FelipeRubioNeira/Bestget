@@ -5,13 +5,12 @@ import Screen from '../../components/screen/Screen';
 import Label from '../../components/label/Label';
 import { FontFamily, FontSize } from '../../constants/Fonts';
 import { Colors } from '../../constants/Colors';
-import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
 import Spacer from '../../components/spacer/Spacer';
 import Icons from '../../../assets/icons';
 import { LoginScreenProps } from '../../../navigation/NavigationParamList';
 import LoginUseCase from '../../../domain/useCases/LoginUseCase';
-import LoginGoogleRepository from '../../../data/repository/loginRepository/LoginGoogleRepository';
-import ILoginRepository from '../../../data/repository/loginRepository/ILoginRepository';
+import ButtonApp from '../../components/buttonApp/ButtonApp';
+import Modal from '../../components/modal/Modal';
 
 
 
@@ -22,7 +21,7 @@ const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
 
 
     // ------------------ viewModel ------------------ //
-    const { loginGoogle } = useLoginViewModel({
+    const { loginGoogle, modalState } = useLoginViewModel({
         navigation,
         route,
         loginUseCase
@@ -32,7 +31,7 @@ const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
     // ------------------ UI ------------------ //
     return (
 
-        <Screen style={{ backgroundColor: Colors.DARK_GREEN }}>
+        <Screen style={{ backgroundColor: Colors.GREEN }}>
 
 
             <View style={LoginStyles.welcomeContainer}>
@@ -57,22 +56,29 @@ const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
 
             </View>
 
-            <Spacer marginVertical={"15%"} />
 
 
             <View>
+
                 <Label
                     value="Crea una cuenta o ingresa con tu cuenta de Google"
                     style={LoginStyles.enterAccount}
                 />
 
-                <GoogleSigninButton
+                <Spacer marginVertical={"10%"} />
+
+                <ButtonApp
+                    title="Acceder con Google"
+                    image={Icons.google}
                     onPress={loginGoogle}
-                    disabled={false}
-                    size={GoogleSigninButton.Size.Wide}
-                    color={GoogleSigninButton.Color.Dark}
-                    style={LoginStyles.googleButton}
+                    buttonStyle={{ backgroundColor: Colors.BLUE }}
+                    labelStyle={{
+                        color: Colors.WHITE,
+                        fontFamily: FontFamily.BOLD,
+                        fontSize: FontSize.SMALL
+                    }}
                 />
+
             </View>
 
             <Spacer marginVertical={"15%"} />
@@ -95,6 +101,13 @@ const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
                 value="Pronto agregaremos mas métodos de ingreso..."
                 fontFamily={FontFamily.LIGHT}
                 fontSize={FontSize.XXSMALL}
+            />
+
+            <Modal
+                visible={modalState.visible}
+                title={modalState.title}
+                message={modalState.message}
+                buttonList={modalState.buttonList}
             />
 
 

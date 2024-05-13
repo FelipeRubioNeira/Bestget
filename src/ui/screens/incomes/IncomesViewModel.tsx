@@ -20,7 +20,7 @@ import { ScreenRoutes } from "../../../navigation/Routes"
 import { Income, IncomeUI } from "../../../data/types/Income"
 import { currencyFormat } from "../../../utils/NumberFormat"
 import { IIncomeRepository } from "../../../data/repository/incomeRepository/IIncomeRepository"
-import { ModalButtonList, ModalProps } from "../../components/modal/Modal"
+import useModalViewModel from "../../components/modal/ModalViewModel"
 import TouchableIcon from "../../components/touchableIcon/TouchableIcon"
 import DeleteIncomeUseCase from "../../../domain/useCases/DeleteIncomeUseCase"
 import { Colors } from "../../constants/Colors"
@@ -53,6 +53,9 @@ const useIncomesViewModel = ({
         updateIncomesContext,
     } = useGlobalContext()
 
+    // ------------------- hooks ------------------- //
+    const { modalState, showModal, hideModal } = useModalViewModel()
+
 
     // ------------------- route ------------------- //
     const { incomeId } = route.params
@@ -65,14 +68,6 @@ const useIncomesViewModel = ({
 
     const [totalAmount, setTotalAmount] = useState<string>("0")
     const [editMode, setEditMode] = useState<boolean>(false)
-
-    const [modalState, setModalState] = useState<ModalProps>({
-        visible: false,
-        title: "",
-        message: "",
-        buttonList: []
-    })
-
 
 
     // ------------------- effects ------------------- //
@@ -223,7 +218,7 @@ const useIncomesViewModel = ({
     // onPress on flatlist item
     const onPressDelete = (incomeId: string) => {
 
-        showAlert(
+        showModal(
             "Eliminar ingreso",
             "¿Estás seguro que deseas eliminar este ingreso?",
             [
@@ -233,35 +228,18 @@ const useIncomesViewModel = ({
                 },
                 {
                     text: 'Cancelar',
-                    onPress: hideAlert,
+                    onPress: hideModal,
                     style: { color: Colors.BLUE, fontFamily: FontFamily.BOLD }
                 }
             ]
         )
     }
 
-    const showAlert = (title: string, message: string, buttonList: ModalButtonList[]) => {
-
-        setModalState({
-            visible: true,
-            title: title,
-            message: message,
-            buttonList: buttonList
-        })
-    }
-
-    const hideAlert = () => {
-        setModalState({
-            ...modalState,
-            visible: false,
-        })
-    }
-
 
     // ------------------- use Case ------------------- //
     const deleteIncome = async (incomeId: string) => {
 
-        hideAlert()
+        hideModal()
 
         const response = await deleteIncomeUseCase.delete(incomeId)
 
@@ -273,9 +251,9 @@ const useIncomesViewModel = ({
             generateIncomeList(newIncomesList)
 
         } else {
-            showAlert(
+            showModal(
                 response.message.title,
-                response.message.message, [{ text: 'Aceptar', onPress: hideAlert }]
+                response.message.message, [{ text: 'Aceptar', onPress: hideModal }]
             )
         }
 
@@ -295,7 +273,7 @@ const useIncomesViewModel = ({
         deleteIncome,
         onPressDelete,
         onPressEdit,
-        hideAlert
+        hideModal
     }
 }
 

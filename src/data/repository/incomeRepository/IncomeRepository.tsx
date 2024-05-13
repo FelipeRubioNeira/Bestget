@@ -6,6 +6,7 @@ import firestore from '@react-native-firebase/firestore';
 
 
 class IncomeRepository implements IIncomeRepository {
+    constructor() {}
 
 
     public async create(income: IncomeCreate): Promise<string> {

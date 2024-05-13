@@ -1,28 +1,10 @@
-import { TextStyle, TouchableOpacity, View } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 import React, { Fragment } from 'react'
 import { Colors } from '../../constants/Colors'
 import Label from '../label/Label'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 import ModalStyle from './ModalStyles'
-
-
-// ----------- types ------------ //
-export type ModalButtonList = {
-    text: string,
-    onPress: () => void,
-    style?: TextStyle
-}
-
-type BodyProps = {
-    message: string,
-    buttonList?: ModalButtonList[]
-}
-
-export type ModalProps = {
-    visible: boolean,
-    title: string,
-} & BodyProps
-
+import { BodyProps, ModalButtonList, ModalProps } from './ModalViewModel'
 
 
 
@@ -48,6 +30,8 @@ const Modal = ({ visible = true, title, message, buttonList }: ModalProps) => {
     )
 }
 
+
+// ----------- sub-components ------------ //
 const Header = ({ value = "" }: { value: string }) => {
 
     return (

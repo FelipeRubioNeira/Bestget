@@ -13,13 +13,13 @@ import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
 import IBudgetRepository from "../../../data/repository/budgetRepository/IBudgetRepository"
 import { Expense } from "../../../data/types/Expense"
 import CopyMonthUseCase from "../../../domain/useCases/CopyMonthUseCase"
-import { ModalButtonList, ModalProps } from "../../components/modal/Modal"
-import { ToastProps, ToastType } from "../../components/toast/Toast"
 import PasteMonthUseCase, { PasteType } from "../../../domain/useCases/pasteMonthUseCase"
 import { FontSize } from "../../constants/Fonts"
 import DefaultStyles from "../../styles/DefaultStyles"
 import DeleteMothUseCase from "../../../domain/useCases/DeleteMonthUseCase"
 import BudgetExpenseUnitOfWork from "../../../data/unitOfWork/BudgetExpenseUnitOfWork"
+import useModalViewModel, { ModalButtonList } from "../../components/modal/ModalViewModel"
+import useToastViewModel from "../../components/toast/ToastViewModel"
 
 
 const dateTime = new DateTime()
@@ -98,6 +98,10 @@ const useHomeViewModel = ({
 
     } = useGlobalContext()
 
+    // ------------------ hooks ------------------ //
+    const { modalState, showModal, hideModal } = useModalViewModel()
+    const {toastState, showToast} = useToastViewModel()
+
 
 
     // ------------------ states ------------------ //
@@ -128,27 +132,8 @@ const useHomeViewModel = ({
     })
 
 
-
-
-
     // ------------------ loading ------------------ //
     const [loading, setLoading] = useState(false)
-
-    // ------------------ toast ------------------ //
-    const [toastState, setToastState] = useState<ToastProps>({
-        visible: false,
-        message: "",
-        type: "success"
-    })
-
-    // ------------------ modal ------------------ //
-    const [modalState, setModalState] = useState<ModalProps>({
-        visible: false,
-        title: "",
-        message: "",
-        buttonList: []
-    })
-
 
 
 
@@ -161,6 +146,7 @@ const useHomeViewModel = ({
     }, [])
 
 
+    // ------------------ refresh ------------------ //
     // refresh data when incomes change
     useEffect(() => {
         refreshIncomesData(incomesContext)
@@ -229,6 +215,7 @@ const useHomeViewModel = ({
         setTotalremaining(currencyFormat(totalIncomes - totalExpenses))
     }
 
+
     // ------------------ repository methods ------------------ //
     const getIncomes = async (dateInterval: DateInterval) => {
         const incomes = await incomeRepository.getAll(dateInterval)
@@ -253,6 +240,7 @@ const useHomeViewModel = ({
         updateCategoriesContext(categories)
         return categories
     }
+
 
     // ------------------ calculate totals ------------------ //
     const calculateTotalAmount = (incomes: Income[]) => {
@@ -335,6 +323,7 @@ const useHomeViewModel = ({
         })
     }
 
+    // TODO: move this to a helper or utils
     const getCurrentDate = (): DateInterval => {
 
         const startOfMonth = dateTime.getStartOfMonth(dateTime.date)
@@ -351,7 +340,6 @@ const useHomeViewModel = ({
             initialDate: startOfMonth,
             finalDate: nextMonth
         })
-
 
         return {
             initialDate: startOfMonth,
@@ -611,41 +599,6 @@ const useHomeViewModel = ({
     const hideLoading = () => setLoading(false)
 
 
-    // ------------------ toast ------------------ //
-    const showToast = (message: string, type: ToastType) => {
-        setToastState({
-            visible: true,
-            message,
-            type
-        })
-    }
-
-    const hideToast = () => {
-        setToastState({
-            ...toastState,
-            visible: false
-        })
-    }
-
-
-    // ------------------ modal ------------------ //
-    const showModal = (title: string, message: string, buttonList: ModalButtonList[]) => {
-        setModalState({
-            visible: true,
-            title,
-            message,
-            buttonList: buttonList
-        })
-    }
-
-    const hideModal = () => {
-        setModalState({
-            ...modalState,
-            visible: false
-        })
-    }
-
-
 
 
 
@@ -675,7 +628,6 @@ const useHomeViewModel = ({
         modalState,
 
         // toast
-        hideToast,
         toastState,
 
         // loading

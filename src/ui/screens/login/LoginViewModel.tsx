@@ -1,8 +1,11 @@
-import ILoginRepository from "../../../data/repository/loginRepository/ILoginRepository";
+import { useState } from "react";
 import LoginGoogleRepository from "../../../data/repository/loginRepository/LoginGoogleRepository";
 import LoginUseCase from "../../../domain/useCases/LoginUseCase";
 import { LoginScreenProps } from "../../../navigation/NavigationParamList"
 import { ScreenRoutes } from "../../../navigation/Routes"
+import useModalViewModel from "../../components/modal/ModalViewModel";
+
+
 
 type LoginViewModelProps = {
     loginUseCase: LoginUseCase
@@ -11,9 +14,14 @@ type LoginViewModelProps = {
 
 const useLoginViewModel = ({ navigation, loginUseCase }: LoginViewModelProps) => {
 
-    // GoogleSignin.signInSilently()
+
+    // ------------------ hooks ------------------ //
+    const { modalState, showModal, hideModal } = useModalViewModel()
 
 
+
+
+    // ------------------ functions ------------------ //
     const loginGoogle = async () => {
 
         const { isValid, message } = await loginUseCase.execute(new LoginGoogleRepository())
@@ -25,12 +33,21 @@ const useLoginViewModel = ({ navigation, loginUseCase }: LoginViewModelProps) =>
         } else {
             console.log("error al logearse con google ", message)
             // TODO: mostrar modal de error
-        }
 
+            showModal(
+                "Error",
+                message,
+                [{ text: "Aceptar", onPress: hideModal }]
+            )
+
+        }
 
     }
 
+
+
     return {
+        modalState,
         loginGoogle
     }
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { View } from 'react-native'
 import Label from '../label/Label'
 import { Colors } from '../../constants/Colors'
@@ -7,45 +7,17 @@ import TouchableIcon from '../touchableIcon/TouchableIcon'
 import Icons from '../../../assets/icons'
 import Spacer from '../spacer/Spacer'
 import ToastSyles from './ToastStyles'
+import { TOAST_ERROR_COLOR, TOAST_SUCCESS_COLOR, ToastProps } from './ToastViewModel'
 
-
-
-// ------------------ Constants ------------------ //
-const HIDE_AFTER = 3000
-const COLOR_SUCCESS = Colors.GREEN
-const COLOR_ERROR = Colors.CHIP_DEBTS
-
-
-
-// ------------------ Type and Props ------------------ //
-type ToastType = 'success' | 'error'
-type ToastProps = {
-    visible: boolean,
-    message: string,
-    type?: ToastType
-}
-
-type ToastPropsAndActions = ToastProps & {
-    hideToast: () => void
-}
 
 
 
 // ------------------ Component ------------------ //
 const Toast = ({
     message,
-    type = 'success',
+    type,
     visible,
-    hideToast
-}: ToastPropsAndActions) => {
-
-
-
-    // ------------------ Effects ------------------ //
-    useEffect(() => {
-        const timer = setTimeout(hideToast, HIDE_AFTER)
-        return () => clearTimeout(timer)
-    }, [visible])
+}: ToastProps) => {
 
 
 
@@ -55,7 +27,7 @@ const Toast = ({
 
         <View style={{
             ...ToastSyles.container,
-            backgroundColor: type === "success" ? COLOR_SUCCESS : COLOR_ERROR
+            backgroundColor: type === "success" ? TOAST_SUCCESS_COLOR : TOAST_ERROR_COLOR
         }}>
 
             {
@@ -77,11 +49,6 @@ const Toast = ({
     )
 }
 
-
 export default Toast
 
-export type{
-    ToastProps,
-    ToastType
-}
 

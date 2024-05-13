@@ -89,7 +89,6 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
         bottomSheetState,
         showBottomSheet,
         totalremaining,
-        hideToast,
         modalState,
         toastState
     } = homeViewModel
@@ -132,10 +131,9 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
             />
 
             <Toast
-                message={toastState.message}
                 visible={toastState.visible}
+                message={toastState.message}
                 type={toastState.type}
-                hideToast={hideToast}
             />
 
             <Loading visible={homeViewModel.loading} />
