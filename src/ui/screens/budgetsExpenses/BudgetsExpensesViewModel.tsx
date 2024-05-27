@@ -26,7 +26,13 @@ import { useEventBus } from "../../../data/globalContext/events/EventBus"
 import { Event } from "../../../data/globalContext/events/EventBusReducer"
 import BudgetExpenseUnitOfWork from "../../../data/unitOfWork/BudgetExpenseUnitOfWork"
 import { QueryParams } from "../../../data/types/QueryParams"
-
+import { useAppDispatch, useAppSelector } from "../../../data/globalContext/StoreHooks"
+import { selectUserApp } from "../../../data/globalContext/UserAppSlice"
+import { selectFinancesApp } from "../../../data/globalContext/FinancesAppSlice"
+import {
+    updateExpenses as updateExpensesContext,
+    updateBudgets as updateBudgetsContext
+} from "../../../data/globalContext/FinancesAppSlice"
 
 const dateTime = new DateTime()
 
@@ -54,6 +60,22 @@ const useBudgetExpensesViewModel = ({
 
 
     // ------------------ context ------------------ //
+    const userApp = useAppSelector(selectUserApp)
+
+    const {
+        expenses: expensesContext,
+        budgets: budgetsContext,
+        categories: categoriesContext
+    } = useAppSelector(selectFinancesApp)
+
+
+    const appDispatch = useAppDispatch()
+
+
+    const { dateInterval } = useGlobalContext()
+
+
+    // ------------------ event bus ------------------ //
     const {
         emmitEvent,
         budgetsQueue,
@@ -61,17 +83,6 @@ const useBudgetExpensesViewModel = ({
         consumeBudgetsQueue,
         consumeExpensesQueue
     } = useEventBus()
-
-
-    const {
-        userApp,
-        dateInterval,
-        expensesContext,
-        updateExpensesContext,
-        budgetsContext,
-        updateBudgetsContext,
-        categoriesContext
-    } = useGlobalContext()
 
 
 
@@ -240,13 +251,13 @@ const useBudgetExpensesViewModel = ({
 
     const getExpenses = async (queryParams: QueryParams): Promise<Expense[]> => {
         const expenses = await expenseRepository.getAll(queryParams)
-        updateExpensesContext(expenses)
+        appDispatch(updateExpensesContext(expenses))
         return expenses
     }
 
     const getBudgets = async (queryParams: QueryParams): Promise<Budget[]> => {
         const budgetsWithRemaing = await budgetExpenseUnitOfWork.getBudgetsWithRemaining(queryParams)
-        updateBudgetsContext(budgetsWithRemaing)
+        appDispatch(updateBudgetsContext(budgetsWithRemaing))
         return budgetsWithRemaing
     }
 
@@ -476,6 +487,7 @@ const useBudgetExpensesViewModel = ({
         setEditMode(false)
 
         const budgetFound = findBudgetOnContext(id)
+
 
         if (!budgetFound) {
             console.log("onPressItem, item not found");

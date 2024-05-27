@@ -4,10 +4,10 @@ import LoginUseCase from "../../../domain/useCases/LoginUseCase";
 import { LoginScreenProps } from "../../../navigation/NavigationParamList"
 import { ScreenRoutes } from "../../../navigation/Routes"
 import useModalViewModel from "../../components/modal/ModalViewModel";
-import { useGlobalContext } from "../../../data/globalContext/GlobalContext";
 import LocalLoginRepository from "../../../data/repository/loginRepository/LocalLoginRepository";
 
-
+import { useAppDispatch } from "../../../data/globalContext/StoreHooks";
+import { updateUser } from "../../../data/globalContext/UserAppSlice";
 
 type LoginViewModelProps = {
     localLoginRepository: LocalLoginRepository,
@@ -23,7 +23,8 @@ const useLoginViewModel = ({
 
 
     // ------------------ context ------------------ //
-    const { updateUserApp } = useGlobalContext()
+    const dispatch = useAppDispatch()
+
 
 
     // ------------------ hooks ------------------ //
@@ -43,11 +44,13 @@ const useLoginViewModel = ({
 
     // ------------------ functions ------------------ //
     const validateUserLogged = async () => {
+
         const user = await localLoginRepository.getUser()
-        if (user){
+
+        if (user) {
+            dispatch(updateUser(user))
             navigateToHome()
-            updateUserApp(user)
-        } 
+        }
     }
 
     const loginGoogle = async () => {
@@ -55,7 +58,7 @@ const useLoginViewModel = ({
         const { isValid, message, result } = await loginUseCase.execute(new LoginGoogleRepository())
 
         if (isValid && result) {
-            updateUserApp(result)
+            dispatch(updateUser(result))
             navigateToHome()
             // ...otros casos de uso
 

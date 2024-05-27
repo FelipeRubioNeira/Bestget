@@ -1,12 +1,13 @@
 import ILoginRepository from "../../data/repository/loginRepository/ILoginRepository";
 import { Validation, ValidationResult } from "../../data/types/Validation"
 import { validateConnection } from "../../utils/Connection";
-import UserApp from "../../data/types/User";
+import UserApp from "../../data/types/UserApp";
 
 
 class LoginUseCase {
     constructor(private localLoginRepository: ILoginRepository) { }
 
+    
     async execute(loginRepository: ILoginRepository): Promise<ValidationResult<UserApp | null>> {
 
         const validation: ValidationResult<UserApp> = {

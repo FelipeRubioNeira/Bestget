@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import UserApp from "../../types/User";
+import UserApp from "../../types/UserApp";
 import ILoginRepository from "./ILoginRepository";
 import AsyncStorageKeys from "../../asyncStorageKeys/AsyncStorageKeys";
 

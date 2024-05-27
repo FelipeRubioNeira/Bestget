@@ -28,6 +28,9 @@ import { FontFamily } from "../../constants/Fonts"
 import Icons from "../../../assets/icons"
 import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
 import { QueryParams } from "../../../data/types/QueryParams"
+import { useAppDispatch, useAppSelector } from "../../../data/globalContext/StoreHooks"
+import { selectUserApp } from "../../../data/globalContext/UserAppSlice"
+import { selectFinancesApp, updateIncomes } from "../../../data/globalContext/FinancesAppSlice"
 
 
 
@@ -48,12 +51,11 @@ const useIncomesViewModel = ({
 
 
     // ------------------- context ------------------- //
-    const {
-        userApp,
-        dateInterval,
-        incomesContext,
-        updateIncomesContext,
-    } = useGlobalContext()
+    const userApp = useAppSelector(selectUserApp)
+    const { incomes } = useAppSelector(selectFinancesApp)
+    const appDispatch = useAppDispatch()
+
+    const { dateInterval } = useGlobalContext()
 
     // ------------------- hooks ------------------- //
     const { modalState, showModal, hideModal } = useModalViewModel()
@@ -77,7 +79,7 @@ const useIncomesViewModel = ({
     useEffect(() => {
         navigation.setOptions({
             headerRight: () => {
-                if (incomesContext.length === 0) return null
+                if (incomes.length === 0) return null
                 return (
                     <TouchableIcon
                         image={Icons.edit}
@@ -87,7 +89,7 @@ const useIncomesViewModel = ({
             }
         })
 
-    }, [editMode, incomesContext])
+    }, [editMode, incomes])
 
 
     // if we have a new income or changes in one, we regenerate the list
@@ -106,8 +108,8 @@ const useIncomesViewModel = ({
 
     // generate the list of incomes if we sence a change in the incomes context length
     useEffect(() => {
-        initializeIncomeData(incomesContext)
-    }, [incomesContext.length])
+        initializeIncomeData(incomes)
+    }, [incomes.length])
 
 
 
@@ -119,7 +121,7 @@ const useIncomesViewModel = ({
     }
 
     const initializeIncomeData = (incomes: Income[]) => {
-        updateIncomesContext(incomes)
+        appDispatch(updateIncomes(incomes))
         generateIncomeList(incomes)
     }
 
@@ -209,7 +211,7 @@ const useIncomesViewModel = ({
 
         turnOffDeleteMode()
 
-        const income = incomesContext.find(income => income.incomeId === incomeId)
+        const income = incomes.find(income => income.incomeId === incomeId)
 
         navigation.navigate(ScreenRoutes.INCOME_FORM, {
             income,
@@ -249,7 +251,7 @@ const useIncomesViewModel = ({
 
             const newIncomesList = await getIncomesFromRepository({ userId: userApp.userId, ...dateInterval })
 
-            updateIncomesContext(newIncomesList)
+            appDispatch(updateIncomes(newIncomesList))
             generateIncomeList(newIncomesList)
 
         } else {

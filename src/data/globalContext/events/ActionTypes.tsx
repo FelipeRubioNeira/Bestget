@@ -3,7 +3,7 @@ import { Category } from "../../types/Categoty";
 import { DateInterval } from "../../types/DateInterval";
 import { Expense } from "../../types/Expense";
 import { Income } from "../../types/Income";
-import UserApp from "../../types/User";
+import UserApp from "../../types/UserApp";
 
 
 // ----------------- Actions ----------------- //

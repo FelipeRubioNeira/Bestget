@@ -21,6 +21,11 @@ import BudgetExpenseUnitOfWork from "../../../data/unitOfWork/BudgetExpenseUnitO
 import useModalViewModel, { ModalButtonList } from "../../components/modal/ModalViewModel"
 import useToastViewModel from "../../components/toast/ToastViewModel"
 import { QueryParams } from "../../../data/types/QueryParams"
+import { useAppSelector } from "../../../data/globalContext/StoreHooks"
+import { selectUserApp } from "../../../data/globalContext/UserAppSlice"
+import { useAppDispatch } from "../../../data/globalContext/StoreHooks";
+import { selectFinancesApp, updateBudgets, updateCategories, updateExpenses, updateIncomes } from "../../../data/globalContext/FinancesAppSlice"
+
 
 
 const dateTime = new DateTime()
@@ -79,27 +84,20 @@ const useHomeViewModel = ({
 }: HomeViewModelProps) => {
 
 
+
     // ------------------ context ------------------ //
+    const userApp = useAppSelector(selectUserApp)
+
     const {
-        userApp,
-        updateDateIntervalContext,
+        incomes,
+        categories,
+        expenses
+    } = useAppSelector(selectFinancesApp)
 
-        // incomes
-        incomesContext,
-        updateIncomesContext,
+    const appDispatch = useAppDispatch()
 
-        // expenses
-        expensesContext,
-        updateExpensesContext,
 
-        // budgets
-        updateBudgetsContext,
-
-        // categories
-        categoriesContext,
-        updateCategoriesContext,
-
-    } = useGlobalContext()
+    const { updateDateIntervalContext } = useGlobalContext()
 
     // ------------------ hooks ------------------ //
     const { modalState, showModal, hideModal } = useModalViewModel()
@@ -152,14 +150,14 @@ const useHomeViewModel = ({
     // ------------------ refresh ------------------ //
     // refresh data when incomes change
     useEffect(() => {
-        refreshIncomesData(incomesContext)
-    }, [incomesContext])
+        refreshIncomesData(incomes)
+    }, [incomes])
 
 
     // refresh data when expenses change
     useEffect(() => {
-        refreshExpensesData(expensesContext)
-    }, [expensesContext])
+        refreshExpensesData(expenses)
+    }, [expenses])
 
 
 
@@ -176,9 +174,9 @@ const useHomeViewModel = ({
             incomes,
             expenses,
         ] = await Promise.all([
-            getIncomes({ userId: userApp.userId, ...dateInterval}),
-            getExpenses({ userId: userApp.userId, ...dateInterval}),
-            getBudgets({userId: userApp.userId, ...dateInterval}),
+            getIncomes({ userId: userApp.userId, ...dateInterval }),
+            getExpenses({ userId: userApp.userId, ...dateInterval }),
+            getBudgets({ userId: userApp.userId, ...dateInterval }),
             getCategories()
         ])
 
@@ -197,9 +195,10 @@ const useHomeViewModel = ({
     }
 
     const refreshIncomesData = async (incomes: Income[]) => {
-        const totalIncomesAmount = calculateTotalAmount(incomes)
 
+        const totalIncomesAmount = calculateTotalAmount(incomes)
         setTotalIncomes(totalIncomesAmount)
+
         generateButtons(totalExpenses, totalIncomesAmount)
         updateTotalRemaining(totalIncomesAmount, totalExpenses)
 
@@ -222,25 +221,25 @@ const useHomeViewModel = ({
     // ------------------ repository methods ------------------ //
     const getIncomes = async (queryParams: QueryParams) => {
         const incomes = await incomeRepository.getAll(queryParams)
-        updateIncomesContext(incomes)
+        appDispatch(updateIncomes(incomes))
         return incomes
     }
 
     const getExpenses = async (queryParams: QueryParams) => {
         const expenses = await expenseRepository.getAll(queryParams)
-        updateExpensesContext(expenses)
+        appDispatch(updateExpenses(expenses))
         return expenses
     }
 
-    const getBudgets = async (queryParams:QueryParams) => {
+    const getBudgets = async (queryParams: QueryParams) => {
         const budgestWithRemaining = await budgetExpenseUnitOfWork.getBudgetsWithRemaining(queryParams)
-        updateBudgetsContext(budgestWithRemaining)
+        appDispatch(updateBudgets(budgestWithRemaining))
         return budgestWithRemaining
     }
 
     const getCategories = async () => {
         const categories = await categoryRepository.getAll()
-        updateCategoriesContext(categories)
+        appDispatch(updateCategories(categories))
         return categories
     }
 
@@ -267,7 +266,7 @@ const useHomeViewModel = ({
             {
                 title: 'Gastos y Presupuestos',
                 subTitle: `$${currencyFormat(expenses)}`,
-                onPress: () => onPressBudgetsExpenses(),
+                onPress: onPressBudgetsExpenses,
                 backgroundColor: Colors.YELLOW,
                 titleColor: Colors.BLACK,
                 type: "gastos",
@@ -275,14 +274,14 @@ const useHomeViewModel = ({
             {
                 title: 'Ingresos',
                 subTitle: `$${currencyFormat(incomes)}`,
-                onPress: () => onPressIncomes(),
+                onPress: onPressIncomes,
                 backgroundColor: Colors.GREEN,
                 titleColor: Colors.BLACK,
                 type: "ingresos",
             },
             {
                 title: 'Estadisticas',
-                onPress: () => onPressStatistics(),
+                onPress: onPressStatistics,
                 backgroundColor: Colors.PURPLE,
                 titleColor: Colors.BLACK,
                 type: "estadisticas",
@@ -290,7 +289,7 @@ const useHomeViewModel = ({
             },
             {
                 title: 'Mi Cuenta',
-                onPress: () => onPressProfile(),
+                onPress: onPressProfile,
                 backgroundColor: Colors.RED,
                 titleColor: Colors.BLACK,
                 type: "perfil",
@@ -614,8 +613,8 @@ const useHomeViewModel = ({
 
         bottomSheetState,
         totalremaining,
-        allIncomes: incomesContext,
-        allCategories: categoriesContext,
+        allIncomes: incomes,
+        allCategories: categories,
         totalExpenses,
         totalIncomes,
         buttonsHome,

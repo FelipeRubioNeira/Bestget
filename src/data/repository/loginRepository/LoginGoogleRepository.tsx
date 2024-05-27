@@ -1,9 +1,6 @@
 import ILoginRepository from "./ILoginRepository";
-import UserApp from "../../types/User";
+import UserApp from "../../types/UserApp";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import AsyncStorageKeys from "../../asyncStorageKeys/AsyncStorageKeys";
-
 
 
 class LoginGoogleRepository implements ILoginRepository {
@@ -12,7 +9,10 @@ class LoginGoogleRepository implements ILoginRepository {
 
         try {
 
-            await GoogleSignin.hasPlayServices();
+            const hasPlayServices =  await GoogleSignin.hasPlayServices();
+
+            if(!hasPlayServices) return null
+
             const { user } = await GoogleSignin.signIn();
 
             const { id, email, name, photo } = user
@@ -24,13 +24,11 @@ class LoginGoogleRepository implements ILoginRepository {
                 photo: photo ? photo : ""
             }
 
-            // save user in the storage
-            await this.saveUser(userApp)
             return userApp
 
         } catch (error) {
             console.log("Error al iniciar sesion", error);
-            throw error
+            return null
         }
 
     }
@@ -38,44 +36,16 @@ class LoginGoogleRepository implements ILoginRepository {
     async logout() {
         await Promise.all([
             GoogleSignin.signOut(),
-            this.cleanUser()
         ])
     }
 
-    async saveUser(user: UserApp) {
-        try {
-            await AsyncStorage.setItem(AsyncStorageKeys.USER, JSON.stringify(user))
-        } catch (error) {
-            console.log("Error al guardar usuario en el storage", error);
-
-        }
-    }
-
     async getUser(): Promise<UserApp | null> {
-
-        try {
-
-            const user = await AsyncStorage.getItem(AsyncStorageKeys.USER)
-
-            if (!user) return null
-
-            return JSON.parse(user)
-
-        } catch (error) {
-            console.log("Error al obtener usuario del storage", error);
-            return null
-
-        }
-
+        return null
     }
 
-    async cleanUser() {
-        try {
-            await AsyncStorage.removeItem(AsyncStorageKeys.USER)
-        } catch (error) {
-            console.log("Error al limpiar usuario del storage", error);
-        }
-    }
+    async saveUser(user: UserApp) { }
+
+    async cleanUser() { }
 
 }
 

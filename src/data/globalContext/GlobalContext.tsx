@@ -8,7 +8,7 @@ import { Income } from "../types/Income";
 import { Expense } from "../types/Expense";
 import { Budget } from "../types/Budget";
 import { Category } from "../types/Categoty";
-import UserApp from "../types/User";
+import UserApp from "../types/UserApp";
 
 
 const dateTime = new DateTime()

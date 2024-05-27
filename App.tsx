@@ -4,6 +4,8 @@ import MainNavigator from './src/navigation/mainNavigator/MainNavigator';
 import { GlobalContextProvider } from './src/data/globalContext/GlobalContext';
 import { EventBusProvider } from './src/data/globalContext/events/EventBus';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { Provider } from "react-redux"
+import { store } from './src/data/globalContext/Store';
 
 
 // ------------------- google sign in ------------------- //
@@ -22,7 +24,11 @@ const App = () => {
     <EventBusProvider>
       <GlobalContextProvider>
 
-        <MainNavigator />
+        <Provider store={store}>
+
+          <MainNavigator />
+          
+        </Provider>
 
       </GlobalContextProvider>
     </EventBusProvider>

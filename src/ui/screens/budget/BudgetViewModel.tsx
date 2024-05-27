@@ -12,8 +12,9 @@ import DefaultStyles from "../../styles/DefaultStyles"
 import DeleteExpenseUseCase from "../../../domain/useCases/DeleteExpenseUseCase"
 import Icons from "../../../assets/icons"
 import DateTime from "../../../utils/DateTime"
-import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
 import { useEventBus } from "../../../data/globalContext/events/EventBus"
+import { useAppSelector } from "../../../data/globalContext/StoreHooks"
+import { selectFinancesApp } from "../../../data/globalContext/FinancesAppSlice"
 
 
 
@@ -33,7 +34,7 @@ type budgetViewModelProps = {
 const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpenseUseCase }: budgetViewModelProps) => {
 
     // ----------- context ----------- //
-    const { categoriesContext } = useGlobalContext()
+    const {expenses, categories}= useAppSelector(selectFinancesApp)
 
 
     // ----------- event bud ----------- //
@@ -104,11 +105,12 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
     const getData = async () => {
 
         // category and color
-        const categoryFound = findCategory(budget?.categoryId, categoriesContext)
+        const categoryFound = findCategory(budget?.categoryId, categories)
 
         const expenseList = await getExpensesByBudgetId(budget.budgetId)
         const expenseListFormatted = applyFormat(expenseList)
         const totalExpenses = getTotalExpenses(expenseList)
+
 
         const title = generateTitle(
             budget.amount,
@@ -140,9 +142,8 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
 
         return expenseList.map(expense => {
 
-
             const newExpenseFormatted = {
-                id: expense.budgetId,
+                id: expense.expenseId,
                 name: expense.name,
                 amount: currencyFormat(expense.amount),
                 date: dateTime.convertToNormalDate(expense.date),
@@ -200,10 +201,12 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
 
         turnOffEditMode()
 
-        const expense = findExpense(expenseId)
+        const expenseFound = findExpense(expenseId)
+
+        if(!expenseFound) return
 
         navigation.navigate(ScreenRoutes.EXPENSES_FORM, {
-            expense,
+            expense: expenseFound,
             budget,
         })
 
@@ -256,28 +259,8 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
 
     // ----------- utils ----------- //
 
-    const findExpense = (expenseId: string): Expense => {
-
-        const item = expenseList.find(expense => expense.id === expenseId)
-
-        if (item) {
-
-            const expense: Expense = {
-                name: item.name,
-                amount: numberFormat(item.amount),
-                date: item.date,
-                categoryId: category?.id || 0,
-                budgetId: budget?.budgetId,
-                expenseId: expenseId,
-                userId: budget?.userId,
-            }
-
-            return expense
-
-        } else {
-            return {} as Expense
-        }
-
+    const findExpense = (expenseId: string): Expense | undefined => {
+        return expenses.find(expense => expense.expenseId === expenseId)
     }
 
 

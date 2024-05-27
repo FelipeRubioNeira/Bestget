@@ -9,6 +9,8 @@ import editIncomeUseCase from "../../../domain/useCases/editIncomeUseCase";
 import { ValidationResult } from "../../../data/types/Validation";
 import DateTime from "../../../utils/DateTime";
 import { useGlobalContext } from "../../../data/globalContext/GlobalContext";
+import { useAppSelector } from "../../../data/globalContext/StoreHooks";
+import { selectUserApp } from "../../../data/globalContext/UserAppSlice";
 
 
 const dateTime = new DateTime()
@@ -30,7 +32,9 @@ const useIncomeFormViewModel = ({
 
 
     // ------------------- context------------------- //
-    const { dateInterval, userApp } = useGlobalContext()
+    const userApp = useAppSelector(selectUserApp)
+
+    const { dateInterval } = useGlobalContext()
 
 
     // ------------------- route-params ------------------- //

@@ -12,6 +12,9 @@ import DateTime from "../../../utils/DateTime"
 import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
 import { useEventBus } from "../../../data/globalContext/events/EventBus"
 import { ModalProps } from "../../components/modal/ModalViewModel"
+import { useAppSelector } from "../../../data/globalContext/StoreHooks"
+import { selectUserApp } from "../../../data/globalContext/UserAppSlice"
+import { selectFinancesApp } from "../../../data/globalContext/FinancesAppSlice"
 
 const dateTime = new DateTime()
 
@@ -39,14 +42,12 @@ const useExpenseFormViewModel = (
 
 
     // ------------------- context ------------------- //
+    const userApp = useAppSelector(selectUserApp)
+    const { categories } = useAppSelector(selectFinancesApp)
+
+    const { dateInterval } = useGlobalContext()
+
     const { emmitEvent } = useEventBus()
-
-    const {
-        userApp,
-        dateInterval,
-        categoriesContext
-    } = useGlobalContext()
-
 
     // ------------------- params ------------------- //
     const {
@@ -54,7 +55,10 @@ const useExpenseFormViewModel = (
         expense,
     } = route.params
 
-    
+
+
+
+
 
 
     // ------------------- states ------------------- //
@@ -79,7 +83,7 @@ const useExpenseFormViewModel = (
 
     // ------------------- effects ------------------- //
     useEffect(() => {
-        validateBudget(budget, categoriesContext)
+        validateBudget(budget, categories)
     }, [budget])
 
     useEffect(() => {
@@ -185,13 +189,11 @@ const useExpenseFormViewModel = (
     }
 
 
-
-    // => create new expense
+    // ------------------- create or update expense ------------------- //
     const saveExpense = async () => {
         if (expense) editExpense(expense)
         else createExpense()
     }
-
 
     const createExpense = async () => {
 
@@ -223,9 +225,8 @@ const useExpenseFormViewModel = (
     const editExpense = async (expense: Expense) => {
 
         const newExpense = generateExpense(expense?.expenseId)
-        const result = await editExpenseUseCase.edit(newExpense, emmitEvent)
 
-        console.log("newExpense " , newExpense);
+        const result = await editExpenseUseCase.edit(newExpense, emmitEvent)
 
         if (result.isValid) {
 
@@ -280,7 +281,7 @@ const useExpenseFormViewModel = (
         modalState,
         hasBudget,
         chipItemProps,
-        categories: categoriesContext,
+        categories,
         expenseState,
         updateExpenseName,
         updateExpenseAmount,

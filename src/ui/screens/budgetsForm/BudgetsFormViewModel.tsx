@@ -12,6 +12,9 @@ import { Expense } from "../../../data/types/Expense"
 import DateTime from "../../../utils/DateTime"
 import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
 import { useEventBus } from "../../../data/globalContext/events/EventBus"
+import { selectUserApp } from "../../../data/globalContext/UserAppSlice"
+import { useAppSelector } from "../../../data/globalContext/StoreHooks"
+import { selectFinancesApp } from "../../../data/globalContext/FinancesAppSlice"
 
 
 const dateTime = new DateTime()
@@ -45,18 +48,13 @@ const useBudgetsFormViewModel = ({
 
 
     // ------------------- context ------------------- //
-    const {
-        userApp,
-        dateInterval,
-        categoriesContext,
-    } = useGlobalContext()
+    const userApp = useAppSelector(selectUserApp)
+    const { categories } = useAppSelector(selectFinancesApp)
 
-
+    const { dateInterval } = useGlobalContext()
 
     // ------------------- params ------------------- //
-    const {
-        budget,
-    } = route.params || {}
+    const { budget } = route.params || {}
 
 
     // ------------------- hooks ------------------- //
@@ -226,9 +224,6 @@ const useBudgetsFormViewModel = ({
             emmitEvent
         )
 
-        console.log("resultado de crear un budget ",result);
-        
-
 
         if (isValid && result) {
             navigation.replace(ScreenRoutes.BUDGET, {
@@ -263,7 +258,7 @@ const useBudgetsFormViewModel = ({
     // ------------------- return ------------------- //
     return {
         modalState,
-        categories: categoriesContext,
+        categories,
         budgetState,
         updateBudgetName,
         updateBudgetAmount,

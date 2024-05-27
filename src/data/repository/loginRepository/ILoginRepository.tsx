@@ -1,4 +1,4 @@
-import UserApp from "../../types/User"
+import UserApp from "../../types/UserApp"
 
 interface ILoginRepository {
     login: () => Promise<UserApp | null>

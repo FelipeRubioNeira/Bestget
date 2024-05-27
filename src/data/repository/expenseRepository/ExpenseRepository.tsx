@@ -32,7 +32,6 @@ class ExpenseRepository implements IExpenseRespository {
     async update(expense: Expense): Promise<boolean> {
 
         try {
-
             await firestore()
                 .collection(Collections.EXPENSE)
                 .doc(expense.expenseId)

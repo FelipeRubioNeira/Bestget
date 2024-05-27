@@ -23,8 +23,9 @@ class EditExpenseUseCase {
         const result = await this.applyValidations(expense.name, expense.amount)
 
         if (result.isValid) {
+
             await this.expenseRepository.update(expense)
-            validationResult.result = expense.id
+            validationResult.result = expense.expenseId
 
             emmitEvent(EventNames.EXPENSE_EDITED, expense)
 

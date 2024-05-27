@@ -34,7 +34,6 @@ const MainNavigator = () => {
         <NavigationContainer>
             <Stack.Navigator initialRouteName={ScreenRoutes.LOGIN}>
 
-
             <Stack.Screen
                     component={LoginScreen}
                     name={ScreenRoutes.LOGIN}
