@@ -60,15 +60,11 @@ const useLoginViewModel = ({
             // ...otros casos de uso
 
         } else {
-            console.log("error al logearse con google ", message)
-            // TODO: mostrar modal de error
-
             showModal(
                 "Error",
                 message,
                 [{ text: "Aceptar", onPress: hideModal }]
             )
-
         }
 
     }

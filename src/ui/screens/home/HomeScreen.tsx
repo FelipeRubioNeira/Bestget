@@ -103,7 +103,7 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
             <View style={DefaultStyles.screen}>
 
                 <HomeHeader
-                    name='Hola Casita'
+                    name={`Bienvenido ${homeViewModel.userName}`}
                     total={totalremaining}
                 />
 
@@ -165,6 +165,7 @@ const MenuListButton = ({ buttonArray }: { buttonArray: ButtonHomeProps[] }) => 
                             subTitle={item.subTitle}
                             onPress={item.onPress}
                             backgroundColor={item.backgroundColor}
+                            comingSoon={item.comingSoon}
                         />
                     </View>
                 )}

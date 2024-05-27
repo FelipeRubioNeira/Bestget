@@ -26,7 +26,6 @@ class LoginGoogleRepository implements ILoginRepository {
 
             // save user in the storage
             await this.saveUser(userApp)
-
             return userApp
 
         } catch (error) {

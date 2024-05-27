@@ -35,7 +35,8 @@ export type ButtonHomeProps = {
     onPress: () => void,
     backgroundColor: string,
     titleColor: string
-    type: MenuType
+    type: MenuType,
+    comingSoon?: boolean,
 }
 
 type HomeViewModelProps = {
@@ -269,7 +270,7 @@ const useHomeViewModel = ({
                 onPress: () => onPressBudgetsExpenses(),
                 backgroundColor: Colors.YELLOW,
                 titleColor: Colors.BLACK,
-                type: "gastos"
+                type: "gastos",
             },
             {
                 title: 'Ingresos',
@@ -277,21 +278,23 @@ const useHomeViewModel = ({
                 onPress: () => onPressIncomes(),
                 backgroundColor: Colors.GREEN,
                 titleColor: Colors.BLACK,
-                type: "ingresos"
+                type: "ingresos",
             },
             {
                 title: 'Estadisticas',
                 onPress: () => onPressStatistics(),
                 backgroundColor: Colors.PURPLE,
                 titleColor: Colors.BLACK,
-                type: "estadisticas"
+                type: "estadisticas",
+                comingSoon: true
             },
             {
                 title: 'Mi Cuenta',
                 onPress: () => onPressProfile(),
                 backgroundColor: Colors.RED,
                 titleColor: Colors.BLACK,
-                type: "perfil"
+                type: "perfil",
+                comingSoon: true
             },
         ])
 
@@ -606,6 +609,8 @@ const useHomeViewModel = ({
 
     // ------------------ return ------------------ //
     return {
+
+        userName: userApp.name,
 
         bottomSheetState,
         totalremaining,

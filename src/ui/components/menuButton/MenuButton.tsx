@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { Styles } from '../../styles/Styles'
 import { Colors } from '../../constants/Colors'
@@ -11,6 +11,7 @@ interface IMenuButtonProps {
     subTitle?: string,
     onPress?: () => void,
     backgroundColor?: string,
+    comingSoon?: boolean
 }
 
 const MenuButton = ({
@@ -18,10 +19,12 @@ const MenuButton = ({
     subTitle = "",
     onPress = () => { },
     backgroundColor = Colors.GRAY,
+    comingSoon = false
 }: IMenuButtonProps) => {
 
     return (
         <TouchableOpacity
+            disabled={comingSoon}
             onPress={onPress}
             style={{
                 ...MenuButtonStyle.menuButton,
@@ -41,9 +44,34 @@ const MenuButton = ({
                 />
             }
 
+            {
+                comingSoon &&
+                <SoonLabel value='Pronto' />
+            }
+
 
         </TouchableOpacity>
     )
+}
+
+const SoonLabel = ({value}:{value:string}) => {
+    return (
+        <View style={{
+            position: "absolute",
+            bottom: 0,
+            right: 0,
+            backgroundColor: Colors.CHIP_LUXURIES,
+            padding: 5,
+            borderRadius: 5,
+        }}>
+            <Label
+                value={value}
+                fontSize={FontSize.XXSMALL}
+                fontFamily={FontFamily.BOLD}
+            />
+        </View>
+    )
+
 }
 
 export default MenuButton
@@ -59,7 +87,7 @@ const MenuButtonStyle = StyleSheet.create({
         flex: 1,
     },
 
-    title:{
+    title: {
         fontFamily: FontFamily.BOLD,
         fontSize: FontSize.SMALL,
         color: Colors.BLACK,
