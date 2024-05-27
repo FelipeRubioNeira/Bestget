@@ -1,20 +1,21 @@
 import { DateInterval } from "../../types/DateInterval"
 import { Expense, ExpenseCreate } from "../../types/Expense"
+import { QueryParams } from "../../types/QueryParams"
 
 
 interface IExpenseRespository {
 
-    create: (expense: ExpenseCreate) => Promise<string>
+    create: (expense: ExpenseCreate) => Promise<Expense | null>
 
-    update: (expense: Expense) => Promise<void>
+    update: (expense: Expense) => Promise<boolean>
 
-    getAll: (date: DateInterval) => Promise<Expense[]>
+    getAll: (queryParams: QueryParams) => Promise<Expense[]>
     getByBudgetId: (id: string) => Promise<Expense[]>
     getAllByBudgetId: (id: string[]) => Promise<Expense[]>
 
     getWithoutBudget: (date: DateInterval) => Promise<Expense[]>
 
-    getTotal: (date: DateInterval) => Promise<number>
+    getTotal: (queryParams: QueryParams) => Promise<number>
 
     updateCategory: (categoryId: number, expenses: Expense[]) => Promise<void>
 
@@ -25,8 +26,8 @@ interface IExpenseRespository {
 
 
     // ----------------- transactions ----------------- //
-    copyTransaction: (from: DateInterval, to: DateInterval) => Promise<void>
-    deleteTransaction: (date: DateInterval) => Promise<void>
+    copyTransaction: (queryParams: QueryParams) => Promise<void>
+    deleteTransaction: (queryParams: QueryParams) => Promise<void>
 
 }
 

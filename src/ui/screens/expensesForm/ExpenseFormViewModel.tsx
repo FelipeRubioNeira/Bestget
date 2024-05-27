@@ -8,10 +8,10 @@ import { ScreenRoutes } from "../../../navigation/Routes"
 import { ChipItemProps } from "../../components/chipItem/ChipItem"
 import { Budget } from "../../../data/types/Budget"
 import EditExpenseUseCase from "../../../domain/useCases/EditExpenseUseCase"
-import { ModalProps } from "../../components/modal/Modal"
 import DateTime from "../../../utils/DateTime"
 import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
 import { useEventBus } from "../../../data/globalContext/events/EventBus"
+import { ModalProps } from "../../components/modal/ModalViewModel"
 
 const dateTime = new DateTime()
 
@@ -42,6 +42,7 @@ const useExpenseFormViewModel = (
     const { emmitEvent } = useEventBus()
 
     const {
+        userApp,
         dateInterval,
         categoriesContext
     } = useGlobalContext()
@@ -53,8 +54,7 @@ const useExpenseFormViewModel = (
         expense,
     } = route.params
 
-
-
+    
 
 
     // ------------------- states ------------------- //
@@ -91,7 +91,7 @@ const useExpenseFormViewModel = (
 
 
     // ------------------- methods ------------------- //
-    const updateForm = (expense: Expense | undefined) => {
+    const updateForm = (expense?: Expense) => {
 
         if (!expense) return
 
@@ -160,7 +160,7 @@ const useExpenseFormViewModel = (
     }
 
 
-    const generateExpense = (id?: string) => {
+    const generateExpense = (expenseId?: string) => {
 
         const { expenseAmount, expenseName, categoryId, expenseDate } = expenseState
 
@@ -168,15 +168,16 @@ const useExpenseFormViewModel = (
         const newDate = dateTime.getIsoDateTime(expenseDate)
 
         const expenseCreated = {
+            userId: userApp.userId,
             name: expenseName,
             amount: amountInt,
-            budgetId: budget?.id || "",
+            budgetId: budget?.budgetId || "",
             categoryId: categoryId || 0,
             date: newDate,
         } as Expense
 
-        if (id) {
-            expenseCreated.id = id;
+        if (expenseId) {
+            expenseCreated.expenseId = expenseId;
         }
 
         return expenseCreated
@@ -197,7 +198,7 @@ const useExpenseFormViewModel = (
         const newExpense = generateExpense()
         const result = await createExpenseUseCase.create(
             newExpense,
-            budget,
+            budget || null,
             emmitEvent
         )
 
@@ -206,43 +207,43 @@ const useExpenseFormViewModel = (
             if (budget) {
                 navigation.navigate(ScreenRoutes.BUDGET, {
                     budget: budget,
-                    newExpenseId: result.result
+                    ...(result.result && { newExpenseId: result.result.budgetId })
                 })
 
             } else navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {
-                newExpenseId: result.result
+                ...(result.result && { newExpenseId: result.result.expenseId })
             })
 
         } else {
-            const { title, message } = result.message
-            showModal(title, message)
+            showModal("Error", result.message)
         }
 
     }
 
     const editExpense = async (expense: Expense) => {
 
-        const newExpense = generateExpense(expense?.id)
+        const newExpense = generateExpense(expense?.expenseId)
         const result = await editExpenseUseCase.edit(newExpense, emmitEvent)
+
+        console.log("newExpense " , newExpense);
 
         if (result.isValid) {
 
             if (budget) {
                 navigation.navigate(ScreenRoutes.BUDGET, {
                     budget: budget,
-                    newExpenseId: newExpense.id,
+                    newExpenseId: newExpense.expenseId,
                 })
 
             } else {
                 navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {
-                    newExpenseId: newExpense.id,
+                    newExpenseId: newExpense.expenseId,
                 })
             }
 
 
         } else {
-            const { title, message } = result.message
-            showModal(title, message)
+            showModal("Error", result.message)
         }
 
     }

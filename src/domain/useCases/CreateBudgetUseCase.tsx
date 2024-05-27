@@ -15,10 +15,7 @@ class CreateBudgetUseCase {
 
         const validationResult: ValidationResult<Budget | null> = {
             isValid: true,
-            message: {
-                title: "",
-                message: "",
-            },
+            message: "",
             result: null,
         }
 
@@ -29,12 +26,8 @@ class CreateBudgetUseCase {
             emmitEvent(EventNames.BUDGET_CREATED, budget)
 
         } else {
-
             validationResult.isValid = false
-            validationResult.message = {
-                title: "Error al guardar el presupuesto.",
-                message: result.message,
-            }
+            validationResult.message = "Error al guardar el presupuesto."
 
         }
 

@@ -1,46 +1,52 @@
 import { Collections } from "../../collections/Collections";
 import { DateInterval } from "../../types/DateInterval";
 import { Expense, ExpenseCreate, ExpenseKeys } from "../../types/Expense";
+import { QueryParams } from "../../types/QueryParams";
 import IExpenseRespository from "./IExpenseRepository";
 import firestore from '@react-native-firebase/firestore';
 
 
 class ExpenseRepository implements IExpenseRespository {
 
-    async create(expense: ExpenseCreate): Promise<string> {
+    async create(expense: ExpenseCreate): Promise<Expense | null> {
 
         try {
 
-            const result = await firestore()
-                .collection(Collections.EXPENSE)
-                .add(expense)
+            const newDocRef = firestore().collection(Collections.EXPENSE).doc();
 
-            const expenseId = result.id
+            const newExpense: Expense = {
+                ...expense,
+                expenseId: newDocRef.id, // we set the id
+            }
 
-            return (expenseId)
+            await newDocRef.set(newExpense);
+            return newExpense
 
         } catch (error) {
             console.error("error ExpenseRepository create", error);
-            return ""
+            return null
         }
 
     }
 
-    async update(expense: Expense): Promise<void> {
+    async update(expense: Expense): Promise<boolean> {
 
         try {
 
             await firestore()
                 .collection(Collections.EXPENSE)
-                .doc(expense.id)
+                .doc(expense.expenseId)
                 .update(expense)
+
+                return true
 
         } catch (error) {
             console.error("error editExpense repository", error);
+            return false
         }
     }
 
-    async getAll({ initialDate, finalDate }: DateInterval): Promise<Expense[]> {
+    async getAll({ userId, initialDate, finalDate }: QueryParams): Promise<Expense[]> {
 
         try {
 
@@ -48,23 +54,24 @@ class ExpenseRepository implements IExpenseRespository {
                 .collection(Collections.EXPENSE)
                 .where(ExpenseKeys.DATE, ">=", initialDate)
                 .where(ExpenseKeys.DATE, "<", finalDate)
+                .where(ExpenseKeys.USER_ID, "==", userId)
                 .get()
 
-            const expensesArray = [] as Expense[]
+            const expensesArray = expensesFirebase.docs.map(doc => {
 
-            expensesFirebase.docs.forEach(doc => {
-
-                const { name, amount, categoryId, date, budgetId } = doc.data() as Expense
+                const { expenseId, userId, name, amount, categoryId, date, budgetId } = doc.data() as Expense
 
                 const newExpense: Expense = {
-                    id: doc.id,
+                    expenseId: expenseId,
+                    userId: userId,
                     name: name,
                     amount: amount,
                     date: date,
                     categoryId,
                     budgetId
                 }
-                expensesArray.push(newExpense)
+                return newExpense
+
             })
 
             return expensesArray
@@ -90,10 +97,11 @@ class ExpenseRepository implements IExpenseRespository {
 
             expensesFirebase.docs.forEach(doc => {
 
-                const { name, amount, categoryId, date, budgetId } = doc.data() as Expense
+                const { expenseId, userId, name, amount, categoryId, date, budgetId } = doc.data() as Expense
 
                 const newExpense: Expense = {
-                    id: doc.id,
+                    expenseId: expenseId,
+                    userId: userId,
                     name: name,
                     amount: amount,
                     date: date,
@@ -114,6 +122,8 @@ class ExpenseRepository implements IExpenseRespository {
     async getAllByBudgetId(budgetIds: string[]): Promise<Expense[]> {
 
 
+        if (budgetIds.length === 0) return []
+
         try {
 
             const expensesDoc = await firestore().collection(Collections.EXPENSE)
@@ -121,11 +131,11 @@ class ExpenseRepository implements IExpenseRespository {
                 .get()
 
             return expensesDoc.docs.map(doc => {
-
-                const { amount, name, date, budgetId, categoryId } = doc.data() as Expense
+                const { expenseId, userId, amount, name, date, budgetId, categoryId } = doc.data() as Expense
 
                 const expense: Expense = {
-                    id: doc.id,
+                    expenseId: expenseId,
+                    userId: userId,
                     amount: amount,
                     name: name,
                     date: date,
@@ -159,27 +169,28 @@ class ExpenseRepository implements IExpenseRespository {
 
             return expensesFirebase.docs.map(doc => {
 
-                const { name, amount, categoryId, date, budgetId } = doc.data() as Expense
+                const { expenseId, userId, name, amount, categoryId, date, budgetId } = doc.data() as Expense
 
                 const newExpense: Expense = {
-                    id: doc.id,
+                    expenseId: expenseId,
+                    userId: userId,
                     name: name,
                     amount: amount,
                     date: date,
                     categoryId,
                     budgetId
                 }
-                
+
                 return newExpense
             })
 
         } catch (error) {
-            console.error("error getExpensesById", error);
+            console.error("error getWithoutBudget", error);
             return []
         }
     }
 
-    async getTotal({ initialDate, finalDate }: DateInterval): Promise<number> {
+    async getTotal({ userId, initialDate, finalDate }: QueryParams): Promise<number> {
 
         try {
 
@@ -187,6 +198,7 @@ class ExpenseRepository implements IExpenseRespository {
                 .collection(Collections.EXPENSE)
                 .where(ExpenseKeys.DATE, ">=", initialDate)
                 .where(ExpenseKeys.DATE, "<", finalDate)
+                .where(ExpenseKeys.USER_ID, "==", userId)
                 .get()
 
             let total = 0
@@ -211,7 +223,7 @@ class ExpenseRepository implements IExpenseRespository {
             const updatePromises = expenses.map(expense => {
                 return firestore()
                     .collection(Collections.EXPENSE)
-                    .doc(expense.id)
+                    .doc(expense.expenseId)
                     .update({ categoryId: categoryId })
             })
 
@@ -222,13 +234,13 @@ class ExpenseRepository implements IExpenseRespository {
         }
     }
 
-    async delete(id: string): Promise<void> {
+    async delete(expenseId: string): Promise<void> {
 
         try {
 
             await firestore()
                 .collection(Collections.EXPENSE)
-                .doc(id)
+                .doc(expenseId)
                 .delete()
 
         } catch (error) {
@@ -246,7 +258,7 @@ class ExpenseRepository implements IExpenseRespository {
             const deletePromises = expenses.map(expense => {
                 return firestore()
                     .collection(Collections.EXPENSE)
-                    .doc(expense.id)
+                    .doc(expense.expenseId)
                     .delete()
             })
 
@@ -281,7 +293,7 @@ class ExpenseRepository implements IExpenseRespository {
 
     // ----------------- transactions ----------------- //
 
-    async copyTransaction(from: DateInterval, to: DateInterval): Promise<void> {
+    async copyTransaction(queryParams: QueryParams): Promise<void> {
 
         try {
 
@@ -290,15 +302,16 @@ class ExpenseRepository implements IExpenseRespository {
             await db.runTransaction(async transaction => {
 
                 const expensesRef = db.collection(Collections.EXPENSE)
-                const expenses = await this.getAll(from)
+                const expenses = await this.getAll(queryParams)
 
                 expenses.forEach(expense => {
 
                     const newExpense: ExpenseCreate = {
+                        userId: expense.userId,
                         name: expense.name,
                         amount: expense.amount,
                         categoryId: expense.categoryId,
-                        date: to.initialDate,
+                        date: queryParams.initialDate,
                         budgetId: expense.budgetId
                     }
 
@@ -313,7 +326,7 @@ class ExpenseRepository implements IExpenseRespository {
 
     }
 
-    async deleteTransaction(date: DateInterval): Promise<void> {
+    async deleteTransaction(queryParams: QueryParams): Promise<void> {
 
         try {
 
@@ -322,10 +335,10 @@ class ExpenseRepository implements IExpenseRespository {
             await db.runTransaction(async transaction => {
 
                 const expensesRef = db.collection(Collections.EXPENSE)
-                const expenses = await this.getAll(date)
+                const expenses = await this.getAll(queryParams)
 
                 expenses.forEach(expense => {
-                    transaction.delete(expensesRef.doc(expense.id))
+                    transaction.delete(expensesRef.doc(expense.expenseId))
                 })
 
             })

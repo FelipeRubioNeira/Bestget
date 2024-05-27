@@ -20,6 +20,7 @@ import DeleteMothUseCase from "../../../domain/useCases/DeleteMonthUseCase"
 import BudgetExpenseUnitOfWork from "../../../data/unitOfWork/BudgetExpenseUnitOfWork"
 import useModalViewModel, { ModalButtonList } from "../../components/modal/ModalViewModel"
 import useToastViewModel from "../../components/toast/ToastViewModel"
+import { QueryParams } from "../../../data/types/QueryParams"
 
 
 const dateTime = new DateTime()
@@ -79,6 +80,7 @@ const useHomeViewModel = ({
 
     // ------------------ context ------------------ //
     const {
+        userApp,
         updateDateIntervalContext,
 
         // incomes
@@ -100,7 +102,7 @@ const useHomeViewModel = ({
 
     // ------------------ hooks ------------------ //
     const { modalState, showModal, hideModal } = useModalViewModel()
-    const {toastState, showToast} = useToastViewModel()
+    const { toastState, showToast } = useToastViewModel()
 
 
 
@@ -173,9 +175,9 @@ const useHomeViewModel = ({
             incomes,
             expenses,
         ] = await Promise.all([
-            getIncomes(dateInterval),
-            getExpenses(dateInterval),
-            getBudgets(dateInterval),
+            getIncomes({ userId: userApp.userId, ...dateInterval}),
+            getExpenses({ userId: userApp.userId, ...dateInterval}),
+            getBudgets({userId: userApp.userId, ...dateInterval}),
             getCategories()
         ])
 
@@ -217,20 +219,20 @@ const useHomeViewModel = ({
 
 
     // ------------------ repository methods ------------------ //
-    const getIncomes = async (dateInterval: DateInterval) => {
-        const incomes = await incomeRepository.getAll(dateInterval)
+    const getIncomes = async (queryParams: QueryParams) => {
+        const incomes = await incomeRepository.getAll(queryParams)
         updateIncomesContext(incomes)
         return incomes
     }
 
-    const getExpenses = async (dateInterval: DateInterval) => {
-        const expenses = await expenseRepository.getAll(dateInterval)
+    const getExpenses = async (queryParams: QueryParams) => {
+        const expenses = await expenseRepository.getAll(queryParams)
         updateExpensesContext(expenses)
         return expenses
     }
 
-    const getBudgets = async (dateInterval: DateInterval) => {
-        const budgestWithRemaining = await budgetExpenseUnitOfWork.getBudgetsWithRemaining(dateInterval)
+    const getBudgets = async (queryParams:QueryParams) => {
+        const budgestWithRemaining = await budgetExpenseUnitOfWork.getBudgetsWithRemaining(queryParams)
         updateBudgetsContext(budgestWithRemaining)
         return budgestWithRemaining
     }

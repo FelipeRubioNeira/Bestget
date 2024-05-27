@@ -1,34 +1,63 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import LoginGoogleRepository from "../../../data/repository/loginRepository/LoginGoogleRepository";
 import LoginUseCase from "../../../domain/useCases/LoginUseCase";
 import { LoginScreenProps } from "../../../navigation/NavigationParamList"
 import { ScreenRoutes } from "../../../navigation/Routes"
 import useModalViewModel from "../../components/modal/ModalViewModel";
+import { useGlobalContext } from "../../../data/globalContext/GlobalContext";
+import LocalLoginRepository from "../../../data/repository/loginRepository/LocalLoginRepository";
 
 
 
 type LoginViewModelProps = {
+    localLoginRepository: LocalLoginRepository,
     loginUseCase: LoginUseCase
 } & LoginScreenProps
 
 
-const useLoginViewModel = ({ navigation, loginUseCase }: LoginViewModelProps) => {
+const useLoginViewModel = ({
+    navigation,
+    loginUseCase,
+    localLoginRepository
+}: LoginViewModelProps) => {
+
+
+    // ------------------ context ------------------ //
+    const { updateUserApp } = useGlobalContext()
 
 
     // ------------------ hooks ------------------ //
-    const { modalState, showModal, hideModal } = useModalViewModel()
+    const {
+        modalState,
+        showModal,
+        hideModal
+    } = useModalViewModel()
+
+
+    useEffect(() => {
+        validateUserLogged()
+    }, [])
 
 
 
 
     // ------------------ functions ------------------ //
+    const validateUserLogged = async () => {
+        const user = await localLoginRepository.getUser()
+        if (user){
+            navigateToHome()
+            updateUserApp(user)
+        } 
+    }
+
     const loginGoogle = async () => {
 
-        const { isValid, message } = await loginUseCase.execute(new LoginGoogleRepository())
+        const { isValid, message, result } = await loginUseCase.execute(new LoginGoogleRepository())
 
-        if (isValid) {
+        if (isValid && result) {
+            updateUserApp(result)
+            navigateToHome()
             // ...otros casos de uso
-            navigation.navigate(ScreenRoutes.HOME)
 
         } else {
             console.log("error al logearse con google ", message)
@@ -42,6 +71,10 @@ const useLoginViewModel = ({ navigation, loginUseCase }: LoginViewModelProps) =>
 
         }
 
+    }
+
+    const navigateToHome = () => {
+        navigation.navigate(ScreenRoutes.HOME)
     }
 
 

@@ -1,7 +1,7 @@
 import { EventNames } from "../../data/globalContext/events/EventNames";
 import IExpenseRespository from "../../data/repository/expenseRepository/IExpenseRepository";
 import { Budget } from "../../data/types/Budget";
-import { ExpenseCreate } from "../../data/types/Expense";
+import { Expense, ExpenseCreate } from "../../data/types/Expense";
 import { Validation, ValidationResult } from "../../data/types/Validation";
 import { validateConnection } from "../../utils/Connection";
 import { validateInputs } from "../../utils/Inputs";
@@ -12,18 +12,15 @@ class CreateExpenseUseCase {
 
     async create(
         expense: ExpenseCreate,
-        budget: Budget | undefined, // if we are creating an expense from a budget
-        emmitEvent: (eventName: EventNames, payload: any) => void
-    ): Promise<ValidationResult<string>> {
+        budget: Budget | null, // if we are creating an expense from a budget
+        emmitEvent: (eventName: EventNames, payload: any) => void // domain event
+    ): Promise<ValidationResult<Expense | null>> {
 
 
-        const validationResult: ValidationResult<string> = {
+        const validationResult: ValidationResult<Expense | null> = {
             isValid: true,
-            message: {
-                title: "",
-                message: ""
-            },
-            result: ""
+            message: "",
+            result: null
         }
 
         const result = await this.applyValidations(expense.name, expense.amount)
@@ -35,13 +32,8 @@ class CreateExpenseUseCase {
             emmitEvent(eventName, expense)
 
         } else {
-
             validationResult.isValid = false
-            validationResult.message = {
-                title: "Error al guardar el gasto.",
-                message: result.message
-            }
-
+            validationResult.message = "Error al guardar el gasto."
         }
 
         return validationResult

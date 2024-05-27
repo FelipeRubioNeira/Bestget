@@ -12,14 +12,11 @@ class EditExpenseUseCase {
     async edit(
         expense: Expense,
         emmitEvent: (eventName: EventNames, payload: any) => void
-     ): Promise<ValidationResult<string>> {
+    ): Promise<ValidationResult<string>> {
 
         const validationResult: ValidationResult<string> = {
             isValid: true,
-            message: {
-                title: "",
-                message: "",
-            },
+            message: "",
             result: ""
         }
 
@@ -32,12 +29,8 @@ class EditExpenseUseCase {
             emmitEvent(EventNames.EXPENSE_EDITED, expense)
 
         } else {
-            
             validationResult.isValid = false
-            validationResult.message = {
-                title: "Error al guardar el gasto.",
-                message: result.message,
-            }
+            validationResult.message = "Error al guardar el gasto."
         }
 
         return validationResult

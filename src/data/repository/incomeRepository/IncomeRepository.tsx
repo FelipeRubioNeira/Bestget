@@ -1,68 +1,69 @@
 import { Collections } from "../../collections/Collections";
 import { DateInterval } from "../../types/DateInterval";
-import { Income, IncomeCreate } from "../../types/Income";
+import { Income, IncomeCreate, IncomeKeys } from "../../types/Income";
+import { QueryParams } from "../../types/QueryParams";
 import { IIncomeRepository } from "./IIncomeRepository";
 import firestore from '@react-native-firebase/firestore';
 
 
 class IncomeRepository implements IIncomeRepository {
-    constructor() {}
+    constructor() { }
 
 
-    public async create(income: IncomeCreate): Promise<string> {
+    public async create(income: IncomeCreate): Promise<Income> {
         try {
 
-            const result = await firestore()
-                .collection(Collections.INCOME)
-                .add(income)
+            const newDocRef = firestore().collection(Collections.INCOME).doc();
 
-            const incomeId = result.id
+            const newIncome: Income = {
+                incomeId: newDocRef.id, // we set the id
+                userId: income.userId,
+                name: income.name,
+                amount: income.amount,
+                date: income.date
+            }
 
-            return (incomeId)
+            await newDocRef.set(newIncome);
+            return newIncome
 
         } catch (error) {
-            console.error("error IncomesCreateDataSource", error);
-            return ""
+            console.error("error IncomeRepository [CREATE]", error);
+            throw error
         }
     }
 
-    public async getAll({ initialDate, finalDate }: DateInterval): Promise<Income[]> {
+    public async getAll({ userId, initialDate, finalDate }: QueryParams): Promise<Income[]> {
 
         try {
 
             const incomes = await firestore()
                 .collection(Collections.INCOME)
-                .where("date", ">=", initialDate)
-                .where("date", "<", finalDate)
+                .where(IncomeKeys.DATE, ">=", initialDate)
+                .where(IncomeKeys.DATE, "<", finalDate)
+                .where(IncomeKeys.USER_ID, "==", userId)
                 .get()
 
-            const incomesArray: Income[] = []
+            const incomesArray: Income[] = incomes.docs.map(doc => ({
+                incomeId: doc.id,
+                userId: doc.data().userId,
+                name: doc.data().name,
+                amount: doc.data().amount,
+                date: doc.data().date
+            }));
 
-            incomes.docs.forEach(doc => {
-
-                const newIncome: Income = {
-                    id: doc.id,
-                    name: doc.data().name,
-                    amount: doc.data().amount,
-                    date: doc.data().date
-                }
-
-                incomesArray.push(newIncome)
-            })
-
-            return incomesArray
+            return incomesArray;
 
         } catch (error) {
-            console.error("error IncomesCreateDataSource", error);
+            console.error("error incomeRepository [getAll]", error);
             return []
         }
 
     }
 
-    public async getTotal(date: DateInterval): Promise<number> {
+    public async getTotal(queryParams: QueryParams): Promise<number> {
 
-        const incomes = await this.getAll(date)
         let totalIncomes = 0
+        const incomes = await this.getAll(queryParams)
 
         incomes.forEach(income => {
             totalIncomes += income.amount
@@ -72,22 +73,24 @@ class IncomeRepository implements IIncomeRepository {
 
     }
 
-    public async update(income: Income): Promise<void> {
+    public async update(income: Income): Promise<boolean> {
 
         try {
-
             await firestore()
                 .collection(Collections.INCOME)
-                .doc(income.id)
+                .doc(income.incomeId)
                 .update(income)
+
+            return true
 
         } catch (error) {
             console.error("error IncomesCreateDataSource", error);
+            return false
         }
 
     }
 
-    public async delete(id: string): Promise<void> {
+    public async delete(id: string): Promise<boolean> {
 
         try {
 
@@ -96,17 +99,16 @@ class IncomeRepository implements IIncomeRepository {
                 .doc(id)
                 .delete()
 
+            return true
+
         } catch (error) {
             console.error("error IncomesCreateDataSource", error);
+            return false
         }
 
     }
 
-
-
-
     public async count(date: DateInterval): Promise<number> {
-
         try {
 
             const incomeCount = await firestore()
@@ -128,39 +130,42 @@ class IncomeRepository implements IIncomeRepository {
     // --------------------- transactions --------------------- //
 
 
-    public async copyTransaction(from: DateInterval, to: DateInterval): Promise<void> {
+    public async copyTransaction(queryParams: QueryParams): Promise<boolean> {
 
         try {
-
             const db = firestore();
 
             await db.runTransaction(async transaction => {
 
                 // get ref from collection
                 const incomeRef = db.collection(Collections.INCOME);
-                const incomes = await this.getAll(from)
+                const incomes = await this.getAll(queryParams)
 
                 incomes.forEach(income => {
 
                     const newIncome: IncomeCreate = {
+                        userId: income.userId,
                         name: income.name,
                         amount: income.amount,
-                        date: to.initialDate
+                        date: queryParams.initialDate // we set the initial date
                     }
 
                     transaction.set(incomeRef.doc(), newIncome)
 
                 })
 
-            });
+            })
+
+            return true
 
         } catch (error) {
             console.error("error al crear incomes en transaccion", error);
+            return false
         }
 
     }
 
-    public async deleteTransaction(date: DateInterval): Promise<void> {
+    public async deleteTransaction(queryParams: QueryParams): Promise<boolean> {
 
         try {
 
@@ -170,16 +175,19 @@ class IncomeRepository implements IIncomeRepository {
 
                 // get ref from collection
                 const incomeRef = db.collection(Collections.INCOME);
-                const incomes = await this.getAll(date)
+                const incomes = await this.getAll(queryParams)
 
                 incomes.forEach(income => {
-                    transaction.delete(incomeRef.doc(income.id));
+                    transaction.delete(incomeRef.doc(income.incomeId));
                 })
 
             });
 
+            return true
+
         } catch (error) {
             console.error("error IncomesCreateDataSource", error);
+            return false
         }
 
     }

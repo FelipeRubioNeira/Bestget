@@ -30,10 +30,13 @@ import BudgetExpenseUnitOfWork from '../../../data/unitOfWork/BudgetExpenseUnitO
 
 
 // ------------------- repositories ------------------- //
+
 const incomeRepository = new IncomeRepository()
+
 const expenseRepository = new ExpenseRepository()
 const budgetRepository = new BudgetRepository()
 const categoryRepository = new CategoryRespository()
+
 const budgetExpenseUnitOfWork = new BudgetExpenseUnitOfWork(
     budgetRepository,
     expenseRepository
@@ -123,8 +126,8 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
                 visible={bottomSheetState.visible}
                 date={bottomSheetState.date}
                 onHide={homeViewModel.hideBottomSheet}
-                onChange={homeViewModel.onChangeOperationDate}
                 onConfirm={homeViewModel.confirmDate}
+                onChange={homeViewModel.onChangeOperationDate}
                 onCopy={homeViewModel.onCopyMonth}
                 onPaste={homeViewModel.onPasteMonth}
                 onDelete={homeViewModel.onDeleteMonth}

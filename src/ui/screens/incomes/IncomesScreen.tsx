@@ -19,9 +19,9 @@ import DeleteIncomeUseCase from '../../../domain/useCases/DeleteIncomeUseCase'
 
 
 
-
 const incomesRepository = new IncomeRepository()
 const deleteIncomeUseCase = new DeleteIncomeUseCase(incomesRepository)
+
 
 const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
 
@@ -30,8 +30,11 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
   const incomeViewModel = useIncomeViewModel({
     navigation,
     route,
+    // repositories
     incomesRepository,
-    deleteIncomeUseCase
+
+    // useCases
+    deleteIncomeUseCase,
   })
 
   // view Model //

@@ -11,10 +11,11 @@ import { LoginScreenProps } from '../../../navigation/NavigationParamList';
 import LoginUseCase from '../../../domain/useCases/LoginUseCase';
 import ButtonApp from '../../components/buttonApp/ButtonApp';
 import Modal from '../../components/modal/Modal';
+import LocalLoginRepository from '../../../data/repository/loginRepository/LocalLoginRepository';
 
 
-
-const loginUseCase = new LoginUseCase()
+const localLoginRepository = new LocalLoginRepository()
+const loginUseCase = new LoginUseCase(localLoginRepository)
 
 
 const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
@@ -24,7 +25,8 @@ const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
     const { loginGoogle, modalState } = useLoginViewModel({
         navigation,
         route,
-        loginUseCase
+        localLoginRepository,
+        loginUseCase,
     })
 
 

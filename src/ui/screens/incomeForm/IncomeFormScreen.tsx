@@ -17,10 +17,13 @@ import CreateIncomeUseCase from '../../../domain/useCases/CreateIncomeUseCase'
 import CalendarWithLabel from '../../components/calendarWithLabel/CalendarWithLabel'
 
 
+
 // dependency injection 
-const incomeDataSource = new IncomeRepository()
-const createIncomeUseCase = new CreateIncomeUseCase(incomeDataSource)
-const editIncomeUseCase = new EditIncomeUseCase(incomeDataSource)
+const incomeRepository = new IncomeRepository()
+const editIncomeUseCase = new EditIncomeUseCase(incomeRepository)
+
+const createIncomeUseCase = new CreateIncomeUseCase(incomeRepository)
+
 
 
 const IncomeFormScreen = ({ navigation, route }: IncomesCreateScreenProps) => {

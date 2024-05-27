@@ -29,6 +29,7 @@ type budgetViewModelProps = {
 } & BudgetsScreenProps
 
 
+
 const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpenseUseCase }: budgetViewModelProps) => {
 
     // ----------- context ----------- //
@@ -105,7 +106,7 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
         // category and color
         const categoryFound = findCategory(budget?.categoryId, categoriesContext)
 
-        const expenseList = await getExpensesByBudgetId(budget.id)
+        const expenseList = await getExpensesByBudgetId(budget.budgetId)
         const expenseListFormatted = applyFormat(expenseList)
         const totalExpenses = getTotalExpenses(expenseList)
 
@@ -141,7 +142,7 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
 
 
             const newExpenseFormatted = {
-                id: expense.id,
+                id: expense.budgetId,
                 name: expense.name,
                 amount: currencyFormat(expense.amount),
                 date: dateTime.convertToNormalDate(expense.date),
@@ -240,8 +241,8 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
         } else {
 
             showModal(
-                response.message.title,
-                response.message.message,
+                "Error",
+                response.message,
                 [
                     {
                         text: "Aceptar",
@@ -262,12 +263,13 @@ const useBudgetsViewModel = ({ navigation, route, expensesRepository, deleteExpe
         if (item) {
 
             const expense: Expense = {
-                id: item.id,
                 name: item.name,
                 amount: numberFormat(item.amount),
                 date: item.date,
                 categoryId: category?.id || 0,
-                budgetId: budget?.id
+                budgetId: budget?.budgetId,
+                expenseId: expenseId,
+                userId: budget?.userId,
             }
 
             return expense

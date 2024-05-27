@@ -4,35 +4,31 @@ import { Validation, ValidationResult } from "../../data/types/Validation";
 import { validateConnection } from "../../utils/Connection";
 import { validateInputs } from "../../utils/Inputs";
 
-class IncomeEditUseCase {
+
+class EditIncomeUseCase {
     constructor(private incomeRepository: IIncomeRepository) { }
 
-    async edit(income: Income): Promise<ValidationResult<string>> {
+    
+    async execute(income: Income): Promise<ValidationResult<Income>> {
 
         // 1. we create a validation result object
-        const validationResult: ValidationResult<string> = {
+        const validationResult: ValidationResult<Income> = {
             isValid: true,
-            message: {
-                title: "",
-                message: "",
-            },
-            result: "",
+            message: "",
+            result: null,
         }
 
-        const result = await this.applyValidations(income.name, income.amount)
+        const { isValid, message } = await this.applyValidations(income.name, income.amount)
 
-        if (result.isValid) {
+
+        if (isValid) {
             await this.incomeRepository.update(income);
-            validationResult.result = income.id
+            validationResult.result = income
 
         } else {
             validationResult.isValid = false
-            validationResult.message = {
-                title: "Error al guardar el ingreso.",
-                message: result.message,
-            }
+            validationResult.message = message
         }
-
 
 
         return validationResult
@@ -68,4 +64,4 @@ class IncomeEditUseCase {
 
 }
 
-export default IncomeEditUseCase;
+export default EditIncomeUseCase;

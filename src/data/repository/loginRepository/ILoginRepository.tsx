@@ -1,7 +1,7 @@
 import UserApp from "../../types/User"
 
-interface ILoginRepository<T> {
-    login: () => Promise<T>
+interface ILoginRepository {
+    login: () => Promise<UserApp | null>
     logout: () => Promise<void>
     saveUser: (user: UserApp) => Promise<void>
     getUser: () => Promise<UserApp | null>

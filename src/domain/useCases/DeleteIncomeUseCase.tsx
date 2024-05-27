@@ -9,24 +9,18 @@ class DeleteIncomeUseCase {
 
         const validationResult: ValidationResult<string> = {
             isValid: true,
-            message: {
-                title: "",
-                message: ""
-            },
+            message: "",
             result: ""
         }
 
         const result = await validateConnection()
 
-        if(result.isValid){
+        if (result.isValid) {
             await this.incomeRepository.delete(id)
 
-        }else{
+        } else {
             validationResult.isValid = false
-            validationResult.message = {
-                title: "Error al eliminar el ingreso.",
-                message: result.message
-            }
+            validationResult.message = "Error al eliminar el ingreso."
         }
 
         return validationResult

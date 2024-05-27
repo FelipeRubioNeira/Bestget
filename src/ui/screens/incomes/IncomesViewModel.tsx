@@ -25,9 +25,9 @@ import TouchableIcon from "../../components/touchableIcon/TouchableIcon"
 import DeleteIncomeUseCase from "../../../domain/useCases/DeleteIncomeUseCase"
 import { Colors } from "../../constants/Colors"
 import { FontFamily } from "../../constants/Fonts"
-import { DateInterval } from "../../../data/types/DateInterval"
 import Icons from "../../../assets/icons"
 import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
+import { QueryParams } from "../../../data/types/QueryParams"
 
 
 
@@ -42,12 +42,14 @@ const useIncomesViewModel = ({
     navigation,
     route,
     incomesRepository,
+    // useCases
     deleteIncomeUseCase
 }: IIncomesViewModel) => {
 
 
     // ------------------- context ------------------- //
     const {
+        userApp,
         dateInterval,
         incomesContext,
         updateIncomesContext,
@@ -92,7 +94,7 @@ const useIncomesViewModel = ({
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             if (!incomeId) return
-            getIncomesFromRepository(dateInterval)
+            getIncomesFromRepository({ userId: userApp.userId, ...dateInterval })
                 .then(initializeIncomeData)
         })
 
@@ -112,8 +114,8 @@ const useIncomesViewModel = ({
 
 
     // ------------------- methods ------------------- //
-    const getIncomesFromRepository = async (dateInterval: DateInterval): Promise<Income[]> => {
-        return incomesRepository.getAll(dateInterval)
+    const getIncomesFromRepository = async (queryParams: QueryParams): Promise<Income[]> => {
+        return incomesRepository.getAll(queryParams)
     }
 
     const initializeIncomeData = (incomes: Income[]) => {
@@ -147,7 +149,7 @@ const useIncomesViewModel = ({
         const incomesFormatted = incomes.map(income => {
 
             const incomeFormatted: IncomeUI = {
-                id: income.id,
+                id: income.incomeId,
                 name: income.name,
                 amount: "$" + currencyFormat(income.amount),
             }
@@ -207,7 +209,7 @@ const useIncomesViewModel = ({
 
         turnOffDeleteMode()
 
-        const income = incomesContext.find(income => income.id === incomeId)
+        const income = incomesContext.find(income => income.incomeId === incomeId)
 
         navigation.navigate(ScreenRoutes.INCOME_FORM, {
             income,
@@ -245,15 +247,16 @@ const useIncomesViewModel = ({
 
         if (response.isValid) {
 
-            const newIncomesList = await getIncomesFromRepository(dateInterval)
+            const newIncomesList = await getIncomesFromRepository({ userId: userApp.userId, ...dateInterval })
 
             updateIncomesContext(newIncomesList)
             generateIncomeList(newIncomesList)
 
         } else {
             showModal(
-                response.message.title,
-                response.message.message, [{ text: 'Aceptar', onPress: hideModal }]
+                "Error",
+                response.message,
+                [{ text: 'Aceptar', onPress: hideModal }]
             )
         }
 

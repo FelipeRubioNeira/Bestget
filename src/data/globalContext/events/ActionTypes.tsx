@@ -3,10 +3,12 @@ import { Category } from "../../types/Categoty";
 import { DateInterval } from "../../types/DateInterval";
 import { Expense } from "../../types/Expense";
 import { Income } from "../../types/Income";
+import UserApp from "../../types/User";
 
 
 // ----------------- Actions ----------------- //
 enum Actions {
+    UPDATE_USER_APP = 'UPDATE_USER_APP',
     UPDATE_DATE_INTERVAL = 'UPDATE_DATE_INTERVAL',
     UPDATE_INCOMES = 'UPDATE_INCOMES',
     UPDATE_EXPENSES = 'UPDATE_EXPENSES',
@@ -17,7 +19,12 @@ enum Actions {
 
 
 // -----------------  types ----------------- //
-type updateDateIntervalContextAction = {
+type UpdateUserAppAction = {
+    type: Actions.UPDATE_USER_APP;
+    payload: UserApp;
+}
+
+type UpdateDateIntervalContextAction = {
     type: Actions.UPDATE_DATE_INTERVAL;
     payload: DateInterval;
 };
@@ -50,8 +57,10 @@ type UpdateCopiedMonthAction = {
 
 
 // ----------------- Action Type ----------------- //
-type ActionType = updateDateIntervalContextAction | UpdateIncomesAction |
-    UpdateExpensesAction | UpdateBudgetsAction | UpdateCategoriesAction | UpdateCopiedMonthAction;
+type ActionType = UpdateUserAppAction| UpdateDateIntervalContextAction
+    | UpdateIncomesAction | UpdateExpensesAction
+    | UpdateBudgetsAction | UpdateCategoriesAction
+    | UpdateCopiedMonthAction 
 
 
 

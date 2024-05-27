@@ -26,10 +26,7 @@ class EditBudgetUseCase {
 
         const validationResult: ValidationResult<Budget> = {
             isValid: true,
-            message: {
-                title: "",
-                message: "",
-            },
+            message: "",
             result: budget,
         }
 
@@ -52,10 +49,7 @@ class EditBudgetUseCase {
 
         } else {
             validationResult.isValid = false
-            validationResult.message = {
-                title: "Error al guardar el presupuesto.",
-                message: result.message,
-            }
+            validationResult.message = "Error al guardar el presupuesto."
         }
 
         return validationResult

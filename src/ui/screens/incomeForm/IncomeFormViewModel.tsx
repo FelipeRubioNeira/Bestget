@@ -3,7 +3,7 @@ import { IncomesCreateScreenProps } from "../../../navigation/NavigationParamLis
 import { ScreenRoutes } from "../../../navigation/Routes";
 import { currencyFormat, numberFormat } from "../../../utils/NumberFormat";
 import { Message } from "../../../data/types/Message";
-import { Income } from "../../../data/types/Income";
+import { Income, IncomeCreate } from "../../../data/types/Income";
 import CreateIncomeUseCase from "../../../domain/useCases/CreateIncomeUseCase";
 import editIncomeUseCase from "../../../domain/useCases/editIncomeUseCase";
 import { ValidationResult } from "../../../data/types/Validation";
@@ -30,7 +30,7 @@ const useIncomeFormViewModel = ({
 
 
     // ------------------- context------------------- //
-    const { dateInterval} = useGlobalContext()
+    const { dateInterval, userApp } = useGlobalContext()
 
 
     // ------------------- route-params ------------------- //
@@ -58,7 +58,7 @@ const useIncomeFormViewModel = ({
     }, [income])
 
 
-    // ------------------- methods ------------------- //
+    // ------------------- state update methods ------------------- //
     const updateForm = ({ name, amount, date }: Income) => {
         setIncomeState({
             ...incomeState,
@@ -88,46 +88,59 @@ const useIncomeFormViewModel = ({
             incomeDate: newIncomeDate
         })
     }
-
-    const saveIncome = async () => {
-
-        const currentTime = new DateTime().getTime()
+    
+    const generatetDateTime = ()=>{
+        const currentTime = dateTime.getTime()
         const currentDate = dateTime.convertToAmericanDate(incomeState.incomeDate)
         const isoDateTime = `${currentDate}T${currentTime}`
 
+        return isoDateTime
+    }
+
+    // ------------------- save income ------------------- //
+    const saveIncome = async () => {
+
+        // get the current date
+        const generatedDate = generatetDateTime()
+
+
+        let response: ValidationResult<Income> = {
+            isValid: false,
+            message: "",
+            result: null
+        }
+
+        // ------------------- create new income ------------------- //
+        const newIncome:IncomeCreate = {
+            userId: userApp.userId,
+            name: incomeState.incomeName,
+            amount: numberFormat(incomeState.incomeAmount),
+            date: generatedDate
+        }
+
+
         try {
-
-            let response: ValidationResult<string> = {
-                isValid: false, result: "", message: {
-                    message: "",
-                    title: ""
-                }
-            }
-
-            const newIncome = {
-                name: incomeState.incomeName,
-                amount: numberFormat(incomeState.incomeAmount),
-                date: isoDateTime
-            }
 
 
             // 1. If is an edition
-            if (income?.id) {
-                response = await editIncomeUseCase.edit({
-                    id: income.id,
-                    ...newIncome
-                })
+            if (income?.incomeId) {
+                response = await editIncomeUseCase.execute({...newIncome, incomeId: income.incomeId})
 
                 // 2. if is a new income
-            } else response = await createIncomeUseCase.create(newIncome)
+            } else {
+                response = await createIncomeUseCase.execute(newIncome)
+            }
 
 
             if (response?.isValid) {
                 navigation.navigate(ScreenRoutes.INCOMES, {
-                    incomeId: response.result,
+                    incomeId: response?.result?.incomeId || ""
                 })
 
-            } else showModalAlert(response?.message)
+            } else showModalAlert({
+                title: "Error al guardar el ingreso",
+                message: response.message
+            })
 
 
         } catch (error) {
@@ -135,6 +148,7 @@ const useIncomeFormViewModel = ({
         }
 
     }
+
 
     // ------------------- modal alert ------------------- //
     const showModalAlert = (message: Message = { message: "", title: "" }) => {

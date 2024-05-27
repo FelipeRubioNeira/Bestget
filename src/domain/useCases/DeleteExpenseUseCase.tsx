@@ -13,10 +13,8 @@ class DeleteExpenseUseCase {
 
         const validationResult: ValidationResult<void> = {
             isValid: true,
-            message: {
-                title: "",
-                message: ""
-            },
+            message: "",
+            result: undefined
         }
 
         const validation = await validateConnection()
@@ -27,11 +25,7 @@ class DeleteExpenseUseCase {
 
         } else {
             validationResult.isValid = false
-            validationResult.message = {
-                title: "Error",
-                message: validation.message
-            }
-
+            validationResult.message = validation.message
         }
 
         return validationResult

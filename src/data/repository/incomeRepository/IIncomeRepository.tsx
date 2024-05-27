@@ -1,19 +1,19 @@
-import { DateInterval } from "../../types/DateInterval";
 import { Income, IncomeCreate } from "../../types/Income";
+import { QueryParams } from "../../types/QueryParams";
 
 export interface IIncomeRepository {
 
-     /* all these methods are in charge of manipulating 
-     individual data */
-     create: (income: IncomeCreate) => Promise<string>
-     getAll: (date:DateInterval) => Promise<Income[]>
-     getTotal: (date:DateInterval) => Promise<number>
-     update: (income: Income) => Promise<void>
-     delete: (id: string) => Promise<void>
-     count: (date: DateInterval) => Promise<number>
+     /* all these methods are in charge of manipulating individual data */
+     create: (income: IncomeCreate) => Promise<Income | null>
+     update: (income: Income) => Promise<boolean>
+     delete: (incomeId: string) => Promise<boolean>
+     count: (queryParams: QueryParams) => Promise<number>
+
+     getAll: (queryParams: QueryParams) => Promise<Income[]>
+     getTotal: (queryParams: QueryParams) => Promise<number>
 
      // ----------------- transactions ----------------- //
-     copyTransaction: (from: DateInterval, to: DateInterval,) => Promise<void>
-     deleteTransaction: (date: DateInterval) => Promise<void>
-     
+     copyTransaction: (queryParams: QueryParams) => Promise<boolean>
+     deleteTransaction: (queryParams: QueryParams) => Promise<boolean>
+
 }

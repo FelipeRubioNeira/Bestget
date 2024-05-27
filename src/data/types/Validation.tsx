@@ -1,10 +1,7 @@
-import { Message } from "./Message"
 
 
-type ValidationResult<T> = {
-    isValid: boolean,
-    message: Message,
-    result?: T,
+type ValidationResult<T> = Validation & {
+    result: T | null,
 }
 
 type Validation = {

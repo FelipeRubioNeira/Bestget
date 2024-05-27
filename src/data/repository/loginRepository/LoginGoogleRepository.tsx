@@ -6,7 +6,7 @@ import AsyncStorageKeys from "../../asyncStorageKeys/AsyncStorageKeys";
 
 
 
-class LoginGoogleRepository implements ILoginRepository<UserApp> {
+class LoginGoogleRepository implements ILoginRepository {
 
     async login() {
 
@@ -18,12 +18,13 @@ class LoginGoogleRepository implements ILoginRepository<UserApp> {
             const { id, email, name, photo } = user
 
             const userApp: UserApp = {
-                id,
+                userId: id,
                 email,
                 name: name ? name : "",
                 photo: photo ? photo : ""
             }
 
+            // save user in the storage
             await this.saveUser(userApp)
 
             return userApp
@@ -43,10 +44,8 @@ class LoginGoogleRepository implements ILoginRepository<UserApp> {
     }
 
     async saveUser(user: UserApp) {
-
         try {
             await AsyncStorage.setItem(AsyncStorageKeys.USER, JSON.stringify(user))
-
         } catch (error) {
             console.log("Error al guardar usuario en el storage", error);
 
@@ -78,7 +77,7 @@ class LoginGoogleRepository implements ILoginRepository<UserApp> {
             console.log("Error al limpiar usuario del storage", error);
         }
     }
-    
+
 }
 
 export default LoginGoogleRepository

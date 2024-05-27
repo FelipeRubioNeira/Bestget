@@ -1,13 +1,14 @@
 import { Collections } from "../../collections/Collections";
 import { Budget, BudgetCreate, BudgetKeys } from "../../types/Budget";
-import { DateInterval } from "../../types/DateInterval";
+import { QueryParams } from "../../types/QueryParams";
 import IBudgetRepository from "./IBudgetRepository";
 import firestore from '@react-native-firebase/firestore';
 
 
 class BudgetRepository implements IBudgetRepository {
 
-    async getAll({ initialDate, finalDate }: DateInterval): Promise<Budget[]> {
+
+    async getAll({ userId, initialDate, finalDate }: QueryParams): Promise<Budget[]> {
 
         try {
 
@@ -15,23 +16,28 @@ class BudgetRepository implements IBudgetRepository {
                 .collection(Collections.BUDGET)
                 .where(BudgetKeys.DATE, ">=", initialDate)
                 .where(BudgetKeys.DATE, "<", finalDate)
+                .where(BudgetKeys.USER_ID, "==", userId)
                 .orderBy(BudgetKeys.DATE, "desc")
                 .get()
 
-            return budgetsFirebase.docs.map(doc => {
 
-                const { name, amount, categoryId, date } = doc.data()
+            const budgetsArray: Budget[] = budgetsFirebase.docs.map(doc => {
 
-                const newBudget: Budget = {
-                    id: doc.id,
+                const { userId, budgetId, name, amount, categoryId, date } = doc.data() as Budget
+
+                const budget: Budget = {
+                    budgetId: budgetId,
+                    userId: userId,
                     name: name,
                     amount: amount,
                     categoryId: categoryId,
                     date: date,
                 }
 
-                return newBudget
+                return budget
             })
+
+            return budgetsArray
 
         } catch (error) {
             console.error("error BudgetRepository getAll", error);
@@ -44,20 +50,18 @@ class BudgetRepository implements IBudgetRepository {
 
         try {
 
-            const result = await firestore().
-                collection(Collections.BUDGET)
-                .add(budget)
-
-            const budgetId = result.id
+            const newDocRef = firestore().collection(Collections.BUDGET).doc();
 
             const budgetCreated: Budget = {
-                id: budgetId,
+                budgetId: newDocRef.id,
+                userId: budget.userId,
                 name: budget.name,
                 amount: budget.amount,
                 categoryId: budget?.categoryId || 0,
                 date: budget.date
             }
 
+            await newDocRef.set(budgetCreated);
             return budgetCreated
 
         } catch (error) {
@@ -86,7 +90,7 @@ class BudgetRepository implements IBudgetRepository {
         try {
             await firestore()
                 .collection(Collections.BUDGET)
-                .doc(budget.id)
+                .doc(budget.budgetId)
                 .update(budget)
 
         } catch (error) {
@@ -95,7 +99,7 @@ class BudgetRepository implements IBudgetRepository {
 
     }
 
-    async count({ initialDate, finalDate }: DateInterval): Promise<number> {
+    async count({ userId, initialDate, finalDate }: QueryParams): Promise<number> {
 
         try {
 
@@ -103,6 +107,7 @@ class BudgetRepository implements IBudgetRepository {
                 .collection(Collections.BUDGET)
                 .where(BudgetKeys.DATE, ">=", initialDate)
                 .where(BudgetKeys.DATE, "<", finalDate)
+                .where(BudgetKeys.USER_ID, "==", userId)
                 .count()
                 .get()
 
@@ -117,7 +122,7 @@ class BudgetRepository implements IBudgetRepository {
 
     // ----------------- transactions ----------------- //
 
-    async copyTransaction(from: DateInterval, to: DateInterval): Promise<void> {
+    async copyTransaction(queryParams: QueryParams): Promise<void> {
 
         try {
 
@@ -126,15 +131,16 @@ class BudgetRepository implements IBudgetRepository {
             await db.runTransaction(async transaction => {
 
                 const budgetsRef = db.collection(Collections.BUDGET)
-                const budgets = await this.getAll(from)
+                const budgets = await this.getAll(queryParams)
 
                 budgets.forEach(budget => {
 
                     const newBudget: BudgetCreate = {
+                        userId: budget.userId,
                         name: budget.name,
                         amount: budget.amount,
                         categoryId: budget.categoryId,
-                        date: to.initialDate
+                        date: queryParams.initialDate
                     }
 
                     transaction.set(budgetsRef.doc(), newBudget)
@@ -148,7 +154,7 @@ class BudgetRepository implements IBudgetRepository {
 
     }
 
-    async deleteTransaction(date: DateInterval): Promise<void> {
+    async deleteTransaction(queryParams: QueryParams): Promise<void> {
 
         try {
 
@@ -157,10 +163,10 @@ class BudgetRepository implements IBudgetRepository {
             await db.runTransaction(async transaction => {
 
                 const budgetsRef = db.collection(Collections.BUDGET)
-                const budgets = await this.getAll(date)
+                const budgets = await this.getAll(queryParams)
 
                 budgets.forEach(budget => {
-                    transaction.delete(budgetsRef.doc(budget.id))
+                    transaction.delete(budgetsRef.doc(budget.budgetId))
                 })
 
             });

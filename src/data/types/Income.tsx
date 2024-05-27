@@ -1,17 +1,14 @@
 
+type IncomeCreate = {
+    userId: string,
+    name: string,
+    amount: number,
+    date: string,
+}
 
 type Income = {
-    id: string,
-    name: string,
-    amount: number,
-    date:string,
-}
-
-type IncomeCreate = {
-    name: string,
-    amount: number,
-    date:string,
-}
+    incomeId: string,
+} & IncomeCreate
 
 type IncomeUI = {
     id: string,
@@ -20,7 +17,19 @@ type IncomeUI = {
     editMode?: boolean, // delete / edit 
     onEdit?: () => void,
     onDelete?: () => void,
-} 
+}
+
+const IncomeKeys = Object.freeze({
+    ID: "id",
+    USER_ID: "userId",
+    NAME: "name",
+    AMOUNT: "amount",
+    DATE: "date",
+})
+
+export {
+    IncomeKeys
+}
 
 export type {
     Income,

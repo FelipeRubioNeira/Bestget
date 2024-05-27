@@ -1,45 +1,49 @@
 import { IIncomeRepository } from "../../data/repository/incomeRepository/IIncomeRepository";
-import { IncomeCreate } from "../../data/types/Income";
+import { Income, IncomeCreate } from "../../data/types/Income";
 import { Validation, ValidationResult } from "../../data/types/Validation";
 import { validateConnection } from "../../utils/Connection";
 import { validateInputs } from "../../utils/Inputs";
 
 
 
-class CreateIncomeUseCase  {
+class CreateIncomeUseCase {
     constructor(private incomeRepository: IIncomeRepository) { }
 
 
-    public async create(newIncome: IncomeCreate): Promise<ValidationResult<string>> {
-
+    public async execute(newIncome: IncomeCreate): Promise<ValidationResult<Income>> {
 
         // 1. we create a validation result object
-        const validationResult: ValidationResult<string> = {
+        const validationResult: ValidationResult<Income> = {
             isValid: true,
-            message: {
-                title: "",
-                message: "",
-            },
-            result: "",
+            message: "",
+            result: null,
         }
 
-        const result = await this.applyValidations(newIncome.name, newIncome.amount)
+        const validation = await this.applyValidations(newIncome.name, newIncome.amount)
 
 
-        if (result.isValid) {
-            const newIncomeId = await this.incomeRepository.create(newIncome)
-            validationResult.result = newIncomeId
-
-        } else {
-
-            validationResult.isValid = false
-            validationResult.message = {
-                title: "Error al guardar el ingreso.",
-                message: result.message,
-            }
+        if (!validation.isValid) {
+            return this.throwMessage(validation.message)
         }
 
+        // 2. we create the income on unit of work
+        const incomeCreated = await this.incomeRepository.create(newIncome)
+
+        if (!incomeCreated) {
+            return this.throwMessage("No se pudo guardar el ingreso.")
+        }
+
+        validationResult.result = incomeCreated
         return validationResult
+
+    }
+
+    throwMessage(message: string): ValidationResult<Income> {
+        return {
+            isValid: false,
+            message: message,
+            result: null,
+        }
 
     }
 

@@ -1,5 +1,5 @@
 type UserApp = {
-    id: string
+    userId: string
     name: string
     email: string
     photo: string

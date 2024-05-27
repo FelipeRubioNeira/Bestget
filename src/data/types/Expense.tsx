@@ -1,6 +1,7 @@
 import { Category } from "./Categoty";
 
 type ExpenseCreate = {
+    userId:string,
     name: string;
     amount: number;
     categoryId: number;
@@ -9,7 +10,7 @@ type ExpenseCreate = {
 }
 
 
-type Expense = { id: string } & ExpenseCreate
+type Expense = { expenseId: string } & ExpenseCreate
 
 type ExpenseUI = {
     id: string,
@@ -26,6 +27,7 @@ type ExpenseUI = {
 
 export const ExpenseKeys = Object.freeze({
     ID: "id",
+    USER_ID: "userId",
     NAME: "name",
     AMOUNT: "amount",
     DATE: "date",

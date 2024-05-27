@@ -8,6 +8,7 @@ import { Income } from "../types/Income";
 import { Expense } from "../types/Expense";
 import { Budget } from "../types/Budget";
 import { Category } from "../types/Categoty";
+import UserApp from "../types/User";
 
 
 const dateTime = new DateTime()
@@ -15,6 +16,9 @@ const dateTime = new DateTime()
 
 // 1- Create a context
 export type GlobalContextType = {
+
+    userApp: UserApp,
+    updateUserApp: (userApp: UserApp) => void,
 
     //current date interval
     dateInterval: DateInterval,
@@ -41,11 +45,21 @@ export type GlobalContextType = {
 // 1.1- Default values
 const DefaultGlobalContext: GlobalContextType = {
 
+    userApp: {
+        email: "",
+        userId: "",
+        name: "",
+        photo: ""
+    },
+
+    updateUserApp: () => { },
+
     //date interval
     dateInterval: {
         initialDate: dateTime.date, // current date
         finalDate: dateTime.getNextMonth(dateTime.date) // next month
     },
+
     updateDateIntervalContext: () => { },
 
     //incomes
@@ -79,6 +93,10 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
 
 
     // ----------------- Actions ----------------- //
+    const updateUserApp = (userApp: UserApp) => {
+        dispatch({ type: Actions.UPDATE_USER_APP, payload: userApp })
+    }
+
     const updateDateIntervalContext = (dateInterval: DateInterval) => {
         dispatch({ type: Actions.UPDATE_DATE_INTERVAL, payload: dateInterval })
     }
@@ -104,6 +122,10 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
     return (
         <GlobalContext.Provider
             value={{
+
+
+                userApp: state.userApp,
+                updateUserApp,
 
                 //date interval
                 dateInterval: state.dateInterval,

@@ -46,6 +46,7 @@ const useBudgetsFormViewModel = ({
 
     // ------------------- context ------------------- //
     const {
+        userApp,
         dateInterval,
         categoriesContext,
     } = useGlobalContext()
@@ -126,7 +127,7 @@ const useBudgetsFormViewModel = ({
 
     // ------------------- expenses ------------------- //
     const getExpenses = async (budget: Budget) => {
-        const expenses = await expensesRepository.getByBudgetId(budget.id)
+        const expenses = await expensesRepository.getByBudgetId(budget.budgetId)
         setExpenses(expenses)
     }
 
@@ -145,7 +146,7 @@ const useBudgetsFormViewModel = ({
                     [
                         {
                             text: "Continuar",
-                            onPress: () => updateBudget(),
+                            onPress: updateBudget,
                         },
                         {
                             text: "Cancelar",
@@ -171,7 +172,8 @@ const useBudgetsFormViewModel = ({
         const date = dateTime.getIsoDateTime(budgetState.budgetDate)
 
         const budgetEdited: Budget = {
-            id: budget?.id || "",
+            budgetId: budget?.budgetId || "",
+            userId: budget?.userId || "",
             name: budgetState.budgetName,
             amount: numberFormat(budgetState.budgetAmount),
             categoryId: budgetState?.categoryId || 0,
@@ -185,14 +187,14 @@ const useBudgetsFormViewModel = ({
 
         if (response.isValid) {
             navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {
-                newBudgetId: response.result?.id
+                newBudgetId: response.result?.budgetId
             })
 
         } else {
 
             showModal(
-                response.message.title,
-                response.message.message,
+                "Error",
+                response.message,
                 [
                     {
                         text: "Continuar",
@@ -200,6 +202,50 @@ const useBudgetsFormViewModel = ({
                     },
                 ]
 
+            )
+        }
+
+    }
+
+    const createBudget = async () => {
+
+        const date = dateTime.getIsoDateTime(budgetState.budgetDate)
+
+        // 1- create budget
+        const budgetCreate: BudgetCreate = {
+            userId: userApp.userId,
+            name: budgetState.budgetName,
+            amount: numberFormat(budgetState.budgetAmount),
+            categoryId: budgetState.categoryId,
+            date: date
+        }
+
+        // 2- upload budget and budget expenses
+        const { isValid, result, message } = await createBudgetUseCase.createBudget(
+            budgetCreate,
+            emmitEvent
+        )
+
+        console.log("resultado de crear un budget ",result);
+        
+
+
+        if (isValid && result) {
+            navigation.replace(ScreenRoutes.BUDGET, {
+                budget: result,
+            })
+
+        } else {
+
+            showModal(
+                "Error",
+                message,
+                [
+                    {
+                        text: "Continuar",
+                        onPress: hideModal,
+                    },
+                ]
             )
         }
 
@@ -212,43 +258,6 @@ const useBudgetsFormViewModel = ({
 
     const hasExpenses = () => {
         return expenses.length > 0
-    }
-
-    const createBudget = async () => {
-
-        const date = dateTime.getIsoDateTime(budgetState.budgetDate)
-
-        // 1- create budget
-        const budgetCreate: BudgetCreate = {
-            name: budgetState.budgetName,
-            amount: numberFormat(budgetState.budgetAmount),
-            categoryId: budgetState.categoryId,
-            date: date
-        }
-
-        // 2- upload budget and budget expenses
-        const { isValid, result, message } = await createBudgetUseCase.createBudget(budgetCreate, emmitEvent)
-
-
-        if (isValid && result) {
-            navigation.replace(ScreenRoutes.BUDGET, {
-                budget: result,
-            })
-
-        } else {
-
-            showModal(
-                message.title,
-                message.message,
-                [
-                    {
-                        text: "Continuar",
-                        onPress: hideModal,
-                    },
-                ]
-            )
-        }
-
     }
 
     // ------------------- return ------------------- //

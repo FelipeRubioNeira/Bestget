@@ -9,6 +9,9 @@ const globalReducer = (
 
     switch (type) {
 
+        case Actions.UPDATE_USER_APP:
+            return { ...state, userApp: payload }
+
         case Actions.UPDATE_DATE_INTERVAL:
             return { ...state, dateInterval: payload }
 

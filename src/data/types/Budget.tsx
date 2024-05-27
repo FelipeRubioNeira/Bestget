@@ -1,6 +1,7 @@
 import { Category } from "./Categoty"
 
 type BudgetCreate = {
+    userId: string
     name: string
     amount: number
     date: string
@@ -8,7 +9,7 @@ type BudgetCreate = {
 }
 
 type Budget = { 
-    id: string,
+    budgetId: string,
     remaining?: number
  } & BudgetCreate
 
@@ -29,6 +30,7 @@ type BudgetUI = {
 
 export const BudgetKeys = Object.freeze({
     ID: "id",
+    USER_ID: "userId",
     NAME: "name",
     AMOUNT: "amount",
     CATEGORY_ID: "categoryId",
