@@ -1,7 +1,6 @@
 
 import React from 'react';
 import MainNavigator from './src/navigation/mainNavigator/MainNavigator';
-import { GlobalContextProvider } from './src/data/globalContext/GlobalContext';
 import { EventBusProvider } from './src/data/globalContext/events/EventBus';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { Provider } from "react-redux"
@@ -22,15 +21,11 @@ const App = () => {
   return (
 
     <EventBusProvider>
-      <GlobalContextProvider>
-
         <Provider store={store}>
 
           <MainNavigator />
           
         </Provider>
-
-      </GlobalContextProvider>
     </EventBusProvider>
 
   )

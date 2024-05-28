@@ -10,11 +10,11 @@ import EditBudgetUseCase from "../../../domain/useCases/EditBudgetUseCase"
 import ExpenseRepository from "../../../data/repository/expenseRepository/ExpenseRepository"
 import { Expense } from "../../../data/types/Expense"
 import DateTime from "../../../utils/DateTime"
-import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
 import { useEventBus } from "../../../data/globalContext/events/EventBus"
 import { selectUserApp } from "../../../data/globalContext/UserAppSlice"
 import { useAppSelector } from "../../../data/globalContext/StoreHooks"
 import { selectFinancesApp } from "../../../data/globalContext/FinancesAppSlice"
+import { selectDateIntervalApp } from "../../../data/globalContext/DateIntervalAppSlice"
 
 
 const dateTime = new DateTime()
@@ -50,8 +50,8 @@ const useBudgetsFormViewModel = ({
     // ------------------- context ------------------- //
     const userApp = useAppSelector(selectUserApp)
     const { categories } = useAppSelector(selectFinancesApp)
+    const dateInterval = useAppSelector(selectDateIntervalApp)
 
-    const { dateInterval } = useGlobalContext()
 
     // ------------------- params ------------------- //
     const { budget } = route.params || {}

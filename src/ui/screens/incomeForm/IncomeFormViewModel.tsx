@@ -8,9 +8,9 @@ import CreateIncomeUseCase from "../../../domain/useCases/CreateIncomeUseCase";
 import editIncomeUseCase from "../../../domain/useCases/editIncomeUseCase";
 import { ValidationResult } from "../../../data/types/Validation";
 import DateTime from "../../../utils/DateTime";
-import { useGlobalContext } from "../../../data/globalContext/GlobalContext";
 import { useAppSelector } from "../../../data/globalContext/StoreHooks";
 import { selectUserApp } from "../../../data/globalContext/UserAppSlice";
+import { selectDateIntervalApp } from "../../../data/globalContext/DateIntervalAppSlice";
 
 
 const dateTime = new DateTime()
@@ -33,8 +33,8 @@ const useIncomeFormViewModel = ({
 
     // ------------------- context------------------- //
     const userApp = useAppSelector(selectUserApp)
+    const dateInterval = useAppSelector(selectDateIntervalApp)
 
-    const { dateInterval } = useGlobalContext()
 
 
     // ------------------- route-params ------------------- //
@@ -92,8 +92,8 @@ const useIncomeFormViewModel = ({
             incomeDate: newIncomeDate
         })
     }
-    
-    const generatetDateTime = ()=>{
+
+    const generatetDateTime = () => {
         const currentTime = dateTime.getTime()
         const currentDate = dateTime.convertToAmericanDate(incomeState.incomeDate)
         const isoDateTime = `${currentDate}T${currentTime}`
@@ -115,7 +115,7 @@ const useIncomeFormViewModel = ({
         }
 
         // ------------------- create new income ------------------- //
-        const newIncome:IncomeCreate = {
+        const newIncome: IncomeCreate = {
             userId: userApp.userId,
             name: incomeState.incomeName,
             amount: numberFormat(incomeState.incomeAmount),
@@ -128,7 +128,7 @@ const useIncomeFormViewModel = ({
 
             // 1. If is an edition
             if (income?.incomeId) {
-                response = await editIncomeUseCase.execute({...newIncome, incomeId: income.incomeId})
+                response = await editIncomeUseCase.execute({ ...newIncome, incomeId: income.incomeId })
 
                 // 2. if is a new income
             } else {

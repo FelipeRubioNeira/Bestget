@@ -26,11 +26,11 @@ import DeleteIncomeUseCase from "../../../domain/useCases/DeleteIncomeUseCase"
 import { Colors } from "../../constants/Colors"
 import { FontFamily } from "../../constants/Fonts"
 import Icons from "../../../assets/icons"
-import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
 import { QueryParams } from "../../../data/types/QueryParams"
 import { useAppDispatch, useAppSelector } from "../../../data/globalContext/StoreHooks"
 import { selectUserApp } from "../../../data/globalContext/UserAppSlice"
 import { selectFinancesApp, updateIncomes } from "../../../data/globalContext/FinancesAppSlice"
+import { selectDateIntervalApp } from "../../../data/globalContext/DateIntervalAppSlice"
 
 
 
@@ -53,9 +53,9 @@ const useIncomesViewModel = ({
     // ------------------- context ------------------- //
     const userApp = useAppSelector(selectUserApp)
     const { incomes } = useAppSelector(selectFinancesApp)
+    const dateInterval = useAppSelector(selectDateIntervalApp)
     const appDispatch = useAppDispatch()
 
-    const { dateInterval } = useGlobalContext()
 
     // ------------------- hooks ------------------- //
     const { modalState, showModal, hideModal } = useModalViewModel()

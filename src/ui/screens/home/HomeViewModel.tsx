@@ -9,7 +9,6 @@ import IExpenseRespository from "../../../data/repository/expenseRepository/IExp
 import { Colors } from "../../constants/Colors"
 import DateTime from "../../../utils/DateTime"
 import { DateInterval } from "../../../data/types/DateInterval"
-import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
 import IBudgetRepository from "../../../data/repository/budgetRepository/IBudgetRepository"
 import { Expense } from "../../../data/types/Expense"
 import CopyMonthUseCase from "../../../domain/useCases/CopyMonthUseCase"
@@ -25,6 +24,7 @@ import { useAppSelector } from "../../../data/globalContext/StoreHooks"
 import { selectUserApp } from "../../../data/globalContext/UserAppSlice"
 import { useAppDispatch } from "../../../data/globalContext/StoreHooks";
 import { selectFinancesApp, updateBudgets, updateCategories, updateExpenses, updateIncomes } from "../../../data/globalContext/FinancesAppSlice"
+import { updateDateInterval } from "../../../data/globalContext/DateIntervalAppSlice"
 
 
 
@@ -95,9 +95,7 @@ const useHomeViewModel = ({
     } = useAppSelector(selectFinancesApp)
 
     const appDispatch = useAppDispatch()
-
-
-    const { updateDateIntervalContext } = useGlobalContext()
+    
 
     // ------------------ hooks ------------------ //
     const { modalState, showModal, hideModal } = useModalViewModel()
@@ -339,11 +337,10 @@ const useHomeViewModel = ({
 
         const nextMonth = getNextMonth(startOfMonth)
 
-
-        updateDateIntervalContext({
+        appDispatch(updateDateInterval({
             initialDate: startOfMonth,
             finalDate: nextMonth
-        })
+        }))
 
         return {
             initialDate: startOfMonth,
@@ -380,7 +377,7 @@ const useHomeViewModel = ({
             finalDate: getNextMonth(newDate)
         }
 
-        updateDateIntervalContext(newDateInterval)
+        appDispatch(updateDateInterval(newDateInterval))
         getData(newDateInterval)
 
     }

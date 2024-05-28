@@ -21,7 +21,6 @@ import DefaultStyles from "../../styles/DefaultStyles"
 import { DateInterval } from "../../../data/types/DateInterval"
 import DateTime from "../../../utils/DateTime"
 import Icons from "../../../assets/icons"
-import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
 import { useEventBus } from "../../../data/globalContext/events/EventBus"
 import { Event } from "../../../data/globalContext/events/EventBusReducer"
 import BudgetExpenseUnitOfWork from "../../../data/unitOfWork/BudgetExpenseUnitOfWork"
@@ -33,6 +32,7 @@ import {
     updateExpenses as updateExpensesContext,
     updateBudgets as updateBudgetsContext
 } from "../../../data/globalContext/FinancesAppSlice"
+import { selectDateIntervalApp } from "../../../data/globalContext/DateIntervalAppSlice"
 
 const dateTime = new DateTime()
 
@@ -68,11 +68,10 @@ const useBudgetExpensesViewModel = ({
         categories: categoriesContext
     } = useAppSelector(selectFinancesApp)
 
+    const dateInterval = useAppSelector(selectDateIntervalApp)
 
     const appDispatch = useAppDispatch()
 
-
-    const { dateInterval } = useGlobalContext()
 
 
     // ------------------ event bus ------------------ //

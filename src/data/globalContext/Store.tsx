@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import {userAppSlice} from "./UserAppSlice";
 import {financesAppSlice} from "./FinancesAppSlice";
+import { dateIntervalAppSlice } from "./DateIntervalAppSlice";
 
 /**
  * Store
@@ -14,6 +15,7 @@ const store = configureStore({
     reducer: {
         userApp: userAppSlice.reducer,
         financesApp: financesAppSlice.reducer,
+        dateInterval:dateIntervalAppSlice.reducer
         // ... add more reducers here
     },
 

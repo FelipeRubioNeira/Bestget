@@ -9,12 +9,12 @@ import { ChipItemProps } from "../../components/chipItem/ChipItem"
 import { Budget } from "../../../data/types/Budget"
 import EditExpenseUseCase from "../../../domain/useCases/EditExpenseUseCase"
 import DateTime from "../../../utils/DateTime"
-import { useGlobalContext } from "../../../data/globalContext/GlobalContext"
 import { useEventBus } from "../../../data/globalContext/events/EventBus"
 import { ModalProps } from "../../components/modal/ModalViewModel"
 import { useAppSelector } from "../../../data/globalContext/StoreHooks"
 import { selectUserApp } from "../../../data/globalContext/UserAppSlice"
 import { selectFinancesApp } from "../../../data/globalContext/FinancesAppSlice"
+import { selectDateIntervalApp } from "../../../data/globalContext/DateIntervalAppSlice"
 
 const dateTime = new DateTime()
 
@@ -44,8 +44,7 @@ const useExpenseFormViewModel = (
     // ------------------- context ------------------- //
     const userApp = useAppSelector(selectUserApp)
     const { categories } = useAppSelector(selectFinancesApp)
-
-    const { dateInterval } = useGlobalContext()
+    const dateInterval = useAppSelector(selectDateIntervalApp)
 
     const { emmitEvent } = useEventBus()
 
