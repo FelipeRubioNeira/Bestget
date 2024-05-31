@@ -12,9 +12,9 @@ import DateTime from "../../../utils/DateTime"
 import { useEventBus } from "../../../data/globalContext/events/EventBus"
 import { ModalProps } from "../../components/modal/ModalViewModel"
 import { useAppSelector } from "../../../data/globalContext/StoreHooks"
-import { selectUserApp } from "../../../data/globalContext/UserAppSlice"
-import { selectFinancesApp } from "../../../data/globalContext/FinancesAppSlice"
-import { selectDateIntervalApp } from "../../../data/globalContext/DateIntervalAppSlice"
+import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppSlice"
+import { selectFinancesApp } from "../../../data/globalContext/redux/slices/FinancesAppSlice"
+import { selectDateIntervalApp } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice"
 
 const dateTime = new DateTime()
 

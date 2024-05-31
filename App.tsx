@@ -4,7 +4,7 @@ import MainNavigator from './src/navigation/mainNavigator/MainNavigator';
 import { EventBusProvider } from './src/data/globalContext/events/EventBus';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { Provider } from "react-redux"
-import { store } from './src/data/globalContext/Store';
+import { store } from './src/data/globalContext/redux/Store';
 
 
 // ------------------- google sign in ------------------- //

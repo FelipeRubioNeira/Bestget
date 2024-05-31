@@ -42,7 +42,6 @@ const totalAmountStyles = StyleSheet.create({
         bottom: 0,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginVertical: 10,
         paddingVertical: 20,
         alignSelf: 'center',
         borderRadius: Styles.BORDER_RADIUS,

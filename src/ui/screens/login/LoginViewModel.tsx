@@ -7,7 +7,7 @@ import useModalViewModel from "../../components/modal/ModalViewModel";
 import LocalLoginRepository from "../../../data/repository/loginRepository/LocalLoginRepository";
 
 import { useAppDispatch } from "../../../data/globalContext/StoreHooks";
-import { updateUser } from "../../../data/globalContext/UserAppSlice";
+import { updateUser } from "../../../data/globalContext/redux/slices/UserAppSlice";
 
 type LoginViewModelProps = {
     localLoginRepository: LocalLoginRepository,

@@ -21,10 +21,10 @@ import useModalViewModel, { ModalButtonList } from "../../components/modal/Modal
 import useToastViewModel from "../../components/toast/ToastViewModel"
 import { QueryParams } from "../../../data/types/QueryParams"
 import { useAppSelector } from "../../../data/globalContext/StoreHooks"
-import { selectUserApp } from "../../../data/globalContext/UserAppSlice"
+import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppSlice"
 import { useAppDispatch } from "../../../data/globalContext/StoreHooks";
-import { selectFinancesApp, updateBudgets, updateCategories, updateExpenses, updateIncomes } from "../../../data/globalContext/FinancesAppSlice"
-import { updateDateInterval } from "../../../data/globalContext/DateIntervalAppSlice"
+import { selectFinancesApp, updateBudgets, updateCategories, updateExpenses, updateIncomes } from "../../../data/globalContext/redux/slices/FinancesAppSlice"
+import { updateDateInterval } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice"
 
 
 

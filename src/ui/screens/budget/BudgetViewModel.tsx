@@ -1,7 +1,7 @@
 import React from "react"
 import { useEffect, useState } from "react"
 import { BudgetsScreenProps } from "../../../navigation/NavigationParamList"
-import { currencyFormat, numberFormat } from "../../../utils/NumberFormat"
+import { currencyFormat } from "../../../utils/NumberFormat"
 import { Category } from "../../../data/types/Categoty"
 import { ScreenRoutes } from "../../../navigation/Routes"
 import IExpenseRespository from "../../../data/repository/expenseRepository/IExpenseRepository"
@@ -14,7 +14,7 @@ import Icons from "../../../assets/icons"
 import DateTime from "../../../utils/DateTime"
 import { useEventBus } from "../../../data/globalContext/events/EventBus"
 import { useAppSelector } from "../../../data/globalContext/StoreHooks"
-import { selectFinancesApp } from "../../../data/globalContext/FinancesAppSlice"
+import { selectFinancesApp } from "../../../data/globalContext/redux/slices/FinancesAppSlice"
 
 
 

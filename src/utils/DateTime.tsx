@@ -1,3 +1,4 @@
+import { Platform } from "react-native";
 
 
 class DateTime {
@@ -8,7 +9,6 @@ class DateTime {
     constructor(date?: Date | string | number) {
         const inicialDate = new Date(date || Date.now());
         this.date = this.getCurrentDate(inicialDate)
-        return this;
     }
 
     getTime = (date?: string): string => {
@@ -26,7 +26,7 @@ class DateTime {
 
         const date1 = new Date(firstDate);
         const date2 = new Date(secondDate);
-    
+
         // -1 si date1 es anterior a date2
         //  0 si date1 es igual a date2
         //  1 si date1 es posterior a date2
@@ -73,10 +73,11 @@ class DateTime {
 
     // ------------------- change the orden ------------------- //
     getCurrentDate = (date: Date): string => {
+
         const localTimezone = this.getLocalTimezone();
         const formatedDate = this.formatDate(localTimezone, date);
         const newDate = this.generateIsoStringDate(formatedDate);
-
+        
         return newDate
     }
 
@@ -97,6 +98,7 @@ class DateTime {
         const currentDate = new Date(date)
 
         currentDate.setMonth(currentDate.getMonth() + 1);
+
         return this.generateIsoStringDate(this.formatDate(this.getLocalTimezone(), currentDate));
     }
 
@@ -121,7 +123,7 @@ class DateTime {
      * @returns Initial day with the moth and year of the finalDate: Ex: 2024-10-28T00:00:00
      */
     mergeDate = (inicialDate: string, finalDate: string): string => {
-        const { day, hour,minute, second } = this.separateDate(inicialDate);
+        const { day, hour, minute, second } = this.separateDate(inicialDate);
         const { year, month } = this.separateDate(finalDate);
 
         return `${year}-${month}-${day}T${hour}:${minute}:${second}`
@@ -215,7 +217,12 @@ class DateTime {
             hour12: false, // Usar formato de 24 horas,
         });
 
-        return formatter.format(date);
+        const newDate = formatter.format(date);
+        return this.validateExtraCharacter(newDate);
+    }
+
+    private validateExtraCharacter = (date: string): string => {
+        return date.replace(",", "");
     }
 
     private getLocalTimezone = (): string => {

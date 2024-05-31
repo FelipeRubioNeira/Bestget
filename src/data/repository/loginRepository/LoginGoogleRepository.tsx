@@ -43,7 +43,7 @@ class LoginGoogleRepository implements ILoginRepository {
         return null
     }
 
-    async saveUser(user: UserApp) { }
+    async saveUser() { }
 
     async cleanUser() { }
 

@@ -58,14 +58,8 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
   return (
     <View style={DefaultStyles.screen}>
 
-      <HelpText
-        value={Strings.incomes}
-        fontSize={FontSize.XSMALL}
-        color={Colors.DARK_GRAY}
-      />
-
       <TotalAmount
-        label="Ingreso"
+        label="Total"
         amount={totalAmount}
         color={Colors.GREEN}
       />

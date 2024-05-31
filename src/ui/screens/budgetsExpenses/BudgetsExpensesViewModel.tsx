@@ -26,13 +26,13 @@ import { Event } from "../../../data/globalContext/events/EventBusReducer"
 import BudgetExpenseUnitOfWork from "../../../data/unitOfWork/BudgetExpenseUnitOfWork"
 import { QueryParams } from "../../../data/types/QueryParams"
 import { useAppDispatch, useAppSelector } from "../../../data/globalContext/StoreHooks"
-import { selectUserApp } from "../../../data/globalContext/UserAppSlice"
-import { selectFinancesApp } from "../../../data/globalContext/FinancesAppSlice"
+import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppSlice"
+import { selectFinancesApp } from "../../../data/globalContext/redux/slices/FinancesAppSlice"
 import {
     updateExpenses as updateExpensesContext,
     updateBudgets as updateBudgetsContext
-} from "../../../data/globalContext/FinancesAppSlice"
-import { selectDateIntervalApp } from "../../../data/globalContext/DateIntervalAppSlice"
+} from "../../../data/globalContext/redux/slices/FinancesAppSlice"
+import { selectDateIntervalApp } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice"
 
 const dateTime = new DateTime()
 
@@ -71,6 +71,7 @@ const useBudgetExpensesViewModel = ({
     const dateInterval = useAppSelector(selectDateIntervalApp)
 
     const appDispatch = useAppDispatch()
+
 
 
 

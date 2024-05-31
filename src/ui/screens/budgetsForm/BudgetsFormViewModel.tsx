@@ -11,10 +11,10 @@ import ExpenseRepository from "../../../data/repository/expenseRepository/Expens
 import { Expense } from "../../../data/types/Expense"
 import DateTime from "../../../utils/DateTime"
 import { useEventBus } from "../../../data/globalContext/events/EventBus"
-import { selectUserApp } from "../../../data/globalContext/UserAppSlice"
+import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppSlice"
 import { useAppSelector } from "../../../data/globalContext/StoreHooks"
-import { selectFinancesApp } from "../../../data/globalContext/FinancesAppSlice"
-import { selectDateIntervalApp } from "../../../data/globalContext/DateIntervalAppSlice"
+import { selectFinancesApp } from "../../../data/globalContext/redux/slices/FinancesAppSlice"
+import { selectDateIntervalApp } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice"
 
 
 const dateTime = new DateTime()

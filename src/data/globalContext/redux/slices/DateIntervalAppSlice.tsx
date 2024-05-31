@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { DateInterval } from "../types/DateInterval";
-import DateTime from "../../utils/DateTime";
-import { RootState } from "./store";
+import { DateInterval } from "../../../types/DateInterval";
+import DateTime from "../../../../utils/DateTime";
+import { RootState } from "../Store";
 
 const dateTime = new DateTime()
 
@@ -25,4 +25,5 @@ export const dateIntervalAppSlice = createSlice({
 export const selectDateIntervalApp = (state: RootState) => state.dateInterval
 
 export default dateIntervalAppSlice.reducer
+
 export const { updateDateInterval } = dateIntervalAppSlice.actions

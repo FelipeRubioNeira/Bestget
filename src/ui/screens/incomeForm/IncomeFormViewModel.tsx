@@ -9,8 +9,8 @@ import editIncomeUseCase from "../../../domain/useCases/editIncomeUseCase";
 import { ValidationResult } from "../../../data/types/Validation";
 import DateTime from "../../../utils/DateTime";
 import { useAppSelector } from "../../../data/globalContext/StoreHooks";
-import { selectUserApp } from "../../../data/globalContext/UserAppSlice";
-import { selectDateIntervalApp } from "../../../data/globalContext/DateIntervalAppSlice";
+import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppSlice";
+import { selectDateIntervalApp } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice";
 
 
 const dateTime = new DateTime()

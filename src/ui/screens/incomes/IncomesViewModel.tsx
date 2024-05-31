@@ -28,9 +28,10 @@ import { FontFamily } from "../../constants/Fonts"
 import Icons from "../../../assets/icons"
 import { QueryParams } from "../../../data/types/QueryParams"
 import { useAppDispatch, useAppSelector } from "../../../data/globalContext/StoreHooks"
-import { selectUserApp } from "../../../data/globalContext/UserAppSlice"
-import { selectFinancesApp, updateIncomes } from "../../../data/globalContext/FinancesAppSlice"
-import { selectDateIntervalApp } from "../../../data/globalContext/DateIntervalAppSlice"
+import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppSlice"
+import { selectFinancesApp, updateIncomes } from "../../../data/globalContext/redux/slices/FinancesAppSlice"
+import { selectDateIntervalApp } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice"
+import HeaderRight from "../../components/headerRight/HeaderRight"
 
 
 
@@ -81,9 +82,9 @@ const useIncomesViewModel = ({
             headerRight: () => {
                 if (incomes.length === 0) return null
                 return (
-                    <TouchableIcon
-                        image={Icons.edit}
-                        onPress={onPressDeleteHeaderIcon}
+                    <HeaderRight
+                        onPressQuestion={onPressQuestionHeaderIcon}
+                        onPressEdit={onPressEditHeaderIcon}
                     />
                 )
             }
@@ -185,7 +186,7 @@ const useIncomesViewModel = ({
 
 
     // ------------------- delete events------------------- //
-    const onPressDeleteHeaderIcon = () => {
+    const onPressEditHeaderIcon = () => {
 
         if (!editMode) {
             turnOnDeleteMode()
@@ -194,6 +195,16 @@ const useIncomesViewModel = ({
             turnOffDeleteMode()
         }
 
+    }
+
+
+    const onPressQuestionHeaderIcon = () => {
+        showModal(
+            "Ayuda",
+            "Un ingreso o activo es cualquier fuente de dinero que recibas, como tu salario, rentas, dividendos de una empresa, etc. " +
+            "Puedes agregar un ingreso pulsando el botón + en la parte inferior de la pantalla.",
+            [{ text: 'Aceptar', onPress: hideModal }]
+        )
     }
 
     const turnOnDeleteMode = () => {
