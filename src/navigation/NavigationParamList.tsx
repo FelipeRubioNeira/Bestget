@@ -55,6 +55,8 @@ export type NavigatorParamList = {
         expenseList?: Expense[],
     }
 
+    [ScreenRoutes.STATISTICS]: undefined
+
 }
 
 
@@ -119,4 +121,10 @@ export type BudgetsScreenProps = NativeStackScreenProps<
 export type BudgetsCreateScreenProps = NativeStackScreenProps<
     NavigatorParamList,
     ScreenRoutes.BUDGET_FORM
+>
+
+// STATISTICS screen
+export type StatisticsScreenProps = NativeStackScreenProps<
+    NavigatorParamList,
+    ScreenRoutes.STATISTICS
 >

@@ -65,7 +65,14 @@ const ScreenOptions = Object.freeze({
         headerTintColor: Colors.BLACK,
         headerStyle: { backgroundColor: Colors.YELLOW },
         headerTitleStyle: { fontFamily: FontFamily.BOLD },
-    }
+    },
+
+    STATISTICS: {
+        title: "Estadísticas",
+        headerTintColor: Colors.BLACK,
+        headerStyle: { backgroundColor: Colors.PURPLE },
+        headerTitleStyle: { fontFamily: FontFamily.BOLD },
+    },
 })
 
 export default ScreenOptions;

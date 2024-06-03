@@ -76,22 +76,13 @@ const BottomSheet = ({
                         onChangeValue={year => updateDate(year)}
                     />
 
-                    <Spacer marginVertical={"4%"} />
+                    <Spacer marginVertical={"2%"} />
 
                     <Actions
                         onCopy={onCopy}
                         onPaste={onPaste}
                         onDelete={onDelete}
                     />
-
-                    {/* <Spacer marginVertical={"4%"} />
-
-                    <TouchableIcon
-                        image={Icons.dots}
-                        style={{ alignSelf: "center" }}
-                    />
-
-                    <Spacer marginVertical={"2%"} /> */}
 
                 </View>
 

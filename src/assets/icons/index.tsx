@@ -13,6 +13,7 @@ const Icons = {
     dots: require('../icons/ic_dots.png'),
     check: require('../icons/ic_check.png'),
     question: require('../icons/ic_question.png'),
+    premium: require('../icons/ic_premium.png'),
 
     wallet: require('../icons/ic_wallet.png'),
     piggyBank: require('../icons/ic_piggy_bank.png'),

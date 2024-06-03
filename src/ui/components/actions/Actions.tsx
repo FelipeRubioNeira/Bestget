@@ -7,6 +7,7 @@ import { FontSize } from '../../constants/Fonts'
 import TouchableIcon from '../touchableIcon/TouchableIcon'
 import Label from '../label/Label'
 import { Styles } from '../../styles/Styles'
+import PremiumButton from '../premiumButton/PremiumButton'
 
 
 type ActionItemProps = {
@@ -21,33 +22,39 @@ type ActionsProps = {
     onDelete?: () => void
 }
 
-const Actions = ({ onCopy, onPaste, onDelete}: ActionsProps) => {
+const Actions = ({ onCopy, onPaste, onDelete }: ActionsProps) => {
 
     return (
-        <View style={actionStyles.container}>
 
-            <ActionItem
-                title='Copiar'
-                icon={Icons.copy}
-                onPress={onCopy}
-            />
+        <View>
 
-            <Spacer marginHorizontal={"2%"} />
+            <PremiumButton />
 
-            <ActionItem
-                title='pegar'
-                icon={Icons.paste}
-                onPress={onPaste}
-            />
+            <View style={actionStyles.container}>
 
-            <Spacer marginHorizontal={"2%"} />
+                <ActionItem
+                    title='Copiar'
+                    icon={Icons.copy}
+                    onPress={onCopy}
+                />
 
-            <ActionItem
-                title='Eliminar'
-                icon={Icons.deleteCircle}
-                onPress={onDelete}
-            />
+                <Spacer marginHorizontal={"2%"} />
 
+                <ActionItem
+                    title='pegar'
+                    icon={Icons.paste}
+                    onPress={onPaste}
+                />
+
+                <Spacer marginHorizontal={"2%"} />
+
+                <ActionItem
+                    title='Eliminar'
+                    icon={Icons.deleteCircle}
+                    onPress={onDelete}
+                />
+
+            </View>
         </View>
     )
 }

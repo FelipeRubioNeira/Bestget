@@ -283,7 +283,7 @@ const useHomeViewModel = ({
                 backgroundColor: Colors.PURPLE,
                 titleColor: Colors.BLACK,
                 type: "estadisticas",
-                comingSoon: true
+                comingSoon: false
             },
             {
                 title: 'Mi Cuenta',
@@ -307,7 +307,9 @@ const useHomeViewModel = ({
         navigation.navigate(ScreenRoutes.INCOMES, {})
     }
 
-    const onPressStatistics = () => { }
+    const onPressStatistics = () => {
+        navigation.navigate(ScreenRoutes.STATISTICS)
+     }
 
     const onPressProfile = () => { }
 
