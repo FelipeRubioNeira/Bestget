@@ -21,17 +21,16 @@ import { Income, IncomeUI } from "../../../data/types/Income"
 import { currencyFormat } from "../../../utils/NumberFormat"
 import { IIncomeRepository } from "../../../data/repository/incomeRepository/IIncomeRepository"
 import useModalViewModel from "../../components/modal/ModalViewModel"
-import TouchableIcon from "../../components/touchableIcon/TouchableIcon"
 import DeleteIncomeUseCase from "../../../domain/useCases/DeleteIncomeUseCase"
 import { Colors } from "../../constants/Colors"
 import { FontFamily } from "../../constants/Fonts"
-import Icons from "../../../assets/icons"
 import { QueryParams } from "../../../data/types/QueryParams"
 import { useAppDispatch, useAppSelector } from "../../../data/globalContext/StoreHooks"
 import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppSlice"
 import { selectFinancesApp, updateIncomes } from "../../../data/globalContext/redux/slices/FinancesAppSlice"
 import { selectDateIntervalApp } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice"
 import HeaderRight from "../../components/headerRight/HeaderRight"
+import useSearchViewModel from "../../components/search/SearchViewModel"
 
 
 
@@ -60,6 +59,11 @@ const useIncomesViewModel = ({
 
     // ------------------- hooks ------------------- //
     const { modalState, showModal, hideModal } = useModalViewModel()
+    const {
+        searchedValue,
+        updateSearchValue,
+        onSearch,
+    } = useSearchViewModel()
 
 
     // ------------------- route ------------------- //
@@ -70,6 +74,8 @@ const useIncomesViewModel = ({
 
     // ------------------- states ------------------- //
     const [allIncomes, setAllIncomes] = useState<IncomeUI[]>()
+    const [filteredIncomes, setFilteredIncomes] = useState<IncomeUI[]>([]);
+
 
     const [totalAmount, setTotalAmount] = useState<string>("0")
     const [editMode, setEditMode] = useState<boolean>(false)
@@ -106,7 +112,6 @@ const useIncomesViewModel = ({
     }, [navigation, incomeId])
 
 
-
     // generate the list of incomes if we sence a change in the incomes context length
     useEffect(() => {
         initializeIncomeData(incomes)
@@ -133,6 +138,7 @@ const useIncomesViewModel = ({
             if (incomes.length == 0) {
                 setTotalAmount("0")
                 setAllIncomes([])
+                setFilteredIncomes([])
                 return
             }
 
@@ -140,6 +146,7 @@ const useIncomesViewModel = ({
             const totalAmount = getTotalAmount(incomes)
 
             setAllIncomes(allIncomesFormatted)
+            setFilteredIncomes(allIncomesFormatted)
             setTotalAmount(totalAmount)
 
         } catch (error) {
@@ -184,19 +191,31 @@ const useIncomesViewModel = ({
         navigation.navigate(ScreenRoutes.INCOME_FORM, {})
     }
 
-
-    // ------------------- delete events------------------- //
-    const onPressEditHeaderIcon = () => {
-
-        if (!editMode) {
-            turnOnDeleteMode()
-
-        } else {
-            turnOffDeleteMode()
-        }
-
+    // ------------------- search events ------------------- //
+    const onSearchValue = (value: string) => {
+        const newList = onSearch(value, "name", allIncomes || [])
+        setFilteredIncomes(newList)
     }
 
+    const onDeleteSearch = () => {
+        updateSearchValue("")
+        setFilteredIncomes(allIncomes || [])
+    }
+
+
+    // ------------------- header events ------------------- //
+    const onPressEditHeaderIcon = () => {
+        !editMode ? turnOnDeleteMode() : turnOffDeleteMode();
+    }
+
+    // ------------------- delete events------------------- //
+    const turnOnDeleteMode = () => {
+        setEditMode(true)
+    }
+
+    const turnOffDeleteMode = () => {
+        setEditMode(false)
+    }
 
     const onPressQuestionHeaderIcon = () => {
         showModal(
@@ -207,13 +226,6 @@ const useIncomesViewModel = ({
         )
     }
 
-    const turnOnDeleteMode = () => {
-        setEditMode(true)
-    }
-
-    const turnOffDeleteMode = () => {
-        setEditMode(false)
-    }
 
 
 
@@ -251,7 +263,7 @@ const useIncomesViewModel = ({
     }
 
 
-    // ------------------- use Case ------------------- //
+    // ------------------- call to use Case ------------------- //
     const deleteIncome = async (incomeId: string) => {
 
         hideModal()
@@ -280,10 +292,15 @@ const useIncomesViewModel = ({
 
 
     return {
+        searchedValue,
+        onSearchValue,
+        onDeleteSearch,
+
         editMode,
         modalState,
         totalAmount,
         allIncomes,
+        filteredIncomes,
 
         navigateIncomeCreate,
         deleteIncome,

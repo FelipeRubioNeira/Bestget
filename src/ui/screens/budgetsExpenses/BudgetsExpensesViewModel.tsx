@@ -12,7 +12,6 @@ import { Category } from "../../../data/types/Categoty"
 import IBudgetRepository from "../../../data/repository/budgetRepository/IBudgetRepository"
 import { Budget, BudgetUI } from "../../../data/types/Budget"
 import { BudgetExpenseType } from "../../../data/types/BudgetExpense"
-import TouchableIcon from "../../components/touchableIcon/TouchableIcon"
 import useModalViewModel, { ModalButtonList } from "../../components/modal/ModalViewModel"
 import DeleteBudgetUseCase from "../../../domain/useCases/DeleteBudgetUseCase"
 import { ValidationResult } from "../../../data/types/Validation"
@@ -20,7 +19,6 @@ import DeleteExpenseUseCase from "../../../domain/useCases/DeleteExpenseUseCase"
 import DefaultStyles from "../../styles/DefaultStyles"
 import { DateInterval } from "../../../data/types/DateInterval"
 import DateTime from "../../../utils/DateTime"
-import Icons from "../../../assets/icons"
 import { useEventBus } from "../../../data/globalContext/events/EventBus"
 import { Event } from "../../../data/globalContext/events/EventBusReducer"
 import BudgetExpenseUnitOfWork from "../../../data/unitOfWork/BudgetExpenseUnitOfWork"
@@ -33,6 +31,8 @@ import {
     updateBudgets as updateBudgetsContext
 } from "../../../data/globalContext/redux/slices/FinancesAppSlice"
 import { selectDateIntervalApp } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice"
+import HeaderRight from "../../components/headerRight/HeaderRight"
+import useSearchViewModel from "../../components/search/SearchViewModel"
 
 const dateTime = new DateTime()
 
@@ -93,6 +93,7 @@ const useBudgetExpensesViewModel = ({
     const [ExpenseOptionsVisible, setExpenseOptionsVisble] = useState(false)
 
     const [budgetsExpenses, setBudgetsExpenses] = useState<(BudgetUI | ExpenseUI)[]>([])
+    const [filteredBudgetsExpenses, setFilteredBudgetsExpenses] = useState<(BudgetUI | ExpenseUI)[]>([])
 
     const [loading, setLoading] = useState(false)
 
@@ -102,6 +103,7 @@ const useBudgetExpensesViewModel = ({
 
     // ------------------ hooks ------------------ //
     const { hideModal, showModal, modalState } = useModalViewModel()
+    const { searchedValue, updateSearchValue, onSearch } = useSearchViewModel()
 
 
 
@@ -114,9 +116,9 @@ const useBudgetExpensesViewModel = ({
             headerRight: () => {
                 if (budgetsExpenses.length === 0) return null
                 return (
-                    <TouchableIcon
-                        image={Icons.edit}
-                        onPress={() => setEditMode(!editMode)}
+                    <HeaderRight
+                        onPressQuestion={onPressQuestionHeaderIcon}
+                        onPressEdit={onPressEditHeaderIcon}
                     />
                 )
             }
@@ -160,6 +162,30 @@ const useBudgetExpensesViewModel = ({
 
 
 
+
+
+
+    // ------------------- header events ------------------- //
+    const onPressEditHeaderIcon = () => {
+        !editMode ? turnOnDeleteMode() : turnOffDeleteMode();
+    }
+
+    // ------------------- delete events------------------- //
+    const turnOnDeleteMode = () => {
+        setEditMode(true)
+    }
+
+    const turnOffDeleteMode = () => {
+        setEditMode(false)
+    }
+
+    const onPressQuestionHeaderIcon = () => {
+        showModal(
+            "Ayuda",
+            "Un egreso o presupuesto es cualquier gasto que tengas, como el pago de la renta, la compra de alimentos, salidas con amigos, etc.",
+            [{ text: 'Aceptar', onPress: hideModal }]
+        )
+    }
 
 
     // ------------------ data methods ------------------ //
@@ -289,6 +315,11 @@ const useBudgetExpensesViewModel = ({
         setTotalAmount(totalExpenses)
 
         setBudgetsExpenses([
+            ...expensesList,
+            ...budgetsList
+        ])
+
+        setFilteredBudgetsExpenses([
             ...expensesList,
             ...budgetsList
         ])
@@ -519,6 +550,19 @@ const useBudgetExpensesViewModel = ({
     }
 
 
+    // ------------------ search events ------------------ //
+    const onSearchValue = (value: string) => {
+        const newList = onSearch(value, "name", budgetsExpenses)
+        setFilteredBudgetsExpenses(newList)
+    }
+
+    const onDeleteSearch = () => {
+        updateSearchValue("")
+        setFilteredBudgetsExpenses(budgetsExpenses)
+    }
+
+
+
     // ----------- return ----------- //
     return {
         modalState,
@@ -529,6 +573,7 @@ const useBudgetExpensesViewModel = ({
         ExpenseOptionsVisible,
         totalAmount,
         budgetsExpenses,
+        filteredBudgetsExpenses,
 
         onShowExpenseOptions,
         onAddExpense,
@@ -541,6 +586,11 @@ const useBudgetExpensesViewModel = ({
         deleteItem,
         showModal,
         hideModal,
+
+        onSearchValue,
+        onDeleteSearch,
+        searchedValue,
+
     }
 
 }

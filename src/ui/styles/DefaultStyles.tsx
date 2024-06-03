@@ -14,11 +14,11 @@ const DefaultStyles = StyleSheet.create({
 
     input: {
         width: "100%",
-        height: 70,
+        height: Styles.INPUT_HEIGHT,
         borderWidth: 1,
         borderColor: Colors.GRAY,
         borderRadius: Styles.BORDER_RADIUS,
-        paddingHorizontal: 20,
+        paddingHorizontal: 16,
         justifyContent: 'center',
     },
 

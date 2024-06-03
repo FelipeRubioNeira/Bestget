@@ -45,7 +45,7 @@ export default ButtonAdd
 const buttonAddStyles = StyleSheet.create({
 
     defaultButton: {
-        height: 70,
+        height: 60,
         aspectRatio: 1,
         borderRadius: Styles.BORDER_RADIUS,
         justifyContent: 'center',

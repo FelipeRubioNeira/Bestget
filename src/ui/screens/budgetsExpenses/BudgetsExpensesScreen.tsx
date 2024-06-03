@@ -1,9 +1,6 @@
 import { FlatList, View } from 'react-native'
 import React from 'react'
 import DefaultStyles from '../../styles/DefaultStyles'
-import HelpText from '../../components/helpText/Help'
-import { Strings } from '../../constants/Strings'
-import { FontSize } from '../../constants/Fonts'
 import { Colors } from '../../constants/Colors'
 import TotalAmount from '../../components/totalAmount/TotalAmount'
 import { BudgetsExpensesScreenProps } from '../../../navigation/NavigationParamList'
@@ -21,6 +18,8 @@ import Modal from '../../components/modal/Modal'
 import DeleteBudgetUseCase from '../../../domain/useCases/DeleteBudgetUseCase'
 import DeleteExpenseUseCase from '../../../domain/useCases/DeleteExpenseUseCase'
 import BudgetExpenseUnitOfWork from '../../../data/unitOfWork/BudgetExpenseUnitOfWork'
+import Search from '../../components/search/Search'
+import Spacer from '../../components/spacer/Spacer'
 
 
 
@@ -62,7 +61,6 @@ const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps
         onPressEdit,
         onPressDelete,
         totalAmount = "0",
-        budgetsExpenses,
         buttonAddVisible,
         onShowExpenseOptions,
         ExpenseOptionsVisible,
@@ -102,14 +100,8 @@ const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps
 
     return (
         <>
-    
-            <View style={DefaultStyles.screen}>
 
-                <HelpText
-                    value={Strings.expenses}
-                    fontSize={FontSize.XSMALL}
-                    color={Colors.DARK_GRAY}
-                />
+            <View style={DefaultStyles.screen}>
 
                 <TotalAmount
                     label="Gasto total"
@@ -117,8 +109,21 @@ const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps
                     color={Colors.YELLOW}
                 />
 
+                <Spacer marginVertical={"2%"} />
+
+                <Search
+                    title='Buscar'
+                    placeholder='Gasto...'
+                    searchValue={budgetsExpensesViewModel.searchedValue}
+                    onSearch={budgetsExpensesViewModel.onSearchValue}
+                    deleteSearch={budgetsExpensesViewModel.onDeleteSearch}
+                />
+
+                <Spacer marginVertical={"2%"} />
+
+
                 <FlatList
-                    data={budgetsExpenses}
+                    data={budgetsExpensesViewModel.filteredBudgetsExpenses}
                     renderItem={({ item }) => renderBugdetOrExpense(item)}
                     showsVerticalScrollIndicator={false}
                 />

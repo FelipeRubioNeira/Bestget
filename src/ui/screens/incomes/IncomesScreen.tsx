@@ -3,12 +3,10 @@ import React from 'react'
 import DefaultStyles from '../../styles/DefaultStyles'
 import Label from '../../components/label/Label'
 import { Colors } from '../../constants/Colors'
-import { Strings } from '../../constants/Strings'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 import Spacer from '../../components/spacer/Spacer'
 import TotalAmount from '../../components/totalAmount/TotalAmount'
 import ButtonAdd from '../../components/buttonAdd/ButtonAdd'
-import HelpText from '../../components/helpText/Help'
 import { IncomesScreenProps } from '../../../navigation/NavigationParamList'
 import useIncomeViewModel from './IncomesViewModel'
 import IncomeRepository from '../../../data/repository/incomeRepository/IncomeRepository'
@@ -16,6 +14,8 @@ import { IncomeUI } from '../../../data/types/Income'
 import Modal from '../../components/modal/Modal'
 import EditionIcons from '../../components/editionIcons/EditionIcons'
 import DeleteIncomeUseCase from '../../../domain/useCases/DeleteIncomeUseCase'
+import Search from '../../components/search/Search'
+
 
 
 
@@ -40,7 +40,7 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
   // view Model //
   const {
     totalAmount = "0",
-    allIncomes = [],
+    filteredIncomes,
     editMode,
 
     onPressEdit,
@@ -64,10 +64,20 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
         color={Colors.GREEN}
       />
 
+      <Spacer marginVertical={"2%"} />
+
+      <Search
+        title='Buscar'
+        placeholder='Ingreso...'
+        searchValue={incomeViewModel.searchedValue}
+        onSearch={incomeViewModel.onSearchValue}
+        deleteSearch={incomeViewModel.onDeleteSearch}
+      />
+
       <Spacer marginVertical={"4%"} />
 
       <FlatList
-        data={allIncomes}
+        data={filteredIncomes}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => <IncomeItem
           {...item}

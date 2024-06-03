@@ -38,7 +38,7 @@ export default TotalAmount
 const totalAmountStyles = StyleSheet.create({
 
     container: {
-        width: Styles.WIDTH * 0.95,
+        width: "100%",
         bottom: 0,
         flexDirection: 'row',
         justifyContent: 'space-between',
