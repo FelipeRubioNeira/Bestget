@@ -29,7 +29,6 @@ export type NavigatorParamList = {
         income?: Income,
     }
 
-
     [ScreenRoutes.BUDGET_EXPENSES]: {
         newExpenseId?: string,
         newBudgetId?: string,
@@ -43,7 +42,6 @@ export type NavigatorParamList = {
         budget: Budget,
         newExpenseId?: string,
     }
-
 
     [ScreenRoutes.EXPENSES_FORM]: {
         budget?: Budget, // if we are creating an expense from a budget

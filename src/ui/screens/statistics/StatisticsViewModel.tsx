@@ -5,6 +5,7 @@ import { Expense } from "../../../data/types/Expense";
 import { Colors } from "../../constants/Colors";
 import { Category } from "../../../data/types/Categoty";
 import { Income } from "../../../data/types/Income";
+import { currencyFormat } from "../../../utils/NumberFormat";
 
 /*
     para calcular el porcentaje necesitamos hacer lo siguiente:
@@ -21,11 +22,11 @@ import { Income } from "../../../data/types/Income";
     4- Retornamos el array de items
 */
 
-type PieChartItem = {
+export type PieChartItem = {
     name: string,
     amount: number,
     color: string,
-    percentage?: number,
+    percentage?: string,
 }
 
 
@@ -56,7 +57,7 @@ const useStatisticsViewModel = () => {
         const totalIncomes = calculateTotalIncomes(incomes)
         const totalExpenses = calculateTotalExpenses(expenses)
 
-        const userData = calculateExpenseDistribution(expenses)
+        const userData = calculateExpenseDistribution(expenses, totalIncomes)
 
         const extraMoney = isThereExtraMoney(totalIncomes, totalExpenses)
 
@@ -68,7 +69,7 @@ const useStatisticsViewModel = () => {
 
     }
 
-    const calculateExpenseDistribution = (expenses: Expense[]): PieChartItem[] => {
+    const calculateExpenseDistribution = (expenses: Expense[], totalIncomes: number): PieChartItem[] => {
 
         const userData: PieChartItem[] = []
 
@@ -85,6 +86,7 @@ const useStatisticsViewModel = () => {
                     name: category.name,
                     color: category.color,
                     amount: expense.amount,
+                    percentage: calculatePercentage(expense.amount, totalIncomes).toString()
                 }
                 userData.push(item)
             }
@@ -92,6 +94,10 @@ const useStatisticsViewModel = () => {
         })
 
         return userData
+    }
+
+    const calculatePercentage = (amount: number, total: number): number => {
+        return (amount * 100) / total
     }
 
     const calculateTotalExpenses = (expenses: Expense[]): number => {
@@ -105,11 +111,11 @@ const useStatisticsViewModel = () => {
     const isThereExtraMoney = (totalIncomes: number, totalExpenses: number): PieChartItem | null => {
 
         if (totalIncomes > totalExpenses) {
-
             const item: PieChartItem = {
                 name: "Restante ",
                 color: Colors.LIGHT_GRAY,
                 amount: totalIncomes - totalExpenses,
+                percentage: (calculatePercentage(totalIncomes - totalExpenses, totalIncomes)).toString()
             }
             return item
 
