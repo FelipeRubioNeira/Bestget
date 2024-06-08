@@ -14,7 +14,7 @@ const PremiumButton = () => {
         <TouchableOpacity style={PremiumButtonStyles.container}>
 
             <Label
-                value='Funcionalida Premium'
+                value='Funcionalidad Premium'
                 style={PremiumButtonStyles.label}
             />
 

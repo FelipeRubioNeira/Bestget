@@ -5,7 +5,6 @@ import { Expense } from "../../../data/types/Expense";
 import { Colors } from "../../constants/Colors";
 import { Category } from "../../../data/types/Categoty";
 import { Income } from "../../../data/types/Income";
-import { currencyFormat } from "../../../utils/NumberFormat";
 
 /*
     para calcular el porcentaje necesitamos hacer lo siguiente:
@@ -41,31 +40,44 @@ const useStatisticsViewModel = () => {
 
 
     // ------------------ states ------------------ //
-    const [userData, setUserData] = useState<PieChartItem[]>([])
+    const [pieChartData, setPieChartData] = useState<PieChartItem[]>([])
+    const [barChartData, setBarChartData] = useState<number[]>([])
 
 
     // ------------------ effects ------------------ //
     useEffect(() => {
-        const newData = calculateDistribution(expenses)
-        setUserData(newData)
+
+        const {
+            pieChartData,
+            barChartData
+        } = calculateDistribution(expenses)
+
+        setPieChartData(pieChartData)
+        setBarChartData(barChartData)
+
     }, [expenses])
 
 
     // ------------------ methods ------------------ //
-    const calculateDistribution = (expenses: Expense[]): PieChartItem[] => {
+    const calculateDistribution = (expenses: Expense[]) => {
 
         const totalIncomes = calculateTotalIncomes(incomes)
         const totalExpenses = calculateTotalExpenses(expenses)
 
-        const userData = calculateExpenseDistribution(expenses, totalIncomes)
+        const pieChartData = calculateExpenseDistribution(expenses, totalIncomes)
 
         const extraMoney = isThereExtraMoney(totalIncomes, totalExpenses)
 
         if (extraMoney) {
-            userData.push(extraMoney)
+            pieChartData.push(extraMoney)
         }
 
-        return userData
+        return {
+            pieChartData,
+            barChartData: [totalIncomes, totalExpenses]
+        }
+
+
 
     }
 
@@ -86,7 +98,7 @@ const useStatisticsViewModel = () => {
                     name: category.name,
                     color: category.color,
                     amount: expense.amount,
-                    percentage: calculatePercentage(expense.amount, totalIncomes).toString()
+                    percentage: calculatePercentage(expense.amount, totalIncomes)
                 }
                 userData.push(item)
             }
@@ -96,8 +108,10 @@ const useStatisticsViewModel = () => {
         return userData
     }
 
-    const calculatePercentage = (amount: number, total: number): number => {
-        return (amount * 100) / total
+    const calculatePercentage = (amount: number, total: number): string => {
+        const partial = (amount * 100) / total
+        const totalRounded = partial.toFixed(2)
+        return totalRounded
     }
 
     const calculateTotalExpenses = (expenses: Expense[]): number => {
@@ -115,7 +129,7 @@ const useStatisticsViewModel = () => {
                 name: "Restante ",
                 color: Colors.LIGHT_GRAY,
                 amount: totalIncomes - totalExpenses,
-                percentage: (calculatePercentage(totalIncomes - totalExpenses, totalIncomes)).toString()
+                percentage: calculatePercentage(totalIncomes - totalExpenses, totalIncomes)
             }
             return item
 
@@ -142,7 +156,8 @@ const useStatisticsViewModel = () => {
     }
 
     return {
-        userData
+        pieChartData,
+        barChartData
     }
 
 }

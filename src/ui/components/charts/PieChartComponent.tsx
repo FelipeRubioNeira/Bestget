@@ -8,18 +8,15 @@ import { Colors } from '../../constants/Colors'
 import { PieChartItem } from '../../screens/statistics/StatisticsViewModel'
 import { currencyFormat } from '../../../utils/NumberFormat'
 import usePieChartViewModel, { PIE_CHART_MODE } from './PieChartViewModel'
-import Spacer from '../spacer/Spacer'
-
 
 
 
 // ------------------- PieChartComponent ------------------- //
 type ChartProps = {
-    title: string,
     data: PieChartItem[],
 }
 
-const PieChartComponent = ({ title, data }: ChartProps) => {
+const PieChartComponent = ({ data }: ChartProps) => {
 
     const {
         currentMode,
@@ -29,26 +26,18 @@ const PieChartComponent = ({ title, data }: ChartProps) => {
 
     return (
 
-        <View style={PieChartStyles.container}>
-
-            <Label
-                value={title}
-                style={PieChartStyles.title}
-            />
-
-            <Spacer height={10} />
+        <View>
 
             <ChartSwitch
                 changeMode={changeMode}
                 currentMode={currentMode}
             />
 
-
             <PieChart
                 data={data}
-                width={300}
+                width={Styles.WIDTH}
                 height={300}
-                paddingLeft={"100"}
+                paddingLeft={"80"}
                 hasLegend={false}
                 accessor={"amount"}
                 backgroundColor={"transparent"}
@@ -162,12 +151,12 @@ const ChartSwitch = ({ currentMode, changeMode }: ChartSwitchProps) => {
 
 const PieChartStyles = StyleSheet.create({
     container: {
-        marginTop: 20,
-        padding: 10,
-        width: "95%",
-        backgroundColor: Colors.GRAY,
-        borderRadius: Styles.BORDER_RADIUS,
-        marginHorizontal: 10,
+        //marginTop: 20,
+        //padding: 10,
+        //width: "100%",
+        //backgroundColor: Colors.GRAY,
+        //borderRadius: Styles.BORDER_RADIUS,
+        //marginHorizontal: 10,
     },
     title: {
         fontFamily: FontFamily.BOLD,
