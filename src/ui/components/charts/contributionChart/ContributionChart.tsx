@@ -65,8 +65,8 @@ const ContributionChart = ({ data }: DistributionChartProps) => {
                     chartConfig={{
                         backgroundGradientFrom: ColorsApp.hexToRGB(Colors.GRAY),
                         backgroundGradientTo: ColorsApp.hexToRGB(Colors.GRAY),
-                        color: (opacity = 0.2) => `rgba(0, 0, 0, ${opacity})`,
-                        labelColor: () => ColorsApp.hexToRGB(Colors.BLACK),
+                        color: (opacity = 0.2) => `rgba(241, 121, 121 , ${opacity})`,
+                        labelColor: () => ColorsApp.hexToRGB(Colors.RED),
                     }}
                 />
 

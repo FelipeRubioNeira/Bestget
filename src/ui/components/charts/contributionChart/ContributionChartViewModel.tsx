@@ -41,7 +41,7 @@ const useContributionChartViewModel = ({ showModal, hideModal }: ContributionVie
         const currencyAmount = currencyFormat(count)
 
         if (count == 0) {
-            return "No se han registrado gastos en este día."
+            return `El día ${formattedDate} no registra gastos.`
         }
 
         return `El día ${formattedDate} se han registrado un gasto de $${currencyAmount}.`

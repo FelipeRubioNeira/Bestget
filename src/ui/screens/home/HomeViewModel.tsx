@@ -278,7 +278,7 @@ const useHomeViewModel = ({
                 type: "ingresos",
             },
             {
-                title: 'Estadisticas',
+                title: 'Estadísticas',
                 onPress: onPressStatistics,
                 backgroundColor: Colors.PURPLE,
                 titleColor: Colors.BLACK,

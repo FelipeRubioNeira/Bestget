@@ -7,8 +7,8 @@ class ColorsApp {
 
         // Verificar que el string hexadecimal tenga una longitud válida (3 o 6 caracteres)
         if (hex.length === 3) {
-            // Si es un shorthand (ej. "03F"), convertirlo a formato completo (ej. "0033FF")
             hex = hex.split('').map(char => char + char).join('');
+            
         } else if (hex.length !== 6) {
             throw new Error('El valor hexadecimal no es válido.');
         }
