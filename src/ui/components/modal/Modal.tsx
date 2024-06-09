@@ -9,7 +9,12 @@ import { BodyProps, ModalButtonList, ModalProps } from './ModalViewModel'
 
 
 // ----------- component ------------ //
-const Modal = ({ visible = true, title, message, buttonList }: ModalProps) => {
+const Modal = ({
+    visible = true,
+    title,
+    message,
+    buttonList
+}: ModalProps) => {
 
     if (!visible) return null
     return (

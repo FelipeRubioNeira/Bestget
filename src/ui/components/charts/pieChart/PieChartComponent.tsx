@@ -1,22 +1,23 @@
 import { StyleSheet, Switch, View } from 'react-native'
 import React from 'react'
-import { FontFamily, FontSize } from '../../constants/Fonts'
-import Label from '../label/Label'
+import { FontFamily, FontSize } from '../../../constants/Fonts'
+import Label from '../../label/Label'
 import { PieChart } from 'react-native-chart-kit'
-import { Styles } from '../../styles/Styles'
-import { Colors } from '../../constants/Colors'
-import { PieChartItem } from '../../screens/statistics/StatisticsViewModel'
-import { currencyFormat } from '../../../utils/NumberFormat'
+import { Styles } from '../../../styles/Styles'
+import { Colors } from '../../../constants/Colors'
+import { PieChartItem } from '../../../screens/statistics/StatisticsViewModel'
+import { currencyFormat } from '../../../../utils/NumberFormat'
 import usePieChartViewModel, { PIE_CHART_MODE } from './PieChartViewModel'
+import Spacer from '../../spacer/Spacer'
 
 
 
 // ------------------- PieChartComponent ------------------- //
-type ChartProps = {
+type PieChartProps = {
     data: PieChartItem[],
 }
 
-const PieChartComponent = ({ data }: ChartProps) => {
+const PieChartComponent = ({ data }: PieChartProps) => {
 
     const {
         currentMode,

@@ -1,10 +1,9 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { Income } from "../../../types/Income";
-import { Expense } from "../../../types/Expense";
-import { Budget } from "../../../types/Budget";
-import { Category } from "../../../types/Categoty";
-import { RootState } from "../redux/Storeore";
-
+import { Income } from "../../types/Income";
+import { Expense } from "../../types/Expense";
+import { Budget } from "../../types/Budget";
+import { Category } from "../../types/Categoty";
+import { RootState } from "../redux/Store";
 
 type FinancesState = {
     //imcomes

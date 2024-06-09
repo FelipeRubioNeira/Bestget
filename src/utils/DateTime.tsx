@@ -1,5 +1,3 @@
-import { Platform } from "react-native";
-
 
 class DateTime {
 
@@ -77,7 +75,7 @@ class DateTime {
         const localTimezone = this.getLocalTimezone();
         const formatedDate = this.formatDate(localTimezone, date);
         const newDate = this.generateIsoStringDate(formatedDate);
-        
+
         return newDate
     }
 
@@ -128,6 +126,13 @@ class DateTime {
 
         return `${year}-${month}-${day}T${hour}:${minute}:${second}`
     }
+
+    getMonthsDay = (year: number, month: number): number => {
+        const date = new Date(year, month + 1, 0);
+        return date.getDate();
+    };
+
+
 
 
     // ------------------- private methods ------------------- //
@@ -228,6 +233,8 @@ class DateTime {
     private getLocalTimezone = (): string => {
         return Intl.DateTimeFormat().resolvedOptions().timeZone;
     };
+
+
 
 
 }

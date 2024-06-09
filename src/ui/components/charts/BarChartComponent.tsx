@@ -6,12 +6,11 @@ import { Colors } from '../../constants/Colors'
 import { FontFamily, FontSize } from '../../constants/Fonts'
 import ColorsApp from '../../../utils/Colors'
 import { currencyFormat } from '../../../utils/NumberFormat'
+import { BarChartData } from '../../screens/statistics/StatisticsViewModel'
 
-type BarChartProps = {
-    data: number[],
-}
 
-const BarChartComponent = ({ data }: BarChartProps) => {
+
+const BarChartComponent = ({ data }: BarChartData) => {
 
     return (
 

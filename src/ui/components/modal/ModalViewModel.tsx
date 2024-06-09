@@ -37,7 +37,14 @@ const useModalViewModel = () => {
      * @param message Message of the modal
      * @param buttonList  List of buttons to show in the modal with according actions
      */
-    const showModal = (title: string, message: string, buttonList: ModalButtonList[]) => {
+    const showModal = (
+        title: string = "",
+        message: string = "",
+        buttonList: ModalButtonList[] = [{
+            text: "Ok",
+            onPress: hideModal
+        }]
+    ) => {
         setModalState({
             visible: true,
             title,

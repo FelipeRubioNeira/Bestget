@@ -1,23 +1,26 @@
 import { SafeAreaView, ScrollView, View } from 'react-native'
 import useStatisticsViewModel from './StatisticsViewModel';
 import BarChartComponent from '../../components/charts/BarChartComponent';
-import PieChartComponent from '../../components/charts/PieChartComponent';
+import PieChartComponent from '../../components/charts/pieChart/PieChartComponent';
 import WithFrameChart from '../../components/charts/WithFrameChart';
 import Spacer from '../../components/spacer/Spacer';
 import { Styles } from '../../styles/Styles';
+import ContributionChart from '../../components/charts/contributionChart/ContributionChart';
+import Modal from '../../components/modal/Modal';
 
 
 // ------------------- StatisticsScreen ------------------- //
-const FramedPieChart = WithFrameChart(PieChartComponent);
 const FramedBarChart = WithFrameChart(BarChartComponent);
-
+const FramedPieChart = WithFrameChart(PieChartComponent);
+const FramedDistributionChart = WithFrameChart(ContributionChart);
 
 
 const StatisticsScreen = () => {
 
     const {
+        barChartData,
         pieChartData,
-        barChartData
+        contributionData
     } = useStatisticsViewModel()
 
 
@@ -41,6 +44,14 @@ const StatisticsScreen = () => {
                 />
 
                 <Spacer marginVertical={Styles.MARGIN} />
+
+                <FramedDistributionChart
+                    title='Contribución de gastos por día'
+                    data={contributionData}
+                />
+
+                <Spacer marginVertical={Styles.MARGIN} />
+
 
             </ScrollView>
         </SafeAreaView>

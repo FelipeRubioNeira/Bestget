@@ -5,28 +5,39 @@ import { Expense } from "../../../data/types/Expense";
 import { Colors } from "../../constants/Colors";
 import { Category } from "../../../data/types/Categoty";
 import { Income } from "../../../data/types/Income";
+import DateTime from "../../../utils/DateTime";
+import { capitalizeFirstLetter } from "../../../utils/String";
+import { selectDateIntervalApp } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice";
+const dateTime = new DateTime();
 
-/*
-    para calcular el porcentaje necesitamos hacer lo siguiente:
 
-    1- El ingreso es meyor que el gasto?
-        1.1 Si el ingreso es mayor que el gasto, entonces usamos el ingreso como total
-        1.2 Si el gasto es mayor que el ingreso, entonces usamos el gasto como total
-
-    2- Calculamos el porcentaje de cada item
-        2.1 Porcentaje = (item.amount * 100) / total
-
-    3- Si hay dinero extra, lo agregamos al array de items junto con su porcentaje
-    
-    4- Retornamos el array de items
-*/
-
+// ------------------ types ------------------ //
 export type PieChartItem = {
     name: string,
     amount: number,
     color: string,
     percentage?: string,
 }
+
+export type BarChartData = {
+    data: number[],
+}
+
+export type ContributionChartValue = {
+    date: String,
+    count: number,
+    expenseList: Expense[],
+}
+
+export type ContributionData = {
+    month: string,
+    endDate: string,
+    values: Array<ContributionChartValue>,
+}
+
+
+
+
 
 
 const useStatisticsViewModel = () => {
@@ -38,24 +49,35 @@ const useStatisticsViewModel = () => {
         expenses
     } = useAppSelector(selectFinancesApp)
 
+    const {
+        initialDate,
+    } = useAppSelector(selectDateIntervalApp)
+
 
     // ------------------ states ------------------ //
     const [pieChartData, setPieChartData] = useState<PieChartItem[]>([])
     const [barChartData, setBarChartData] = useState<number[]>([])
+    const [contributionData, setContributionData] = useState<ContributionData>({
+        month: "",
+        endDate: "",
+        values: []
+    })
 
 
     // ------------------ effects ------------------ //
     useEffect(() => {
 
         const {
+            barChartData,
             pieChartData,
-            barChartData
+            contributionData,
         } = calculateDistribution(expenses)
 
-        setPieChartData(pieChartData)
         setBarChartData(barChartData)
+        setPieChartData(pieChartData)
+        setContributionData(contributionData)
 
-    }, [expenses])
+    }, [expenses, incomes])
 
 
     // ------------------ methods ------------------ //
@@ -68,13 +90,16 @@ const useStatisticsViewModel = () => {
 
         const extraMoney = isThereExtraMoney(totalIncomes, totalExpenses)
 
+        const contributionData = calculateContributions(expenses)
+
         if (extraMoney) {
             pieChartData.push(extraMoney)
         }
 
         return {
             pieChartData,
-            barChartData: [totalIncomes, totalExpenses]
+            barChartData: [totalIncomes, totalExpenses],
+            contributionData
         }
 
 
@@ -155,9 +180,71 @@ const useStatisticsViewModel = () => {
         return data.find(data => data.name === name);
     }
 
+    /*
+        1- Get the firt day of the month throw the first expense
+        2- Get the last day of the month throw the last expense
+        3- Get the name of the month 
+        4- Genenerate the data for the contribution graph
+            4.1- Map every day of the month and check if there is an expense
+            4.2- If there is an expense, add the amount to the day
+            4.3- If there is not an expense, add 0 to the day
+            4.4- Return the data
+     */
+
+    //const monthName =  getMonthName(expense.date)
+    //const firtDay = dateTime.generateFirstDayOfMonth(expense.date)
+
+    const isSameDay = (date: string, currentDate: string): boolean => {
+        const expenseDate = dateTime.convertToAmericanDate(date)
+        return expenseDate === currentDate
+    }
+
+    const calculateContributions = (expenses: Expense[]): ContributionData => {
+
+        const contributions: ContributionChartValue[] = []
+        const currentMonth = dateTime.getMonth(initialDate)
+        const currentYear = dateTime.getYear(initialDate)
+        const days = dateTime.getMonthsDay(Number(currentYear), Number(currentMonth))
+
+        for (let i = 1; i <= days; i++) {
+
+            const day = String(i).padStart(2, '0')
+            const currentDate = `${currentYear}-${currentMonth}-${day}`
+
+            const expensesOfSameDay = expenses.filter(expense => isSameDay(expense.date, currentDate))
+
+            const totalExpenses = calculateTotalExpenses(expensesOfSameDay)
+
+            contributions.push({
+                count: totalExpenses,
+                date: currentDate,
+                expenseList: expensesOfSameDay
+            })
+
+        }
+
+        return {
+            month: getMonthName(initialDate),
+            endDate: `${currentYear}-${currentMonth}-${days}`,
+            values: contributions,
+        }
+
+    }
+
+
+    const getMonthName = (date: string): string => {
+        const monthNumber = dateTime.getMonth(date)
+        const monthName = dateTime.getMonthName(Number(monthNumber))
+        const capitalizeMonth = capitalizeFirstLetter(monthName)
+
+        return capitalizeMonth
+    }
+
+
     return {
         pieChartData,
-        barChartData
+        barChartData,
+        contributionData
     }
 
 }
