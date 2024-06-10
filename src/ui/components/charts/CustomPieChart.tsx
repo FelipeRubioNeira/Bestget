@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
-import { View, ViewStyle } from 'react-native';
+import { StyleSheet, View, ViewStyle } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
+import { Styles } from '../../styles/Styles';
 
 type ChartData = {
     amount: number;
@@ -24,6 +25,7 @@ type PieSliceProps = {
 }
 
 const PieSlice: React.FC<PieSliceProps> = ({ amount, color, total, cumulativeAngle, size, onPress }) => {
+    
     const angle = (amount / total) * 360;
     const largeArcFlag = angle > 180 ? 1 : 0;
 
@@ -61,7 +63,10 @@ const CustomPieChart: React.FC<PieChartProps> = ({
     let cumulativeAngle = 0;
 
     return (
-        <View style={style}>
+        <View style={{
+            ...PieChartStyles.chartContainer,
+            ...style
+        }}>
             <Svg width={size} height={size}>
                 {data.map(({ amount, color }) => {
                     const slice = (
@@ -83,5 +88,12 @@ const CustomPieChart: React.FC<PieChartProps> = ({
         </View>
     );
 }
+
+const PieChartStyles = StyleSheet.create({
+    chartContainer: {
+        margin: Styles.MARGIN,
+        alignSelf: 'center',
+    },
+})
 
 export default CustomPieChart;

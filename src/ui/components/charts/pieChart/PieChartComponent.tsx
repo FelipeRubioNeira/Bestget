@@ -2,13 +2,12 @@ import { StyleSheet, Switch, View } from 'react-native'
 import React from 'react'
 import { FontFamily, FontSize } from '../../../constants/Fonts'
 import Label from '../../label/Label'
-import { PieChart } from 'react-native-chart-kit'
-import { Styles } from '../../../styles/Styles'
 import { Colors } from '../../../constants/Colors'
 import { PieChartItem } from '../../../screens/statistics/StatisticsViewModel'
 import { currencyFormat } from '../../../../utils/NumberFormat'
 import usePieChartViewModel, { PIE_CHART_MODE } from './PieChartViewModel'
-import Spacer from '../../spacer/Spacer'
+import CustomPieChart from '../CustomPieChart'
+import { Styles } from '../../../styles/Styles'
 
 
 
@@ -34,15 +33,9 @@ const PieChartComponent = ({ data }: PieChartProps) => {
                 currentMode={currentMode}
             />
 
-            <PieChart
+            <CustomPieChart
                 data={data}
-                width={Styles.WIDTH}
-                height={300}
-                paddingLeft={"80"}
-                hasLegend={false}
-                accessor={"amount"}
-                backgroundColor={"transparent"}
-                chartConfig={{ color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})` }}
+                size={Styles.WIDTH * 0.5}
             />
 
             <ChartList
@@ -151,14 +144,6 @@ const ChartSwitch = ({ currentMode, changeMode }: ChartSwitchProps) => {
 
 
 const PieChartStyles = StyleSheet.create({
-    container: {
-        //marginTop: 20,
-        //padding: 10,
-        //width: "100%",
-        //backgroundColor: Colors.GRAY,
-        //borderRadius: Styles.BORDER_RADIUS,
-        //marginHorizontal: 10,
-    },
     title: {
         fontFamily: FontFamily.BOLD,
         fontSize: FontSize.SMALL
