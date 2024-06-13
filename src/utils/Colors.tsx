@@ -1,6 +1,6 @@
 class ColorsApp {
 
-    static hexToRGB(hex: string, opacity?: number): string {
+    static hexToRGB(hex: string, opacity?: number ): string {
 
         // Eliminar el símbolo de almohadilla (#) si está presente
         hex = hex.replace(/^#/, '');
@@ -19,7 +19,7 @@ class ColorsApp {
         const g = (bigint >> 8) & 255;
         const b = bigint & 255;
 
-        return `rgba(${r}, ${g}, ${b}, ${opacity || 1} )`;
+        return `rgba(${r}, ${g}, ${b}, ${opacity ?? 1} )`;
     }
 
 }

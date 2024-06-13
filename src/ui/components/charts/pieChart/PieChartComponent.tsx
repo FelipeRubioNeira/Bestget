@@ -8,15 +8,17 @@ import { currencyFormat } from '../../../../utils/NumberFormat'
 import usePieChartViewModel, { PIE_CHART_MODE } from './PieChartViewModel'
 import CustomPieChart from '../CustomPieChart'
 import { Styles } from '../../../styles/Styles'
+import Spacer from '../../spacer/Spacer'
 
 
 
 // ------------------- PieChartComponent ------------------- //
 type PieChartProps = {
     data: PieChartItem[],
+    size: number
 }
 
-const PieChartComponent = ({ data }: PieChartProps) => {
+const PieChartComponent = ({ data, size }: PieChartProps) => {
 
     const {
         currentMode,
@@ -28,14 +30,19 @@ const PieChartComponent = ({ data }: PieChartProps) => {
 
         <View>
 
-            <ChartSwitch
-                changeMode={changeMode}
-                currentMode={currentMode}
-            />
+            {
+                data.length > 0 &&
+                <ChartSwitch
+                    changeMode={changeMode}
+                    currentMode={currentMode}
+                />
+            }
+
+            <Spacer marginVertical={Styles.MARGIN / 2} />
 
             <CustomPieChart
                 data={data}
-                size={Styles.WIDTH * 0.5}
+                size={size}
             />
 
             <ChartList

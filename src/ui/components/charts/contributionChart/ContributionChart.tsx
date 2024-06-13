@@ -12,7 +12,7 @@ import Modal from '../../modal/Modal'
 import useModalViewModel from '../../modal/ModalViewModel'
 
 
-type DistributionChartProps = {
+export type DistributionChartProps = {
     data: ContributionData
 }
 

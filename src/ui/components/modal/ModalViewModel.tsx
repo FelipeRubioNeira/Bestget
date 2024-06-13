@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { TextStyle } from "react-native"
+import { TextStyle, ViewStyle } from "react-native"
 
 // ----------- types ------------ //
 type ModalButtonList = {
@@ -16,6 +16,7 @@ type BodyProps = {
 type ModalProps = {
     visible: boolean,
     title: string,
+    backgroundStyle?: ViewStyle
 } & BodyProps
 
 

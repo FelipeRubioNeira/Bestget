@@ -13,12 +13,16 @@ const Modal = ({
     visible = true,
     title,
     message,
-    buttonList
+    buttonList,
+    backgroundStyle
 }: ModalProps) => {
 
     if (!visible) return null
     return (
-        <View style={ModalStyle.backgrpund}>
+        <View style={{
+            ...ModalStyle.backgrpund,
+            ...backgroundStyle
+        }}>
 
             <View style={ModalStyle.container}>
 

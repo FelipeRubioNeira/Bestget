@@ -8,6 +8,7 @@ import { Income } from "../../../data/types/Income";
 import DateTime from "../../../utils/DateTime";
 import { capitalizeFirstLetter } from "../../../utils/String";
 import { selectDateIntervalApp } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice";
+import { getMonth } from 'date-fns';
 const dateTime = new DateTime();
 
 
@@ -32,7 +33,7 @@ export type ContributionChartValue = {
 export type ContributionData = {
     month: string,
     endDate: string,
-    values: Array<ContributionChartValue>,
+    values: ContributionChartValue[],
 }
 
 
@@ -51,6 +52,7 @@ const useStatisticsViewModel = () => {
 
     const {
         initialDate,
+        finalDate,
     } = useAppSelector(selectDateIntervalApp)
 
 
@@ -202,18 +204,20 @@ const useStatisticsViewModel = () => {
     const calculateContributions = (expenses: Expense[]): ContributionData => {
 
         const contributions: ContributionChartValue[] = []
-        const currentMonth = dateTime.getMonth(initialDate)
         const currentYear = dateTime.getYear(initialDate)
+        const currentMonth = getMonth(initialDate) // "2024-01-01T00:00:00"
         const days = dateTime.getMonthsDay(Number(currentYear), Number(currentMonth))
+
 
         for (let i = 1; i <= days; i++) {
 
             const day = String(i).padStart(2, '0')
-            const currentDate = `${currentYear}-${currentMonth}-${day}`
+            const month = String(currentMonth + 1).padStart(2, '0')
+            const currentDate = `${currentYear}-${month}-${day}`
 
             const expensesOfSameDay = expenses.filter(expense => isSameDay(expense.date, currentDate))
-
             const totalExpenses = calculateTotalExpenses(expensesOfSameDay)
+            
 
             contributions.push({
                 count: totalExpenses,

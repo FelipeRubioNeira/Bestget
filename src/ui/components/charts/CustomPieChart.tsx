@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { Styles } from '../../styles/Styles';
+import { Colors } from '../../constants/Colors';
 
 type ChartData = {
     amount: number;
@@ -65,7 +66,11 @@ const CustomPieChart: React.FC<PieChartProps> = ({
     return (
         <View style={{
             ...PieChartStyles.chartContainer,
-            ...style
+            ...style,
+            width: size,
+            aspectRatio: 1,
+            backgroundColor: Colors.DARK_GRAY,
+            borderRadius: size / 2,
         }}>
             <Svg width={size} height={size}>
                 {data.map(({ amount, color }) => {
