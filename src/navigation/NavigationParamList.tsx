@@ -55,6 +55,8 @@ export type NavigatorParamList = {
 
     [ScreenRoutes.STATISTICS]: undefined
 
+    [ScreenRoutes.PROFILE]: undefined
+
 }
 
 
@@ -125,4 +127,10 @@ export type BudgetsCreateScreenProps = NativeStackScreenProps<
 export type StatisticsScreenProps = NativeStackScreenProps<
     NavigatorParamList,
     ScreenRoutes.STATISTICS
+>
+
+// PROFILE screen
+export type ProfileScreenProps = NativeStackScreenProps<
+    NavigatorParamList,
+    ScreenRoutes.PROFILE
 >

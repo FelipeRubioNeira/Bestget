@@ -16,6 +16,8 @@ export enum ScreenRoutes {
     BUDGET_FORM = "BUDGET_FORM",
 
     STATISTICS = "STATISTICS",
+
+    PROFILE = "PROFILE",
 }
 
 export enum NavigatorRoutes {

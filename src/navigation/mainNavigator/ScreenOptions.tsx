@@ -73,6 +73,14 @@ const ScreenOptions = Object.freeze({
         headerStyle: { backgroundColor: Colors.PURPLE },
         headerTitleStyle: { fontFamily: FontFamily.BOLD },
     },
+
+    PROFILE: {
+        title: "Perfil",
+        headerTintColor: Colors.BLACK,
+        headerStyle: { backgroundColor: Colors.RED },
+        headerTitleStyle: { fontFamily: FontFamily.BOLD },
+    },
+
 })
 
 export default ScreenOptions;

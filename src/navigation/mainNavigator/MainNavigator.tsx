@@ -19,6 +19,7 @@ import BudgetScreen from '../../ui/screens/budget/BudgetScreen';
 import BudgetsExpensesScreen from '../../ui/screens/budgetsExpenses/BudgetsExpensesScreen';
 import LoginScreen from '../../ui/screens/login/LoginScreen';
 import StatisticsScreen from '../../ui/screens/statistics/StatisticsScreen';
+import ProfileScreen from '../../ui/screens/profile/ProfileScreen';
 
 
 
@@ -89,6 +90,12 @@ const MainNavigator = () => {
                     component={StatisticsScreen}
                     name={ScreenRoutes.STATISTICS}
                     options={ScreenOptions.STATISTICS}
+                />
+
+                <Stack.Screen
+                    component={ProfileScreen}
+                    name={ScreenRoutes.PROFILE}
+                    options={ScreenOptions.PROFILE}
                 />
 
             </Stack.Navigator>

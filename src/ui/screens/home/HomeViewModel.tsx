@@ -25,6 +25,7 @@ import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppS
 import { useAppDispatch } from "../../../data/globalContext/StoreHooks";
 import { selectFinancesApp, updateBudgets, updateCategories, updateExpenses, updateIncomes } from "../../../data/globalContext/redux/slices/FinancesAppSlice"
 import { updateDateInterval } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice"
+import { BackHandler } from "react-native"
 
 
 
@@ -95,7 +96,7 @@ const useHomeViewModel = ({
     } = useAppSelector(selectFinancesApp)
 
     const appDispatch = useAppDispatch()
-    
+
 
     // ------------------ hooks ------------------ //
     const { modalState, showModal, hideModal } = useModalViewModel()
@@ -152,7 +153,6 @@ const useHomeViewModel = ({
     }, [incomes])
 
 
-    // refresh data when expenses change
     useEffect(() => {
         refreshExpensesData(expenses)
     }, [expenses])
@@ -264,7 +264,7 @@ const useHomeViewModel = ({
             {
                 title: 'Gastos y Presupuestos',
                 subTitle: `$${currencyFormat(expenses)}`,
-                onPress: onPressBudgetsExpenses,
+                onPress: () => navigateTo(ScreenRoutes.BUDGET_EXPENSES, {}),
                 backgroundColor: Colors.YELLOW,
                 titleColor: Colors.BLACK,
                 type: "gastos",
@@ -272,14 +272,14 @@ const useHomeViewModel = ({
             {
                 title: 'Ingresos',
                 subTitle: `$${currencyFormat(incomes)}`,
-                onPress: onPressIncomes,
+                onPress: () => navigateTo(ScreenRoutes.INCOMES, {}),
                 backgroundColor: Colors.GREEN,
                 titleColor: Colors.BLACK,
                 type: "ingresos",
             },
             {
                 title: 'Estadísticas',
-                onPress: onPressStatistics,
+                onPress: () => navigateTo(ScreenRoutes.STATISTICS, {}),
                 backgroundColor: Colors.PURPLE,
                 titleColor: Colors.BLACK,
                 type: "estadisticas",
@@ -287,11 +287,11 @@ const useHomeViewModel = ({
             },
             {
                 title: 'Mi Cuenta',
-                onPress: onPressProfile,
+                onPress: () => navigateTo(ScreenRoutes.PROFILE, {}),
                 backgroundColor: Colors.RED,
                 titleColor: Colors.BLACK,
                 type: "perfil",
-                comingSoon: true
+                comingSoon: false
             },
         ])
 
@@ -299,19 +299,9 @@ const useHomeViewModel = ({
 
 
     // ------------------ navigation methods ------------------ //
-    const onPressBudgetsExpenses = () => {
-        navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {})
+    const navigateTo = (screen: ScreenRoutes, params: any) => {
+        navigation.navigate(screen, params)
     }
-
-    const onPressIncomes = () => {
-        navigation.navigate(ScreenRoutes.INCOMES, {})
-    }
-
-    const onPressStatistics = () => {
-        navigation.navigate(ScreenRoutes.STATISTICS)
-     }
-
-    const onPressProfile = () => { }
 
 
 

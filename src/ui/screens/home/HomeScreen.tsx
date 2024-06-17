@@ -68,6 +68,7 @@ const deleteMonthUseCase = new DeleteMothUseCase(
 const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
 
 
+    // ------------------- view model ------------------- //
     const homeViewModel = useHomeViewModel({
         navigation,
         route,
