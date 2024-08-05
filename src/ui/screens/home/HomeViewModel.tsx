@@ -25,6 +25,8 @@ import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppS
 import { useAppDispatch } from "../../../data/globalContext/StoreHooks";
 import { selectFinancesApp, updateBudgets, updateCategories, updateExpenses, updateIncomes } from "../../../data/globalContext/redux/slices/FinancesAppSlice"
 import { updateDateInterval } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice"
+import UpdateSavedDateUseCase from "../../../domain/useCases/UpdateSavedDateUseCase"
+import ReadSavedDateUseCase from "../../../domain/useCases/ReadSavedDateUseCase"
 
 
 
@@ -32,7 +34,7 @@ const dateTime = new DateTime()
 
 
 // ------------------ types ------------------ //
-export type MenuType = "gastos" | "ingresos" | "estadisticas" | "perfil"
+export type MenuType = "gastos" | "ingresos" | "estadisticas" | "perfil" | "grupos"
 
 export type ButtonHomeProps = {
     title: string,
@@ -58,6 +60,10 @@ type HomeViewModelProps = {
     copyMonthUseCase: CopyMonthUseCase,
     pasteMonthUseCase: PasteMonthUseCase,
     deleteMonthUseCase: DeleteMothUseCase,
+
+    updateSavedDateUseCase: UpdateSavedDateUseCase,
+    readSavedDateUseCase: ReadSavedDateUseCase,
+
 } & HomeScreenProps
 
 type BottomSheetState = {
@@ -81,6 +87,10 @@ const useHomeViewModel = ({
     copyMonthUseCase,
     pasteMonthUseCase,
     deleteMonthUseCase,
+
+    readSavedDateUseCase,
+    updateSavedDateUseCase
+
 }: HomeViewModelProps) => {
 
 
@@ -140,8 +150,29 @@ const useHomeViewModel = ({
 
     // get current date and fetch data
     useEffect(() => {
-        const dateInterval = getCurrentDate()
-        getData(dateInterval)
+
+        const getSavedDate = async () => {
+
+            const dateInterval = await getCurrentDate()
+
+            // local state
+            setBottomSheetState({
+                ...bottomSheetState,
+                date: dateInterval.initialDate,
+            })
+
+            // global state
+            appDispatch(updateDateInterval({
+                initialDate: dateInterval.initialDate,
+                finalDate: dateInterval.finalDate
+            }))
+
+            getData(dateInterval)
+        }
+
+        getSavedDate()
+
+
     }, [])
 
 
@@ -293,6 +324,14 @@ const useHomeViewModel = ({
                 type: "perfil",
                 comingSoon: false
             },
+            {
+                title: 'Grupos',
+                onPress: () => { },
+                backgroundColor: Colors.BLUE,
+                titleColor: Colors.WHITE,
+                type: "grupos",
+                comingSoon: true
+            },
         ])
 
     }
@@ -317,28 +356,19 @@ const useHomeViewModel = ({
         })
     }
 
-    // TODO: move this to a helper or utils
-    const getCurrentDate = (): DateInterval => {
+    const getCurrentDate = async (): Promise<DateInterval> => {
 
-        const startOfMonth = dateTime.getStartOfMonth(dateTime.date)
+        const curretDateInterval = await readSavedDateUseCase.execute()
 
-        setBottomSheetState({
-            ...bottomSheetState,
-            date: startOfMonth,
-        })
-
-        const nextMonth = getNextMonth(startOfMonth)
-
-        appDispatch(updateDateInterval({
-            initialDate: startOfMonth,
-            finalDate: nextMonth
-        }))
-
-        return {
-            initialDate: startOfMonth,
-            finalDate: nextMonth
+        if(curretDateInterval) {
+            return curretDateInterval
         }
 
+        const dateInterval = dateTime.getMonthRange(dateTime.date)
+
+        await updateSavedDateUseCase.execute(dateInterval)
+
+       return dateInterval
 
     }
 

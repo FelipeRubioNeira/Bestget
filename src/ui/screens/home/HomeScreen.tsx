@@ -21,6 +21,9 @@ import CopyMonthUseCase from '../../../domain/useCases/CopyMonthUseCase'
 import PasteMonthUseCase from '../../../domain/useCases/PasteMonthUseCase'
 import DeleteMothUseCase from '../../../domain/useCases/DeleteMonthUseCase'
 import BudgetExpenseUnitOfWork from '../../../data/unitOfWork/BudgetExpenseUnitOfWork'
+import SavedDateRepository from '../../../data/repository/savedDateRpository/SavedDateRepository'
+import UpdateSavedDateUseCase from '../../../domain/useCases/UpdateSavedDateUseCase'
+import ReadSavedDateUseCase from '../../../domain/useCases/ReadSavedDateUseCase'
 
 
 // ------------------- google sign in ------------------- //
@@ -36,6 +39,8 @@ const incomeRepository = new IncomeRepository()
 const expenseRepository = new ExpenseRepository()
 const budgetRepository = new BudgetRepository()
 const categoryRepository = new CategoryRespository()
+
+const savedDateRepository = new SavedDateRepository()
 
 
 const budgetExpenseUnitOfWork = new BudgetExpenseUnitOfWork(
@@ -64,6 +69,9 @@ const deleteMonthUseCase = new DeleteMothUseCase(
     expenseRepository
 )
 
+const updateSavedDateUseCase = new UpdateSavedDateUseCase(savedDateRepository)
+const readSavedDateUseCase = new ReadSavedDateUseCase(savedDateRepository)
+
 
 
 // ------------------- Home Screen ------------------- //
@@ -87,7 +95,10 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
         // use cases
         copyMonthUseCase,
         pasteMonthUseCase,
-        deleteMonthUseCase
+        deleteMonthUseCase,
+
+        updateSavedDateUseCase,
+        readSavedDateUseCase
     })
 
 
@@ -134,6 +145,8 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
                 onCopy={homeViewModel.onCopyMonth}
                 onPaste={homeViewModel.onPasteMonth}
                 onDelete={homeViewModel.onDeleteMonth}
+
+                updateSavedDateUseCase={updateSavedDateUseCase}
             />
 
             <Toast
@@ -168,6 +181,7 @@ const MenuListButton = ({ buttonArray }: { buttonArray: ButtonHomeProps[] }) => 
                             subTitle={item.subTitle}
                             onPress={item.onPress}
                             backgroundColor={item.backgroundColor}
+                            titleColor={item.titleColor}
                             comingSoon={item.comingSoon}
                         />
                     </View>

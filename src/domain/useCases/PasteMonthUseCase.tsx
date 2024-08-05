@@ -124,12 +124,6 @@ class PasteMonthUseCase {
             this.expenseRepository.count(queryParams)
         ])
 
-        console.log("existe informacion en incomeCount", incomeCount);
-        console.log("existe informacion en budgetCount", budgetCount);
-        console.log("existe informacion en expenseCount", expenseCount);
-
-
-
         if (incomeCount > 0 || budgetCount > 0 || expenseCount > 0) {
             result.isValid = false
             result.message = "Existen datos previos en este mes. ¿Desea reemplazar, combinar o cancelar la operación?."

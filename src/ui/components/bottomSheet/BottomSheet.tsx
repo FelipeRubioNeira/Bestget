@@ -7,6 +7,7 @@ import HorizontalSelector from '../horizontalSelector/HorizontalSelector'
 import useBottomSheetViewModel from './ButtomSheetViewModel'
 import BottomStyles from './BottomStyles'
 import { Colors } from '../../constants/Colors'
+import UpdateSavedDateUseCase from '../../../domain/useCases/UpdateSavedDateUseCase'
 
 
 
@@ -19,6 +20,8 @@ type BottomSheetProps = {
     onCopy?: () => void,
     onPaste?: () => void,
     onDelete?: () => void,
+
+    updateSavedDateUseCase:UpdateSavedDateUseCase,
 }
 
 
@@ -30,7 +33,8 @@ const BottomSheet = ({
     onPaste,
     onDelete,
     onChange,
-    onConfirm
+    onConfirm,
+    updateSavedDateUseCase,
 }: BottomSheetProps) => {
 
 
@@ -40,7 +44,7 @@ const BottomSheet = ({
         years,
         onConfirmViewModel,
         updateDate,
-    } = useBottomSheetViewModel({ date, onChange })
+    } = useBottomSheetViewModel({ date, onChange, updateSavedDateUseCase })
 
 
     if (!visible) return null
@@ -54,8 +58,8 @@ const BottomSheet = ({
 
                     <ButtonApp
                         title="Aceptar"
-                        onPress={() => onConfirmViewModel(onConfirm)}
                         buttonStyle={{ backgroundColor: Colors.LIGHT_GRAY }}
+                        onPress={() => onConfirmViewModel(onConfirm)}
                     />
 
                     <Spacer marginVertical={"2%"} />

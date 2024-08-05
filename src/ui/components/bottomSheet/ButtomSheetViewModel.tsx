@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react"
 import { DataItem } from "../horizontalSelector/HorizontalSelector"
 import DateTime from "../../../utils/DateTime"
+import UpdateSavedDateUseCase from "../../../domain/useCases/UpdateSavedDateUseCase"
+
+const dateTime = new DateTime()
 
 type BottomSheetViewModel = {
     date: string,
-    onChange: (date: string) => void
+    onChange: (date: string) => void,
+    updateSavedDateUseCase: UpdateSavedDateUseCase
 }
 
 const months: DataItem[] = [{
@@ -76,7 +80,7 @@ const years: DataItem[] = [
     }
 ]
 
-const useBottomSheetViewModel = ({ date, onChange }: BottomSheetViewModel) => {
+const useBottomSheetViewModel = ({ date, onChange, updateSavedDateUseCase }: BottomSheetViewModel) => {
 
 
     // ------------------ state ------------------ //
@@ -88,8 +92,6 @@ const useBottomSheetViewModel = ({ date, onChange }: BottomSheetViewModel) => {
 
     // ------------------ effects ------------------ //
     useEffect(() => {
-
-        const dateTime = new DateTime(date)
 
         const month = Number(dateTime.getMonth())
         const year = Number(dateTime.getYear())
@@ -119,8 +121,14 @@ const useBottomSheetViewModel = ({ date, onChange }: BottomSheetViewModel) => {
     }
 
     const onConfirmViewModel = (onConfirm: (date: string) => void) => {
-        const dateTime = getDate(currentDate.yearIndex, currentDate.monthIndex)
-        onConfirm(dateTime)
+
+        const newDate = getDate(currentDate.yearIndex, currentDate.monthIndex)
+        const dateInterval = dateTime.getMonthRange(newDate)
+
+        updateSavedDateUseCase.execute(dateInterval)
+
+        onConfirm(newDate)
+
     }
 
     const getDate = (yearIndex: number, monthIndex: number) => {

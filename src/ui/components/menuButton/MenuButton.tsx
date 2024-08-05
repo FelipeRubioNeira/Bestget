@@ -8,6 +8,7 @@ import { FontFamily, FontSize } from '../../constants/Fonts'
 
 interface IMenuButtonProps {
     title: string,
+    titleColor?: string,
     subTitle?: string,
     onPress?: () => void,
     backgroundColor?: string,
@@ -16,6 +17,7 @@ interface IMenuButtonProps {
 
 const MenuButton = ({
     title = "",
+    titleColor = Colors.BLACK,
     subTitle = "",
     onPress = () => { },
     backgroundColor = Colors.GRAY,
@@ -33,7 +35,10 @@ const MenuButton = ({
         >
             <Label
                 value={title}
-                style={MenuButtonStyle.title}
+                style={{
+                    ...MenuButtonStyle.title,
+                    color: titleColor
+                }}
             />
 
             {

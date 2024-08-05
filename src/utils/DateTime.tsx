@@ -1,3 +1,4 @@
+import { DateInterval } from "../data/types/DateInterval";
 
 class DateTime {
 
@@ -131,6 +132,18 @@ class DateTime {
         const date = new Date(year, month + 1, 0);
         return date.getDate();
     };
+
+    getMonthRange (date:string): DateInterval {
+        
+        const initialDate = this.getStartOfMonth(date)
+        const finalDate = this.getNextMonth(initialDate)
+
+        return {
+            initialDate,
+            finalDate
+        }
+        
+    }
 
 
 

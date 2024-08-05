@@ -82,11 +82,6 @@ class CopyMonthUseCase {
             this.expenseRepository.count(queryParams)
         ])
 
-        console.log("existe data en income", incomeCount);
-        console.log("existe data en budget", budgetCount);
-        console.log("existe data en expense", expenseCount);
-        
-
         if (incomeCount === 0 && budgetCount === 0 && expenseCount === 0) {
             result.isValid = false
             result.message = "Este mes no tiene datos para copiar."
