@@ -36,9 +36,7 @@ class CreateBudgetUseCase {
 
     }
 
-
     // ------------------- validations ------------------- //
-
     async applyValidations(name: string, amount: number): Promise<Validation> {
 
         let validationResult: Validation = {

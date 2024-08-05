@@ -1,7 +1,7 @@
 import IBudgetRepository from "../../data/repository/budgetRepository/IBudgetRepository"
 import IExpenseRespository from "../../data/repository/expenseRepository/IExpenseRepository"
 import { IIncomeRepository } from "../../data/repository/incomeRepository/IIncomeRepository"
-import { DateInterval } from "../../data/types/DateInterval"
+import { QueryParams } from "../../data/types/QueryParams"
 import { Validation } from "../../data/types/Validation"
 
 class DeleteMothUseCase {
@@ -11,7 +11,7 @@ class DeleteMothUseCase {
         private expenseRepository: IExpenseRespository,
     ) { }
 
-    async execute(dateInterval: DateInterval): Promise<Validation> {
+    async execute(queryParams: QueryParams): Promise<Validation> {
 
         const validation: Validation = {
             isValid: true,
@@ -20,9 +20,9 @@ class DeleteMothUseCase {
 
         try {
             await Promise.all([
-                this.incomeRepository.deleteTransaction(dateInterval),
-                this.budgetRepository.deleteTransaction(dateInterval),
-                this.expenseRepository.deleteTransaction(dateInterval)
+                this.incomeRepository.deleteTransaction(queryParams),
+                this.budgetRepository.deleteTransaction(queryParams),
+                this.expenseRepository.deleteTransaction(queryParams)
             ])
             
         } catch (error) {

@@ -2,7 +2,9 @@ import IBudgetRepository from "../../data/repository/budgetRepository/IBudgetRep
 import IExpenseRespository from "../../data/repository/expenseRepository/IExpenseRepository";
 import { IIncomeRepository } from "../../data/repository/incomeRepository/IIncomeRepository";
 import { DateInterval } from "../../data/types/DateInterval";
+import { QueryParams } from "../../data/types/QueryParams";
 import { Validation } from "../../data/types/Validation"
+import BudgetExpenseUnitOfWork from "../../data/unitOfWork/BudgetExpenseUnitOfWork";
 import { isConnected } from "../../utils/Connection"
 import DateTime from "../../utils/DateTime";
 
@@ -15,10 +17,12 @@ class PasteMonthUseCase {
         private incomeRepository: IIncomeRepository,
         private budgetRepository: IBudgetRepository,
         private expenseRepository: IExpenseRespository,
+        private budgetExpenseUnitOfWork: BudgetExpenseUnitOfWork
     ) { }
 
 
     async execute(
+        userId: string,
         operationDate: DateInterval,
         copiedMonth: DateInterval,
         pasteType: PasteType = "overwrite"
@@ -32,19 +36,37 @@ class PasteMonthUseCase {
 
         try {
 
+            // we use this to delete all previus data from operationDate if pasteType is overwrite
+            const deleteQueryParams: QueryParams = {
+                userId,
+                ...operationDate
+            }
+
+            const copyQueryParams: QueryParams = {
+                userId,
+                ...copiedMonth
+            }
+
+            const pasteDate = operationDate.initialDate
+
             // if pasteType is overwrite, delete all data from operationDate
             if (pasteType === "overwrite") {
                 await Promise.all([
-                    this.incomeRepository.deleteTransaction(operationDate),
-                    this.budgetRepository.deleteTransaction(operationDate),
-                    this.expenseRepository.deleteTransaction(operationDate)
+                    this.expenseRepository.deleteTransaction(deleteQueryParams),
+                    this.incomeRepository.deleteTransaction(deleteQueryParams),
+                    this.budgetRepository.deleteTransaction(deleteQueryParams),
                 ])
             }
 
+
             await Promise.all([
-                this.incomeRepository.copyTransaction(copiedMonth, operationDate),
-                this.budgetRepository.copyTransaction(copiedMonth, operationDate),
-                this.expenseRepository.copyTransaction(copiedMonth, operationDate)
+                this.incomeRepository.copyTransaction(copyQueryParams, pasteDate),
+                this.budgetExpenseUnitOfWork.copyTransaction(
+                    copyQueryParams,
+                    pasteDate,
+                    this.budgetRepository,
+                    this.expenseRepository
+                ),
             ])
 
 
@@ -84,7 +106,8 @@ class PasteMonthUseCase {
 
     }
 
-    async isThereData(dateInterval: DateInterval): Promise<Validation> {
+    async isThereData(queryParams: QueryParams): Promise<Validation> {
+
 
         const result: Validation = {
             isValid: true,
@@ -96,10 +119,15 @@ class PasteMonthUseCase {
             budgetCount,
             expenseCount
         ] = await Promise.all([
-            this.incomeRepository.count(dateInterval),
-            this.budgetRepository.count(dateInterval),
-            this.expenseRepository.count(dateInterval)
+            this.incomeRepository.count(queryParams),
+            this.budgetRepository.count(queryParams),
+            this.expenseRepository.count(queryParams)
         ])
+
+        console.log("existe informacion en incomeCount", incomeCount);
+        console.log("existe informacion en budgetCount", budgetCount);
+        console.log("existe informacion en expenseCount", expenseCount);
+
 
 
         if (incomeCount > 0 || budgetCount > 0 || expenseCount > 0) {

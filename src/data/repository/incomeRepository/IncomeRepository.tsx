@@ -108,13 +108,14 @@ class IncomeRepository implements IIncomeRepository {
 
     }
 
-    public async count(date: DateInterval): Promise<number> {
+    public async count({ userId, initialDate, finalDate }: QueryParams): Promise<number> {
         try {
 
             const incomeCount = await firestore()
                 .collection(Collections.INCOME)
-                .where("date", ">=", date.initialDate)
-                .where("date", "<", date.finalDate)
+                .where("date", ">=", initialDate)
+                .where("date", "<", finalDate)
+                .where("userId", "==", userId)
                 .count()
                 .get()
 
@@ -130,7 +131,7 @@ class IncomeRepository implements IIncomeRepository {
     // --------------------- transactions --------------------- //
 
 
-    public async copyTransaction(queryParams: QueryParams): Promise<boolean> {
+    public async copyTransaction(queryParamsCopy: QueryParams, pasteDate: string): Promise<boolean> {
 
         try {
             const db = firestore();
@@ -139,15 +140,18 @@ class IncomeRepository implements IIncomeRepository {
 
                 // get ref from collection
                 const incomeRef = db.collection(Collections.INCOME);
-                const incomes = await this.getAll(queryParams)
+                const incomes = await this.getAll(queryParamsCopy)
 
                 incomes.forEach(income => {
 
-                    const newIncome: IncomeCreate = {
+                    const newDocRef = firestore().collection(Collections.INCOME).doc();
+
+                    const newIncome: Income = {
                         userId: income.userId,
                         name: income.name,
                         amount: income.amount,
-                        date: queryParams.initialDate // we set the initial date
+                        date: pasteDate, // we set the initial date
+                        incomeId: newDocRef.id
                     }
 
                     transaction.set(incomeRef.doc(), newIncome)

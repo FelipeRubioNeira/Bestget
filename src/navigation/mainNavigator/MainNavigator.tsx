@@ -66,7 +66,6 @@ const MainNavigator = () => {
                     options={ScreenOptions.EXPENSE}
                 />
 
-
                 <Stack.Screen
                     component={ExpenseForm}
                     name={ScreenRoutes.EXPENSES_FORM}
@@ -78,7 +77,6 @@ const MainNavigator = () => {
                     name={ScreenRoutes.BUDGET}
                     options={ScreenOptions.BUDGET_FORM}
                 />
-
 
                 <Stack.Screen
                     component={BudgetsFormScreen}

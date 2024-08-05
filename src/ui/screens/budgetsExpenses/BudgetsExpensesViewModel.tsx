@@ -114,11 +114,11 @@ const useBudgetExpensesViewModel = ({
     useEffect(() => {
         navigation.setOptions({
             headerRight: () => {
-                if (budgetsExpenses.length === 0) return null
                 return (
                     <HeaderRight
                         onPressQuestion={onPressQuestionHeaderIcon}
                         onPressEdit={onPressEditHeaderIcon}
+                        editIconVisible={budgetsExpenses.length > 0}
                     />
                 )
             }

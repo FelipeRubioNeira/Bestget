@@ -37,6 +37,7 @@ const expenseRepository = new ExpenseRepository()
 const budgetRepository = new BudgetRepository()
 const categoryRepository = new CategoryRespository()
 
+
 const budgetExpenseUnitOfWork = new BudgetExpenseUnitOfWork(
     budgetRepository,
     expenseRepository
@@ -53,7 +54,8 @@ const copyMonthUseCase = new CopyMonthUseCase(
 const pasteMonthUseCase = new PasteMonthUseCase(
     incomeRepository,
     budgetRepository,
-    expenseRepository
+    expenseRepository,
+    budgetExpenseUnitOfWork
 )
 
 const deleteMonthUseCase = new DeleteMothUseCase(

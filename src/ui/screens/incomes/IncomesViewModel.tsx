@@ -86,11 +86,11 @@ const useIncomesViewModel = ({
     useEffect(() => {
         navigation.setOptions({
             headerRight: () => {
-                if (incomes.length === 0) return null
                 return (
                     <HeaderRight
                         onPressQuestion={onPressQuestionHeaderIcon}
                         onPressEdit={onPressEditHeaderIcon}
+                        editIconVisible={incomes.length > 0}
                     />
                 )
             }

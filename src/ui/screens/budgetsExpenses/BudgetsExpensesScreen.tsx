@@ -20,6 +20,7 @@ import DeleteExpenseUseCase from '../../../domain/useCases/DeleteExpenseUseCase'
 import BudgetExpenseUnitOfWork from '../../../data/unitOfWork/BudgetExpenseUnitOfWork'
 import Search from '../../components/search/Search'
 import Spacer from '../../components/spacer/Spacer'
+import FooterFlatlist from '../../components/footerFlatlist/FooterFlatlist'
 
 
 
@@ -126,6 +127,7 @@ const BudgetsExpensesScreen = ({ navigation, route }: BudgetsExpensesScreenProps
                     data={budgetsExpensesViewModel.filteredBudgetsExpenses}
                     renderItem={({ item }) => renderBugdetOrExpense(item)}
                     showsVerticalScrollIndicator={false}
+                    ListFooterComponent={<FooterFlatlist />}
                 />
 
                 <ButtonAdd

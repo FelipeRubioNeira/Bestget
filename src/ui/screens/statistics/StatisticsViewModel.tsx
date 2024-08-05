@@ -5,9 +5,9 @@ import { Expense } from "../../../data/types/Expense";
 import { Colors } from "../../constants/Colors";
 import { Category } from "../../../data/types/Categoty";
 import { Income } from "../../../data/types/Income";
-import DateTime from "../../../utils/DateTime";
 import { capitalizeFirstLetter } from "../../../utils/String";
 import { selectDateIntervalApp } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice";
+import DateTime from "../../../utils/DateTime";
 import { getMonth } from 'date-fns';
 const dateTime = new DateTime();
 
@@ -193,9 +193,6 @@ const useStatisticsViewModel = () => {
             4.4- Return the data
      */
 
-    //const monthName =  getMonthName(expense.date)
-    //const firtDay = dateTime.generateFirstDayOfMonth(expense.date)
-
     const isSameDay = (date: string, currentDate: string): boolean => {
         const expenseDate = dateTime.convertToAmericanDate(date)
         return expenseDate === currentDate
@@ -206,6 +203,7 @@ const useStatisticsViewModel = () => {
         const contributions: ContributionChartValue[] = []
         const currentYear = dateTime.getYear(initialDate)
         const currentMonth = getMonth(initialDate) // "2024-01-01T00:00:00"
+
         const days = dateTime.getMonthsDay(Number(currentYear), Number(currentMonth))
 
 

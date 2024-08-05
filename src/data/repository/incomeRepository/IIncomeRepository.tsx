@@ -13,7 +13,7 @@ export interface IIncomeRepository {
      getTotal: (queryParams: QueryParams) => Promise<number>
 
      // ----------------- transactions ----------------- //
-     copyTransaction: (queryParams: QueryParams) => Promise<boolean>
+     copyTransaction: (queryParamsCopy: QueryParams, pasteDate: string) => Promise<boolean>
      deleteTransaction: (queryParams: QueryParams) => Promise<boolean>
 
 }

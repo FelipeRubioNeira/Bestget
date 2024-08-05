@@ -12,8 +12,8 @@ import { Income } from "../data/types/Income";
 import { Expense } from "../data/types/Expense";
 
 
-
-export type NavigatorParamList = {
+// Params that each screen must receive
+type NavigatorParamList = {
 
     [NavigatorRoutes.HOME]: undefined
 
@@ -60,77 +60,95 @@ export type NavigatorParamList = {
 }
 
 
-// ------------------ navigator props ------------------ //
-export type HomeNavigatorProps = NativeStackScreenProps<
+
+// ------------------ props screens ------------------ //
+
+// home navigator props
+type HomeNavigatorProps = NativeStackScreenProps<
     NavigatorParamList,
     NavigatorRoutes.HOME
 >
 
 
-// ------------------ props screens ------------------ //
-
 // login screen props
-export type LoginScreenProps = NativeStackScreenProps<
+type LoginScreenProps = NativeStackScreenProps<
     NavigatorParamList,
     ScreenRoutes.LOGIN
 >
 
 // home screen props (main screen)
-export type HomeScreenProps = NativeStackScreenProps<
+type HomeScreenProps = NativeStackScreenProps<
     NavigatorParamList,
     ScreenRoutes.HOME
 >
 
 // incomes screen
-export type IncomesScreenProps = NativeStackScreenProps<
+type IncomesScreenProps = NativeStackScreenProps<
     NavigatorParamList,
     ScreenRoutes.INCOMES
 >
 
 // incomes create screen
-export type IncomesCreateScreenProps = NativeStackScreenProps<
+type IncomesCreateScreenProps = NativeStackScreenProps<
     NavigatorParamList,
     ScreenRoutes.INCOME_FORM
 >
 
 // BUDGET EXPENSE screen
-export type BudgetsExpensesScreenProps = NativeStackScreenProps<
+type BudgetsExpensesScreenProps = NativeStackScreenProps<
     NavigatorParamList,
     ScreenRoutes.BUDGET_EXPENSES
 >
 
 // EXPENSE screen
-export type ExpenseScreenProps = NativeStackScreenProps<
+type ExpenseScreenProps = NativeStackScreenProps<
     NavigatorParamList,
     ScreenRoutes.EXPENSE
 >
 
 // EXPENSE create screen
-export type ExpensesCreateScreenProps = NativeStackScreenProps<
+type ExpensesCreateScreenProps = NativeStackScreenProps<
     NavigatorParamList,
     ScreenRoutes.EXPENSES_FORM
 >
 
 // BUDGET screen
-export type BudgetsScreenProps = NativeStackScreenProps<
+type BudgetsScreenProps = NativeStackScreenProps<
     NavigatorParamList,
     ScreenRoutes.BUDGET
 >
 
 // BUDGET CREATE screen
-export type BudgetsCreateScreenProps = NativeStackScreenProps<
+type BudgetsCreateScreenProps = NativeStackScreenProps<
     NavigatorParamList,
     ScreenRoutes.BUDGET_FORM
 >
 
 // STATISTICS screen
-export type StatisticsScreenProps = NativeStackScreenProps<
+type StatisticsScreenProps = NativeStackScreenProps<
     NavigatorParamList,
     ScreenRoutes.STATISTICS
 >
 
 // PROFILE screen
-export type ProfileScreenProps = NativeStackScreenProps<
+type ProfileScreenProps = NativeStackScreenProps<
     NavigatorParamList,
     ScreenRoutes.PROFILE
 >
+
+// export all types
+export type {
+    NavigatorParamList,
+    HomeNavigatorProps,
+    LoginScreenProps,
+    HomeScreenProps,
+    IncomesScreenProps,
+    IncomesCreateScreenProps,
+    BudgetsExpensesScreenProps,
+    ExpenseScreenProps,
+    ExpensesCreateScreenProps,
+    BudgetsScreenProps,
+    BudgetsCreateScreenProps,
+    StatisticsScreenProps,
+    ProfileScreenProps,
+}

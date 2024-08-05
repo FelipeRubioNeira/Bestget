@@ -21,7 +21,6 @@ const store = configureStore({
         dateInterval:dateIntervalAppSlice
         // ... add more reducers here
     },
-
 })
 
 

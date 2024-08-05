@@ -10,7 +10,7 @@ interface IBudgetRepository {
     count: (queryParams: QueryParams) => Promise<number>
 
     // ----------------- transactions ----------------- //
-    copyTransaction: (queryParams: QueryParams) => Promise<void>
+    copyTransaction: (queryParamsCopy: QueryParams, pasteDate: string) => Promise<void>
     deleteTransaction: (queryParams: QueryParams) => Promise<void>
 }
 

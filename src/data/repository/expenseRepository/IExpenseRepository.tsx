@@ -13,7 +13,7 @@ interface IExpenseRespository {
     getByBudgetId: (id: string) => Promise<Expense[]>
     getAllByBudgetId: (id: string[]) => Promise<Expense[]>
 
-    getWithoutBudget: (date: DateInterval) => Promise<Expense[]>
+    getWithoutBudget: (queryParams:QueryParams) => Promise<Expense[]>
 
     getTotal: (queryParams: QueryParams) => Promise<number>
 
@@ -22,11 +22,11 @@ interface IExpenseRespository {
     delete: (id: string) => Promise<void>
     deleteByBudgetId: (budgetId: string) => Promise<void>
 
-    count: (date: DateInterval) => Promise<number>
+    count: (queryParams: QueryParams) => Promise<number>
 
 
     // ----------------- transactions ----------------- //
-    copyTransaction: (queryParams: QueryParams) => Promise<void>
+    copyTransaction: (queryParamsCopy: QueryParams, pasteDate: string) => Promise<void>
     deleteTransaction: (queryParams: QueryParams) => Promise<void>
 
 }

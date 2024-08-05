@@ -37,7 +37,7 @@ class ExpenseRepository implements IExpenseRespository {
                 .doc(expense.expenseId)
                 .update(expense)
 
-                return true
+            return true
 
         } catch (error) {
             console.error("error editExpense repository", error);
@@ -153,7 +153,7 @@ class ExpenseRepository implements IExpenseRespository {
         }
     }
 
-    async getWithoutBudget({ initialDate, finalDate }: DateInterval): Promise<Expense[]> {
+    async getWithoutBudget({ userId, initialDate, finalDate }: QueryParams): Promise<Expense[]> {
 
         try {
 
@@ -162,6 +162,7 @@ class ExpenseRepository implements IExpenseRespository {
                 .where(ExpenseKeys.BUDGET_ID, "==", "")
                 .where(ExpenseKeys.DATE, ">=", initialDate)
                 .where(ExpenseKeys.DATE, "<", finalDate)
+                .where(ExpenseKeys.USER_ID, "==", userId)
                 .orderBy(ExpenseKeys.DATE, "asc")
                 .get()
 
@@ -269,7 +270,7 @@ class ExpenseRepository implements IExpenseRespository {
 
     }
 
-    async count({ initialDate, finalDate }: DateInterval): Promise<number> {
+    async count({ userId, initialDate, finalDate }: QueryParams): Promise<number> {
 
         try {
 
@@ -277,6 +278,7 @@ class ExpenseRepository implements IExpenseRespository {
                 .collection(Collections.EXPENSE)
                 .where(ExpenseKeys.DATE, ">=", initialDate)
                 .where(ExpenseKeys.DATE, "<", finalDate)
+                .where(ExpenseKeys.USER_ID, "==", userId)
                 .count()
                 .get()
 
@@ -292,7 +294,7 @@ class ExpenseRepository implements IExpenseRespository {
 
     // ----------------- transactions ----------------- //
 
-    async copyTransaction(queryParams: QueryParams): Promise<void> {
+    async copyTransaction(queryParamsCopy: QueryParams, pasteDate: string): Promise<void> {
 
         try {
 
@@ -301,17 +303,20 @@ class ExpenseRepository implements IExpenseRespository {
             await db.runTransaction(async transaction => {
 
                 const expensesRef = db.collection(Collections.EXPENSE)
-                const expenses = await this.getAll(queryParams)
+                const expenses = await this.getAll(queryParamsCopy)
 
                 expenses.forEach(expense => {
 
-                    const newExpense: ExpenseCreate = {
+                    const newDocRef = firestore().collection(Collections.EXPENSE).doc();
+
+                    const newExpense: Expense = {
                         userId: expense.userId,
                         name: expense.name,
                         amount: expense.amount,
                         categoryId: expense.categoryId,
-                        date: queryParams.initialDate,
-                        budgetId: expense.budgetId
+                        date: pasteDate,
+                        budgetId: expense.budgetId,
+                        expenseId: newDocRef.id
                     }
 
                     transaction.set(expensesRef.doc(), newExpense)

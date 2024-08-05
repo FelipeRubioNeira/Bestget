@@ -7,9 +7,10 @@ import Spacer from '../spacer/Spacer'
 type HeaderRightProps = {
     onPressQuestion: () => void,
     onPressEdit: () => void,
+    editIconVisible?: boolean
 }
 
-const HeaderRight = ({ onPressQuestion, onPressEdit }: HeaderRightProps) => {
+const HeaderRight = ({ onPressQuestion, onPressEdit, editIconVisible }: HeaderRightProps) => {
 
     const hideKeyboard = () => {
         Keyboard.dismiss()
@@ -26,15 +27,18 @@ const HeaderRight = ({ onPressQuestion, onPressEdit }: HeaderRightProps) => {
                 }}
             />
 
-            <Spacer marginHorizontal={4} />
-
-            <TouchableIcon
-                image={Icons.edit}
-                onPress={() => {
-                    onPressEdit()
-                    hideKeyboard()
-                }}
-            />
+            {editIconVisible &&
+                <>
+                    <Spacer marginHorizontal={4} />
+                    <TouchableIcon
+                        image={Icons.edit}
+                        onPress={() => {
+                            onPressEdit()
+                            hideKeyboard()
+                        }}
+                    />
+                </>
+            }
         </View>
     )
 }

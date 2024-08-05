@@ -122,7 +122,7 @@ class BudgetRepository implements IBudgetRepository {
 
     // ----------------- transactions ----------------- //
 
-    async copyTransaction(queryParams: QueryParams): Promise<void> {
+    async copyTransaction(queryParamsCopy: QueryParams, pasteDate: string): Promise<void> {
 
         try {
 
@@ -131,16 +131,17 @@ class BudgetRepository implements IBudgetRepository {
             await db.runTransaction(async transaction => {
 
                 const budgetsRef = db.collection(Collections.BUDGET)
-                const budgets = await this.getAll(queryParams)
+                const budgets = await this.getAll(queryParamsCopy)
 
                 budgets.forEach(budget => {
 
-                    const newBudget: BudgetCreate = {
+                    const newBudget: Budget = {
                         userId: budget.userId,
                         name: budget.name,
                         amount: budget.amount,
                         categoryId: budget.categoryId,
-                        date: queryParams.initialDate
+                        date: pasteDate,
+                        budgetId: budget.budgetId
                     }
 
                     transaction.set(budgetsRef.doc(), newBudget)

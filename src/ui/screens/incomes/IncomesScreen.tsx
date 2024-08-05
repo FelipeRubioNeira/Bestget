@@ -15,6 +15,7 @@ import Modal from '../../components/modal/Modal'
 import EditionIcons from '../../components/editionIcons/EditionIcons'
 import DeleteIncomeUseCase from '../../../domain/useCases/DeleteIncomeUseCase'
 import Search from '../../components/search/Search'
+import FooterFlatlist from '../../components/footerFlatlist/FooterFlatlist'
 
 
 
@@ -85,6 +86,7 @@ const IncomesScreen = ({ navigation, route }: IncomesScreenProps) => {
           onEdit={() => onPressEdit(item.id)}
           onDelete={() => onPressDelete(item.id)}
         />}
+        ListFooterComponent={<FooterFlatlist />}
       />
 
       <Spacer marginVertical={"4%"} />

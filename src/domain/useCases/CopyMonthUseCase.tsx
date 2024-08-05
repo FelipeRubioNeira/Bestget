@@ -2,6 +2,7 @@ import IBudgetRepository from "../../data/repository/budgetRepository/IBudgetRep
 import IExpenseRespository from "../../data/repository/expenseRepository/IExpenseRepository";
 import { IIncomeRepository } from "../../data/repository/incomeRepository/IIncomeRepository";
 import { DateInterval } from "../../data/types/DateInterval";
+import { QueryParams } from "../../data/types/QueryParams";
 import { Validation } from "../../data/types/Validation"
 import { isConnected } from "../../utils/Connection"
 
@@ -15,12 +16,12 @@ class CopyMonthUseCase {
 
 
 
-    async execute(dateInterval: DateInterval): Promise<Validation> {
-        const validation: Validation = await this.applyValidations(dateInterval)
+    async execute(queryParams: QueryParams): Promise<Validation> {
+        const validation: Validation = await this.applyValidations(queryParams)
         return validation
     }
 
-    private async applyValidations(dateInterval: DateInterval): Promise<Validation> {
+    private async applyValidations(queryParams: QueryParams): Promise<Validation> {
 
         const validationResult: Validation = {
             isValid: true,
@@ -30,7 +31,7 @@ class CopyMonthUseCase {
 
         const validatations = [
             () => this.validateConnection(),
-            () => this.isThereData(dateInterval)
+            () => this.isThereData(queryParams)
         ]
 
         for (const validation of validatations) {
@@ -64,7 +65,7 @@ class CopyMonthUseCase {
         return result
     }
 
-    private async isThereData(dateInterval: DateInterval): Promise<Validation> {
+    private async isThereData(queryParams: QueryParams): Promise<Validation> {
 
         const result: Validation = {
             isValid: true,
@@ -76,13 +77,17 @@ class CopyMonthUseCase {
             budgetCount,
             expenseCount
         ] = await Promise.all([
-            this.incomeRepository.count(dateInterval),
-            this.budgetRepository.count(dateInterval),
-            this.expenseRepository.count(dateInterval)
+            this.incomeRepository.count(queryParams),
+            this.budgetRepository.count(queryParams),
+            this.expenseRepository.count(queryParams)
         ])
 
+        console.log("existe data en income", incomeCount);
+        console.log("existe data en budget", budgetCount);
+        console.log("existe data en expense", expenseCount);
+        
 
-        if (incomeCount === 0 || budgetCount === 0 || expenseCount === 0) {
+        if (incomeCount === 0 && budgetCount === 0 && expenseCount === 0) {
             result.isValid = false
             result.message = "Este mes no tiene datos para copiar."
         }

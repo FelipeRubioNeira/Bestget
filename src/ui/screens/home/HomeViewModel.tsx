@@ -25,7 +25,6 @@ import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppS
 import { useAppDispatch } from "../../../data/globalContext/StoreHooks";
 import { selectFinancesApp, updateBudgets, updateCategories, updateExpenses, updateIncomes } from "../../../data/globalContext/redux/slices/FinancesAppSlice"
 import { updateDateInterval } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice"
-import { BackHandler } from "react-native"
 
 
 
@@ -177,6 +176,7 @@ const useHomeViewModel = ({
             getBudgets({ userId: userApp.userId, ...dateInterval }),
             getCategories()
         ])
+
 
         const totalIncomes = calculateTotalAmount(incomes)
         const totalExpenses = calculateTotalExpenses(expenses)
@@ -385,7 +385,11 @@ const useHomeViewModel = ({
 
         showLoading()
 
-        const { isValid, message } = await copyMonthUseCase.execute(operationDate)
+        const { isValid, message } = await copyMonthUseCase.execute({
+            userId: userApp.userId,
+            ...operationDate
+        })
+
 
         hideLoading()
 
@@ -452,7 +456,10 @@ const useHomeViewModel = ({
             isThereDataValidation, // validate if there is data where we want to paste
         ] = await Promise.all([
             pasteMonthUseCase.applyValidations(operationDate, copiedMonth),
-            pasteMonthUseCase.isThereData(operationDate),
+            pasteMonthUseCase.isThereData({
+                userId: userApp.userId,
+                ...operationDate
+            }),
         ])
 
         hideLoading()
@@ -499,8 +506,6 @@ const useHomeViewModel = ({
 
         } else pasteMonth("overwrite")
 
-
-
     }
 
     const pasteMonth = async (pasteType: PasteType) => {
@@ -509,6 +514,7 @@ const useHomeViewModel = ({
         showLoading()
 
         const { isValid, message } = await pasteMonthUseCase.execute(
+            userApp.userId,
             operationDate,
             copiedMonth,
             pasteType
@@ -560,7 +566,10 @@ const useHomeViewModel = ({
         showLoading()
 
         // 1- delete all data from the month
-        const { isValid, message } = await deleteMonthUseCase.execute(operationDate)
+        const { isValid, message } = await deleteMonthUseCase.execute({
+            userId: userApp.userId,
+            ...operationDate
+        })
 
         // 2- fetch data again
         await getData(operationDate)

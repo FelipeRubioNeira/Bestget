@@ -1,5 +1,12 @@
+// Definition of the routes of the application
 
 
+// navigator routes
+export enum NavigatorRoutes {
+    HOME = "HOME_NAVIGATOR",
+}
+
+// screen routes
 export enum ScreenRoutes {
 
     LOGIN = "LOGIN",
@@ -20,8 +27,6 @@ export enum ScreenRoutes {
     PROFILE = "PROFILE",
 }
 
-export enum NavigatorRoutes {
-    HOME = "HOME_NAVIGATOR",
-}
+
 
 
