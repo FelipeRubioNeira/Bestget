@@ -87,7 +87,7 @@ const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
 
 
             <Label
-                value="Esta aplicación te ayudará a llevar el control de tus gastos e ingresos."
+                value="Esta aplicación te ayudará a llevar el control de tus ingresos y gastos."
                 style={LoginStyles.introMessage}
             />
 
@@ -111,6 +111,19 @@ const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
                 message={modalState.message}
                 buttonList={modalState.buttonList}
             />
+
+            <Spacer marginVertical={"2%"} />
+
+            <Label
+                value="Version 1.0.0"
+                fontFamily={FontFamily.LIGHT}
+                fontSize={FontSize.XXSMALL}
+                style={{
+                    textAlign: 'left',
+                    alignSelf: "flex-end"
+                }}
+            />
+
 
 
 

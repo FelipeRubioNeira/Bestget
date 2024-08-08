@@ -324,14 +324,14 @@ const useHomeViewModel = ({
                 type: "perfil",
                 comingSoon: false
             },
-            {
-                title: 'Grupos',
-                onPress: () => { },
-                backgroundColor: Colors.BLUE,
-                titleColor: Colors.WHITE,
-                type: "grupos",
-                comingSoon: true
-            },
+            // {
+            //     title: 'Grupos',
+            //     onPress: () => { },
+            //     backgroundColor: Colors.BLUE,
+            //     titleColor: Colors.WHITE,
+            //     type: "grupos",
+            //     comingSoon: true
+            // },
         ])
 
     }
