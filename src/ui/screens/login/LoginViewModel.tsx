@@ -49,7 +49,7 @@ const useLoginViewModel = ({
 
         if (user) {
             dispatch(updateUser(user))
-            navigateToHome()
+            navigateToNextScreen()
         }
     }
 
@@ -59,7 +59,7 @@ const useLoginViewModel = ({
 
         if (isValid && result) {
             dispatch(updateUser(result))
-            navigateToHome()
+            navigateToNextScreen()
             // ...otros casos de uso
 
         } else {
@@ -72,8 +72,8 @@ const useLoginViewModel = ({
 
     }
 
-    const navigateToHome = () => {
-        navigation.navigate(ScreenRoutes.HOME)
+    const navigateToNextScreen = () => {
+        navigation.navigate(ScreenRoutes.CHOOSE_FINANCES)
     }
 
 

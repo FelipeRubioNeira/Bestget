@@ -15,9 +15,11 @@ import { Expense } from "../data/types/Expense";
 // Params that each screen must receive
 type NavigatorParamList = {
 
-    [NavigatorRoutes.HOME]: undefined
-
     [ScreenRoutes.LOGIN]: undefined
+
+    [ScreenRoutes.CHOOSE_FINANCES]: undefined
+
+    [NavigatorRoutes.HOME]: undefined
 
     [ScreenRoutes.HOME]: undefined
 
@@ -74,6 +76,12 @@ type HomeNavigatorProps = NativeStackScreenProps<
 type LoginScreenProps = NativeStackScreenProps<
     NavigatorParamList,
     ScreenRoutes.LOGIN
+>
+
+// choose finances screen props
+type ChooseFinancesScreenProps = NativeStackScreenProps<
+    NavigatorParamList,
+    ScreenRoutes.CHOOSE_FINANCES
 >
 
 // home screen props (main screen)
@@ -139,6 +147,7 @@ type ProfileScreenProps = NativeStackScreenProps<
 // export all types
 export type {
     NavigatorParamList,
+    ChooseFinancesScreenProps,
     HomeNavigatorProps,
     LoginScreenProps,
     HomeScreenProps,

@@ -4,7 +4,7 @@ const HomeStyles = StyleSheet.create({
 
     buttonContainer: {
         flex: 1,
-        margin: '2%',
+        margin: '1%',
         height: 150,
     },
 

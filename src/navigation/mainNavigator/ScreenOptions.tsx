@@ -13,6 +13,11 @@ const ScreenOptions = Object.freeze({
         title: "Login",
     },
 
+    chooseFinances: {
+        headerShown: false,
+        title: "Elegir finanzas",
+    },
+
     home: {
         headerShown: false,
         title: "Inicio",

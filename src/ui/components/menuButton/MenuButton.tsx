@@ -10,6 +10,8 @@ interface IMenuButtonProps {
     title: string,
     titleColor?: string,
     subTitle?: string,
+    subtitleColor?: string,
+    subtitleFontSize?: number,
     onPress?: () => void,
     backgroundColor?: string,
     comingSoon?: boolean
@@ -19,6 +21,8 @@ const MenuButton = ({
     title = "",
     titleColor = Colors.BLACK,
     subTitle = "",
+    subtitleColor = Colors.BLACK,
+    subtitleFontSize = FontSize.SMALL,
     onPress = () => { },
     backgroundColor = Colors.GRAY,
     comingSoon = false
@@ -45,7 +49,11 @@ const MenuButton = ({
                 subTitle &&
                 <Label
                     value={subTitle}
-                    style={MenuButtonStyle.subtitle}
+                    style={{
+                        ...MenuButtonStyle.subtitle,
+                        color: subtitleColor,
+                        fontSize: subtitleFontSize
+                    }}
                 />
             }
 
@@ -59,7 +67,7 @@ const MenuButton = ({
     )
 }
 
-const SoonLabel = ({value}:{value:string}) => {
+const SoonLabel = ({ value }: { value: string }) => {
     return (
         <View style={{
             position: "absolute",
@@ -84,7 +92,7 @@ export default MenuButton
 const MenuButtonStyle = StyleSheet.create({
 
     menuButton: {
-        padding: 10,
+        padding: 16,
         backgroundColor: Colors.GRAY,
         borderRadius: Styles.BORDER_RADIUS,
         justifyContent: "center",
