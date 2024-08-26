@@ -51,6 +51,7 @@ const IncomeFormScreen = ({ navigation, route }: IncomesCreateScreenProps) => {
     <Screen>
 
       <View>
+
         <TextInputWithLabel
           value={incomeName}
           onChangeText={updateIncomeName}
@@ -75,10 +76,7 @@ const IncomeFormScreen = ({ navigation, route }: IncomesCreateScreenProps) => {
           onChangeDay={updateIncomeDate}
         />
 
-
       </View>
-
-
 
       <Spacer marginVertical={"8%"} />
 

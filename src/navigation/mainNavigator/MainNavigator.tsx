@@ -20,7 +20,10 @@ import BudgetsExpensesScreen from '../../ui/screens/budgetsExpenses/BudgetsExpen
 import LoginScreen from '../../ui/screens/login/LoginScreen';
 import StatisticsScreen from '../../ui/screens/statistics/StatisticsScreen';
 import ProfileScreen from '../../ui/screens/profile/ProfileScreen';
-import ChooseFinances from '../../ui/screens/chooseFinances/ChooseFinances';
+import ChooseFinances from '../../ui/screens/chooseFinances/ChooseFinancesScreen';
+import GroupForm from '../../ui/screens/groupForm/GroupFormScreen';
+import GroupsScreen from '../../ui/screens/groups/GroupsScreen';
+
 
 
 
@@ -47,6 +50,18 @@ const MainNavigator = () => {
                     component={ChooseFinances}
                     name={ScreenRoutes.CHOOSE_FINANCES}
                     options={ScreenOptions.chooseFinances}
+                />
+
+                <Stack.Screen
+                    component={GroupsScreen}
+                    name={ScreenRoutes.GROUPS}
+                    options={ScreenOptions.groups}
+                />
+
+                <Stack.Screen
+                    component={GroupForm}
+                    name={ScreenRoutes.GROUP_FORM}
+                    options={ScreenOptions.groupForm}
                 />
 
                 <Stack.Screen

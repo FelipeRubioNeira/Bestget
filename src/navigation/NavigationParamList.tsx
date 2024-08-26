@@ -10,6 +10,7 @@ import { NavigatorRoutes, ScreenRoutes } from "./Routes";
 import { Budget } from "../data/types/Budget";
 import { Income } from "../data/types/Income";
 import { Expense } from "../data/types/Expense";
+import { Group } from "../data/types/Group";
 
 
 // Params that each screen must receive
@@ -18,6 +19,12 @@ type NavigatorParamList = {
     [ScreenRoutes.LOGIN]: undefined
 
     [ScreenRoutes.CHOOSE_FINANCES]: undefined
+
+    [ScreenRoutes.GROUPS]: undefined
+
+    [ScreenRoutes.GROUP_FORM]: {
+        group?: Group,
+    }
 
     [NavigatorRoutes.HOME]: undefined
 
@@ -84,6 +91,18 @@ type ChooseFinancesScreenProps = NativeStackScreenProps<
     ScreenRoutes.CHOOSE_FINANCES
 >
 
+// group screen props
+type GroupsScreenProps = NativeStackScreenProps<
+    NavigatorParamList,
+    ScreenRoutes.GROUPS
+>
+
+type GroupFormScreenProps = NativeStackScreenProps<
+    NavigatorParamList,
+    ScreenRoutes.GROUP_FORM
+>
+
+
 // home screen props (main screen)
 type HomeScreenProps = NativeStackScreenProps<
     NavigatorParamList,
@@ -148,6 +167,8 @@ type ProfileScreenProps = NativeStackScreenProps<
 export type {
     NavigatorParamList,
     ChooseFinancesScreenProps,
+    GroupsScreenProps,
+    GroupFormScreenProps,
     HomeNavigatorProps,
     LoginScreenProps,
     HomeScreenProps,

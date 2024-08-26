@@ -18,6 +18,16 @@ const ScreenOptions = Object.freeze({
         title: "Elegir finanzas",
     },
 
+    groups: {
+        headerShown: false,
+        title: "Grupos",
+    },
+
+    groupForm: {
+        headerShown: false,
+        title: "Crear grupo",
+    },
+
     home: {
         headerShown: false,
         title: "Inicio",

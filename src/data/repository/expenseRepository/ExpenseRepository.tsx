@@ -1,5 +1,4 @@
 import { Collections } from "../../collections/Collections";
-import { DateInterval } from "../../types/DateInterval";
 import { Expense, ExpenseCreate, ExpenseKeys } from "../../types/Expense";
 import { QueryParams } from "../../types/QueryParams";
 import IExpenseRespository from "./IExpenseRepository";

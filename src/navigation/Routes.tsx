@@ -10,7 +10,12 @@ export enum NavigatorRoutes {
 export enum ScreenRoutes {
 
     LOGIN = "LOGIN",
+
     CHOOSE_FINANCES = "CHOOSE_FINANCES",
+
+    GROUPS = "GROUPS",
+    GROUP_FORM = "GROUP_FORM",
+
     HOME = "HOME",
     INCOMES = "INCOMES",
     INCOME_FORM = "INCOME_FORM",
