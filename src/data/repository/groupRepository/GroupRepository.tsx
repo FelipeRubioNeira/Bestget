@@ -12,7 +12,7 @@ class GroupRepository implements IGroupRepository {
 
             const newDocRef = firestore().collection(Collections.GROUP).doc();
 
-            const newGroup = {
+            const newGroup:Group = {
                 ...group,
                 groupId: newDocRef.id,
             }

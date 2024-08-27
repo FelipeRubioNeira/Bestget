@@ -24,7 +24,7 @@ const GroupsScreen = ({
         <View style={DefaultStyles.screen}>
 
             <Label
-                value='Selecciona una opcion'
+                value='Selecciona una opcion:'
                 fontFamily={FontFamily.BOLD}
             />
 

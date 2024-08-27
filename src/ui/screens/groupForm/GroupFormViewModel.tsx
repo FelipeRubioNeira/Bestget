@@ -1,14 +1,31 @@
 import { useState } from "react";
 import { GroupFormScreenProps } from "../../../navigation/NavigationParamList";
-import { ModalProps } from "../../components/modal/ModalViewModel";
+import useModalViewModel, { ModalProps } from "../../components/modal/ModalViewModel";
 import { Group } from "../../../data/types/Group";
+import CreateGroupUseCase from "../../../domain/useCases/CreateGroupUseCase";
+import { useAppSelector } from "../../../data/globalContext/StoreHooks";
+import { selectUserApp } from "../../../data/globalContext/slices/UserAppSlice";
 
+
+
+// ------------------- types ------------------- //
+type GroupFormViewModelProps = {
+    createGroupUseCase: CreateGroupUseCase
+} & GroupFormScreenProps
+
+
+// ------------------- view model ------------------- //
 const useGroupFormViewModel = ({
     navigation,
-    route
-}: GroupFormScreenProps) => {
+    route,
+    createGroupUseCase
+}: GroupFormViewModelProps) => {
 
-    // ------------------- params ------------------- //
+    // ------------------- context------------------- //
+    const userApp = useAppSelector(selectUserApp)
+
+
+
     // ------------------- params ------------------- //
     const { group } = route.params
 
@@ -23,6 +40,8 @@ const useGroupFormViewModel = ({
         message: "",
         buttonList: []
     })
+
+    const modalViewModel = useModalViewModel()
 
 
 
@@ -44,8 +63,32 @@ const useGroupFormViewModel = ({
     }
 
     const createGroup = async () => {
-        console.log("createGroup");
 
+        const newGroup: Group = {
+            groupId: "",
+            name: groupState.groupName,
+            userIdList: []
+        }
+
+        const response = await createGroupUseCase.execute(
+            newGroup,
+            userApp.userId
+        )
+
+        if (response.isValid) {
+            navigation.goBack()
+
+        } else {
+            modalViewModel.showModal(
+                "Error",
+                response.message,
+                [
+                    {
+                        text: "Aceptar",
+                        onPress: () => modalViewModel.hideModal()
+                    }
+                ])
+        }
     }
 
     const editGroup = async (group: Group) => { }

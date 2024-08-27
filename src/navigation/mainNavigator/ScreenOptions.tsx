@@ -19,13 +19,19 @@ const ScreenOptions = Object.freeze({
     },
 
     groups: {
-        headerShown: false,
+        headerShown: true,
         title: "Grupos",
+        headerTintColor: Colors.BLACK,
+        headerStyle: { backgroundColor: Colors.CHIP_LUXURIES },
+        headerTitleStyle: { fontFamily: FontFamily.BOLD },
     },
 
     groupForm: {
-        headerShown: false,
+        headerShown: true,
         title: "Crear grupo",
+        headerTintColor: Colors.BLACK,
+        headerStyle: { backgroundColor: Colors.CHIP_LUXURIES },
+        headerTitleStyle: { fontFamily: FontFamily.BOLD },
     },
 
     home: {

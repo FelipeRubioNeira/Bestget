@@ -1,5 +1,9 @@
 import { Validation } from "../data/types/Validation"
 
+type ValidationFields = {
+    name: string,
+}
+
 
 const validateInputs = (name = "", amount = 0, type: "ingreso" | "gasto" | "presupuesto"): Validation => {
 
@@ -21,6 +25,23 @@ const validateInputs = (name = "", amount = 0, type: "ingreso" | "gasto" | "pres
 
 }
 
+const validateGroupFields = ({ name }: ValidationFields): Validation => {
+
+    const result: Validation = {
+        isValid: true,
+        message: "",
+    }
+
+    if (name.trim() === "") {
+        result.isValid = false
+        result.message = "El nombre del grupo no puede estar vacío."
+    }
+
+    return result
+
+}
+
 export {
-    validateInputs
+    validateInputs,
+    validateGroupFields
 }
