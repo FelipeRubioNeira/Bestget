@@ -12,4 +12,5 @@ export enum Collections {
     BUDGET_EXPENSE = 'BudgetExpense',
     USER_INCOME = 'UserIncome',
     GROUP = 'Group',
+    USER_GROUP = 'UserGroup',
 }

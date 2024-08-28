@@ -67,7 +67,6 @@ const useGroupFormViewModel = ({
         const newGroup: Group = {
             groupId: "",
             name: groupState.groupName,
-            userIdList: []
         }
 
         const response = await createGroupUseCase.execute(

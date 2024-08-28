@@ -2,7 +2,7 @@ import { Group } from "../../types/Group";
 
 interface IGroupRepository {
 
-    create(group: Group): Promise<Group | null>
+    create(group: Group, userId: string): Promise<Group | null>
 
 }
 

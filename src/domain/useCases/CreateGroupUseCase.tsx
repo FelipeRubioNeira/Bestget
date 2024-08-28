@@ -21,10 +21,7 @@ class CreateGroupUseCase {
 
         if (result.isValid) {
 
-            // add user to the first item of the list
-            group.userIdList.push(userId)
-
-            validationResult.result = await this.groupRepository.create(group)
+            validationResult.result = await this.groupRepository.create(group, userId)
 
             // TODO: implement domain event
             // const eventName = budget ? EventNames.EXPENSE_CREATED_FROM_BUDGET : EventNames.EXPENSE_CREATED

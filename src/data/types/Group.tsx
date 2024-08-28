@@ -1,9 +1,14 @@
 type Group = {
     groupId: string,
     name: string,
-    userIdList: string[]
+}
+
+type UserGroup = {
+    userId: string,
+    groupId: string
 }
 
 export type {
-    Group
+    Group,
+    UserGroup
 }
