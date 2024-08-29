@@ -5,6 +5,9 @@ import { Group } from "../../../data/types/Group";
 import CreateGroupUseCase from "../../../domain/useCases/CreateGroupUseCase";
 import { useAppSelector } from "../../../data/globalContext/StoreHooks";
 import { selectUserApp } from "../../../data/globalContext/slices/UserAppSlice";
+import useLoadingViewModel from "../../components/loading/LoadingViewModel";
+import { StackActions } from '@react-navigation/native';
+import { ScreenRoutes } from "../../../navigation/Routes";
 
 
 
@@ -23,6 +26,14 @@ const useGroupFormViewModel = ({
 
     // ------------------- context------------------- //
     const userApp = useAppSelector(selectUserApp)
+
+
+    // ------------------- viewModel ------------------- //
+    const {
+        isLoading,
+        showLoading,
+        hideLoading
+    } = useLoadingViewModel()
 
 
 
@@ -57,16 +68,21 @@ const useGroupFormViewModel = ({
     const onPressCreateGroup = () => saveOrUpdateGroup()
 
 
-    const saveOrUpdateGroup = async () => {
+    const saveOrUpdateGroup = () => {
         if (group) editGroup(group)
         else createGroup()
     }
 
     const createGroup = async () => {
 
+        showLoading()
+
         const newGroup: Group = {
             groupId: "",
             name: groupState.groupName,
+            createdBy: userApp.userId,
+            createdDate: new Date(),
+            updatedDate: null
         }
 
         const response = await createGroupUseCase.execute(
@@ -74,8 +90,10 @@ const useGroupFormViewModel = ({
             userApp.userId
         )
 
+        hideLoading()
+
         if (response.isValid) {
-            navigation.goBack()
+            returnToGroups(response.result?.groupId || "")
 
         } else {
             modalViewModel.showModal(
@@ -90,6 +108,15 @@ const useGroupFormViewModel = ({
         }
     }
 
+    const returnToGroups = (groupId: string) => {
+
+        navigation.dispatch(
+            StackActions.replace(ScreenRoutes.GROUPS, {
+                groupId: groupId
+            })
+        );
+    }
+
     const editGroup = async (group: Group) => { }
 
 
@@ -98,7 +125,8 @@ const useGroupFormViewModel = ({
         groupState,
         changeNameGroup,
         modalState,
-        onPressCreateGroup
+        onPressCreateGroup,
+        isLoading
     }
 }
 

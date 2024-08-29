@@ -12,6 +12,8 @@ import useGroupFormViewModel from './GroupFormViewModel'
 import Modal from '../../components/modal/Modal'
 import GroupRepository from '../../../data/repository/groupRepository/GroupRepository'
 import CreateGroupUseCase from '../../../domain/useCases/CreateGroupUseCase'
+import Loading from '../../components/loading/Loading'
+
 
 
 const groupRepository = new GroupRepository()
@@ -23,12 +25,14 @@ const GroupFormScreen = ({
   route,
 }: GroupFormScreenProps) => {
 
+
   // ------------------- viewModel ------------------- //
   const {
     groupState,
     changeNameGroup,
     modalState,
-    onPressCreateGroup
+    onPressCreateGroup,
+    isLoading
   } = useGroupFormViewModel({
     navigation,
     route,
@@ -36,53 +40,60 @@ const GroupFormScreen = ({
   })
 
 
+
   // ------------------- render ------------------- //
   return (
 
-    <Screen>
+    <>
 
-      <View>
+      <Screen>
 
-        <Label
-          value='Escribe un nombre de grupo que sea descriptivo.'
-          style={{
-            fontFamily: FontFamily.REGULAR,
-            fontSize: FontSize.XSMALL,
-            color: Colors.DARK_GRAY
-          }}
+        <View>
+
+          <Label
+            value='Escribe un nombre de grupo que sea descriptivo.'
+            style={{
+              fontFamily: FontFamily.REGULAR,
+              fontSize: FontSize.XSMALL,
+              color: Colors.DARK_GRAY
+            }}
+          />
+
+          <Spacer marginVertical={"2%"} />
+
+          <TextInputWithLabel
+            value={groupState.groupName}
+            onChangeText={changeNameGroup}
+            title="Nombre del grupo:"
+            placeholder="Grupo familiar"
+          />
+
+          <Spacer marginVertical={"4%"} />
+
+        </View>
+
+        <SubmitButton
+          onPress={onPressCreateGroup}
+          backgroundColor={Colors.CHIP_LUXURIES}
         />
 
-        <Spacer marginVertical={"2%"} />
-
-        <TextInputWithLabel
-          value={groupState.groupName}
-          onChangeText={changeNameGroup}
-          title="Nombre del grupo:"
-          placeholder="Grupo familiar"
+        <Modal
+          visible={modalState.visible}
+          title={modalState.title}
+          message={modalState.message}
+          buttonList={[
+            {
+              text: "Cerrar",
+              onPress: () => { }
+            }
+          ]}
         />
 
-        <Spacer marginVertical={"4%"} />
+      </Screen>
 
-      </View>
+      <Loading visible={isLoading} />
 
-      <SubmitButton
-        onPress={onPressCreateGroup}
-        backgroundColor={Colors.CHIP_LUXURIES}
-      />
-
-      <Modal
-        visible={modalState.visible}
-        title={modalState.title}
-        message={modalState.message}
-        buttonList={[
-          {
-            text: "Cerrar",
-            onPress: () => { }
-          }
-        ]}
-      />
-
-    </Screen>
+    </>
   )
 }
 

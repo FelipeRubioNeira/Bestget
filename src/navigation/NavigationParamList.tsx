@@ -20,7 +20,9 @@ type NavigatorParamList = {
 
     [ScreenRoutes.CHOOSE_FINANCES]: undefined
 
-    [ScreenRoutes.GROUPS]: undefined
+    [ScreenRoutes.GROUPS]: {
+        groupId?: string,
+    }
 
     [ScreenRoutes.GROUP_FORM]: {
         group?: Group,
