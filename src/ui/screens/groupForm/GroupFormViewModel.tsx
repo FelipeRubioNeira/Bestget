@@ -64,10 +64,12 @@ const useGroupFormViewModel = ({
         })
     }
 
+
     // ---------------- save or update ---------------- //
     const onPressCreateGroup = () => saveOrUpdateGroup()
 
 
+    // ---------------- create or edit ---------------- //
     const saveOrUpdateGroup = () => {
         if (group) editGroup(group)
         else createGroup()
@@ -108,16 +110,15 @@ const useGroupFormViewModel = ({
         }
     }
 
-    const returnToGroups = (groupId: string) => {
+    const editGroup = async (group: Group) => { }
 
-        navigation.dispatch(
-            StackActions.replace(ScreenRoutes.GROUPS, {
-                groupId: groupId
-            })
-        );
+
+    // ---------------- return to groups ---------------- //
+    const returnToGroups = (groupId: string) => {
+        navigation.pop()
+        navigation.replace(ScreenRoutes.GROUPS, { groupId: groupId })
     }
 
-    const editGroup = async (group: Group) => { }
 
 
     // ------------------- return ------------------- //
