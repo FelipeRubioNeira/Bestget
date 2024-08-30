@@ -217,7 +217,6 @@ const useHomeViewModel = ({
 
 
         updateTotalRemaining(totalIncomes, totalExpenses)
-        generateButtons(totalExpenses, totalIncomes)
 
         hideLoading()
 
@@ -227,8 +226,6 @@ const useHomeViewModel = ({
 
         const totalIncomesAmount = calculateTotalAmount(incomes)
         setTotalIncomes(totalIncomesAmount)
-
-        generateButtons(totalExpenses, totalIncomesAmount)
         updateTotalRemaining(totalIncomesAmount, totalExpenses)
 
     }
@@ -237,7 +234,6 @@ const useHomeViewModel = ({
         const totalExpensesAmount = calculateTotalExpenses(expenses)
 
         setTotalExpenses(totalExpensesAmount)
-        generateButtons(totalExpensesAmount, totalIncomes)
         updateTotalRemaining(totalIncomes, totalExpensesAmount)
 
     }
@@ -289,57 +285,25 @@ const useHomeViewModel = ({
         return totalExpenses
     }
 
-    const generateButtons = (expenses: number, incomes: number) => {
-
-        setButtonsHome([
-            {
-                title: 'Gastos y Presupuestos',
-                subTitle: `$${currencyFormat(expenses)}`,
-                onPress: () => navigateTo(ScreenRoutes.BUDGET_EXPENSES, {}),
-                backgroundColor: Colors.YELLOW,
-                titleColor: Colors.BLACK,
-                type: "gastos",
-            },
-            {
-                title: 'Ingresos',
-                subTitle: `$${currencyFormat(incomes)}`,
-                onPress: () => navigateTo(ScreenRoutes.INCOMES, {}),
-                backgroundColor: Colors.GREEN,
-                titleColor: Colors.BLACK,
-                type: "ingresos",
-            },
-            {
-                title: 'Estadísticas',
-                onPress: () => navigateTo(ScreenRoutes.STATISTICS, {}),
-                backgroundColor: Colors.PURPLE,
-                titleColor: Colors.BLACK,
-                type: "estadisticas",
-                comingSoon: false
-            },
-            {
-                title: 'Mi Cuenta',
-                onPress: () => navigateTo(ScreenRoutes.PROFILE, {}),
-                backgroundColor: Colors.RED,
-                titleColor: Colors.BLACK,
-                type: "perfil",
-                comingSoon: false
-            },
-            // {
-            //     title: 'Grupos',
-            //     onPress: () => { },
-            //     backgroundColor: Colors.BLUE,
-            //     titleColor: Colors.WHITE,
-            //     type: "grupos",
-            //     comingSoon: true
-            // },
-        ])
-
-    }
-
-
     // ------------------ navigation methods ------------------ //
     const navigateTo = (screen: ScreenRoutes, params: any) => {
         navigation.navigate(screen, params)
+    }
+
+    const navigateToIncomes = () => {
+        navigateTo(ScreenRoutes.INCOMES, {})
+    }
+
+    const navigateToExpenses = () => {
+        navigateTo(ScreenRoutes.BUDGET_EXPENSES, {})
+    }
+
+    const navigateToStatistics = () => {
+        navigateTo(ScreenRoutes.STATISTICS, {})
+    }
+
+    const navigateToProfile = () => {
+        navigateTo(ScreenRoutes.PROFILE, {})
     }
 
 
@@ -666,6 +630,11 @@ const useHomeViewModel = ({
 
         // loading
         loading,
+
+        navigateToExpenses,
+        navigateToIncomes,
+        navigateToStatistics,
+        navigateToProfile,
     }
 
 }

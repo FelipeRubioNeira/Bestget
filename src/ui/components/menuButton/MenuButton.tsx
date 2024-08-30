@@ -1,9 +1,10 @@
-import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import { ImageSourcePropType, ImageStyle, StyleSheet, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { Styles } from '../../styles/Styles'
 import { Colors } from '../../constants/Colors'
 import Label from '../label/Label'
 import { FontFamily, FontSize } from '../../constants/Fonts'
+import TouchableIcon from '../touchableIcon/TouchableIcon'
 
 
 interface IMenuButtonProps {
@@ -14,7 +15,9 @@ interface IMenuButtonProps {
     subtitleFontSize?: number,
     onPress?: () => void,
     backgroundColor?: string,
-    comingSoon?: boolean
+    comingSoon?: boolean,
+    icon?: ImageSourcePropType | null,
+    iconColor?: string
 }
 
 const MenuButton = ({
@@ -25,7 +28,9 @@ const MenuButton = ({
     subtitleFontSize = FontSize.SMALL,
     onPress = () => { },
     backgroundColor = Colors.GRAY,
-    comingSoon = false
+    comingSoon = false,
+    icon = null,
+    iconColor = Colors.BLACK
 }: IMenuButtonProps) => {
 
     return (
@@ -56,6 +61,18 @@ const MenuButton = ({
                     }}
                 />
             }
+
+            {
+                icon &&
+                <TouchableIcon
+                    image={icon}
+                    color={iconColor}
+                    disabled={true}
+                    style={{ marginVertical: "4%" }}
+                />
+
+            }
+
 
             {
                 comingSoon &&

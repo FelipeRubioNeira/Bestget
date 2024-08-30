@@ -1,8 +1,8 @@
 import React from 'react'
-import { FlatList, SafeAreaView, View } from 'react-native'
+import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native'
 import MenuButton from '../../components/menuButton/MenuButton'
 import Spacer from '../../components/spacer/Spacer'
-import { DefaultStyles } from '../../constants/Index'
+import { Colors, DefaultStyles, Styles } from '../../constants/Index'
 import { ButtonHomeProps } from './HomeViewModel'
 import { HomeScreenProps } from '../../../navigation/NavigationParamList'
 import useHomeViewModel from './HomeViewModel'
@@ -24,6 +24,8 @@ import BudgetExpenseUnitOfWork from '../../../data/unitOfWork/BudgetExpenseUnitO
 import SavedDateRepository from '../../../data/repository/savedDateRpository/SavedDateRepository'
 import UpdateSavedDateUseCase from '../../../domain/useCases/UpdateSavedDateUseCase'
 import ReadSavedDateUseCase from '../../../domain/useCases/ReadSavedDateUseCase'
+import { currencyFormat } from '../../../utils/NumberFormat'
+import Icons from '../../../assets/icons'
 
 
 // ------------------- google sign in ------------------- //
@@ -98,7 +100,7 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
         deleteMonthUseCase,
 
         updateSavedDateUseCase,
-        readSavedDateUseCase
+        readSavedDateUseCase,
     })
 
 
@@ -130,9 +132,57 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
 
                 <Spacer marginVertical={"4%"} />
 
-                <MenuListButton
-                    buttonArray={homeViewModel.buttonsHome}
-                />
+
+                <View style={homeStyles.rowButtons}>
+
+                    <MenuButton
+                        title={"Ingresos"}
+                        subTitle={`$${currencyFormat(homeViewModel.totalIncomes)}`}
+                        backgroundColor={Colors.GREEN}
+                        titleColor={Colors.BLACK}
+                        onPress={homeViewModel.navigateToIncomes}
+                        icon={Icons.piggyBankBW}
+                    />
+
+                    <Spacer marginHorizontal={"2%"} />
+
+                    <MenuButton
+                        title={"Gastos"}
+                        subTitle={`$${currencyFormat(homeViewModel.totalExpenses)}`}
+                        backgroundColor={Colors.RED}
+                        titleColor={Colors.BLACK}
+                        onPress={homeViewModel.navigateToExpenses}
+                        icon={Icons.creditCard}
+                    />
+
+                </View>
+
+                <Spacer marginVertical={"2%"} />
+
+
+                <View style={homeStyles.rowButtons}>
+
+                    <MenuButton
+                        title={"Estadísticas"}
+                        backgroundColor={Colors.LIGHT_BLUE}
+                        titleColor={Colors.BLACK}
+                        onPress={homeViewModel.navigateToStatistics}
+                        icon={Icons.chartLine}
+                    />
+
+                    <Spacer marginHorizontal={"2%"} />
+
+                    <MenuButton
+                        title={"Mi cuenta"}
+                        backgroundColor={Colors.PURPLE}
+                        titleColor={Colors.BLACK}
+                        onPress={homeViewModel.navigateToProfile}
+                        icon={Icons.user}
+                    />
+
+                </View>
+
+
 
             </View>
 
@@ -168,30 +218,13 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
     )
 }
 
-// lista de botones u opciones
-const MenuListButton = ({ buttonArray }: { buttonArray: ButtonHomeProps[] }) => {
-    return (
-        <View>
-            <FlatList
-                data={buttonArray}
-                renderItem={({ item }) => (
-                    <View style={HomeStyles.buttonContainer}>
-                        <MenuButton
-                            title={item.title}
-                            subTitle={item.subTitle}
-                            onPress={item.onPress}
-                            backgroundColor={item.backgroundColor}
-                            titleColor={item.titleColor}
-                            comingSoon={item.comingSoon}
-                        />
-                    </View>
-                )}
-                keyExtractor={item => item.title}
-                numColumns={2}
-            />
-
-        </View>
-    )
-}
-
 export default HomeScreen
+
+const homeStyles = StyleSheet.create({
+
+    rowButtons: {
+        flexDirection: "row",
+        height: Styles.HEIGHT * 0.225
+    }
+
+})

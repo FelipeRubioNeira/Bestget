@@ -19,6 +19,11 @@ const Icons = {
     piggyBank: require('../icons/ic_piggy_bank.png'),
     google: require('../icons/ic_google.png'),
 
+    piggyBankBW: require('../icons/ic_piggy_bank_bw.png'),
+    creditCard: require('../icons/ic_credit_card.png'),
+    chartLine: require('../icons/ic_chart_line_up.png'),
+    user: require('../icons/ic_user.png'),
+
 }
 
 export default Icons
