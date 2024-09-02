@@ -1,4 +1,4 @@
-import { View } from 'react-native'
+import { FlatList, Text, View } from 'react-native'
 import React from 'react'
 import Label from '../../components/label/Label'
 import DefaultStyles from '../../styles/DefaultStyles'
@@ -8,6 +8,11 @@ import { FontFamily } from '../../constants/Fonts'
 import { Colors } from '../../constants/Colors'
 import { GroupsScreenProps } from '../../../navigation/NavigationParamList'
 import useGroupsViewModel from './GroupsViewModel'
+import GroupRepository from '../../../data/repository/groupRepository/GroupRepository'
+import GetGroupsService from '../../../domain/services/GetGroupsService'
+
+const groupRepository = new GroupRepository()
+const getGroupsService = new GetGroupsService(groupRepository)
 
 
 const GroupsScreen = ({
@@ -15,10 +20,15 @@ const GroupsScreen = ({
     route
 }: GroupsScreenProps) => {
 
-    const { 
+    const {
         navigateToCreateGroup,
-        navigateToFinancesOfGroup
-    } = useGroupsViewModel({ navigation, route })
+        navigateToFinancesOfGroup,
+        groups
+    } = useGroupsViewModel({
+        navigation,
+        route,
+        getGroupsService
+    })
 
     return (
         <View style={DefaultStyles.screen}>
@@ -37,6 +47,23 @@ const GroupsScreen = ({
                     backgroundColor: Colors.CHIP_LUXURIES,
                 }}
             />
+
+            <Spacer marginVertical='4%' />
+
+            <FlatList
+                data={groups}
+                renderItem={({ item }) => (
+                    <View>
+                        <Text style={{
+                            color: Colors.BLACK,
+                        }}>
+                            {item.name}
+                        </Text>
+                    </View>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+            />
+
 
         </View>
     )

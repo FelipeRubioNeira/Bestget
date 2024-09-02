@@ -1,26 +1,41 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { GroupsScreenProps } from "../../../navigation/NavigationParamList"
 import { ScreenRoutes } from "../../../navigation/Routes"
-import { ro } from "date-fns/locale"
+import GetGroupsService from "../../../domain/services/GetGroupsService"
+import { useAppSelector } from "../../../data/globalContext/StoreHooks"
+import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppSlice"
+import { selectDateIntervalApp } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice"
+import { Group } from "../../../data/types/Group"
 
 type GroupsViewModelProps = {
-
+    getGroupsService: GetGroupsService
 } & GroupsScreenProps
 
 const useGroupsViewModel = ({
     navigation,
-    route
+    route,
+    getGroupsService
 }: GroupsViewModelProps) => {
 
+
+    // ------------------- context ------------------- //
+    const userApp = useAppSelector(selectUserApp)
+
+
+    // ------------------- routes params ------------------- //
     const groupId = route?.params?.groupId
+
+
+
+    // ------------------- states ------------------- //
+    const [groups, setGroups] = useState<Group[]>([])
+
 
     // ------------------- effect------------------- //
     useEffect(() => {
-        if (groupId) {
-            console.log('nos ha llegado un nuevo groupId', groupId);
-        }
+        getAllGroups()
+    }, [])
 
-    }, [groupId])
 
     // ---------------- methods ---------------- //
     const navigateToCreateGroup = () => {
@@ -29,10 +44,16 @@ const useGroupsViewModel = ({
 
     const navigateToFinancesOfGroup = () => { }
 
+    const getAllGroups = async () => {
+        const groups = await getGroupsService.execute(userApp.userId)
+        setGroups(groups)
+    }
+
 
     return {
         navigateToCreateGroup,
-        navigateToFinancesOfGroup
+        navigateToFinancesOfGroup,
+        groups
     }
 }
 

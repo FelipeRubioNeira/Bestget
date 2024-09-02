@@ -1,7 +1,8 @@
 import { Collections } from "../../collections/Collections";
-import { Group, UserGroup } from "../../types/Group";
+import { Group, GroupKeys, UserGroup, UserGroupKeys } from "../../types/Group";
 import firestore from '@react-native-firebase/firestore';
 import IGroupRepository from "./IGroupRepository";
+import { QueryParams } from "../../types/QueryParams";
 
 
 class GroupRepository implements IGroupRepository {
@@ -36,6 +37,41 @@ class GroupRepository implements IGroupRepository {
         } catch (error) {
             console.log("error createGroup GroupRepository", error);
             return null
+        }
+
+    }
+
+    public async getAll(userId: string): Promise<Group[]> {
+
+        try {
+
+            const db = firestore()
+
+            const userGroups = await db.collection(Collections.USER_GROUP)
+                .where(UserGroupKeys.USER_ID, '==', userId)
+                .get()
+
+
+
+            const groupIds: string[] = userGroups.docs.map(group => {
+                const data = group.data() as UserGroup
+                return data.groupId
+            })
+
+            const groups = await db.collection(Collections.GROUP)
+                .where(GroupKeys.GROUP_ID, 'in', groupIds)
+                .get()
+
+            const groupsArray = groups.docs.map(doc => {
+                const data = doc.data() as Group
+                return data
+            });
+
+            return groupsArray
+
+        } catch (error) {
+            console.log("error getGroups GroupRepository", error);
+            return []
         }
 
     }
