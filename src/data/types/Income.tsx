@@ -20,7 +20,7 @@ type IncomeUI = {
 }
 
 const IncomeKeys = Object.freeze({
-    ID: "id",
+    INCOME_ID: "incomeId",
     USER_ID: "userId",
     NAME: "name",
     AMOUNT: "amount",

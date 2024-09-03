@@ -23,6 +23,7 @@ import ProfileScreen from '../../ui/screens/profile/ProfileScreen';
 import ChooseFinances from '../../ui/screens/chooseFinances/ChooseFinancesScreen';
 import GroupForm from '../../ui/screens/groupForm/GroupFormScreen';
 import GroupsScreen from '../../ui/screens/groups/GroupsScreen';
+import HomeGroupScreen from '../../ui/screens/homeGroup/HomeGroupScreen';
 
 
 
@@ -68,6 +69,12 @@ const MainNavigator = () => {
                     component={HomeScreen}
                     name={ScreenRoutes.HOME}
                     options={ScreenOptions.home}
+                />
+
+                <Stack.Screen
+                    component={HomeGroupScreen}
+                    name={ScreenRoutes.HOME_GROUP}
+                    options={ScreenOptions.homeGroup}
                 />
 
                 <Stack.Screen

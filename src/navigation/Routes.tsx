@@ -20,6 +20,8 @@ export enum ScreenRoutes {
     INCOMES = "INCOMES",
     INCOME_FORM = "INCOME_FORM",
 
+    HOME_GROUP = "HOME_GROUP",
+
     BUDGET_EXPENSES = "BUDGET_EXPENSES",
 
     EXPENSE = "EXPENSE",

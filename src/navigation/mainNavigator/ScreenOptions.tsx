@@ -39,6 +39,11 @@ const ScreenOptions = Object.freeze({
         title: "Inicio",
     },
 
+    homeGroup: {
+        headerShown: false,
+        title: "Inicio grupo",
+    },
+
     incomes: {
         title: "Ingresos",
         headerTintColor: Colors.BLACK,

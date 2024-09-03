@@ -42,7 +42,9 @@ const useGroupsViewModel = ({
         navigation.navigate(ScreenRoutes.GROUP_FORM, {})
     }
 
-    const navigateToFinancesOfGroup = () => { }
+    const navigateToFinancesOfGroup = (groupId:string) => {
+        navigation.navigate(ScreenRoutes.HOME_GROUP, { groupId })
+     }
 
     const getAllGroups = async () => {
         const groups = await getGroupsService.execute(userApp.userId)

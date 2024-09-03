@@ -1,15 +1,15 @@
 import { Collections } from "../../collections/Collections";
-import { DateInterval } from "../../types/DateInterval";
 import { Income, IncomeCreate, IncomeKeys } from "../../types/Income";
-import { QueryParams } from "../../types/QueryParams";
-import { IIncomeRepository } from "./IIncomeRepository";
+import { IncomeGroupKeys } from "../../types/IncomeGroup";
+import { QueryGroupParams, QueryParams } from "../../types/QueryParams";
+import { IIncomeGroupRepository } from "./IIncomeGroupRepository";
 import firestore from '@react-native-firebase/firestore';
 
 
-class IncomeRepository implements IIncomeRepository {
+class IncomeGroupRepository implements IIncomeGroupRepository {
     constructor() { }
 
-    
+
     public async create(income: IncomeCreate): Promise<Income> {
         try {
 
@@ -32,15 +32,21 @@ class IncomeRepository implements IIncomeRepository {
         }
     }
 
-    public async getAll({ userId, initialDate, finalDate }: QueryParams): Promise<Income[]> {
+    public async getAll({ groupId, initialDate, finalDate }: QueryGroupParams): Promise<Income[]> {
 
         try {
 
+            const db = firestore();
+
+            const incomeGroup = await db.collection(Collections.INCOME_GROUP)
+                .where(IncomeGroupKeys.GROUP_ID, "==", groupId)
+                .get()
+
+            const incomeIds = incomeGroup.docs.map(doc => doc.data().incomeId)
+
             const incomes = await firestore()
                 .collection(Collections.INCOME)
-                .where(IncomeKeys.DATE, ">=", initialDate)
-                .where(IncomeKeys.DATE, "<", finalDate)
-                .where(IncomeKeys.USER_ID, "==", userId)
+                .where(IncomeKeys.INCOME_ID, "in", incomeIds)
                 .get()
 
             const incomesArray: Income[] = incomes.docs.map(doc => ({
@@ -60,7 +66,7 @@ class IncomeRepository implements IIncomeRepository {
 
     }
 
-    public async getTotal(queryParams: QueryParams): Promise<number> {
+    public async getTotal(queryParams: QueryGroupParams): Promise<number> {
 
         let totalIncomes = 0
         const incomes = await this.getAll(queryParams)
@@ -199,4 +205,4 @@ class IncomeRepository implements IIncomeRepository {
 
 
 }
-export default IncomeRepository
+export default IncomeGroupRepository

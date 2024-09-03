@@ -8,6 +8,12 @@ type QueryParams = {
     userId: string,
 } & DateInterval
 
+
+type QueryGroupParams = {
+    groupId: string,
+} & DateInterval
+
 export type {
-    QueryParams
+    QueryParams,
+    QueryGroupParams
 }

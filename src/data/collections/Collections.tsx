@@ -9,6 +9,7 @@ export enum Collections {
     CATEGOTY = "Category",
     EXPENSE = 'Expense',
     INCOME = 'Income',
+    INCOME_GROUP = 'IncomeGroup',
     BUDGET_EXPENSE = 'BudgetExpense',
     USER_INCOME = 'UserIncome',
     GROUP = 'Group',

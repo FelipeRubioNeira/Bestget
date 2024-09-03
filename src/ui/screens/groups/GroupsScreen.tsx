@@ -1,4 +1,4 @@
-import { FlatList, Text, View } from 'react-native'
+import { FlatList, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import Label from '../../components/label/Label'
 import DefaultStyles from '../../styles/DefaultStyles'
@@ -53,13 +53,20 @@ const GroupsScreen = ({
             <FlatList
                 data={groups}
                 renderItem={({ item }) => (
-                    <View>
+                    <TouchableOpacity
+                        onPress={() => navigateToFinancesOfGroup(item.groupId)}
+                        style={{
+                            width: '100%',
+                            height: 70,
+                            borderWidth: 1,
+                            marginBottom: 20
+                        }}>
                         <Text style={{
                             color: Colors.BLACK,
                         }}>
                             {item.name}
                         </Text>
-                    </View>
+                    </TouchableOpacity>
                 )}
                 keyExtractor={(item, index) => index.toString()}
             />
