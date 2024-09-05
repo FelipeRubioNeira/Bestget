@@ -1,33 +1,31 @@
 import { useEffect, useState } from "react"
-import { HomeGroupScreenProps } from "../../../navigation/NavigationParamList"
-import { ScreenRoutes } from "../../../navigation/Routes"
-import { currencyFormat } from "../../../utils/NumberFormat"
-import { Income } from "../../../data/types/Income"
+import { Share } from "react-native"
+import { useAppDispatch, useAppSelector } from "../../../data/globalContext/StoreHooks"
+import { updateDateInterval } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice"
+import { selectFinancesApp, updateBudgets, updateCategories, updateExpenses, updateIncomes } from "../../../data/globalContext/redux/slices/FinancesAppSlice"
+import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppSlice"
+import IBudgetRepository from "../../../data/repository/budgetRepository/IBudgetRepository"
 import ICategoryRepository from "../../../data/repository/categoryRepository/ICategoryRespository"
 import IExpenseRespository from "../../../data/repository/expenseRepository/IExpenseRepository"
-import DateTime from "../../../utils/DateTime"
+import IncomeGroupRepository from "../../../data/repository/incomeRepository/IncomeGroupRepository"
 import { DateInterval } from "../../../data/types/DateInterval"
-import IBudgetRepository from "../../../data/repository/budgetRepository/IBudgetRepository"
 import { Expense } from "../../../data/types/Expense"
-import CopyMonthUseCase from "../../../domain/useCases/CopyMonthUseCase"
-import PasteMonthUseCase, { PasteType } from "../../../domain/useCases/pasteMonthUseCase"
-import { FontSize } from "../../constants/Fonts"
-import DefaultStyles from "../../styles/DefaultStyles"
-import DeleteMothUseCase from "../../../domain/useCases/DeleteMonthUseCase"
+import { Income } from "../../../data/types/Income"
+import * as QueryParams from "../../../data/types/QueryParams"
 import BudgetExpenseUnitOfWork from "../../../data/unitOfWork/BudgetExpenseUnitOfWork"
+import CopyMonthUseCase from "../../../domain/useCases/CopyMonthUseCase"
+import DeleteMothUseCase from "../../../domain/useCases/DeleteMonthUseCase"
+import ReadSavedDateUseCase from "../../../domain/useCases/ReadSavedDateUseCase"
+import UpdateSavedDateUseCase from "../../../domain/useCases/UpdateSavedDateUseCase"
+import PasteMonthUseCase, { PasteType } from "../../../domain/useCases/pasteMonthUseCase"
+import { HomeGroupScreenProps } from "../../../navigation/NavigationParamList"
+import { ScreenRoutes } from "../../../navigation/Routes"
+import DateTime from "../../../utils/DateTime"
+import { currencyFormat } from "../../../utils/NumberFormat"
 import useModalViewModel, { ModalButtonList } from "../../components/modal/ModalViewModel"
 import useToastViewModel from "../../components/toast/ToastViewModel"
-import { QueryGroupParams, QueryParams } from "../../../data/types/QueryParams"
-import { useAppSelector } from "../../../data/globalContext/StoreHooks"
-import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppSlice"
-import { useAppDispatch } from "../../../data/globalContext/StoreHooks";
-import { selectFinancesApp, updateBudgets, updateCategories, updateExpenses, updateIncomes } from "../../../data/globalContext/redux/slices/FinancesAppSlice"
-import { updateDateInterval } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice"
-import UpdateSavedDateUseCase from "../../../domain/useCases/UpdateSavedDateUseCase"
-import ReadSavedDateUseCase from "../../../domain/useCases/ReadSavedDateUseCase"
-import { IIncomeGroupRepository } from "../../../data/repository/incomeRepository/IIncomeGroupRepository"
-import IncomeGroupRepository from "../../../data/repository/incomeRepository/IncomeGroupRepository"
-
+import { FontSize } from "../../constants/Fonts"
+import DefaultStyles from "../../styles/DefaultStyles"
 
 const dateTime = new DateTime()
 
@@ -245,19 +243,19 @@ const useHomeGroupViewModel = ({
 
 
     // ------------------ repository methods ------------------ //
-    const getIncomes = async (queryGroupParams: QueryGroupParams) => {
+    const getIncomes = async (queryGroupParams: QueryParams.QueryGroupParams) => {
         const incomes = await incomeGroupRepository.getAll(queryGroupParams)
         appDispatch(updateIncomes(incomes))
         return incomes
     }
 
-    const getExpenses = async (queryParams: QueryParams) => {
+    const getExpenses = async (queryParams: QueryParams.QueryParams) => {
         const expenses = await expenseRepository.getAll(queryParams)
         appDispatch(updateExpenses(expenses))
         return expenses
     }
 
-    const getBudgets = async (queryParams: QueryParams) => {
+    const getBudgets = async (queryParams: QueryParams.QueryParams) => {
         const budgestWithRemaining = await budgetExpenseUnitOfWork.getBudgetsWithRemaining(queryParams)
         appDispatch(updateBudgets(budgestWithRemaining))
         return budgestWithRemaining
@@ -597,6 +595,27 @@ const useHomeGroupViewModel = ({
 
 
 
+    // ------------------ share group ------------------ //
+    const shareGroup = () => {
+
+        try {
+
+            Share.share({
+                title: "Únete a mi grupo de finanzas",
+                message: groupId,
+                url: groupId
+            });
+
+        } catch (error) {
+            console.log("error", error);
+
+        }
+
+
+    }
+
+
+
 
 
     // ------------------ return ------------------ //
@@ -635,6 +654,9 @@ const useHomeGroupViewModel = ({
         navigateToIncomes,
         navigateToStatistics,
         navigateToProfile,
+
+        // share group
+        shareGroup
     }
 
 }

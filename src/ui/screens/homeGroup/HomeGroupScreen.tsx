@@ -1,5 +1,5 @@
 import React from 'react'
-import { SafeAreaView, StyleSheet, View } from 'react-native'
+import { SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native'
 import MenuButton from '../../components/menuButton/MenuButton'
 import Spacer from '../../components/spacer/Spacer'
 import { Colors, DefaultStyles, Styles } from '../../constants/Index'
@@ -25,6 +25,8 @@ import { currencyFormat } from '../../../utils/NumberFormat'
 import Icons from '../../../assets/icons'
 import useHomeGroupViewModel from './HomeGroupViewModel'
 import IncomeGroupRepository from '../../../data/repository/incomeRepository/IncomeGroupRepository'
+import Label from '../../components/label/Label'
+import ButtonApp from '../../components/buttonApp/ButtonApp'
 
 
 
@@ -122,6 +124,13 @@ const HomeGroupScreen = ({ navigation, route }: HomeGroupScreenProps) => {
                 <CurrentDate
                     date={bottomSheetState.date}
                     showDate={showBottomSheet}
+                />
+
+                <Spacer marginVertical={"2%"} />
+
+                <ButtonApp
+                    title='Compartir grupo'
+                    onPress={homeGroupViewModel.shareGroup}
                 />
 
                 <Spacer marginVertical={"4%"} />

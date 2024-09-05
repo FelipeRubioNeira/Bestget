@@ -4,30 +4,38 @@ import Label from '../../components/label/Label'
 import DefaultStyles from '../../styles/DefaultStyles'
 import ButtonApp from '../../components/buttonApp/ButtonApp'
 import Spacer from '../../components/spacer/Spacer'
-import { FontFamily } from '../../constants/Fonts'
+import { FontFamily, FontSize } from '../../constants/Fonts'
 import { Colors } from '../../constants/Colors'
 import { GroupsScreenProps } from '../../../navigation/NavigationParamList'
 import useGroupsViewModel from './GroupsViewModel'
 import GroupRepository from '../../../data/repository/groupRepository/GroupRepository'
 import GetGroupsService from '../../../domain/services/GetGroupsService'
+import ModalInput from '../../components/modalInput/ModalInput'
+import JoinToGroupUseCase from '../../../domain/useCases/JoinToGroupUseCase'
 
 const groupRepository = new GroupRepository()
 const getGroupsService = new GetGroupsService(groupRepository)
 
+const joinToGroupUseCase = new JoinToGroupUseCase(groupRepository)
+
 
 const GroupsScreen = ({
     navigation,
-    route
+    route,
 }: GroupsScreenProps) => {
 
     const {
         navigateToCreateGroup,
         navigateToFinancesOfGroup,
-        groups
+        groups,
+        onPressJoinToGroup,
+        modalState,
+        onChangeTextModal
     } = useGroupsViewModel({
         navigation,
         route,
-        getGroupsService
+        getGroupsService,
+        joinToGroupUseCase
     })
 
     return (
@@ -45,6 +53,19 @@ const GroupsScreen = ({
                 onPress={navigateToCreateGroup}
                 buttonStyle={{
                     backgroundColor: Colors.CHIP_LUXURIES,
+                }}
+            />
+
+            <Spacer marginVertical='2%' />
+
+            <ButtonApp
+                title='Unirse a grupo'
+                onPress={onPressJoinToGroup}
+                labelStyle={{
+                    color: Colors.WHITE
+                }}
+                buttonStyle={{
+                    backgroundColor: Colors.BLACK,
                 }}
             />
 
@@ -69,6 +90,15 @@ const GroupsScreen = ({
                     </TouchableOpacity>
                 )}
                 keyExtractor={(item, index) => index.toString()}
+            />
+
+            <ModalInput
+                message={modalState.message}
+                buttonList={modalState.buttonList}
+                onChangeTextModal={onChangeTextModal}
+                value={modalState.value}
+                title={modalState.title}
+                visible={modalState.visible}
             />
 
 

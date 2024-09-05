@@ -10,7 +10,11 @@ type ModalButtonList = {
 
 type BodyProps = {
     message?: string,
-    buttonList?: ModalButtonList[]
+    buttonList?: ModalButtonList[],
+    placeholder?: string,
+    value?: string,
+    fontSize?: number,
+    onChangeTextModal?: (text: string) => void,
 }
 
 type ModalProps = {
@@ -21,7 +25,7 @@ type ModalProps = {
 
 
 
-const useModalViewModel = () => {
+const useInputModalViewModel = () => {
 
 
     // ----------- state ------------ //
@@ -29,8 +33,13 @@ const useModalViewModel = () => {
         visible: false,
         title: "",
         message: "",
-        buttonList: []
+        placeholder: "",
+        buttonList: [],
+        value: "",
     })
+
+
+    // ----------- functions ------------ //
 
     /**
      * 
@@ -41,6 +50,7 @@ const useModalViewModel = () => {
     const showModal = (
         title: string = "",
         message: string = "",
+        placeholder: string = "",
         buttonList: ModalButtonList[] = [{
             text: "Ok",
             onPress: hideModal
@@ -50,12 +60,18 @@ const useModalViewModel = () => {
             visible: true,
             title,
             message,
-            buttonList
+            placeholder,
+            buttonList,
+            value: "",
         })
     }
 
     const hideModal = () => {
-        setModalState(prevState => ({ ...prevState, visible: false }));
+        setModalState({ ...modalState, visible: false });
+    }
+
+    const onChangeTextModal = (text: string) => {
+        setModalState({ ...modalState, value: text });
     }
 
 
@@ -63,12 +79,14 @@ const useModalViewModel = () => {
     return {
         modalState,
         showModal,
-        hideModal
+        hideModal,
+        onChangeTextModal,
+        modalValue: modalState.value
     }
 
 }
 
-export default useModalViewModel
+export default useInputModalViewModel
 
 export type {
     ModalButtonList,

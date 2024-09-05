@@ -115,3 +115,9 @@ const ButtonItem = ({ text, onPress, style }: ModalButtonList) => {
 
 
 export default Modal
+export {
+    Header,
+    Body,
+    ButtonList,
+    ButtonItem
+}

@@ -44,9 +44,14 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
 
             const incomeIds = incomeGroup.docs.map(doc => doc.data().incomeId)
 
+            // if there are no incomes, we return an empty array
+            if (incomeIds.length === 0) return []
+
             const incomes = await firestore()
                 .collection(Collections.INCOME)
                 .where(IncomeKeys.INCOME_ID, "in", incomeIds)
+                .where(IncomeKeys.DATE, ">=", initialDate)
+                .where(IncomeKeys.DATE, "<", finalDate)
                 .get()
 
             const incomesArray: Income[] = incomes.docs.map(doc => ({
