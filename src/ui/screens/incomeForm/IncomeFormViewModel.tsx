@@ -11,6 +11,7 @@ import DateTime from "../../../utils/DateTime";
 import { useAppSelector } from "../../../data/globalContext/StoreHooks";
 import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppSlice";
 import { selectDateIntervalApp } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice";
+import { selectFinancesApp } from "../../../data/globalContext/slices/FinancesAppSlice";
 
 
 const dateTime = new DateTime()
@@ -32,7 +33,8 @@ const useIncomeFormViewModel = ({
 
 
     // ------------------- context------------------- //
-    const userApp = useAppSelector(selectUserApp)
+    const { userId } = useAppSelector(selectUserApp)
+    const { groupId } = useAppSelector(selectFinancesApp)
     const dateInterval = useAppSelector(selectDateIntervalApp)
 
 
@@ -116,7 +118,7 @@ const useIncomeFormViewModel = ({
 
         // ------------------- create new income ------------------- //
         const newIncome: IncomeCreate = {
-            userId: userApp.userId,
+            userId: userId,
             name: incomeState.incomeName,
             amount: numberFormat(incomeState.incomeAmount),
             date: generatedDate

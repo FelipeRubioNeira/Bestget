@@ -2,10 +2,6 @@ import { configureStore } from "@reduxjs/toolkit";
 import {userAppSlice, dateIntervalAppSlice, financesAppSlice} from "../index";
 
 
-
-
-
-
 /**
  * Store
  * 

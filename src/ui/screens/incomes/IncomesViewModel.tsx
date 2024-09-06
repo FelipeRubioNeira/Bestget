@@ -52,7 +52,7 @@ const useIncomesViewModel = ({
 
     // ------------------- context ------------------- //
     const userApp = useAppSelector(selectUserApp)
-    const { incomes } = useAppSelector(selectFinancesApp)
+    const { incomes, groupId } = useAppSelector(selectFinancesApp)
     const dateInterval = useAppSelector(selectDateIntervalApp)
     const appDispatch = useAppDispatch()
 
@@ -67,7 +67,7 @@ const useIncomesViewModel = ({
 
 
     // ------------------- route ------------------- //
-    const { incomeId, groupId } = route.params
+    const { incomeId } = route.params
 
 
 

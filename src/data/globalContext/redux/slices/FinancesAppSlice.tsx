@@ -7,7 +7,10 @@ import { RootState } from "../Store";
 
 
 type FinancesState = {
-    //imcomes
+
+    // groupId
+    groupId: string,
+    //incomes
     incomes: Income[],
     // expenses
     expenses: Expense[],
@@ -19,6 +22,7 @@ type FinancesState = {
 
 
 const initialState: FinancesState = {
+    groupId: "",
     incomes: [],
     expenses: [],
     budgets: [],
@@ -30,6 +34,9 @@ export const financesAppSlice = createSlice({
     name: "financesApp",
     initialState,
     reducers: {
+        updateGroupId: (state, action: PayloadAction<string>) => {
+            state.groupId = action.payload
+        },
         updateIncomes: (state, action: PayloadAction<Income[]>) => {
             state.incomes = action.payload
         },
@@ -49,10 +56,11 @@ export const selectFinancesApp = (state: RootState) => state.financesApp;
 
 // export the slice of the state
 export const {
+    updateGroupId,
     updateIncomes,
     updateExpenses,
     updateBudgets,
-    updateCategories
+    updateCategories,
 } = financesAppSlice.actions
 
 export default financesAppSlice.reducer

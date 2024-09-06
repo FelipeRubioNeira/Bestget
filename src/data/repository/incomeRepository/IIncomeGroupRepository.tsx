@@ -10,7 +10,7 @@ export interface IIncomeGroupRepository {
      count: (queryParams: QueryParams) => Promise<number>
 
      getAll: (queryParams: QueryGroupParams) => Promise<Income[]>
-     getTotal: (queryParams: QueryParams) => Promise<number>
+     getTotal: (queryParams: QueryGroupParams) => Promise<number>
 
      // ----------------- transactions ----------------- //
      copyTransaction: (queryParamsCopy: QueryParams, pasteDate: string) => Promise<boolean>

@@ -10,7 +10,7 @@ class CreateIncomeUseCase {
     constructor(private incomeRepository: IIncomeRepository) { }
 
 
-    public async execute(newIncome: IncomeCreate): Promise<ValidationResult<Income>> {
+    public async execute(newIncome: IncomeCreate, groupId?: string): Promise<ValidationResult<Income>> {
 
         // 1. we create a validation result object
         const validationResult: ValidationResult<Income> = {

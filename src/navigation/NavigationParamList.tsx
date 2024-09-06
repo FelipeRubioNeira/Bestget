@@ -23,9 +23,7 @@ type NavigatorParamList = {
 
     [ScreenRoutes.CHOOSE_FINANCES]: undefined
 
-    [ScreenRoutes.GROUPS]: {
-        groupId?: string,
-    }
+    [ScreenRoutes.GROUPS]: undefined
 
     [ScreenRoutes.GROUP_FORM]: {
         group?: Group,
@@ -33,13 +31,10 @@ type NavigatorParamList = {
 
     [ScreenRoutes.HOME]: undefined
 
-    [ScreenRoutes.HOME_GROUP]: {
-        groupId: string,
-    }
+    [ScreenRoutes.HOME_GROUP]: undefined
 
     [ScreenRoutes.INCOMES]: {
         incomeId?: string,
-        groupId?: string,
     }
 
     [ScreenRoutes.INCOME_FORM]: {

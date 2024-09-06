@@ -91,8 +91,6 @@ const useHomeGroupViewModel = ({
 
 }: HomeViewModelProps) => {
 
-    // ------------------ route ------------------ //
-    const { groupId } = route.params
 
 
 
@@ -100,6 +98,7 @@ const useHomeGroupViewModel = ({
     const userApp = useAppSelector(selectUserApp)
 
     const {
+        groupId,
         incomes,
         categories,
         expenses

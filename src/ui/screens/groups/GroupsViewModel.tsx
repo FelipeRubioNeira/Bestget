@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from "react"
+import { updateGroupId, selectFinancesApp } from "../../../data/globalContext/redux/slices/FinancesAppSlice"
+import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppSlice"
+import { useAppDispatch, useAppSelector } from "../../../data/globalContext/StoreHooks"
+import { Group } from "../../../data/types/Group"
+import GetGroupsService from "../../../domain/services/GetGroupsService"
+import JoinToGroupUseCase from "../../../domain/useCases/JoinToGroupUseCase"
 import { GroupsScreenProps } from "../../../navigation/NavigationParamList"
 import { ScreenRoutes } from "../../../navigation/Routes"
-import GetGroupsService from "../../../domain/services/GetGroupsService"
-import { useAppSelector } from "../../../data/globalContext/StoreHooks"
-import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppSlice"
-import { Group } from "../../../data/types/Group"
 import useInputModalViewModel from "../../components/modalInput/ModalInputViewModel"
-import { FontFamily } from "../../constants/Fonts"
 import { Colors } from "../../constants/Colors"
-import { set } from "date-fns"
-import JoinToGroupUseCase from "../../../domain/useCases/JoinToGroupUseCase"
+import { FontFamily } from "../../constants/Fonts"
 
 type GroupsViewModelProps = {
     getGroupsService: GetGroupsService,
@@ -18,7 +18,6 @@ type GroupsViewModelProps = {
 
 const useGroupsViewModel = ({
     navigation,
-    route,
     getGroupsService,
     joinToGroupUseCase
 }: GroupsViewModelProps) => {
@@ -26,6 +25,10 @@ const useGroupsViewModel = ({
 
     // ------------------- context ------------------- //
     const userApp = useAppSelector(selectUserApp)
+    const financesApp =  useAppSelector(selectFinancesApp)
+    const appDispatch = useAppDispatch()
+
+
 
 
     // ------------------- hooks ------------------- //
@@ -38,10 +41,6 @@ const useGroupsViewModel = ({
     } = useInputModalViewModel()
 
 
-    // ------------------- routes params ------------------- //
-    const groupId = route?.params?.groupId
-
-
 
     // ------------------- states ------------------- //
     const [groups, setGroups] = useState<Group[]>([])
@@ -50,6 +49,7 @@ const useGroupsViewModel = ({
 
     // ------------------- effect------------------- //
     useEffect(() => {
+        appDispatch(updateGroupId(""))
         getAllGroups()
     }, [])
 
@@ -64,7 +64,8 @@ const useGroupsViewModel = ({
     }
 
     const navigateToFinancesOfGroup = (groupId: string) => {
-        navigation.navigate(ScreenRoutes.HOME_GROUP, { groupId })
+        navigation.navigate(ScreenRoutes.HOME_GROUP)
+        appDispatch(updateGroupId(groupId))
     }
 
     const getAllGroups = async () => {
@@ -107,7 +108,7 @@ const useGroupsViewModel = ({
         // end loading
 
         if (validationResult.isValid) {
-            navigation.navigate(ScreenRoutes.HOME_GROUP, { groupId: groupCode.current })
+            navigateToFinancesOfGroup(groupCode.current)
 
         } else {
 
