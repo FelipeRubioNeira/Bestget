@@ -100,7 +100,7 @@ const useGroupsViewModel = ({
         if (groupCode.current === "") return
         hideModal()
 
-        // loading
+        // TODO: loading
 
         const validationResult = await joinToGroupUseCase.execute(userApp.userId, groupCode.current)
 
@@ -110,7 +110,7 @@ const useGroupsViewModel = ({
             navigation.navigate(ScreenRoutes.HOME_GROUP, { groupId: groupCode.current })
 
         } else {
-            
+
             showModal(
                 "Error",
                 validationResult.message,

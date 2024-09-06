@@ -8,7 +8,8 @@ type Group = {
 
 type UserGroup = {
     userId: string,
-    groupId: string
+    groupId: string,
+    createdDate: Date
 }
 
 const GroupKeys = Object.freeze({

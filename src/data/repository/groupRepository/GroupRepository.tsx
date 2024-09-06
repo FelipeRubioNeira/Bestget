@@ -12,24 +12,16 @@ class GroupRepository implements IGroupRepository {
         try {
 
             const db = firestore()
-
             const groupRef = db.collection(Collections.GROUP).doc();
-            const userGroupRef = db.collection(Collections.USER_GROUP).doc();
-
 
             const newGroup: Group = {
                 ...group,
                 groupId: groupRef.id,
             }
 
-            const newUserGroup: UserGroup = {
-                groupId: groupRef.id,
-                userId: userId,
-            }
-
             await Promise.all([
                 groupRef.set(newGroup),
-                userGroupRef.set(newUserGroup),
+                this.joinToGroup(userId, groupRef.id)
             ])
 
             return newGroup
@@ -127,6 +119,7 @@ class GroupRepository implements IGroupRepository {
             const newUserGroup: UserGroup = {
                 groupId: groupId,
                 userId: userId,
+                createdDate: new Date()
             }
 
             await userGroupRef.set(newUserGroup)

@@ -37,30 +37,31 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
         try {
 
             const db = firestore();
-
-            const incomeGroup = await db.collection(Collections.INCOME_GROUP)
-                .where(IncomeGroupKeys.GROUP_ID, "==", groupId)
-                .get()
-
-            const incomeIds = incomeGroup.docs.map(doc => doc.data().incomeId)
+            const incomeIds = await this.getIncomeIdsByGroupId({ groupId, initialDate, finalDate })
 
             // if there are no incomes, we return an empty array
             if (incomeIds.length === 0) return []
 
+            // get all incomes from the group
             const incomes = await firestore()
                 .collection(Collections.INCOME)
                 .where(IncomeKeys.INCOME_ID, "in", incomeIds)
-                .where(IncomeKeys.DATE, ">=", initialDate)
-                .where(IncomeKeys.DATE, "<", finalDate)
                 .get()
 
-            const incomesArray: Income[] = incomes.docs.map(doc => ({
-                incomeId: doc.id,
-                userId: doc.data().userId,
-                name: doc.data().name,
-                amount: doc.data().amount,
-                date: doc.data().date
-            }));
+            // map incomes
+            const incomesArray: Income[] = incomes.docs.map(doc => {
+                const { userId, name, amount, date } = doc.data()
+
+                const newIncome: Income = {
+                    incomeId: doc.id,
+                    userId,
+                    name,
+                    amount,
+                    date
+                }
+
+                return newIncome
+            })
 
             return incomesArray;
 
@@ -69,6 +70,29 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
             return []
         }
 
+    }
+
+    private async getIncomeIdsByGroupId({ groupId, initialDate, finalDate }: QueryGroupParams): Promise<string[]> {
+
+        try {
+
+            const db = firestore();
+
+            // get all incomes from the group filtered by date
+            const incomeGroup = await db.collection(Collections.INCOME_GROUP)
+                .where(IncomeGroupKeys.GROUP_ID, "==", groupId)
+                .where(IncomeGroupKeys.CREATED_DATE, ">=", initialDate)
+                .where(IncomeGroupKeys.CREATED_DATE, "<", finalDate)
+                .get()
+
+
+            // get all income ids
+            return incomeGroup.docs.map(doc => doc.data().incomeId)
+
+        } catch (error) {
+            console.log("error incomeRepository [getIncomeIdsByGroupId]", error);
+            return []
+        }
     }
 
     public async getTotal(queryParams: QueryGroupParams): Promise<number> {

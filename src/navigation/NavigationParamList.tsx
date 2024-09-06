@@ -39,6 +39,7 @@ type NavigatorParamList = {
 
     [ScreenRoutes.INCOMES]: {
         incomeId?: string,
+        groupId?: string,
     }
 
     [ScreenRoutes.INCOME_FORM]: {

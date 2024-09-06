@@ -67,8 +67,7 @@ const useIncomesViewModel = ({
 
 
     // ------------------- route ------------------- //
-    const { incomeId } = route.params
-
+    const { incomeId, groupId } = route.params
 
 
 

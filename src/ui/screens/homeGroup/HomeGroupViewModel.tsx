@@ -7,7 +7,6 @@ import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppS
 import IBudgetRepository from "../../../data/repository/budgetRepository/IBudgetRepository"
 import ICategoryRepository from "../../../data/repository/categoryRepository/ICategoryRespository"
 import IExpenseRespository from "../../../data/repository/expenseRepository/IExpenseRepository"
-import IncomeGroupRepository from "../../../data/repository/incomeRepository/IncomeGroupRepository"
 import { DateInterval } from "../../../data/types/DateInterval"
 import { Expense } from "../../../data/types/Expense"
 import { Income } from "../../../data/types/Income"
@@ -26,6 +25,7 @@ import useModalViewModel, { ModalButtonList } from "../../components/modal/Modal
 import useToastViewModel from "../../components/toast/ToastViewModel"
 import { FontSize } from "../../constants/Fonts"
 import DefaultStyles from "../../styles/DefaultStyles"
+import { IIncomeGroupRepository } from "../../../data/repository/incomeRepository/IIncomeGroupRepository"
 
 const dateTime = new DateTime()
 
@@ -45,7 +45,7 @@ export type ButtonHomeProps = {
 
 type HomeViewModelProps = {
     // repositories
-    incomeGroupRepository: IncomeGroupRepository,
+    incomeGroupRepository: IIncomeGroupRepository,
     expenseRepository: IExpenseRespository,
     budgetRepository: IBudgetRepository,
     categoryRepository: ICategoryRepository,
@@ -290,7 +290,7 @@ const useHomeGroupViewModel = ({
     }
 
     const navigateToIncomes = () => {
-        navigateTo(ScreenRoutes.INCOMES, {})
+        navigateTo(ScreenRoutes.INCOMES, { groupId })
     }
 
     const navigateToExpenses = () => {
