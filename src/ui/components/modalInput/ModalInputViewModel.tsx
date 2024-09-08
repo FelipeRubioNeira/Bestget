@@ -29,7 +29,7 @@ const useInputModalViewModel = () => {
 
 
     // ----------- state ------------ //
-    const [modalState, setModalState] = useState<ModalProps>({
+    const [modalInputState, setModalInputState] = useState<ModalProps>({
         visible: false,
         title: "",
         message: "",
@@ -47,16 +47,16 @@ const useInputModalViewModel = () => {
      * @param message Message of the modal
      * @param buttonList  List of buttons to show in the modal with according actions
      */
-    const showModal = (
+    const showInputModal = (
         title: string = "",
         message: string = "",
         placeholder: string = "",
         buttonList: ModalButtonList[] = [{
             text: "Ok",
-            onPress: hideModal
+            onPress: hideInputModal
         }]
     ) => {
-        setModalState({
+        setModalInputState({
             visible: true,
             title,
             message,
@@ -66,22 +66,22 @@ const useInputModalViewModel = () => {
         })
     }
 
-    const hideModal = () => {
-        setModalState({ ...modalState, visible: false });
+    const hideInputModal = () => {
+        setModalInputState({ ...modalInputState, visible: false });
     }
 
     const onChangeTextModal = (text: string) => {
-        setModalState({ ...modalState, value: text });
+        setModalInputState({ ...modalInputState, value: text });
     }
 
 
     // ----------- return ------------ //
     return {
-        modalState,
-        showModal,
-        hideModal,
+        modalInputState,
+        showInputModal,
+        hideInputModal,
         onChangeTextModal,
-        modalValue: modalState.value
+        modalValue: modalInputState.value
     }
 
 }

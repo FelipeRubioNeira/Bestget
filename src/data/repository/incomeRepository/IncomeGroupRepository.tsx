@@ -1,6 +1,6 @@
 import { Collections } from "../../collections/Collections";
 import { Income, IncomeCreate, IncomeKeys } from "../../types/Income";
-import { IncomeGroupKeys } from "../../types/IncomeGroup";
+import { IncomeGroup, IncomeGroupKeys } from "../../types/IncomeGroup";
 import { QueryGroupParams, QueryParams } from "../../types/QueryParams";
 import { IIncomeGroupRepository } from "./IIncomeGroupRepository";
 import firestore from '@react-native-firebase/firestore';
@@ -10,25 +10,25 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
     constructor() { }
 
 
-    public async create(income: IncomeCreate): Promise<Income> {
+    public async create(incomeGroup: IncomeGroup): Promise<IncomeGroup> {
         try {
 
-            const newDocRef = firestore().collection(Collections.INCOME).doc();
+            const newDocRef = firestore().collection(Collections.INCOME_GROUP).doc();
 
-            const newIncome: Income = {
-                incomeId: newDocRef.id, // we set the id
-                userId: income.userId,
-                name: income.name,
-                amount: income.amount,
-                date: income.date
+            const newIncomeGroup: IncomeGroup = {
+                incomeGroupId: newDocRef.id, 
+                incomeId: incomeGroup.incomeId, 
+                createdBy: incomeGroup.createdBy,
+                createdDate: incomeGroup.createdDate,
+                groupId: incomeGroup.groupId,
             }
 
-            await newDocRef.set(newIncome);
-            return newIncome
+            await newDocRef.set(newIncomeGroup);
+            return newIncomeGroup
 
         } catch (error) {
             console.error("error IncomeRepository [CREATE]", error);
-            throw error
+            throw null
         }
     }
 

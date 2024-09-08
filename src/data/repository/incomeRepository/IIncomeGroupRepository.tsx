@@ -1,10 +1,11 @@
-import { Income, IncomeCreate } from "../../types/Income";
+import { Income } from "../../types/Income";
+import { IncomeGroup } from "../../types/IncomeGroup";
 import { QueryGroupParams, QueryParams } from "../../types/QueryParams";
 
 export interface IIncomeGroupRepository {
 
      /* all these methods are in charge of manipulating individual data */
-     create: (income: IncomeCreate) => Promise<Income | null>
+     create: (incomeGroup: IncomeGroup) => Promise<IncomeGroup | null>
      update: (income: Income) => Promise<boolean>
      delete: (incomeId: string) => Promise<boolean>
      count: (queryParams: QueryParams) => Promise<number>

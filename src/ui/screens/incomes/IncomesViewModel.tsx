@@ -52,7 +52,7 @@ const useIncomesViewModel = ({
 
     // ------------------- context ------------------- //
     const userApp = useAppSelector(selectUserApp)
-    const { incomes, groupId } = useAppSelector(selectFinancesApp)
+    const { incomes } = useAppSelector(selectFinancesApp)
     const dateInterval = useAppSelector(selectDateIntervalApp)
     const appDispatch = useAppDispatch()
 
@@ -260,7 +260,6 @@ const useIncomesViewModel = ({
             ]
         )
     }
-
 
     // ------------------- call to use Case ------------------- //
     const deleteIncome = async (incomeId: string) => {

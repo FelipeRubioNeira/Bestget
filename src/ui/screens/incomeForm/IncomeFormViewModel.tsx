@@ -39,6 +39,7 @@ const useIncomeFormViewModel = ({
 
 
 
+
     // ------------------- route-params ------------------- //
     const { income } = route.params
 
@@ -134,7 +135,7 @@ const useIncomeFormViewModel = ({
 
                 // 2. if is a new income
             } else {
-                response = await createIncomeUseCase.execute(newIncome)
+                response = await createIncomeUseCase.execute(newIncome, groupId)
             }
 
 

@@ -1,8 +1,10 @@
 import { Collections } from "../../collections/Collections";
 import { Group, GroupKeys, UserGroup, UserGroupKeys } from "../../types/Group";
-import firestore from '@react-native-firebase/firestore';
+import firestore, { where } from '@react-native-firebase/firestore';
 import IGroupRepository from "./IGroupRepository";
 import { QueryParams } from "../../types/QueryParams";
+import { IncomeKeys } from "../../types/Income";
+import { IncomeGroupKeys } from "../../types/IncomeGroup";
 
 
 class GroupRepository implements IGroupRepository {
@@ -133,7 +135,93 @@ class GroupRepository implements IGroupRepository {
 
     }
 
+    async delete(groupId: string): Promise<boolean> {
 
+        try {
+
+            const db = firestore()
+
+            // group reference
+            const groupRef = db.collection(Collections.GROUP).doc(groupId)
+
+            const [
+                userGroupRef,
+                // incomesGroupRef,
+                // expensesGroupRef,
+                // budgetGroupRef
+            ] = await Promise.all([
+
+                db.collection(Collections.USER_GROUP)
+                    .where(UserGroupKeys.GROUP_ID, '==', groupId)
+                    .get(),
+
+                // db.collection(Collections.INCOME_GROUP)
+                //     .where(IncomeGroupKeys.GROUP_ID, '==', groupId)
+                //     .get(),
+
+                // db.collection(Collections.EXPENSE)
+                //     .where(GroupKeys.GROUP_ID, '==', groupId)
+                //     .get(),
+
+                // db.collection(Collections.BUDGET)
+                //     .where(GroupKeys.GROUP_ID, '==', groupId)
+                //     .get()
+
+            ])
+
+            // we get the ids of the incomes to delete them
+            // const incomeIds = incomesGroupRef.docs.map(doc => doc.id)
+            // const expenseIds = expensesGroupRef.docs.map(doc => doc.id)
+            // const budgetIds = budgetGroupRef.docs.map(doc => doc.id)
+
+            // const [
+            //     incomeRefs,
+            //     expenseRefs,
+            //     budgetRefs
+            // ] = await Promise.all([
+
+            //     db.collection(Collections.INCOME)
+            //         .where(IncomeKeys.INCOME_ID, 'in', incomeIds)
+            //         .get(),
+
+            //     db.collection(Collections.EXPENSE)
+            //         .where(IncomeKeys.INCOME_ID, 'in', expenseIds)
+            //         .get(),
+
+            //     db.collection(Collections.BUDGET)
+            //         .where(IncomeKeys.INCOME_ID, 'in', budgetIds)
+            //         .get()
+            // ])
+
+
+            await Promise.all([
+
+                // delete group and user group
+                groupRef.delete(),
+                userGroupRef.docs.map(doc => doc.ref.delete()),
+
+                // // delete incomes 
+                // incomesGroupRef.docs.map(doc => doc.ref.delete()),
+                // incomeRefs.docs.map(doc => doc.ref.delete()),
+
+                // // delete expenses
+                // expensesGroupRef.docs.map(doc => doc.ref.delete()),
+                // expenseRefs.docs.map(doc => doc.ref.delete()),
+
+                // // delete budgets
+                // budgetGroupRef.docs.map(doc => doc.ref.delete()),
+                // budgetRefs.docs.map(doc => doc.ref.delete())
+
+            ])
+
+            return true
+
+        } catch (error) {
+            console.log("error deleteGroup GroupRepository", error);
+            return false
+        }
+
+    }
 
 }
 

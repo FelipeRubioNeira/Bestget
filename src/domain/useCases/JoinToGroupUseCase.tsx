@@ -27,7 +27,7 @@ class JoinToGroupUseCase {
 
         } else {
             validationResult.isValid = validations.isValid
-            validationResult.message = validations.message
+            validationResult.message = validations.message + " " + "Inténtalo nuevamente."
         }
 
         return validationResult

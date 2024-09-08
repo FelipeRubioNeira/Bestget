@@ -284,24 +284,20 @@ const useHomeGroupViewModel = ({
     }
 
     // ------------------ navigation methods ------------------ //
-    const navigateTo = (screen: ScreenRoutes, params: any) => {
-        navigation.navigate(screen, params)
-    }
-
     const navigateToIncomes = () => {
-        navigateTo(ScreenRoutes.INCOMES, { groupId })
+        navigation.navigate(ScreenRoutes.INCOMES,{})
     }
 
     const navigateToExpenses = () => {
-        navigateTo(ScreenRoutes.BUDGET_EXPENSES, {})
+        navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {})
     }
 
     const navigateToStatistics = () => {
-        navigateTo(ScreenRoutes.STATISTICS, {})
+        navigation.navigate(ScreenRoutes.STATISTICS)
     }
 
     const navigateToProfile = () => {
-        navigateTo(ScreenRoutes.PROFILE, {})
+        navigation.navigate(ScreenRoutes.PROFILE)
     }
 
 

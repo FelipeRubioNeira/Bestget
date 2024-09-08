@@ -12,13 +12,21 @@ import GroupRepository from '../../../data/repository/groupRepository/GroupRepos
 import GetGroupsService from '../../../domain/services/GetGroupsService'
 import ModalInput from '../../components/modalInput/ModalInput'
 import JoinToGroupUseCase from '../../../domain/useCases/JoinToGroupUseCase'
+import Modal from '../../components/modal/Modal'
+import { Styles } from '../../styles/Styles'
+import GroupItem from '../../components/groupItem/GroupItem'
+import DeleteGroupUseCase from '../../../domain/useCases/DeleteGroupUseCase'
 
+
+// dependency injection
 const groupRepository = new GroupRepository()
 const getGroupsService = new GetGroupsService(groupRepository)
-
 const joinToGroupUseCase = new JoinToGroupUseCase(groupRepository)
 
+const deleteGroupUseCase = new DeleteGroupUseCase(groupRepository)
 
+
+// ------------------- component ------------------- //
 const GroupsScreen = ({
     navigation,
     route,
@@ -29,13 +37,18 @@ const GroupsScreen = ({
         navigateToFinancesOfGroup,
         groups,
         onPressJoinToGroup,
+        modalInputState,
+        onChangeTextModal,
         modalState,
-        onChangeTextModal
+        editMode,
+        onPressDeleteGroupConfirmation,
+        onPressEditGroupConfirmation
     } = useGroupsViewModel({
         navigation,
         route,
         getGroupsService,
-        joinToGroupUseCase
+        joinToGroupUseCase,
+        deleteGroupUseCase
     })
 
     return (
@@ -74,31 +87,32 @@ const GroupsScreen = ({
             <FlatList
                 data={groups}
                 renderItem={({ item }) => (
-                    <TouchableOpacity
-                        onPress={() => navigateToFinancesOfGroup(item.groupId)}
-                        style={{
-                            width: '100%',
-                            height: 70,
-                            borderWidth: 1,
-                            marginBottom: 20
-                        }}>
-                        <Text style={{
-                            color: Colors.BLACK,
-                        }}>
-                            {item.name}
-                        </Text>
-                    </TouchableOpacity>
+                    <GroupItem
+                        groupId={item.groupId}
+                        name={item.name}
+                        editMode={editMode}
+                        navigateToFinancesOfGroup={() => navigateToFinancesOfGroup(item.groupId)}
+                        onDelete={() => onPressDeleteGroupConfirmation(item.groupId)}
+                        onEdit={() => onPressEditGroupConfirmation(item.groupId)}
+                    />
                 )}
                 keyExtractor={(item, index) => index.toString()}
             />
 
             <ModalInput
-                message={modalState.message}
-                buttonList={modalState.buttonList}
+                message={modalInputState.message}
+                buttonList={modalInputState.buttonList}
                 onChangeTextModal={onChangeTextModal}
-                value={modalState.value}
+                value={modalInputState.value}
+                title={modalInputState.title}
+                visible={modalInputState.visible}
+            />
+
+            <Modal
                 title={modalState.title}
                 visible={modalState.visible}
+                message={modalState.message}
+                buttonList={modalState.buttonList}
             />
 
 

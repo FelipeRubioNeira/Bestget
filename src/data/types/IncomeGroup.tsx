@@ -1,8 +1,9 @@
 
 type IncomeGroup = {
+    incomeGroupId: string,
     incomeId: string,
     groupId: string,
-    createdDate: Date,
+    createdDate: string,
     createdBy: string
 } 
 

@@ -12,6 +12,8 @@ interface IGroupRepository {
 
     joinToGroup(userId: string, groupId: string): Promise<boolean>
 
+    delete(groupId: string): Promise<boolean>
+
 }
 
 export default IGroupRepository
