@@ -16,8 +16,8 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
             const newDocRef = firestore().collection(Collections.INCOME_GROUP).doc();
 
             const newIncomeGroup: IncomeGroup = {
-                incomeGroupId: newDocRef.id, 
-                incomeId: incomeGroup.incomeId, 
+                incomeGroupId: newDocRef.id,
+                incomeId: incomeGroup.incomeId,
                 createdBy: incomeGroup.createdBy,
                 createdDate: incomeGroup.createdDate,
                 groupId: incomeGroup.groupId,
@@ -31,6 +31,29 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
             throw null
         }
     }
+
+    public async delete(incomeId: string): Promise<boolean> {
+
+        try {
+
+            const querySnapshot = await firestore()
+                .collection(Collections.INCOME_GROUP)
+                .where(IncomeGroupKeys.INCOME_ID, "==", incomeId)
+                .get()
+
+            if (querySnapshot.empty) return true
+
+            await Promise.all(querySnapshot.docs.map(doc => doc.ref.delete()))
+
+            return true
+
+        } catch (error) {
+            console.error("error IncomesGroup [delete]", error);
+            return false
+        }
+
+    }
+
 
     public async getAll({ groupId, initialDate, finalDate }: QueryGroupParams): Promise<Income[]> {
 
@@ -125,23 +148,6 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
 
     }
 
-    public async delete(id: string): Promise<boolean> {
-
-        try {
-
-            await firestore()
-                .collection(Collections.INCOME)
-                .doc(id)
-                .delete()
-
-            return true
-
-        } catch (error) {
-            console.error("error IncomesCreateDataSource", error);
-            return false
-        }
-
-    }
 
     public async count({ userId, initialDate, finalDate }: QueryParams): Promise<number> {
         try {

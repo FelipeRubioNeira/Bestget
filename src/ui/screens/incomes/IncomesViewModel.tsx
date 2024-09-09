@@ -31,6 +31,7 @@ import { selectFinancesApp, updateIncomes } from "../../../data/globalContext/re
 import { selectDateIntervalApp } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice"
 import HeaderRight from "../../components/headerRight/HeaderRight"
 import useSearchViewModel from "../../components/search/SearchViewModel"
+import DefaultStyles from "../../styles/DefaultStyles"
 
 
 
@@ -52,7 +53,7 @@ const useIncomesViewModel = ({
 
     // ------------------- context ------------------- //
     const userApp = useAppSelector(selectUserApp)
-    const { incomes } = useAppSelector(selectFinancesApp)
+    const { incomes, groupId } = useAppSelector(selectFinancesApp)
     const dateInterval = useAppSelector(selectDateIntervalApp)
     const appDispatch = useAppDispatch()
 
@@ -255,7 +256,7 @@ const useIncomesViewModel = ({
                 {
                     text: 'Cancelar',
                     onPress: hideModal,
-                    style: { color: Colors.BLUE, fontFamily: FontFamily.BOLD }
+                    style: DefaultStyles.highlightedText
                 }
             ]
         )
@@ -266,7 +267,7 @@ const useIncomesViewModel = ({
 
         hideModal()
 
-        const response = await deleteIncomeUseCase.delete(incomeId)
+        const response = await deleteIncomeUseCase.delete(incomeId, groupId)
 
         if (response.isValid) {
 
@@ -282,8 +283,6 @@ const useIncomesViewModel = ({
                 [{ text: 'Aceptar', onPress: hideModal }]
             )
         }
-
-
 
     }
 
