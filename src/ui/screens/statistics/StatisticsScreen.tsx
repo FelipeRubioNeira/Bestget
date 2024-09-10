@@ -1,3 +1,4 @@
+import React from 'react';
 import { SafeAreaView, ScrollView } from 'react-native'
 import useStatisticsViewModel from './StatisticsViewModel';
 import BarChartComponent from '../../components/charts/BarChartComponent';
@@ -8,8 +9,7 @@ import { Styles } from '../../styles/Styles';
 import CalendarChart from '../../components/charts/calendarChart/CalendarChart';
 import { useAppSelector } from '../../../data/globalContext/StoreHooks';
 import { selectDateIntervalApp } from '../../../data/globalContext/redux/slices/DateIntervalAppSlice';
-import Modal from '../../components/modal/Modal';
-import useModalViewModel from '../../components/modal/ModalViewModel';
+
 
 
 // ------------------- StatisticsScreen ------------------- //

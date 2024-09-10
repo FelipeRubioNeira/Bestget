@@ -1,5 +1,5 @@
 import React from 'react'
-import { SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView, StyleSheet, View } from 'react-native'
 import MenuButton from '../../components/menuButton/MenuButton'
 import Spacer from '../../components/spacer/Spacer'
 import { Colors, DefaultStyles, Styles } from '../../constants/Index'
@@ -11,7 +11,6 @@ import BudgetRepository from '../../../data/repository/budgetRepository/BudgetRe
 import HomeHeader from '../../components/homeHeader/homeHeader'
 import Toast from '../../components/toast/Toast'
 import Modal from '../../components/modal/Modal'
-import IncomeRepository from '../../../data/repository/incomeRepository/IncomeRepository'
 import CategoryRespository from '../../../data/repository/categoryRepository/CategoryRepository'
 import ExpenseRepository from '../../../data/repository/expenseRepository/ExpenseRepository'
 import CopyMonthUseCase from '../../../domain/useCases/CopyMonthUseCase'
@@ -25,7 +24,6 @@ import { currencyFormat } from '../../../utils/NumberFormat'
 import Icons from '../../../assets/icons'
 import useHomeGroupViewModel from './HomeGroupViewModel'
 import IncomeGroupRepository from '../../../data/repository/incomeRepository/IncomeGroupRepository'
-import Label from '../../components/label/Label'
 import ButtonApp from '../../components/buttonApp/ButtonApp'
 
 

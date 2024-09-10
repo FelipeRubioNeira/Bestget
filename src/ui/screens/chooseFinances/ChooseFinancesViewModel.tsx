@@ -1,12 +1,7 @@
 import { ChooseFinancesScreenProps } from "../../../navigation/NavigationParamList"
 import { ScreenRoutes } from "../../../navigation/Routes"
 
-
-type NavigationFinancesViewModelProps = {
-
-} & ChooseFinancesScreenProps
-
-const useChooseFinancesViewModel = ({ navigation }: NavigationFinancesViewModelProps) => {
+const useChooseFinancesViewModel = ({ navigation }: ChooseFinancesScreenProps) => {
 
 
     // ---------------- methods ---------------- //

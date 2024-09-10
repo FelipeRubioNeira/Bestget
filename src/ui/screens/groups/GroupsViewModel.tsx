@@ -1,5 +1,6 @@
+import React from "react"
 import { useEffect, useRef, useState } from "react"
-import { updateGroupId, selectFinancesApp } from "../../../data/globalContext/redux/slices/FinancesAppSlice"
+import { updateGroupId } from "../../../data/globalContext/redux/slices/FinancesAppSlice"
 import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppSlice"
 import { useAppDispatch, useAppSelector } from "../../../data/globalContext/StoreHooks"
 import { Group } from "../../../data/types/Group"

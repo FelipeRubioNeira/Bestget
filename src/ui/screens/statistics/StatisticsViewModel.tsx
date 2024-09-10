@@ -25,7 +25,7 @@ export type BarChartData = {
 }
 
 export type ContributionChartValue = {
-    date: String,
+    date: string,
     count: number,
     expenseList: Expense[],
 }
@@ -52,7 +52,6 @@ const useStatisticsViewModel = () => {
 
     const {
         initialDate,
-        finalDate,
     } = useAppSelector(selectDateIntervalApp)
 
 

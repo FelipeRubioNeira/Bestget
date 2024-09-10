@@ -1,15 +1,20 @@
+import { IIncomeGroupRepository } from "../../data/repository/incomeRepository/IIncomeGroupRepository";
 import { IIncomeRepository } from "../../data/repository/incomeRepository/IIncomeRepository";
 import { Income } from "../../data/types/Income";
+import { IncomeGroup } from "../../data/types/IncomeGroup";
 import { Validation, ValidationResult } from "../../data/types/Validation";
 import { validateConnection } from "../../utils/Connection";
 import { validateInputs } from "../../utils/Inputs";
 
 
 class EditIncomeUseCase {
-    constructor(private incomeRepository: IIncomeRepository) { }
+    constructor(
+        private incomeRepository: IIncomeRepository,
+        private incomeGroupRepository: IIncomeGroupRepository
+    ) { }
 
-    
-    async execute(income: Income): Promise<ValidationResult<Income>> {
+
+    async execute(income: Income, groupId: string): Promise<ValidationResult<Income>> {
 
         // 1. we create a validation result object
         const validationResult: ValidationResult<Income> = {
@@ -22,16 +27,39 @@ class EditIncomeUseCase {
 
 
         if (isValid) {
-            await this.incomeRepository.update(income);
+            
+            const result = await this.incomeRepository.update(income);
+
+            if (!result) this.throwMessage("No se pudo guardar el ingreso.")
+
+            const incomeGroup: IncomeGroup = {
+                incomeId: income.incomeId,
+                groupId: groupId,
+                createdBy: income.userId,
+                date: income.date,
+            }
+
+            const incomeGroupResult = await this.incomeGroupRepository.update(incomeGroup)
+
+            if (!incomeGroupResult) this.throwMessage("No se pudo guardar el ingreso.")
+
             validationResult.result = income
 
         } else {
-            validationResult.isValid = false
-            validationResult.message = message
+            return this.throwMessage(message)
         }
 
 
         return validationResult
+
+    }
+
+    private throwMessage(message: string): ValidationResult<Income> {
+        return {
+            isValid: false,
+            message: message,
+            result: null,
+        }
 
     }
 

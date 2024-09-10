@@ -71,7 +71,6 @@ type BottomSheetState = {
 
 const useHomeGroupViewModel = ({
     navigation,
-    route,
 
     // repositories
     incomeGroupRepository,

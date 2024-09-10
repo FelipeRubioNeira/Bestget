@@ -1,6 +1,5 @@
 import { Collections } from "../../collections/Collections";
-import { DateInterval } from "../../types/DateInterval";
-import { Income, IncomeCreate, IncomeKeys } from "../../types/Income";
+import { Income, IncomeKeys } from "../../types/Income";
 import { QueryParams } from "../../types/QueryParams";
 import { IIncomeRepository } from "./IIncomeRepository";
 import firestore from '@react-native-firebase/firestore';
@@ -10,7 +9,7 @@ class IncomeRepository implements IIncomeRepository {
     constructor() { }
 
     
-    public async create(income: IncomeCreate): Promise<Income> {
+    public async create(income: Income): Promise<Income> {
         try {
 
             const newDocRef = firestore().collection(Collections.INCOME).doc();
@@ -84,7 +83,7 @@ class IncomeRepository implements IIncomeRepository {
             return true
 
         } catch (error) {
-            console.error("error IncomesCreateDataSource", error);
+            console.error("error income repository [update]", error);
             return false
         }
 
@@ -102,7 +101,7 @@ class IncomeRepository implements IIncomeRepository {
             return true
 
         } catch (error) {
-            console.error("error IncomesCreateDataSource", error);
+            console.error("error income repository [delete]", error);
             return false
         }
 
@@ -122,7 +121,7 @@ class IncomeRepository implements IIncomeRepository {
             return incomeCount.data().count
 
         } catch (error) {
-            console.error("error IncomesCreateDataSource", error);
+            console.error("error income repository [count]", error);
             return 0
         }
     }
@@ -190,7 +189,7 @@ class IncomeRepository implements IIncomeRepository {
             return true
 
         } catch (error) {
-            console.error("error IncomesCreateDataSource", error);
+            console.error("error income repository [delete transaction]", error);
             return false
         }
 

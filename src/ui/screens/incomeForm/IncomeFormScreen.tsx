@@ -23,7 +23,11 @@ import IncomeGroupRepository from '../../../data/repository/incomeRepository/Inc
 const incomeRepository = new IncomeRepository()
 const incomeGroupRepository = new IncomeGroupRepository()
 
-const editIncomeUseCase = new EditIncomeUseCase(incomeRepository)
+const editIncomeUseCase = new EditIncomeUseCase(
+  incomeRepository,
+  incomeGroupRepository
+)
+
 const createIncomeUseCase = new CreateIncomeUseCase(
   incomeRepository,
   incomeGroupRepository

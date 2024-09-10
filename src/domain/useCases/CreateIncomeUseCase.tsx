@@ -1,6 +1,6 @@
 import { IIncomeGroupRepository } from "../../data/repository/incomeRepository/IIncomeGroupRepository";
 import { IIncomeRepository } from "../../data/repository/incomeRepository/IIncomeRepository";
-import { Income, IncomeCreate } from "../../data/types/Income";
+import { Income } from "../../data/types/Income";
 import { IncomeGroup } from "../../data/types/IncomeGroup";
 import { Validation, ValidationResult } from "../../data/types/Validation";
 import { validateConnection } from "../../utils/Connection";
@@ -16,7 +16,7 @@ class CreateIncomeUseCase {
 
 
     public async execute(
-        newIncome: IncomeCreate,
+        newIncome: Income,
         groupId?: string
     ): Promise<ValidationResult<Income>> {
 
@@ -41,11 +41,10 @@ class CreateIncomeUseCase {
         if (incomeCreated && groupId) {
 
             const newIncomeGroup: IncomeGroup = {
-                incomeGroupId: "", // will be set by the database
                 incomeId: incomeCreated.incomeId,
                 groupId: groupId,
                 createdBy: newIncome.userId,
-                createdDate: newIncome.date,
+                date: newIncome.date,
             }
 
             const incomeGroupCreated = await this.incomeGroupRepository.create(newIncomeGroup)
@@ -63,7 +62,7 @@ class CreateIncomeUseCase {
 
     }
 
-    throwMessage(message: string): ValidationResult<Income> {
+    private throwMessage(message: string): ValidationResult<Income> {
         return {
             isValid: false,
             message: message,

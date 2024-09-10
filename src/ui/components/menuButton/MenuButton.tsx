@@ -1,4 +1,4 @@
-import { ImageSourcePropType, ImageStyle, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { ImageSourcePropType, StyleSheet, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { Styles } from '../../styles/Styles'
 import { Colors } from '../../constants/Colors'

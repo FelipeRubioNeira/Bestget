@@ -1,14 +1,11 @@
 
-type IncomeCreate = {
+type Income = {
+    incomeId: string,
     userId: string,
     name: string,
     amount: number,
     date: string,
 }
-
-type Income = {
-    incomeId: string,
-} & IncomeCreate
 
 type IncomeUI = {
     id: string,
@@ -33,7 +30,6 @@ export {
 
 export type {
     Income,
-    IncomeCreate,
     IncomeUI
 }
 

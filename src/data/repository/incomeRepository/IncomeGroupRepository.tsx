@@ -1,5 +1,5 @@
 import { Collections } from "../../collections/Collections";
-import { Income, IncomeCreate, IncomeKeys } from "../../types/Income";
+import { Income, IncomeKeys } from "../../types/Income";
 import { IncomeGroup, IncomeGroupKeys } from "../../types/IncomeGroup";
 import { QueryGroupParams, QueryParams } from "../../types/QueryParams";
 import { IIncomeGroupRepository } from "./IIncomeGroupRepository";
@@ -19,7 +19,7 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
                 incomeGroupId: newDocRef.id,
                 incomeId: incomeGroup.incomeId,
                 createdBy: incomeGroup.createdBy,
-                createdDate: incomeGroup.createdDate,
+                date: incomeGroup.date,
                 groupId: incomeGroup.groupId,
             }
 
@@ -53,7 +53,6 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
         }
 
     }
-
 
     public async getAll({ groupId, initialDate, finalDate }: QueryGroupParams): Promise<Income[]> {
 
@@ -104,8 +103,8 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
             // get all incomes from the group filtered by date
             const incomeGroup = await db.collection(Collections.INCOME_GROUP)
                 .where(IncomeGroupKeys.GROUP_ID, "==", groupId)
-                .where(IncomeGroupKeys.CREATED_DATE, ">=", initialDate)
-                .where(IncomeGroupKeys.CREATED_DATE, "<", finalDate)
+                .where(IncomeGroupKeys.DATE, ">=", initialDate)
+                .where(IncomeGroupKeys.DATE, "<", finalDate)
                 .get()
 
 
@@ -131,18 +130,23 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
 
     }
 
-    public async update(income: Income): Promise<boolean> {
+    public async update(incomeGroup: IncomeGroup): Promise<boolean> {
 
         try {
-            await firestore()
-                .collection(Collections.INCOME)
-                .doc(income.incomeId)
-                .update(income)
+            
+            const querySnapshot = await firestore()
+                .collection(Collections.INCOME_GROUP)
+                .where(IncomeGroupKeys.INCOME_ID, "==", incomeGroup.incomeId)
+                .get()
+
+            if (querySnapshot.empty) return false
+
+            await Promise.all(querySnapshot.docs.map(doc => doc.ref.update(incomeGroup)))
 
             return true
 
         } catch (error) {
-            console.error("error IncomesCreateDataSource", error);
+            console.error("error income group repository [update]", error);
             return false
         }
 
@@ -163,7 +167,7 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
             return incomeCount.data().count
 
         } catch (error) {
-            console.error("error IncomesCreateDataSource", error);
+            console.error("error income group repository [count]", error);
             return 0
         }
     }
@@ -231,7 +235,7 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
             return true
 
         } catch (error) {
-            console.error("error IncomesCreateDataSource", error);
+            console.error("error income group repository [delete transaction]", error);
             return false
         }
 

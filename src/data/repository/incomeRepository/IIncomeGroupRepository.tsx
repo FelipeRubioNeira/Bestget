@@ -7,7 +7,8 @@ export interface IIncomeGroupRepository {
      /* all these methods are in charge of manipulating individual data */
      create: (incomeGroup: IncomeGroup) => Promise<IncomeGroup | null>
      delete: (incomeId: string) => Promise<boolean>
-     update: (income: Income) => Promise<boolean>
+     update: (incomeGroup: IncomeGroup) => Promise<boolean>
+     
      count: (queryParams: QueryParams) => Promise<number>
 
      getAll: (queryParams: QueryGroupParams) => Promise<Income[]>

@@ -1,7 +1,6 @@
 import DateTime from "../../../../utils/DateTime";
 import { currencyFormat } from "../../../../utils/NumberFormat";
 import { ContributionChartValue } from "../../../screens/statistics/StatisticsViewModel";
-import { ModalButtonList } from "../../modal/ModalViewModel";
 const dateTime = new DateTime()
 
 
@@ -12,7 +11,7 @@ type ContributionViewModelProps = {
 }
 
 
-const useContributionChartViewModel = ({ showModal, hideModal }: ContributionViewModelProps) => {
+const useContributionChartViewModel = ({ showModal, }: ContributionViewModelProps) => {
 
 
     const handlePress = ({ date, count, expenseList }: ContributionChartValue) => {

@@ -1,4 +1,4 @@
-import { eachDayOfInterval, startOfMonth, endOfMonth, getDay, parseISO, getDate } from 'date-fns';
+import { eachDayOfInterval, startOfMonth, endOfMonth, parseISO, getDate } from 'date-fns';
 import DateTime from '../../../../utils/DateTime';
 import { ContributionChartValue } from '../../../screens/statistics/StatisticsViewModel';
 import { currencyFormat } from '../../../../utils/NumberFormat';

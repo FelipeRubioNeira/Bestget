@@ -3,7 +3,7 @@ import { IncomesCreateScreenProps } from "../../../navigation/NavigationParamLis
 import { ScreenRoutes } from "../../../navigation/Routes";
 import { currencyFormat, numberFormat } from "../../../utils/NumberFormat";
 import { Message } from "../../../data/types/Message";
-import { Income, IncomeCreate } from "../../../data/types/Income";
+import { Income } from "../../../data/types/Income";
 import CreateIncomeUseCase from "../../../domain/useCases/CreateIncomeUseCase";
 import editIncomeUseCase from "../../../domain/useCases/editIncomeUseCase";
 import { ValidationResult } from "../../../data/types/Validation";
@@ -118,7 +118,8 @@ const useIncomeFormViewModel = ({
         }
 
         // ------------------- create new income ------------------- //
-        const newIncome: IncomeCreate = {
+        const newIncome: Income = {
+            incomeId: income?.incomeId || "",
             userId: userId,
             name: incomeState.incomeName,
             amount: numberFormat(incomeState.incomeAmount),
@@ -131,7 +132,7 @@ const useIncomeFormViewModel = ({
 
             // 1. If is an edition
             if (income?.incomeId) {
-                response = await editIncomeUseCase.execute({ ...newIncome, incomeId: income.incomeId })
+                response = await editIncomeUseCase.execute(newIncome, groupId)
 
                 // 2. if is a new income
             } else {

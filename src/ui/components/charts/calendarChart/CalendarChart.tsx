@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { getDay } from 'date-fns';
 import { FontFamily, FontSize } from '../../../constants/Fonts';
 import useCalendarChartViewModel from './CalendarChartViewModel';
