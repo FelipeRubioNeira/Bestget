@@ -1,14 +1,15 @@
-import { Expense, ExpenseCreate } from "../../types/Expense"
-import { QueryParams } from "../../types/QueryParams"
+import { Expense } from "../../types/Expense"
+import { ExpenseGroup } from "../../types/ExpenseGroup"
+import { QueryGroupParams, QueryParams } from "../../types/QueryParams"
 
+interface IExpenseGroupRepository {
 
-interface IExpenseRespository {
+    getAll: (queryGroupParams: QueryGroupParams) => Promise<Expense[]>
 
-    create: (expense: ExpenseCreate) => Promise<Expense | null>
+    create: (expenseGroup: ExpenseGroup) => Promise<ExpenseGroup | null>
 
     update: (expense: Expense) => Promise<boolean>
 
-    getAll: (queryParams: QueryParams) => Promise<Expense[]>
     getByBudgetId: (id: string) => Promise<Expense[]>
     getAllByBudgetId: (id: string[]) => Promise<Expense[]>
 
@@ -25,9 +26,10 @@ interface IExpenseRespository {
 
 
     // ----------------- transactions ----------------- //
-    copyTransaction: (queryParamsCopy: QueryParams, pasteDate: string) => Promise<void>
-    deleteTransaction: (queryParams: QueryParams) => Promise<void>
+    copyTransaction: (queryGroupParams: QueryGroupParams, pasteDate: string) => Promise<void>
+    deleteTransaction: (queryGroupParams: QueryGroupParams) => Promise<void>
+
 
 }
 
-export default IExpenseRespository
+export default IExpenseGroupRepository;

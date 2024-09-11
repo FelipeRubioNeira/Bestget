@@ -1,16 +1,15 @@
 import { Category } from "./Categoty";
 
-type ExpenseCreate = {
+
+type Expense = { 
+    expenseId: string,
     userId:string,
     name: string;
     amount: number;
     categoryId: number;
     date: string;
     budgetId: string;
-}
-
-
-type Expense = { expenseId: string } & ExpenseCreate
+ }
 
 type ExpenseUI = {
     id: string,
@@ -19,14 +18,14 @@ type ExpenseUI = {
     date: string,
     category: Category | undefined
     type: "Expense",
-    onPress?: () => void,
     editMode?: boolean, // delete / edit 
+    onPress?: () => void,
     onEdit?: () => void,
     onDelete?: () => void,
 }
 
 export const ExpenseKeys = Object.freeze({
-    ID: "id",
+    EXPENSE_ID: "expenseId",
     USER_ID: "userId",
     NAME: "name",
     AMOUNT: "amount",
@@ -38,6 +37,5 @@ export const ExpenseKeys = Object.freeze({
 
 export type {
     Expense,
-    ExpenseCreate,
     ExpenseUI
 }

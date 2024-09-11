@@ -8,7 +8,8 @@ class DeleteExpenseUseCase {
 
     async delete(
         id: string,
-        emmitEvent: (eventName: EventNames, payload: any) => void
+        emmitEvent: (eventName: EventNames, payload: any) => void,
+        groupId?: string
     ): Promise<ValidationResult<void>> {
 
         const validationResult: ValidationResult<void> = {

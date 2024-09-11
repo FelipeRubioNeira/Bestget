@@ -21,10 +21,12 @@ import BudgetExpenseUnitOfWork from '../../../data/unitOfWork/BudgetExpenseUnitO
 import Search from '../../components/search/Search'
 import Spacer from '../../components/spacer/Spacer'
 import FooterFlatlist from '../../components/footerFlatlist/FooterFlatlist'
+import ExpenseGroupRepository from '../../../data/repository/expenseRepository/ExpenseGroupRepository'
 
 
 
 const budgetRepository = new BudgetRepository()
+const expenseGroupRepository = new ExpenseGroupRepository()
 const expenseRepository = new ExpenseRepository()
 
 const budgetExpenseUnitOfWork = new BudgetExpenseUnitOfWork(

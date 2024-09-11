@@ -17,10 +17,15 @@ import Modal from '../../components/modal/Modal'
 import CalendarButton from '../../components/calendarButton/CalendarButton'
 import Label from '../../components/label/Label'
 import { FontSize } from '../../constants/Fonts'
+import ExpenseGroupRepository from '../../../data/repository/expenseRepository/ExpenseGroupRepository'
 
-
+// ------------------- dependency injection ------------------- //
+const expenseGroupRepository = new ExpenseGroupRepository()
 const expenseRepository = new ExpenseRepository()
-const createExpenseUseCase = new CreateExpenseUseCase(expenseRepository)
+const createExpenseUseCase = new CreateExpenseUseCase(
+  expenseRepository,
+  expenseGroupRepository
+)
 const editExpenseUseCase = new EditExpenseUseCase(expenseRepository)
 
 
@@ -30,7 +35,8 @@ const ExpenseForm = ({ navigation, route }: ExpensesCreateScreenProps) => {
     navigation,
     route,
     createExpenseUseCase,
-    editExpenseUseCase
+    editExpenseUseCase,
+    expenseGroupRepository
   })
 
 

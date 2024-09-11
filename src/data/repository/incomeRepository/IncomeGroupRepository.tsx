@@ -14,17 +14,8 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
         try {
 
             const newDocRef = firestore().collection(Collections.INCOME_GROUP).doc();
-
-            const newIncomeGroup: IncomeGroup = {
-                incomeGroupId: newDocRef.id,
-                incomeId: incomeGroup.incomeId,
-                createdBy: incomeGroup.createdBy,
-                date: incomeGroup.date,
-                groupId: incomeGroup.groupId,
-            }
-
-            await newDocRef.set(newIncomeGroup);
-            return newIncomeGroup
+            await newDocRef.set(incomeGroup);
+            return incomeGroup
 
         } catch (error) {
             console.error("error IncomeRepository [CREATE]", error);
@@ -58,7 +49,6 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
 
         try {
 
-            const db = firestore();
             const incomeIds = await this.getIncomeIdsByGroupId({ groupId, initialDate, finalDate })
 
             // if there are no incomes, we return an empty array
@@ -72,7 +62,7 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
 
             // map incomes
             const incomesArray: Income[] = incomes.docs.map(doc => {
-                const { userId, name, amount, date } = doc.data()
+                const { userId, name, amount, date } = doc.data() as Income
 
                 const newIncome: Income = {
                     incomeId: doc.id,
@@ -98,10 +88,8 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
 
         try {
 
-            const db = firestore();
-
             // get all incomes from the group filtered by date
-            const incomeGroup = await db.collection(Collections.INCOME_GROUP)
+            const incomeGroup = await firestore().collection(Collections.INCOME_GROUP)
                 .where(IncomeGroupKeys.GROUP_ID, "==", groupId)
                 .where(IncomeGroupKeys.DATE, ">=", initialDate)
                 .where(IncomeGroupKeys.DATE, "<", finalDate)
@@ -133,7 +121,7 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
     public async update(incomeGroup: IncomeGroup): Promise<boolean> {
 
         try {
-            
+
             const querySnapshot = await firestore()
                 .collection(Collections.INCOME_GROUP)
                 .where(IncomeGroupKeys.INCOME_ID, "==", incomeGroup.incomeId)

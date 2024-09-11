@@ -25,12 +25,14 @@ import Icons from '../../../assets/icons'
 import useHomeGroupViewModel from './HomeGroupViewModel'
 import IncomeGroupRepository from '../../../data/repository/incomeRepository/IncomeGroupRepository'
 import ButtonApp from '../../components/buttonApp/ButtonApp'
+import ExpenseGroupRepository from '../../../data/repository/expenseRepository/ExpenseGroupRepository'
 
 
 
 // ------------------- repositories ------------------- //
 
 const incomeGroupRepository = new IncomeGroupRepository()
+const expenseGroupRepository = new ExpenseGroupRepository()
 
 const expenseRepository = new ExpenseRepository()
 const budgetRepository = new BudgetRepository()
@@ -83,6 +85,7 @@ const HomeGroupScreen = ({ navigation, route }: HomeGroupScreenProps) => {
         expenseRepository,
         budgetRepository,
         incomeGroupRepository,
+        expenseGroupRepository,
 
         // unitOfWork
         budgetExpenseUnitOfWork,

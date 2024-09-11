@@ -10,7 +10,7 @@ import IExpenseRespository from "../../../data/repository/expenseRepository/IExp
 import { DateInterval } from "../../../data/types/DateInterval"
 import { Expense } from "../../../data/types/Expense"
 import { Income } from "../../../data/types/Income"
-import * as QueryParams from "../../../data/types/QueryParams"
+import {QueryGroupParams, QueryParams} from "../../../data/types/QueryParams"
 import BudgetExpenseUnitOfWork from "../../../data/unitOfWork/BudgetExpenseUnitOfWork"
 import CopyMonthUseCase from "../../../domain/useCases/CopyMonthUseCase"
 import DeleteMothUseCase from "../../../domain/useCases/DeleteMonthUseCase"
@@ -26,6 +26,8 @@ import useToastViewModel from "../../components/toast/ToastViewModel"
 import { FontSize } from "../../constants/Fonts"
 import DefaultStyles from "../../styles/DefaultStyles"
 import { IIncomeGroupRepository } from "../../../data/repository/incomeRepository/IIncomeGroupRepository"
+import IExpenseGroupRepository from "../../../data/repository/expenseRepository/IExpenseGroupRepository"
+import ExpenseGroupRepository from "../../../data/repository/expenseRepository/ExpenseGroupRepository"
 
 const dateTime = new DateTime()
 
@@ -46,6 +48,7 @@ export type ButtonHomeProps = {
 type HomeViewModelProps = {
     // repositories
     incomeGroupRepository: IIncomeGroupRepository,
+    expenseGroupRepository: IExpenseGroupRepository,
     expenseRepository: IExpenseRespository,
     budgetRepository: IBudgetRepository,
     categoryRepository: ICategoryRepository,
@@ -74,6 +77,7 @@ const useHomeGroupViewModel = ({
 
     // repositories
     incomeGroupRepository,
+    expenseGroupRepository,
     expenseRepository,
     categoryRepository,
 
@@ -200,14 +204,14 @@ const useHomeGroupViewModel = ({
             expenses,
         ] = await Promise.all([
             getIncomes({ groupId: groupId, ...dateInterval }),
-            //getExpenses({ userId: userApp.userId, ...dateInterval }),
+            getExpenses({  groupId: groupId, ...dateInterval }),
             //getBudgets({ userId: userApp.userId, ...dateInterval }),
             getCategories()
         ])
 
 
-        //const totalIncomes = calculateTotalAmount(incomes)
-        //const totalExpenses = calculateTotalExpenses(expenses)
+        const totalIncomes = calculateTotalAmount(incomes)
+        const totalExpenses = calculateTotalExpenses(expenses)
 
         setTotalIncomes(totalIncomes)
         setTotalExpenses(totalExpenses)
@@ -241,19 +245,19 @@ const useHomeGroupViewModel = ({
 
 
     // ------------------ repository methods ------------------ //
-    const getIncomes = async (queryGroupParams: QueryParams.QueryGroupParams) => {
+    const getIncomes = async (queryGroupParams: QueryGroupParams) => {
         const incomes = await incomeGroupRepository.getAll(queryGroupParams)
         appDispatch(updateIncomes(incomes))
         return incomes
     }
 
-    const getExpenses = async (queryParams: QueryParams.QueryParams) => {
-        const expenses = await expenseRepository.getAll(queryParams)
+    const getExpenses = async (queryGroupParams: QueryGroupParams) => {
+        const expenses = await expenseGroupRepository.getAll(queryGroupParams)
         appDispatch(updateExpenses(expenses))
         return expenses
     }
 
-    const getBudgets = async (queryParams: QueryParams.QueryParams) => {
+    const getBudgets = async (queryParams: QueryParams) => {
         const budgestWithRemaining = await budgetExpenseUnitOfWork.getBudgetsWithRemaining(queryParams)
         appDispatch(updateBudgets(budgestWithRemaining))
         return budgestWithRemaining

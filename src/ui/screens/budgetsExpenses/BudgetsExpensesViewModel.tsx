@@ -33,6 +33,7 @@ import {
 import { selectDateIntervalApp } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice"
 import HeaderRight from "../../components/headerRight/HeaderRight"
 import useSearchViewModel from "../../components/search/SearchViewModel"
+import IExpenseGroupRepository from "../../../data/repository/expenseRepository/IExpenseGroupRepository"
 
 const dateTime = new DateTime()
 
@@ -63,6 +64,7 @@ const useBudgetExpensesViewModel = ({
     const userApp = useAppSelector(selectUserApp)
 
     const {
+        groupId,
         expenses: expensesContext,
         budgets: budgetsContext,
         categories: categoriesContext
@@ -482,8 +484,8 @@ const useBudgetExpensesViewModel = ({
             const message = validationResult.message
             if (!validationResult.isValid) showModal("Error", message, buttonItem)
 
-        }
 
+        }
         // if the item to delete is an expense
         else {
             validationResult = await deleteExpenseUseCase.delete(itemId, emmitEvent)

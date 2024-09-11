@@ -2,7 +2,7 @@
 type ExpenseGroup = {
     expenseId: string,
     groupId: string,
-    createdDate: Date,
+    date: string,
     createdBy: string
 } 
 
@@ -10,7 +10,7 @@ type ExpenseGroup = {
 const ExpenseGroupKeys = Object.freeze({
     INCOME_ID: "expenseId",
     GROUP_ID: "groupId",
-    CREATED_DATE: "createdDate",
+    DATE: "date",
     CREATED_BY: "createdBy"
 })
 

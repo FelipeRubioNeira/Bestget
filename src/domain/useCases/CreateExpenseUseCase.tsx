@@ -1,19 +1,25 @@
 import { EventNames } from "../../data/globalContext/events/EventNames";
+import IExpenseGroupRepository from "../../data/repository/expenseRepository/IExpenseGroupRepository";
 import IExpenseRespository from "../../data/repository/expenseRepository/IExpenseRepository";
 import { Budget } from "../../data/types/Budget";
-import { Expense, ExpenseCreate } from "../../data/types/Expense";
+import { Expense } from "../../data/types/Expense";
+import { ExpenseGroup } from "../../data/types/ExpenseGroup";
 import { Validation, ValidationResult } from "../../data/types/Validation";
 import { validateConnection } from "../../utils/Connection";
 import { validateInputs } from "../../utils/Inputs";
 
 
 class CreateExpenseUseCase {
-    constructor(private expenseRepository: IExpenseRespository) { }
+    constructor(
+        private expenseRepository: IExpenseRespository,
+        private expenseGroupRepository: IExpenseGroupRepository
+    ) { }
 
     async create(
-        expense: ExpenseCreate,
+        expense: Expense,
         budget: Budget | null, // if we are creating an expense from a budget
-        emmitEvent: (eventName: EventNames, payload: any) => void // domain event
+        emmitEvent: (eventName: EventNames, payload: any) => void, // domain event
+        groupId?: string
     ): Promise<ValidationResult<Expense | null>> {
 
 
@@ -23,17 +29,30 @@ class CreateExpenseUseCase {
             result: null
         }
 
-        const result = await this.applyValidations(expense.name, expense.amount)
+        const { isValid, message } = await this.applyValidations(expense.name, expense.amount)
 
-        if (result.isValid) {
-            validationResult.result = await this.expenseRepository.create(expense)
+        if (isValid) {
+
+            const expenseCreated = await this.expenseRepository.create(expense)
+
+            if (expenseCreated && groupId) {
+
+                const newExpenseGroup: ExpenseGroup = {
+                    expenseId: expenseCreated.expenseId,
+                    groupId: groupId,
+                    date: expenseCreated.date,
+                    createdBy: expenseCreated.userId,
+                }
+
+                await this.expenseGroupRepository.create(newExpenseGroup)
+            }
 
             const eventName = budget ? EventNames.EXPENSE_CREATED_FROM_BUDGET : EventNames.EXPENSE_CREATED
             emmitEvent(eventName, expense)
 
         } else {
             validationResult.isValid = false
-            validationResult.message = "Error al guardar el gasto."
+            validationResult.message = message
         }
 
         return validationResult

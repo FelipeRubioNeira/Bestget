@@ -10,7 +10,7 @@ type IncomeGroup = {
 const IncomeGroupKeys = Object.freeze({
     INCOME_ID: "incomeId",
     GROUP_ID: "groupId",
-    DATE: "createdDate",
+    DATE: "date",
     CREATED_BY: "createdBy"
 })
 

@@ -15,13 +15,15 @@ import { useAppSelector } from "../../../data/globalContext/StoreHooks"
 import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppSlice"
 import { selectFinancesApp } from "../../../data/globalContext/redux/slices/FinancesAppSlice"
 import { selectDateIntervalApp } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice"
+import IExpenseGroupRepository from "../../../data/repository/expenseRepository/IExpenseGroupRepository"
 
 const dateTime = new DateTime()
 
 
 type ExpensesCreateViewModelProps = {
     createExpenseUseCase: CreateExpenseUseCase,
-    editExpenseUseCase: EditExpenseUseCase
+    editExpenseUseCase: EditExpenseUseCase,
+    expenseGroupRepository: IExpenseGroupRepository
 } & ExpensesCreateScreenProps
 
 
@@ -36,14 +38,17 @@ type StateName = keyof IExpenseState
 type StateType = IExpenseState[StateName]
 
 
-const useExpenseFormViewModel = (
-    { navigation, route, createExpenseUseCase, editExpenseUseCase }: ExpensesCreateViewModelProps
-) => {
+const useExpenseFormViewModel = ({
+    navigation,
+    route,
+    createExpenseUseCase,
+    editExpenseUseCase
+}: ExpensesCreateViewModelProps) => {
 
 
     // ------------------- context ------------------- //
     const userApp = useAppSelector(selectUserApp)
-    const { categories } = useAppSelector(selectFinancesApp)
+    const { categories, groupId } = useAppSelector(selectFinancesApp)
     const dateInterval = useAppSelector(selectDateIntervalApp)
 
     const { emmitEvent } = useEventBus()
@@ -53,10 +58,6 @@ const useExpenseFormViewModel = (
         budget,
         expense,
     } = route.params
-
-
-
-
 
 
 
@@ -170,14 +171,15 @@ const useExpenseFormViewModel = (
         const amountInt = numberFormat(expenseAmount)
         const newDate = dateTime.getIsoDateTime(expenseDate)
 
-        const expenseCreated = {
+        const expenseCreated:Expense = {
+            expenseId: "",
             userId: userApp.userId,
             name: expenseName,
             amount: amountInt,
             budgetId: budget?.budgetId || "",
             categoryId: categoryId || 0,
             date: newDate,
-        } as Expense
+        }
 
         if (expenseId) {
             expenseCreated.expenseId = expenseId;
@@ -200,7 +202,8 @@ const useExpenseFormViewModel = (
         const result = await createExpenseUseCase.create(
             newExpense,
             budget || null,
-            emmitEvent
+            emmitEvent,
+            groupId
         )
 
         if (result.isValid) {
