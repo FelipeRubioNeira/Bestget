@@ -15,23 +15,13 @@ import Screen from '../../components/screen/Screen'
 import EditIncomeUseCase from '../../../domain/useCases/EditIncomeUsecase'
 import CreateIncomeUseCase from '../../../domain/useCases/CreateIncomeUseCase'
 import CalendarWithLabel from '../../components/calendarWithLabel/CalendarWithLabel'
-import IncomeGroupRepository from '../../../data/repository/incomeRepository/IncomeGroupRepository'
 
 
 
 // dependency injection 
 const incomeRepository = new IncomeRepository()
-const incomeGroupRepository = new IncomeGroupRepository()
-
-const editIncomeUseCase = new EditIncomeUseCase(
-  incomeRepository,
-  incomeGroupRepository
-)
-
-const createIncomeUseCase = new CreateIncomeUseCase(
-  incomeRepository,
-  incomeGroupRepository
-)
+const editIncomeUseCase = new EditIncomeUseCase(incomeRepository)
+const createIncomeUseCase = new CreateIncomeUseCase(incomeRepository)
 
 
 

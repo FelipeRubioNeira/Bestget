@@ -12,6 +12,7 @@ import { useAppSelector } from "../../../data/globalContext/StoreHooks";
 import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppSlice";
 import { selectDateIntervalApp } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice";
 import { selectFinancesApp } from "../../../data/globalContext/slices/FinancesAppSlice";
+import FinanceType, { getFinanceType } from "../../../data/types/FinanceType";
 
 
 const dateTime = new DateTime()
@@ -107,36 +108,36 @@ const useIncomeFormViewModel = ({
     // ------------------- save income ------------------- //
     const saveIncome = async () => {
 
-        // get the current date
-        const generatedDate = generatetDateTime()
 
-
+        // default template response
         let response: ValidationResult<Income> = {
             isValid: false,
             message: "",
             result: null
         }
 
-        // ------------------- create new income ------------------- //
+
+        // El ido del grupo es obligatorio, pero si no esta presente este puede ser null
         const newIncome: Income = {
             incomeId: income?.incomeId || "",
             userId: userId,
+            groupId: groupId || null, // we need to check if we have a group
             name: incomeState.incomeName,
             amount: numberFormat(incomeState.incomeAmount),
-            date: generatedDate
+            date: generatetDateTime(),
+            financeType: getFinanceType(groupId)
         }
 
 
         try {
 
-
             // 1. If is an edition
             if (income?.incomeId) {
-                response = await editIncomeUseCase.execute(newIncome, groupId)
+                response = await editIncomeUseCase.execute(newIncome)
 
                 // 2. if is a new income
             } else {
-                response = await createIncomeUseCase.execute(newIncome, groupId)
+                response = await createIncomeUseCase.execute(newIncome)
             }
 
 

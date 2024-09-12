@@ -8,13 +8,10 @@ import { validateInputs } from "../../utils/Inputs";
 
 
 class EditIncomeUseCase {
-    constructor(
-        private incomeRepository: IIncomeRepository,
-        private incomeGroupRepository: IIncomeGroupRepository
-    ) { }
+    constructor(private incomeRepository: IIncomeRepository,) { }
 
 
-    async execute(income: Income, groupId: string): Promise<ValidationResult<Income>> {
+    async execute(income: Income): Promise<ValidationResult<Income>> {
 
         // 1. we create a validation result object
         const validationResult: ValidationResult<Income> = {
@@ -23,33 +20,20 @@ class EditIncomeUseCase {
             result: null,
         }
 
-        const { isValid, message } = await this.applyValidations(income.name, income.amount)
+        const validadation = await this.applyValidations(income.name, income.amount)
 
 
-        if (isValid) {
-            
-            const result = await this.incomeRepository.update(income);
-
-            if (!result) this.throwMessage("No se pudo guardar el ingreso.")
-
-            const incomeGroup: IncomeGroup = {
-                incomeId: income.incomeId,
-                groupId: groupId,
-                createdBy: income.userId,
-                date: income.date,
-            }
-
-            const incomeGroupResult = await this.incomeGroupRepository.update(incomeGroup)
-
-            if (!incomeGroupResult) this.throwMessage("No se pudo guardar el ingreso.")
-
-            validationResult.result = income
-
-        } else {
-            return this.throwMessage(message)
+        if (!validadation.isValid) {
+            return this.throwMessage(validadation.message)
         }
 
+        const incomeUpdated = await this.incomeRepository.update(income);
 
+        if (!incomeUpdated) {
+            return this.throwMessage("No se pudo actualizar el ingreso.")
+        }
+
+        validationResult.result = income
         return validationResult
 
     }

@@ -488,7 +488,7 @@ const useBudgetExpensesViewModel = ({
         }
         // if the item to delete is an expense
         else {
-            validationResult = await deleteExpenseUseCase.delete(itemId, emmitEvent)
+            validationResult = await deleteExpenseUseCase.delete(itemId, emmitEvent, groupId)
 
             const message = validationResult.message
             if (!validationResult.isValid) showModal("Error", message, buttonItem)

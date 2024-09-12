@@ -204,14 +204,14 @@ const useHomeGroupViewModel = ({
             expenses,
         ] = await Promise.all([
             getIncomes({ groupId: groupId, ...dateInterval }),
-            getExpenses({  groupId: groupId, ...dateInterval }),
+            //getExpenses({  groupId: groupId, ...dateInterval }),
             //getBudgets({ userId: userApp.userId, ...dateInterval }),
             getCategories()
         ])
 
 
         const totalIncomes = calculateTotalAmount(incomes)
-        const totalExpenses = calculateTotalExpenses(expenses)
+        //const totalExpenses = calculateTotalExpenses(expenses)
 
         setTotalIncomes(totalIncomes)
         setTotalExpenses(totalExpenses)

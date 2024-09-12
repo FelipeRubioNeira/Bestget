@@ -1,4 +1,5 @@
 import { Collections } from "../../collections/Collections";
+import FinanceType from "../../types/FinanceType";
 import { Income, IncomeKeys } from "../../types/Income";
 import { IncomeGroup, IncomeGroupKeys } from "../../types/IncomeGroup";
 import { QueryGroupParams, QueryParams } from "../../types/QueryParams";
@@ -47,17 +48,17 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
 
     public async getAll({ groupId, initialDate, finalDate }: QueryGroupParams): Promise<Income[]> {
 
+        console.log("getAll", groupId, initialDate, finalDate);
+        
+
         try {
-
-            const incomeIds = await this.getIncomeIdsByGroupId({ groupId, initialDate, finalDate })
-
-            // if there are no incomes, we return an empty array
-            if (incomeIds.length === 0) return []
 
             // get all incomes from the group
             const incomes = await firestore()
                 .collection(Collections.INCOME)
-                .where(IncomeKeys.INCOME_ID, "in", incomeIds)
+                .where("date", ">=", initialDate)
+                .where("date", "<", finalDate)
+                .where("group", "==", groupId)
                 .get()
 
             // map incomes
@@ -67,9 +68,11 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
                 const newIncome: Income = {
                     incomeId: doc.id,
                     userId,
+                    groupId,
                     name,
                     amount,
-                    date
+                    date,
+                    financeType: FinanceType.group
                 }
 
                 return newIncome
@@ -84,26 +87,6 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
 
     }
 
-    private async getIncomeIdsByGroupId({ groupId, initialDate, finalDate }: QueryGroupParams): Promise<string[]> {
-
-        try {
-
-            // get all incomes from the group filtered by date
-            const incomeGroup = await firestore().collection(Collections.INCOME_GROUP)
-                .where(IncomeGroupKeys.GROUP_ID, "==", groupId)
-                .where(IncomeGroupKeys.DATE, ">=", initialDate)
-                .where(IncomeGroupKeys.DATE, "<", finalDate)
-                .get()
-
-
-            // get all income ids
-            return incomeGroup.docs.map(doc => doc.data().incomeId)
-
-        } catch (error) {
-            console.log("error incomeRepository [getIncomeIdsByGroupId]", error);
-            return []
-        }
-    }
 
     public async getTotal(queryParams: QueryGroupParams): Promise<number> {
 
@@ -164,7 +147,7 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
     // --------------------- transactions --------------------- //
 
 
-    public async copyTransaction(queryParamsCopy: QueryParams, pasteDate: string): Promise<boolean> {
+    public async copyTransaction(queryGroupParams: QueryGroupParams, pasteDate: string): Promise<boolean> {
 
         try {
             const db = firestore();
@@ -173,18 +156,20 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
 
                 // get ref from collection
                 const incomeRef = db.collection(Collections.INCOME);
-                const incomes = await this.getAll(queryParamsCopy)
+                const incomes = await this.getAll(queryGroupParams)
 
                 incomes.forEach(income => {
 
                     const newDocRef = firestore().collection(Collections.INCOME).doc();
 
                     const newIncome: Income = {
+                        groupId: income.groupId,
                         userId: income.userId,
                         name: income.name,
                         amount: income.amount,
                         date: pasteDate, // we set the initial date
-                        incomeId: newDocRef.id
+                        incomeId: newDocRef.id,
+                        financeType: FinanceType.group
                     }
 
                     transaction.set(incomeRef.doc(), newIncome)
@@ -202,7 +187,7 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
 
     }
 
-    public async deleteTransaction(queryParams: QueryParams): Promise<boolean> {
+    public async deleteTransaction(queryGroupParams: QueryGroupParams): Promise<boolean> {
 
         try {
 
@@ -212,7 +197,7 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
 
                 // get ref from collection
                 const incomeRef = db.collection(Collections.INCOME);
-                const incomes = await this.getAll(queryParams)
+                const incomes = await this.getAll(queryGroupParams)
 
                 incomes.forEach(income => {
                     transaction.delete(incomeRef.doc(income.incomeId));

@@ -2,9 +2,11 @@
 type Income = {
     incomeId: string,
     userId: string,
+    groupId: string | null,
     name: string,
     amount: number,
     date: string,
+    financeType: "P" | "G",
 }
 
 type IncomeUI = {
@@ -19,6 +21,7 @@ type IncomeUI = {
 const IncomeKeys = Object.freeze({
     INCOME_ID: "incomeId",
     USER_ID: "userId",
+    GROUP_ID: "groupId",
     NAME: "name",
     AMOUNT: "amount",
     DATE: "date",

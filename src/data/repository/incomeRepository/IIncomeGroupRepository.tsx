@@ -15,7 +15,7 @@ export interface IIncomeGroupRepository {
      getTotal: (queryParams: QueryGroupParams) => Promise<number>
 
      // ----------------- transactions ----------------- //
-     copyTransaction: (queryParamsCopy: QueryParams, pasteDate: string) => Promise<boolean>
-     deleteTransaction: (queryParams: QueryParams) => Promise<boolean>
+     copyTransaction: (queryGroupParams: QueryGroupParams, pasteDate: string) => Promise<boolean>
+     deleteTransaction: (queryGroupParams: QueryGroupParams) => Promise<boolean>
 
 }
