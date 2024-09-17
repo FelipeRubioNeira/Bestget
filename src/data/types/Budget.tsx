@@ -1,17 +1,17 @@
 import { Category } from "./Categoty"
+import FinanceType from "./FinanceType"
 
-type BudgetCreate = {
+type Budget = { 
     userId: string
+    groupId: string | null,
+    financeType: FinanceType,
     name: string
     amount: number
     date: string
     categoryId?: number,
-}
-
-type Budget = { 
     budgetId: string,
     remaining?: number
- } & BudgetCreate
+ }
 
 
 type BudgetUI = {
@@ -31,6 +31,8 @@ type BudgetUI = {
 export const BudgetKeys = Object.freeze({
     ID: "id",
     USER_ID: "userId",
+    GROUP_ID: "groupId",
+    FINANCE_TYPE: "financeType",
     NAME: "name",
     AMOUNT: "amount",
     CATEGORY_ID: "categoryId",
@@ -40,6 +42,5 @@ export const BudgetKeys = Object.freeze({
 
 export type {
     Budget,
-    BudgetCreate,
     BudgetUI
 }

@@ -1,7 +1,6 @@
 import { Collections } from "../../collections/Collections";
 import FinanceType from "../../types/FinanceType";
 import { Income, IncomeKeys } from "../../types/Income";
-import { IncomeGroup, IncomeGroupKeys } from "../../types/IncomeGroup";
 import { QueryGroupParams, QueryParams } from "../../types/QueryParams";
 import { IIncomeGroupRepository } from "./IIncomeGroupRepository";
 import firestore from '@react-native-firebase/firestore';
@@ -11,7 +10,7 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
     constructor() { }
 
 
-    public async create(incomeGroup: IncomeGroup): Promise<IncomeGroup> {
+    public async create(incomeGroup: Income): Promise<Income> {
         try {
 
             const newDocRef = firestore().collection(Collections.INCOME_GROUP).doc();
@@ -30,7 +29,7 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
 
             const querySnapshot = await firestore()
                 .collection(Collections.INCOME_GROUP)
-                .where(IncomeGroupKeys.INCOME_ID, "==", incomeId)
+                .where(IncomeKeys.INCOME_ID, "==", incomeId)
                 .get()
 
             if (querySnapshot.empty) return true
@@ -48,17 +47,15 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
 
     public async getAll({ groupId, initialDate, finalDate }: QueryGroupParams): Promise<Income[]> {
 
-        console.log("getAll", groupId, initialDate, finalDate);
-        
-
         try {
 
             // get all incomes from the group
             const incomes = await firestore()
                 .collection(Collections.INCOME)
-                .where("date", ">=", initialDate)
-                .where("date", "<", finalDate)
-                .where("group", "==", groupId)
+                .where(IncomeKeys.FINANCE_TYPE, "==", FinanceType.group)
+                .where(IncomeKeys.GROUP_ID, "==", groupId)
+                .where(IncomeKeys.DATE, ">=", initialDate)
+                .where(IncomeKeys.DATE, "<", finalDate)
                 .get()
 
             // map incomes
@@ -81,7 +78,7 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
             return incomesArray;
 
         } catch (error) {
-            console.error("error incomeRepository [getAll]", error);
+            console.error("error income group Repository [getAll]", error);
             return []
         }
 
@@ -101,13 +98,13 @@ class IncomeGroupRepository implements IIncomeGroupRepository {
 
     }
 
-    public async update(incomeGroup: IncomeGroup): Promise<boolean> {
+    public async update(incomeGroup: Income): Promise<boolean> {
 
         try {
 
             const querySnapshot = await firestore()
                 .collection(Collections.INCOME_GROUP)
-                .where(IncomeGroupKeys.INCOME_ID, "==", incomeGroup.incomeId)
+                .where(IncomeKeys.INCOME_ID, "==", incomeGroup.incomeId)
                 .get()
 
             if (querySnapshot.empty) return false

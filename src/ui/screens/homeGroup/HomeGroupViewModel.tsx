@@ -28,6 +28,7 @@ import DefaultStyles from "../../styles/DefaultStyles"
 import { IIncomeGroupRepository } from "../../../data/repository/incomeRepository/IIncomeGroupRepository"
 import IExpenseGroupRepository from "../../../data/repository/expenseRepository/IExpenseGroupRepository"
 import ExpenseGroupRepository from "../../../data/repository/expenseRepository/ExpenseGroupRepository"
+import BudgetExpenseGroupUnitOfWork from "../../../data/unitOfWork/BudgetExpenseGroupUnitOfWork"
 
 const dateTime = new DateTime()
 
@@ -54,7 +55,7 @@ type HomeViewModelProps = {
     categoryRepository: ICategoryRepository,
 
     // unitOfWork
-    budgetExpenseUnitOfWork: BudgetExpenseUnitOfWork,
+    budgetExpenseUnitOfWork: BudgetExpenseGroupUnitOfWork,
 
     // use cases
     copyMonthUseCase: CopyMonthUseCase,
@@ -203,15 +204,15 @@ const useHomeGroupViewModel = ({
             incomes,
             expenses,
         ] = await Promise.all([
-            getIncomes({ groupId: groupId, ...dateInterval }),
-            //getExpenses({  groupId: groupId, ...dateInterval }),
-            //getBudgets({ userId: userApp.userId, ...dateInterval }),
+            getIncomes({ groupId, ...dateInterval }),
+            getExpenses({  groupId, ...dateInterval }),
+            getBudgets({ groupId, ...dateInterval }),
             getCategories()
         ])
 
 
         const totalIncomes = calculateTotalAmount(incomes)
-        //const totalExpenses = calculateTotalExpenses(expenses)
+        const totalExpenses = calculateTotalExpenses(expenses)
 
         setTotalIncomes(totalIncomes)
         setTotalExpenses(totalExpenses)
@@ -257,8 +258,8 @@ const useHomeGroupViewModel = ({
         return expenses
     }
 
-    const getBudgets = async (queryParams: QueryParams) => {
-        const budgestWithRemaining = await budgetExpenseUnitOfWork.getBudgetsWithRemaining(queryParams)
+    const getBudgets = async (queryGroupParams: QueryGroupParams) => {
+        const budgestWithRemaining = await budgetExpenseUnitOfWork.getBudgetsWithRemaining(queryGroupParams)
         appDispatch(updateBudgets(budgestWithRemaining))
         return budgestWithRemaining
     }

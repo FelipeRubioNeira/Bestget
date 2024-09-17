@@ -1,3 +1,4 @@
+import FinanceType from "./FinanceType"
 
 type Income = {
     incomeId: string,
@@ -6,7 +7,7 @@ type Income = {
     name: string,
     amount: number,
     date: string,
-    financeType: "P" | "G",
+    financeType: FinanceType,
 }
 
 type IncomeUI = {
@@ -19,6 +20,7 @@ type IncomeUI = {
 }
 
 const IncomeKeys = Object.freeze({
+    FINANCE_TYPE: "financeType",
     INCOME_ID: "incomeId",
     USER_ID: "userId",
     GROUP_ID: "groupId",

@@ -16,6 +16,7 @@ import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppS
 import { selectFinancesApp } from "../../../data/globalContext/redux/slices/FinancesAppSlice"
 import { selectDateIntervalApp } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice"
 import IExpenseGroupRepository from "../../../data/repository/expenseRepository/IExpenseGroupRepository"
+import FinanceType, { getFinanceType } from "../../../data/types/FinanceType"
 
 const dateTime = new DateTime()
 
@@ -172,6 +173,8 @@ const useExpenseFormViewModel = ({
         const newDate = dateTime.getIsoDateTime(expenseDate)
 
         const expenseCreated:Expense = {
+            financeType: getFinanceType(groupId),
+            groupId: groupId,
             expenseId: "",
             userId: userApp.userId,
             name: expenseName,

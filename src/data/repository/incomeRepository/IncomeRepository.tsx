@@ -1,4 +1,5 @@
 import { Collections } from "../../collections/Collections";
+import FinanceType from "../../types/FinanceType";
 import { Income, IncomeKeys } from "../../types/Income";
 import { QueryParams } from "../../types/QueryParams";
 import { IIncomeRepository } from "./IIncomeRepository";
@@ -16,6 +17,8 @@ class IncomeRepository implements IIncomeRepository {
 
             const newIncome: Income = {
                 incomeId: newDocRef.id, // we set the id
+                financeType: FinanceType.personal,
+                groupId: null,
                 userId: income.userId,
                 name: income.name,
                 amount: income.amount,
@@ -44,6 +47,8 @@ class IncomeRepository implements IIncomeRepository {
 
             const incomesArray: Income[] = incomes.docs.map(doc => ({
                 incomeId: doc.id,
+                financeType: FinanceType.personal,
+                groupId: null,
                 userId: doc.data().userId,
                 name: doc.data().name,
                 amount: doc.data().amount,
@@ -146,6 +151,8 @@ class IncomeRepository implements IIncomeRepository {
                     const newDocRef = firestore().collection(Collections.INCOME).doc();
 
                     const newIncome: Income = {
+                        financeType: FinanceType.personal,
+                        groupId: null,
                         userId: income.userId,
                         name: income.name,
                         amount: income.amount,

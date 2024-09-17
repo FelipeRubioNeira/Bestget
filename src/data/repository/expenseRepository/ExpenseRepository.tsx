@@ -1,5 +1,6 @@
 import { Collections } from "../../collections/Collections";
-import { Expense, ExpenseCreate, ExpenseKeys } from "../../types/Expense";
+import { Expense, ExpenseKeys } from "../../types/Expense";
+import FinanceType from "../../types/FinanceType";
 import { QueryParams } from "../../types/QueryParams";
 import IExpenseRespository from "./IExpenseRepository";
 import firestore from '@react-native-firebase/firestore';
@@ -7,7 +8,7 @@ import firestore from '@react-native-firebase/firestore';
 
 class ExpenseRepository implements IExpenseRespository {
 
-    async create(expense: ExpenseCreate): Promise<Expense | null> {
+    async create(expense: Expense): Promise<Expense | null> {
 
         try {
 
@@ -60,6 +61,8 @@ class ExpenseRepository implements IExpenseRespository {
                 const { expenseId, userId, name, amount, categoryId, date, budgetId } = doc.data() as Expense
 
                 const newExpense: Expense = {
+                    financeType: FinanceType.personal,
+                    groupId: null,
                     expenseId: expenseId,
                     userId: userId,
                     name: name,
@@ -98,6 +101,8 @@ class ExpenseRepository implements IExpenseRespository {
                 const { expenseId, userId, name, amount, categoryId, date, budgetId } = doc.data() as Expense
 
                 const newExpense: Expense = {
+                    financeType: FinanceType.personal,
+                    groupId: null,
                     expenseId: expenseId,
                     userId: userId,
                     name: name,
@@ -132,6 +137,8 @@ class ExpenseRepository implements IExpenseRespository {
                 const { expenseId, userId, amount, name, date, budgetId, categoryId } = doc.data() as Expense
 
                 const expense: Expense = {
+                    financeType: FinanceType.personal,
+                    groupId: null,
                     expenseId: expenseId,
                     userId: userId,
                     amount: amount,
@@ -171,6 +178,8 @@ class ExpenseRepository implements IExpenseRespository {
                 const { expenseId, userId, name, amount, categoryId, date, budgetId } = doc.data() as Expense
 
                 const newExpense: Expense = {
+                    financeType: FinanceType.personal,
+                    groupId: null,
                     expenseId: expenseId,
                     userId: userId,
                     name: name,
@@ -309,6 +318,8 @@ class ExpenseRepository implements IExpenseRespository {
                     const newDocRef = firestore().collection(Collections.EXPENSE).doc();
 
                     const newExpense: Expense = {
+                        financeType: expense.financeType,
+                        groupId: null,
                         userId: expense.userId,
                         name: expense.name,
                         amount: expense.amount,

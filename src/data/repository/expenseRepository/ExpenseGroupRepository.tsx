@@ -1,6 +1,6 @@
 import { Collections } from "../../collections/Collections";
 import { Expense, ExpenseKeys } from "../../types/Expense";
-import { ExpenseGroup, ExpenseGroupKeys } from "../../types/ExpenseGroup";
+import FinanceType from "../../types/FinanceType";
 import { QueryGroupParams, QueryParams } from "../../types/QueryParams";
 import IExpenseGroupRepository from "./IExpenseGroupRepository";
 import firestore from '@react-native-firebase/firestore';
@@ -8,7 +8,7 @@ import firestore from '@react-native-firebase/firestore';
 
 class ExpenseGroupRepository implements IExpenseGroupRepository {
 
-    async create(expenseGroup: ExpenseGroup): Promise<ExpenseGroup | null> {
+    async create(expenseGroup: Expense): Promise<Expense | null> {
 
         try {
             const newDocRef = firestore().collection(Collections.EXPENSE_GROUP).doc();
@@ -42,20 +42,21 @@ class ExpenseGroupRepository implements IExpenseGroupRepository {
 
         try {
 
-            const expenseIds = await this.getIncomeIdsByGroupId({ groupId, initialDate, finalDate })
-
-            if (expenseIds.length === 0) return []
-
             const expenses = await firestore()
                 .collection(Collections.EXPENSE)
-                .where(ExpenseKeys.EXPENSE_ID, "in", expenseIds)
+                .where(ExpenseKeys.FINANCE_TYPE, "==", FinanceType.group)
+                .where(ExpenseKeys.GROUP_ID, "==", groupId)
+                .where(ExpenseKeys.DATE, ">=", initialDate)
+                .where(ExpenseKeys.DATE, "<", finalDate)
                 .get()
 
-            const expensesArray:Expense[] = expenses.docs.map(doc => {
+            const expensesArray: Expense[] = expenses.docs.map(doc => {
 
                 const { expenseId, userId, name, amount, categoryId, date, budgetId } = doc.data() as Expense
 
                 const newExpense: Expense = {
+                    financeType: FinanceType.group,
+                    groupId: groupId,
                     expenseId: expenseId,
                     userId: userId,
                     name: name,
@@ -64,7 +65,7 @@ class ExpenseGroupRepository implements IExpenseGroupRepository {
                     categoryId,
                     budgetId
                 }
-                
+
                 return newExpense
 
             })
@@ -84,9 +85,9 @@ class ExpenseGroupRepository implements IExpenseGroupRepository {
 
             const expenseGroup = await firestore()
                 .collection(Collections.EXPENSE_GROUP)
-                .where(ExpenseGroupKeys.GROUP_ID, "==", groupId)
-                .where(ExpenseGroupKeys.DATE, ">=", initialDate)
-                .where(ExpenseGroupKeys.DATE, "<", finalDate)
+                .where(ExpenseKeys.GROUP_ID, "==", groupId)
+                .where(ExpenseKeys.DATE, ">=", initialDate)
+                .where(ExpenseKeys.DATE, "<", finalDate)
                 .get()
 
             return expenseGroup.docs.map(doc => doc.data().expenseId)
@@ -112,9 +113,11 @@ class ExpenseGroupRepository implements IExpenseGroupRepository {
 
             expensesFirebase.docs.forEach(doc => {
 
-                const { expenseId, userId, name, amount, categoryId, date, budgetId } = doc.data() as Expense
+                const { groupId, expenseId, userId, name, amount, categoryId, date, budgetId } = doc.data() as Expense
 
                 const newExpense: Expense = {
+                    financeType: FinanceType.group,
+                    groupId,
                     expenseId: expenseId,
                     userId: userId,
                     name: name,
@@ -146,10 +149,12 @@ class ExpenseGroupRepository implements IExpenseGroupRepository {
                 .get()
 
             return expensesDoc.docs.map(doc => {
-                const { expenseId, userId, amount, name, date, budgetId, categoryId } = doc.data() as Expense
+                const { groupId, expenseId, userId, amount, name, date, budgetId, categoryId } = doc.data() as Expense
 
                 const expense: Expense = {
-                    expenseId: expenseId,
+                    expenseId,
+                    groupId,
+                    financeType: FinanceType.group,
                     userId: userId,
                     amount: amount,
                     name: name,
@@ -185,9 +190,11 @@ class ExpenseGroupRepository implements IExpenseGroupRepository {
 
             return expensesFirebase.docs.map(doc => {
 
-                const { expenseId, userId, name, amount, categoryId, date, budgetId } = doc.data() as Expense
+                const { groupId, expenseId, userId, name, amount, categoryId, date, budgetId } = doc.data() as Expense
 
                 const newExpense: Expense = {
+                    groupId,
+                    financeType: FinanceType.group,
                     expenseId: expenseId,
                     userId: userId,
                     name: name,
@@ -327,6 +334,8 @@ class ExpenseGroupRepository implements IExpenseGroupRepository {
 
                     const newExpense: Expense = {
                         userId: expense.userId,
+                        financeType: FinanceType.group,
+                        groupId: expense.groupId,
                         name: expense.name,
                         amount: expense.amount,
                         categoryId: expense.categoryId,

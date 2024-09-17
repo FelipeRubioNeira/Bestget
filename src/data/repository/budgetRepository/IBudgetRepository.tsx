@@ -1,9 +1,9 @@
-import { Budget, BudgetCreate } from "../../types/Budget"
+import { Budget } from "../../types/Budget"
 import { QueryParams } from "../../types/QueryParams"
 
 
 interface IBudgetRepository {
-    create: (budget: BudgetCreate) => Promise<Budget | null>
+    create: (budget: Budget) => Promise<Budget | null>
     getAll: (queryParams: QueryParams) => Promise<Budget[]>
     delete: (id: string) => Promise<void>
     update: (budget: Budget) => Promise<void>

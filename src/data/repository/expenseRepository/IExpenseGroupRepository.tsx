@@ -1,19 +1,18 @@
 import { Expense } from "../../types/Expense"
-import { ExpenseGroup } from "../../types/ExpenseGroup"
 import { QueryGroupParams, QueryParams } from "../../types/QueryParams"
 
 interface IExpenseGroupRepository {
 
     getAll: (queryGroupParams: QueryGroupParams) => Promise<Expense[]>
 
-    create: (expenseGroup: ExpenseGroup) => Promise<ExpenseGroup | null>
+    create: (expenseGroup: Expense) => Promise<Expense | null>
 
     update: (expense: Expense) => Promise<boolean>
 
     getByBudgetId: (id: string) => Promise<Expense[]>
     getAllByBudgetId: (id: string[]) => Promise<Expense[]>
 
-    getWithoutBudget: (queryParams:QueryParams) => Promise<Expense[]>
+    getWithoutBudget: (queryParams:QueryGroupParams) => Promise<Expense[]>
 
     getTotal: (queryParams: QueryParams) => Promise<number>
 
