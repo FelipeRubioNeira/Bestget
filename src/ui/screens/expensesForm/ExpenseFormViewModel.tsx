@@ -229,25 +229,22 @@ const useExpenseFormViewModel = ({
 
         const newExpense = generateExpense(expense?.expenseId)
 
-        const result = await editExpenseUseCase.edit(newExpense, emmitEvent)
+        const { isValid, message } = await editExpenseUseCase.edit(newExpense, emmitEvent)
 
-        if (result.isValid) {
+        
+        if (!isValid) return showModal("Error", message)
 
-            if (budget) {
-                navigation.navigate(ScreenRoutes.BUDGET, {
-                    budget: budget,
-                    newExpenseId: newExpense.expenseId,
-                })
+        if (budget) {
 
-            } else {
-                navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {
-                    newExpenseId: newExpense.expenseId,
-                })
-            }
-
+            navigation.navigate(ScreenRoutes.BUDGET, {
+                budget: budget,
+                newExpenseId: newExpense.expenseId,
+            })
 
         } else {
-            showModal("Error", result.message)
+            navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {
+                newExpenseId: newExpense.expenseId,
+            })
         }
 
     }

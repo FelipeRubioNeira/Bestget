@@ -53,7 +53,6 @@ const StatisticsScreen = () => {
                     title='Distribución de gastos'
                     data={pieChartData}
                     size={Styles.WIDTH * 0.7}
-
                 />
 
                 <Spacer marginVertical={Styles.MARGIN} />

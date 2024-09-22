@@ -22,7 +22,7 @@ import DateTime from "../../../utils/DateTime"
 import { useEventBus } from "../../../data/globalContext/events/EventBus"
 import { Event } from "../../../data/globalContext/events/EventBusReducer"
 import BudgetExpenseUnitOfWork from "../../../data/unitOfWork/BudgetExpenseUnitOfWork"
-import { QueryParams } from "../../../data/types/QueryParams"
+import { QueryGroupParams, QueryParams } from "../../../data/types/QueryParams"
 import { useAppDispatch, useAppSelector } from "../../../data/globalContext/StoreHooks"
 import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppSlice"
 import { selectFinancesApp } from "../../../data/globalContext/redux/slices/FinancesAppSlice"
@@ -60,7 +60,9 @@ const useBudgetExpensesViewModel = ({
 
 
     // ------------------ context ------------------ //
-    const userApp = useAppSelector(selectUserApp)
+    const {
+        userId
+    } = useAppSelector(selectUserApp)
 
     const {
         groupId,
@@ -196,7 +198,7 @@ const useBudgetExpensesViewModel = ({
         budgetsQueue: Event[],
         expensesQueue: Event[]
     }) => {
-        
+
         // if there is no data, we return
         const thereIsData = budgetsQueue.length > 0 || expensesQueue.length > 0
         if (!thereIsData) return
@@ -249,23 +251,23 @@ const useBudgetExpensesViewModel = ({
     };
 
     const updateBudgets = async () => {
-        consumeBudgetsQueue()
-        return getBudgets({ userId: userApp.userId, ...dateInterval })
-    }
+        consumeBudgetsQueue();
+        return groupId ? getBudgetsByGroup({ groupId, ...dateInterval }) : getBudgets({ userId, ...dateInterval });
+    };
 
     const updateExpenses = async () => {
-        consumeExpensesQueue()
-        return getExpenses({ userId: userApp.userId, ...dateInterval })
-    }
+        consumeExpensesQueue();
+        return groupId ? getExpensesByGroup({ groupId, ...dateInterval }) : getExpenses({ userId, ...dateInterval });
+    };
 
     const getData = async (dateInterval: DateInterval) => {
 
         setLoading(true)
 
-        // 1- getExpenses and budgets
+        // 1- getE xpenses and budgets
         const [expenses, budgets] = await Promise.all([
-            getExpenses({ userId: userApp.userId, ...dateInterval }),
-            getBudgets({ userId: userApp.userId, ...dateInterval }),
+            groupId ? getExpensesByGroup({ groupId, ...dateInterval }) : getExpenses({ userId, ...dateInterval }),
+            groupId ? getBudgetsByGroup({ groupId, ...dateInterval }) : getBudgets({ userId, ...dateInterval }),
         ])
 
         formatData({
@@ -273,7 +275,6 @@ const useBudgetExpensesViewModel = ({
             budgets,
             categories: categoriesContext
         })
-
 
         setLoading(false)
 
@@ -285,8 +286,21 @@ const useBudgetExpensesViewModel = ({
         return expenses
     }
 
+    const getExpensesByGroup = async (queryParams: QueryGroupParams): Promise<Expense[]> => {
+        const expenses = await expenseRepository.getAllByGroup(queryParams)
+        appDispatch(updateExpensesContext(expenses))
+        return expenses
+    }
+
     const getBudgets = async (queryParams: QueryParams): Promise<Budget[]> => {
         const budgetsWithRemaing = await budgetExpenseUnitOfWork.getBudgetsWithRemaining(queryParams)
+        appDispatch(updateBudgetsContext(budgetsWithRemaing))
+        return budgetsWithRemaing
+    }
+
+    const getBudgetsByGroup = async (queryParams: QueryGroupParams): Promise<Budget[]> => {
+
+        const budgetsWithRemaing = await budgetExpenseUnitOfWork.getBudgetsWithRemaingByGroup(queryParams)
         appDispatch(updateBudgetsContext(budgetsWithRemaing))
         return budgetsWithRemaing
     }

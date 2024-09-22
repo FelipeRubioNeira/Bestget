@@ -9,6 +9,7 @@ import { capitalizeFirstLetter } from "../../../utils/String";
 import { selectDateIntervalApp } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice";
 import DateTime from "../../../utils/DateTime";
 import { getMonth } from 'date-fns';
+
 const dateTime = new DateTime();
 
 
