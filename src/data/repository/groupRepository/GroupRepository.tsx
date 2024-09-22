@@ -1,10 +1,7 @@
 import { Collections } from "../../collections/Collections";
 import { Group, GroupKeys, UserGroup, UserGroupKeys } from "../../types/Group";
-import firestore, { where } from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
 import IGroupRepository from "./IGroupRepository";
-import { QueryParams } from "../../types/QueryParams";
-import { IncomeKeys } from "../../types/Income";
-import { IncomeGroupKeys } from "../../types/IncomeGroup";
 
 
 class GroupRepository implements IGroupRepository {

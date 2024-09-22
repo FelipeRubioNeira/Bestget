@@ -11,7 +11,7 @@ import IBudgetRepository from "../repository/budgetRepository/IBudgetRepository"
 import IExpenseRespository from "../repository/expenseRepository/IExpenseRepository";
 import { Budget } from "../types/Budget";
 import { Expense } from "../types/Expense";
-import { QueryParams } from "../types/QueryParams";
+import { QueryGroupParams, QueryParams } from "../types/QueryParams";
 import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 
 
@@ -30,13 +30,29 @@ class BudgetExpenseUnitOfWork {
 
         const expensesByBudget = await this.expenseRepository.getAllByBudgetId(budgetIds)
 
-        const budgetsWithRemaining = budgets.map(budget => {
+        const budgetsWithRemaining: Budget[] = budgets.map(budget => {
             const expenses = this.filterExpensesByBudgetId(budget.budgetId, expensesByBudget)
             const remaining = this.calculateRemaining(budget.amount, expenses)
-
-            return { ...budget, remaining }
+            const newBudget = { ...budget, remaining }
+            return newBudget
         })
 
+        return budgetsWithRemaining
+    }
+
+    async getBudgetsWithRemaingByGroup(queryGroupParams: QueryGroupParams): Promise<Budget[]> {
+
+        const budgets = await this.budgetRepository.getAllByGroup(queryGroupParams)
+        const budgetIds = this.getBudgetIds(budgets)
+
+        const expensesByBudget = await this.expenseRepository.getAllByBudgetId(budgetIds)
+
+        const budgetsWithRemaining: Budget[] = budgets.map(budget => {
+            const expenses = this.filterExpensesByBudgetId(budget.budgetId, expensesByBudget)
+            const remaining = this.calculateRemaining(budget.amount, expenses)
+            const newBudget = { ...budget, remaining }
+            return newBudget
+        })
 
         return budgetsWithRemaining
 

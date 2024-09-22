@@ -9,7 +9,7 @@ type Expense = {
     financeType: FinanceType,
     name: string;
     amount: number;
-    categoryId: number;
+    categoryId: number ;
     date: string;
     budgetId: string;
  }

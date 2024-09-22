@@ -42,7 +42,7 @@ const CalendarChart = ({ data, date }: CalendarProps) => {
     // ------------------- functions ------------------- //
     const renderDays = () => {
         const startDay = getDay(startDate);
-        let emptyDays = generateEmptyDays(startDay);
+        const emptyDays = generateEmptyDays(startDay);
         const totalExpenses = getMaxExpenses(data.values);
 
         return fillDays(emptyDays, data.values, totalExpenses);
@@ -64,7 +64,7 @@ const CalendarChart = ({ data, date }: CalendarProps) => {
 
     const generateEmptyDays = (startDay: number) => {
 
-        let days = [];
+        const days = [];
 
         for (let i = 0; i < startDay; i++) {
             days.push(<EmptyDay key={`empty-${i}`} />);

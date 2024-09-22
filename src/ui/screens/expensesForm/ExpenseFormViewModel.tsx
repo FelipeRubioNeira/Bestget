@@ -15,7 +15,7 @@ import { useAppSelector } from "../../../data/globalContext/StoreHooks"
 import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppSlice"
 import { selectFinancesApp } from "../../../data/globalContext/redux/slices/FinancesAppSlice"
 import { selectDateIntervalApp } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice"
-import FinanceType, { getFinanceType } from "../../../data/types/FinanceType"
+import { getFinanceType } from "../../../data/types/FinanceType"
 
 const dateTime = new DateTime()
 
@@ -170,11 +170,11 @@ const useExpenseFormViewModel = ({
         const amountInt = numberFormat(expenseAmount)
         const newDate = dateTime.getIsoDateTime(expenseDate)
 
-        const expenseCreated:Expense = {
-            financeType: getFinanceType(groupId),
-            groupId: groupId,
+        const expenseCreated: Expense = {
             expenseId: "",
             userId: userApp.userId,
+            groupId,
+            financeType: getFinanceType(groupId),
             name: expenseName,
             amount: amountInt,
             budgetId: budget?.budgetId || "",
@@ -199,28 +199,28 @@ const useExpenseFormViewModel = ({
 
     const createExpense = async () => {
 
-        const newExpense = generateExpense()
-        const result = await createExpenseUseCase.create(
-            newExpense,
-            budget || null,
+        const { isValid, message, result } = await createExpenseUseCase.create(
+            generateExpense(),
             emmitEvent,
-            groupId
         )
 
-        if (result.isValid) {
+        // if the expense is not valid, show the error message
+        if (!isValid) {
+            showModal("Error", message)
+            return
+        }
 
-            if (budget) {
-                navigation.navigate(ScreenRoutes.BUDGET, {
-                    budget: budget,
-                    ...(result.result && { newExpenseId: result.result.budgetId })
-                })
-
-            } else navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {
-                ...(result.result && { newExpenseId: result.result.expenseId })
+        // if the expense is valid, navigate to the budget
+        if (budget) {
+            navigation.navigate(ScreenRoutes.BUDGET, {
+                budget,
+                newExpenseId: result?.expenseId
             })
 
         } else {
-            showModal("Error", result.message)
+            navigation.navigate(ScreenRoutes.BUDGET_EXPENSES, {
+                newExpenseId: result?.expenseId
+            })
         }
 
     }

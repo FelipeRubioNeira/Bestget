@@ -70,7 +70,6 @@ const useBudgetExpensesViewModel = ({
     } = useAppSelector(selectFinancesApp)
 
     const dateInterval = useAppSelector(selectDateIntervalApp)
-
     const appDispatch = useAppDispatch()
 
 
@@ -190,23 +189,27 @@ const useBudgetExpensesViewModel = ({
 
 
     // ------------------ data methods ------------------ //
-    const handleEvents = async (queues: {
+    const handleEvents = async ({
+        budgetsQueue,
+        expensesQueue
+    }: {
         budgetsQueue: Event[],
         expensesQueue: Event[]
     }) => {
+        
+        // if there is no data, we return
+        const thereIsData = budgetsQueue.length > 0 || expensesQueue.length > 0
+        if (!thereIsData) return
 
         setLoading(true)
 
-        const dataToFormat = await evaluateEvents(queues)
-
-        // we get keys from object to know if there is data
-        const thereIsData = Object.keys(dataToFormat).length > 0
-
-        if (!thereIsData) return setLoading(false)
+        const dataToFormat = await evaluateEvents({
+            budgetsQueue,
+            expensesQueue
+        })
 
         formatData(dataToFormat)
         setLoading(false)
-
 
     }
 

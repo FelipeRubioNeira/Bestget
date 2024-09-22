@@ -25,7 +25,6 @@ import useModalViewModel, { ModalButtonList } from "../../components/modal/Modal
 import useToastViewModel from "../../components/toast/ToastViewModel"
 import { FontSize } from "../../constants/Fonts"
 import DefaultStyles from "../../styles/DefaultStyles"
-import BudgetExpenseGroupUnitOfWork from "../../../data/unitOfWork/BudgetExpenseGroupUnitOfWork"
 import { IIncomeRepository } from "../../../data/repository/incomeRepository/IIncomeRepository"
 
 const dateTime = new DateTime()
@@ -50,8 +49,10 @@ type HomeViewModelProps = {
     incomeRepository: IIncomeRepository,
     expenseRepository: IExpenseRespository,
     budgetRepository: IBudgetRepository,
-
     categoryRepository: ICategoryRepository,
+
+    // unitOfWork
+    budgetExpenseUnitOfWork: BudgetExpenseUnitOfWork,
 
 
     // use cases
@@ -82,6 +83,7 @@ const useHomeGroupViewModel = ({
     categoryRepository,
 
     // unitOfWork
+    budgetExpenseUnitOfWork,
 
     // use cases
     // copyMonthUseCase,
@@ -204,12 +206,9 @@ const useHomeGroupViewModel = ({
         ] = await Promise.all([
             getIncomes({ groupId, ...dateInterval }),
             getExpenses({ groupId, ...dateInterval }),
-            // getBudgets({ groupId, ...dateInterval }),
+            getBudgets({ groupId, ...dateInterval }),
             getCategories()
         ])
-
-        console.log("expenses", expenses);
-        
 
         const totalIncomes = calculateTotalAmount(incomes)
         const totalExpenses = calculateTotalExpenses(expenses)
@@ -259,8 +258,7 @@ const useHomeGroupViewModel = ({
     }
 
     const getBudgets = async (queryGroupParams: QueryGroupParams) => {
-        const budgestWithRemaining = await budgetExpenseGroupUnitOfWork.getBudgetsWithRemaining(queryGroupParams)
-
+        const budgestWithRemaining = await budgetExpenseUnitOfWork.getBudgetsWithRemaingByGroup(queryGroupParams)
         appDispatch(updateBudgets(budgestWithRemaining))
         return budgestWithRemaining
     }

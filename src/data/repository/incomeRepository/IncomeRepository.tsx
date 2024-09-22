@@ -3,7 +3,7 @@ import FinanceType from "../../types/FinanceType";
 import { Income, IncomeKeys } from "../../types/Income";
 import { QueryGroupParams, QueryParams } from "../../types/QueryParams";
 import { IIncomeRepository } from "./IIncomeRepository";
-import firestore from '@react-native-firebase/firestore';
+import firestore, { where } from '@react-native-firebase/firestore';
 
 
 class IncomeRepository implements IIncomeRepository {
@@ -16,13 +16,8 @@ class IncomeRepository implements IIncomeRepository {
             const newDocRef = firestore().collection(Collections.INCOME).doc();
 
             const newIncome: Income = {
+                ...income,
                 incomeId: newDocRef.id, // we set the id
-                financeType: FinanceType.personal,
-                groupId: null,
-                userId: income.userId,
-                name: income.name,
-                amount: income.amount,
-                date: income.date
             }
 
             await newDocRef.set(newIncome);
@@ -40,9 +35,10 @@ class IncomeRepository implements IIncomeRepository {
 
             const incomes = await firestore()
                 .collection(Collections.INCOME)
+                .where(IncomeKeys.FINANCE_TYPE, "==", FinanceType.personal)
+                .where(IncomeKeys.USER_ID, "==", userId)
                 .where(IncomeKeys.DATE, ">=", initialDate)
                 .where(IncomeKeys.DATE, "<", finalDate)
-                .where(IncomeKeys.USER_ID, "==", userId)
                 .get()
 
             const incomesArray: Income[] = incomes.docs.map(doc => ({
@@ -70,8 +66,8 @@ class IncomeRepository implements IIncomeRepository {
 
             const incomes = await firestore()
                 .collection(Collections.INCOME)
-                .where(IncomeKeys.GROUP_ID, "==", groupId)
                 .where(IncomeKeys.FINANCE_TYPE, "==", FinanceType.group)
+                .where(IncomeKeys.GROUP_ID, "==", groupId)
                 .where(IncomeKeys.DATE, ">=", initialDate)
                 .where(IncomeKeys.DATE, "<", finalDate)
                 .get()

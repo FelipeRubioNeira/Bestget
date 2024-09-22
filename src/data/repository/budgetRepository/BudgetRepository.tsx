@@ -1,7 +1,7 @@
 import { Collections } from "../../collections/Collections";
 import { Budget, BudgetKeys } from "../../types/Budget";
 import FinanceType from "../../types/FinanceType";
-import { QueryParams } from "../../types/QueryParams";
+import { QueryGroupParams, QueryParams } from "../../types/QueryParams";
 import IBudgetRepository from "./IBudgetRepository";
 import firestore from '@react-native-firebase/firestore';
 
@@ -15,10 +15,10 @@ class BudgetRepository implements IBudgetRepository {
 
             const budgetsFirebase = await firestore()
                 .collection(Collections.BUDGET)
+                .where(BudgetKeys.FINANCE_TYPE, "==", FinanceType.personal)
+                .where(BudgetKeys.USER_ID, "==", userId)
                 .where(BudgetKeys.DATE, ">=", initialDate)
                 .where(BudgetKeys.DATE, "<", finalDate)
-                .where(BudgetKeys.USER_ID, "==", userId)
-                .orderBy(BudgetKeys.DATE, "desc")
                 .get()
 
 
@@ -48,6 +48,47 @@ class BudgetRepository implements IBudgetRepository {
         }
 
     }
+
+    async getAllByGroup({ groupId, initialDate, finalDate }: QueryGroupParams): Promise<Budget[]> {
+
+        try {
+
+            const budgetsFirebase = await firestore()
+                .collection(Collections.BUDGET)
+                .where(BudgetKeys.GROUP_ID, "==", groupId)
+                .where(BudgetKeys.FINANCE_TYPE, "==", FinanceType.group)
+                .where(BudgetKeys.DATE, ">=", initialDate)
+                .where(BudgetKeys.DATE, "<", finalDate)
+                .get()
+
+            const budgetsArray: Budget[] = budgetsFirebase.docs.map(doc => {
+
+                const { userId, budgetId, name, amount, categoryId, date } = doc.data() as Budget
+
+                const budget: Budget = {
+                    financeType: FinanceType.group,
+                    date: date,
+                    remaining: 0,
+                    groupId: groupId,
+                    budgetId: budgetId,
+                    userId: userId,
+                    name: name,
+                    amount: amount,
+                    categoryId: categoryId
+                }
+
+                return budget
+            })
+
+            return budgetsArray
+
+        }
+        catch (error) {
+            console.error("error BudgetRepository getAllByGroup", error);
+            return []
+        }
+    }
+
 
     async create(budget: Budget): Promise<Budget | null> {
 

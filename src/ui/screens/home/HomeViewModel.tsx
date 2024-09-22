@@ -116,9 +116,7 @@ const useHomeViewModel = ({
     const [totalremaining, setTotalremaining] = useState("0")
     const [totalIncomes, setTotalIncomes] = useState(0)
     const [totalExpenses, setTotalExpenses] = useState(0)
-
-    // ------------------ buttons ------------------ //
-    const [buttonsHome, setButtonsHome] = useState<ButtonHomeProps[]>([])
+    
 
     // ------------------ bottom sheet ------------------ //
     const [bottomSheetState, setBottomSheetState] = useState<BottomSheetState>({
@@ -608,7 +606,6 @@ const useHomeViewModel = ({
         allCategories: categories,
         totalExpenses,
         totalIncomes,
-        buttonsHome,
 
         // botom sheet
         showBottomSheet,

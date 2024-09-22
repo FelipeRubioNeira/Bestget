@@ -22,6 +22,7 @@ import useHomeGroupViewModel from './HomeGroupViewModel'
 import ButtonApp from '../../components/buttonApp/ButtonApp'
 import BudgetExpenseGroupUnitOfWork from '../../../data/unitOfWork/BudgetExpenseGroupUnitOfWork'
 import IncomeRepository from '../../../data/repository/incomeRepository/IncomeRepository'
+import BudgetExpenseUnitOfWork from '../../../data/unitOfWork/BudgetExpenseUnitOfWork'
 
 
 
@@ -30,6 +31,11 @@ import IncomeRepository from '../../../data/repository/incomeRepository/IncomeRe
 const incomeRepository = new IncomeRepository()
 const expenseRepository = new ExpenseRepository()
 const budgetRepository = new BudgetRepository()
+
+const budgetExpenseUnitOfWork = new BudgetExpenseUnitOfWork(
+    budgetRepository,
+    expenseRepository
+)
 
 
 const categoryRepository = new CategoryRespository()
@@ -77,7 +83,7 @@ const HomeGroupScreen = ({ navigation, route }: HomeGroupScreenProps) => {
         categoryRepository,
 
         // unitOfWork
-
+        budgetExpenseUnitOfWork,
 
         //use cases
         // copyMonthUseCase,

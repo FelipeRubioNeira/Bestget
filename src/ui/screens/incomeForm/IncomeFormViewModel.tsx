@@ -12,7 +12,7 @@ import { useAppSelector } from "../../../data/globalContext/StoreHooks";
 import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppSlice";
 import { selectDateIntervalApp } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice";
 import { selectFinancesApp } from "../../../data/globalContext/slices/FinancesAppSlice";
-import FinanceType, { getFinanceType } from "../../../data/types/FinanceType";
+import { getFinanceType } from "../../../data/types/FinanceType";
 
 
 const dateTime = new DateTime()
@@ -120,12 +120,12 @@ const useIncomeFormViewModel = ({
         // El ido del grupo es obligatorio, pero si no esta presente este puede ser null
         const newIncome: Income = {
             incomeId: income?.incomeId || "",
-            userId: userId,
-            groupId: groupId || null, // we need to check if we have a group
+            userId,
+            groupId,
+            financeType: getFinanceType(groupId),
             name: incomeState.incomeName,
             amount: numberFormat(incomeState.incomeAmount),
             date: generatetDateTime(),
-            financeType: getFinanceType(groupId)
         }
 
 

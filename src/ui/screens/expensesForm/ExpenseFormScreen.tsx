@@ -33,7 +33,6 @@ const ExpenseForm = ({ navigation, route }: ExpensesCreateScreenProps) => {
     route,
     createExpenseUseCase,
     editExpenseUseCase,
-    expenseGroupRepository
   })
 
 

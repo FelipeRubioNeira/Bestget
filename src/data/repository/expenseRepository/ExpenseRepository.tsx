@@ -51,9 +51,10 @@ class ExpenseRepository implements IExpenseRespository {
 
             const expensesFirebase = await firestore()
                 .collection(Collections.EXPENSE)
+                .where(ExpenseKeys.FINANCE_TYPE, "==", FinanceType.personal)
+                .where(ExpenseKeys.USER_ID, "==", userId)
                 .where(ExpenseKeys.DATE, ">=", initialDate)
                 .where(ExpenseKeys.DATE, "<", finalDate)
-                .where(ExpenseKeys.USER_ID, "==", userId)
                 .get()
 
             const expensesArray = expensesFirebase.docs.map(doc => {
@@ -71,6 +72,7 @@ class ExpenseRepository implements IExpenseRespository {
                     categoryId,
                     budgetId
                 }
+
                 return newExpense
 
             })

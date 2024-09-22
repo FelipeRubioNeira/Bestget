@@ -1,6 +1,5 @@
-import { StyleSheet, Text, TextInput, View } from 'react-native'
+import { StyleSheet, TextInput, View } from 'react-native'
 import React from 'react'
-import { Styles } from '../../styles/Styles'
 import DefaultStyles from '../../styles/DefaultStyles'
 import { Colors } from '../../constants/Colors'
 import Label from '../label/Label'

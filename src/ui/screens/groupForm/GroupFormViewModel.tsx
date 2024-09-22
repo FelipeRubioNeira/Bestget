@@ -6,7 +6,6 @@ import CreateGroupUseCase from "../../../domain/useCases/CreateGroupUseCase";
 import { useAppSelector } from "../../../data/globalContext/StoreHooks";
 import { selectUserApp } from "../../../data/globalContext/slices/UserAppSlice";
 import useLoadingViewModel from "../../components/loading/LoadingViewModel";
-import { StackActions } from '@react-navigation/native';
 import { ScreenRoutes } from "../../../navigation/Routes";
 
 

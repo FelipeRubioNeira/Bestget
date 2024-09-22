@@ -1,10 +1,11 @@
 import { Budget } from "../../types/Budget"
-import { QueryParams } from "../../types/QueryParams"
+import { QueryGroupParams, QueryParams } from "../../types/QueryParams"
 
 
 interface IBudgetRepository {
     create: (budget: Budget) => Promise<Budget | null>
     getAll: (queryParams: QueryParams) => Promise<Budget[]>
+    getAllByGroup: (queryGroupParams: QueryGroupParams) => Promise<Budget[]>
     delete: (id: string) => Promise<void>
     update: (budget: Budget) => Promise<void>
     count: (queryParams: QueryParams) => Promise<number>
