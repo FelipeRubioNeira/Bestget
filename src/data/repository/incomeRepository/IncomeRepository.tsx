@@ -1,7 +1,7 @@
 import { Collections } from "../../collections/Collections";
 import FinanceType from "../../types/FinanceType";
 import { Income, IncomeKeys } from "../../types/Income";
-import { QueryParams } from "../../types/QueryParams";
+import { QueryGroupParams, QueryParams } from "../../types/QueryParams";
 import { IIncomeRepository } from "./IIncomeRepository";
 import firestore from '@react-native-firebase/firestore';
 
@@ -9,7 +9,7 @@ import firestore from '@react-native-firebase/firestore';
 class IncomeRepository implements IIncomeRepository {
     constructor() { }
 
-    
+
     public async create(income: Income): Promise<Income> {
         try {
 
@@ -59,6 +59,45 @@ class IncomeRepository implements IIncomeRepository {
 
         } catch (error) {
             console.error("error incomeRepository [getAll]", error);
+            return []
+        }
+
+    }
+
+    async getAllByGroup({ groupId, initialDate, finalDate }: QueryGroupParams): Promise<Income[]> {
+
+        try {
+
+            const incomes = await firestore()
+                .collection(Collections.INCOME)
+                .where(IncomeKeys.GROUP_ID, "==", groupId)
+                .where(IncomeKeys.FINANCE_TYPE, "==", FinanceType.group)
+                .where(IncomeKeys.DATE, ">=", initialDate)
+                .where(IncomeKeys.DATE, "<", finalDate)
+                .get()
+
+            const incomesArray: Income[] = incomes.docs.map(doc => {
+
+                const { incomeId, userId, name, amount, date, financeType } = doc.data()
+
+                const income: Income = {
+                    incomeId,
+                    userId,
+                    name,
+                    amount,
+                    date,
+                    financeType,
+                    groupId
+                }
+
+                return income
+
+            });
+
+            return incomesArray
+
+        } catch (error) {
+            console.error("error income repository [getAllByGroup]", error);
             return []
         }
 

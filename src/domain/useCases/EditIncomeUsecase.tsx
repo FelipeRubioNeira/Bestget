@@ -1,7 +1,5 @@
-import { IIncomeGroupRepository } from "../../data/repository/incomeRepository/IIncomeGroupRepository";
 import { IIncomeRepository } from "../../data/repository/incomeRepository/IIncomeRepository";
 import { Income } from "../../data/types/Income";
-import { IncomeGroup } from "../../data/types/IncomeGroup";
 import { Validation, ValidationResult } from "../../data/types/Validation";
 import { validateConnection } from "../../utils/Connection";
 import { validateInputs } from "../../utils/Inputs";

@@ -16,16 +16,13 @@ import EditionIcons from '../../components/editionIcons/EditionIcons'
 import DeleteIncomeUseCase from '../../../domain/useCases/DeleteIncomeUseCase'
 import Search from '../../components/search/Search'
 import FooterFlatlist from '../../components/footerFlatlist/FooterFlatlist'
-import IncomeGroupRepository from '../../../data/repository/incomeRepository/IncomeGroupRepository'
 
 
 
 
 const incomesRepository = new IncomeRepository()
-const incomeGroupRepository = new IncomeGroupRepository()
 const deleteIncomeUseCase = new DeleteIncomeUseCase(
   incomesRepository,
-  incomeGroupRepository
 )
 
 

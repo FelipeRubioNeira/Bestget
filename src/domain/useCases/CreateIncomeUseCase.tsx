@@ -43,7 +43,6 @@ class CreateIncomeUseCase {
             message: message,
             result: null,
         }
-
     }
 
     // ------------------- private methods ------------------- //

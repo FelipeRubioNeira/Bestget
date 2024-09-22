@@ -1,5 +1,5 @@
 import { Income } from "../../types/Income";
-import { QueryParams } from "../../types/QueryParams";
+import { QueryGroupParams, QueryParams } from "../../types/QueryParams";
 
 export interface IIncomeRepository {
 
@@ -10,6 +10,7 @@ export interface IIncomeRepository {
      count: (queryParams: QueryParams) => Promise<number>
 
      getAll: (queryParams: QueryParams) => Promise<Income[]>
+     getAllByGroup: (queryGroupParams: QueryGroupParams) => Promise<Income[]>
      getTotal: (queryParams: QueryParams) => Promise<number>
 
      // ----------------- transactions ----------------- //

@@ -1,7 +1,7 @@
 import { Collections } from "../../collections/Collections";
 import { Expense, ExpenseKeys } from "../../types/Expense";
 import FinanceType from "../../types/FinanceType";
-import { QueryParams } from "../../types/QueryParams";
+import { QueryGroupParams, QueryParams } from "../../types/QueryParams";
 import IExpenseRespository from "./IExpenseRepository";
 import firestore from '@react-native-firebase/firestore';
 
@@ -79,6 +79,46 @@ class ExpenseRepository implements IExpenseRespository {
 
         } catch (error) {
             console.error("error getExpenses", error);
+            return []
+        }
+
+    }
+
+    async getAllByGroup({ groupId, initialDate, finalDate }: QueryGroupParams): Promise<Expense[]> {
+
+        try {
+
+            const expensesFirebase = await firestore()
+                .collection(Collections.EXPENSE)
+                .where(ExpenseKeys.GROUP_ID, "==", groupId)
+                .where(ExpenseKeys.FINANCE_TYPE, "==", FinanceType.group)
+                .where(ExpenseKeys.DATE, ">=", initialDate)
+                .where(ExpenseKeys.DATE, "<", finalDate)
+                .get()
+
+            const expensesArray = expensesFirebase.docs.map(doc => {
+
+                const { expenseId, userId, name, amount, categoryId, date, budgetId } = doc.data() as Expense
+
+                const newExpense: Expense = {
+                    financeType: FinanceType.group,
+                    groupId: groupId,
+                    expenseId: expenseId,
+                    userId: userId,
+                    name: name,
+                    amount: amount,
+                    date: date,
+                    categoryId,
+                    budgetId
+                }
+                return newExpense
+
+            })
+
+            return expensesArray
+
+        } catch (error) {
+            console.error("error getAllByGroup", error);
             return []
         }
 

@@ -13,59 +13,48 @@ import Toast from '../../components/toast/Toast'
 import Modal from '../../components/modal/Modal'
 import CategoryRespository from '../../../data/repository/categoryRepository/CategoryRepository'
 import ExpenseRepository from '../../../data/repository/expenseRepository/ExpenseRepository'
-import CopyMonthUseCase from '../../../domain/useCases/CopyMonthUseCase'
-import PasteMonthUseCase from '../../../domain/useCases/PasteMonthUseCase'
-import DeleteMothUseCase from '../../../domain/useCases/DeleteMonthUseCase'
-import BudgetExpenseUnitOfWork from '../../../data/unitOfWork/BudgetExpenseUnitOfWork'
 import SavedDateRepository from '../../../data/repository/savedDateRpository/SavedDateRepository'
 import UpdateSavedDateUseCase from '../../../domain/useCases/UpdateSavedDateUseCase'
 import ReadSavedDateUseCase from '../../../domain/useCases/ReadSavedDateUseCase'
 import { currencyFormat } from '../../../utils/NumberFormat'
 import Icons from '../../../assets/icons'
 import useHomeGroupViewModel from './HomeGroupViewModel'
-import IncomeGroupRepository from '../../../data/repository/incomeRepository/IncomeGroupRepository'
 import ButtonApp from '../../components/buttonApp/ButtonApp'
-import ExpenseGroupRepository from '../../../data/repository/expenseRepository/ExpenseGroupRepository'
+import BudgetExpenseGroupUnitOfWork from '../../../data/unitOfWork/BudgetExpenseGroupUnitOfWork'
+import IncomeRepository from '../../../data/repository/incomeRepository/IncomeRepository'
 
 
 
 // ------------------- repositories ------------------- //
 
-const incomeGroupRepository = new IncomeGroupRepository()
-const expenseGroupRepository = new ExpenseGroupRepository()
-
+const incomeRepository = new IncomeRepository()
 const expenseRepository = new ExpenseRepository()
 const budgetRepository = new BudgetRepository()
+
+
 const categoryRepository = new CategoryRespository()
 
 const savedDateRepository = new SavedDateRepository()
 
 
-const budgetExpenseUnitOfWork = new BudgetExpenseUnitOfWork(
-    budgetRepository,
-    expenseRepository
-)
 
 
 // ------------------- use cases ------------------- //
-const copyMonthUseCase = new CopyMonthUseCase(
-    incomeGroupRepository,
-    budgetRepository,
-    expenseRepository
-)
+// const copyMonthUseCase = new CopyMonthUseCase(
+//     budgetRepository,
+//     expenseRepository
+// )
 
-const pasteMonthUseCase = new PasteMonthUseCase(
-    incomeGroupRepository,
-    budgetRepository,
-    expenseRepository,
-    budgetExpenseUnitOfWork
-)
+// const pasteMonthUseCase = new PasteMonthUseCase(
+//     budgetRepository,
+//     expenseRepository,
+//     budgetExpenseUnitOfWork
+// )
 
-const deleteMonthUseCase = new DeleteMothUseCase(
-    incomeGroupRepository,
-    budgetRepository,
-    expenseRepository
-)
+// const deleteMonthUseCase = new DeleteMothUseCase(
+//     budgetRepository,
+//     expenseRepository
+// )
 
 const updateSavedDateUseCase = new UpdateSavedDateUseCase(savedDateRepository)
 const readSavedDateUseCase = new ReadSavedDateUseCase(savedDateRepository)
@@ -80,21 +69,20 @@ const HomeGroupScreen = ({ navigation, route }: HomeGroupScreenProps) => {
     const homeGroupViewModel = useHomeGroupViewModel({
         navigation,
         route,
+
         // repositories
-        categoryRepository,
+        incomeRepository,
         expenseRepository,
         budgetRepository,
-        incomeGroupRepository,
-        expenseGroupRepository,
+        categoryRepository,
 
         // unitOfWork
-        budgetExpenseUnitOfWork,
 
 
-        // use cases
-        copyMonthUseCase,
-        pasteMonthUseCase,
-        deleteMonthUseCase,
+        //use cases
+        // copyMonthUseCase,
+        // pasteMonthUseCase,
+        // deleteMonthUseCase,
 
         updateSavedDateUseCase,
         readSavedDateUseCase,
@@ -196,9 +184,9 @@ const HomeGroupScreen = ({ navigation, route }: HomeGroupScreenProps) => {
                 onHide={homeGroupViewModel.hideBottomSheet}
                 onConfirm={homeGroupViewModel.confirmDate}
                 onChange={homeGroupViewModel.onChangeOperationDate}
-                onCopy={homeGroupViewModel.onCopyMonth}
-                onPaste={homeGroupViewModel.onPasteMonth}
-                onDelete={homeGroupViewModel.onDeleteMonth}
+                // onCopy={homeGroupViewModel.onCopyMonth}
+                // onPaste={homeGroupViewModel.onPasteMonth}
+                // onDelete={homeGroupViewModel.onDeleteMonth}
 
                 updateSavedDateUseCase={updateSavedDateUseCase}
             />

@@ -7,19 +7,18 @@
 
 
 import { Collections } from "../collections/Collections";
-import IBudgetGroupRepository from "../repository/budgetRepository/IBudgetGroupRepository";
-import IExpenseGroupRepository from "../repository/expenseRepository/IExpenseGroupRepository";
+import IBudgetRepository from "../repository/budgetRepository/IBudgetRepository";
 import IExpenseRespository from "../repository/expenseRepository/IExpenseRepository";
 import { Budget } from "../types/Budget";
 import { Expense } from "../types/Expense";
-import { QueryGroupParams, QueryParams } from "../types/QueryParams";
+import { QueryGroupParams } from "../types/QueryParams";
 import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 
 
 class BudgetExpenseGroupUnitOfWork {
     constructor(
-        private budgetGroupRepository: IBudgetGroupRepository,
-        private expenseGroupRepository: IExpenseGroupRepository
+        private budgetGroupRepository: IBudgetRepository,
+        private expenseGroupRepository: IBudgetRepository
     ) { }
 
 
@@ -46,8 +45,8 @@ class BudgetExpenseGroupUnitOfWork {
     async copyTransaction(
         copyDate: QueryGroupParams,
         pasteDate: string,
-        budgetGroupRepository: IBudgetGroupRepository,
-        expenseRepository: IExpenseGroupRepository
+        budgetGroupRepository: IBudgetRepository,
+        expenseRepository: IExpenseRespository
     ): Promise<void> {
 
         try {

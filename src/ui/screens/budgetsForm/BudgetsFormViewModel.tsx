@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { BudgetsCreateScreenProps } from "../../../navigation/NavigationParamList"
 import CreateBudgetUseCase from "../../../domain/useCases/CreateBudgetUseCase"
-import { Budget, BudgetCreate } from "../../../data/types/Budget"
+import { Budget } from "../../../data/types/Budget"
 import { currencyFormat, numberFormat } from "../../../utils/NumberFormat"
 import { ScreenRoutes } from "../../../navigation/Routes"
 import useModalViewModel from "../../components/modal/ModalViewModel"
@@ -15,6 +15,7 @@ import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppS
 import { useAppSelector } from "../../../data/globalContext/StoreHooks"
 import { selectFinancesApp } from "../../../data/globalContext/redux/slices/FinancesAppSlice"
 import { selectDateIntervalApp } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice"
+import { getFinanceType } from "../../../data/types/FinanceType"
 
 
 const dateTime = new DateTime()
@@ -49,7 +50,7 @@ const useBudgetsFormViewModel = ({
 
     // ------------------- context ------------------- //
     const userApp = useAppSelector(selectUserApp)
-    const { categories } = useAppSelector(selectFinancesApp)
+    const { categories, groupId } = useAppSelector(selectFinancesApp)
     const dateInterval = useAppSelector(selectDateIntervalApp)
 
 
@@ -170,6 +171,8 @@ const useBudgetsFormViewModel = ({
         const date = dateTime.getIsoDateTime(budgetState.budgetDate)
 
         const budgetEdited: Budget = {
+            financeType: getFinanceType(groupId),
+            groupId: groupId,
             budgetId: budget?.budgetId || "",
             userId: budget?.userId || "",
             name: budgetState.budgetName,
@@ -210,7 +213,11 @@ const useBudgetsFormViewModel = ({
         const date = dateTime.getIsoDateTime(budgetState.budgetDate)
 
         // 1- create budget
-        const budgetCreate: BudgetCreate = {
+        const budgetCreate: Budget = {
+            financeType: getFinanceType(groupId),
+            budgetId: "",
+            remaining: 0,
+            groupId: groupId,
             userId: userApp.userId,
             name: budgetState.budgetName,
             amount: numberFormat(budgetState.budgetAmount),

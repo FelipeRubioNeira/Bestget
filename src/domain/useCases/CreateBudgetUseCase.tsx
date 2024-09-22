@@ -1,6 +1,6 @@
 import { EventNames } from "../../data/globalContext/events/EventNames";
 import IBudgetRepository from "../../data/repository/budgetRepository/IBudgetRepository";
-import { Budget, BudgetCreate } from "../../data/types/Budget";
+import { Budget } from "../../data/types/Budget";
 import { Validation, ValidationResult } from "../../data/types/Validation";
 import { isConnected } from "../../utils/Connection";
 
@@ -9,7 +9,7 @@ class CreateBudgetUseCase {
     constructor(private budgetRepository: IBudgetRepository) { }
 
     async createBudget(
-        budget: BudgetCreate,
+        budget: Budget,
         emmitEvent: (eventName: EventNames, payload: any) => void
     ): Promise<ValidationResult<Budget | null>> {
 
@@ -19,9 +19,9 @@ class CreateBudgetUseCase {
             result: null,
         }
 
-        const result = await this.applyValidations(budget.name, budget.amount)
+        const {isValid, message} = await this.applyValidations(budget.name, budget.amount)
 
-        if (result.isValid) {
+        if (isValid) {
             validationResult.result = await this.budgetRepository.create(budget)
             emmitEvent(EventNames.BUDGET_CREATED, budget)
 

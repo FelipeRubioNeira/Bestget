@@ -33,7 +33,6 @@ import {
 import { selectDateIntervalApp } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice"
 import HeaderRight from "../../components/headerRight/HeaderRight"
 import useSearchViewModel from "../../components/search/SearchViewModel"
-import IExpenseGroupRepository from "../../../data/repository/expenseRepository/IExpenseGroupRepository"
 
 const dateTime = new DateTime()
 

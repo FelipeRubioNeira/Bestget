@@ -1,5 +1,6 @@
 import { Collections } from "../../collections/Collections";
-import { Budget, BudgetCreate, BudgetKeys } from "../../types/Budget";
+import { Budget, BudgetKeys } from "../../types/Budget";
+import FinanceType from "../../types/FinanceType";
 import { QueryParams } from "../../types/QueryParams";
 import IBudgetRepository from "./IBudgetRepository";
 import firestore from '@react-native-firebase/firestore';
@@ -26,6 +27,8 @@ class BudgetRepository implements IBudgetRepository {
                 const { userId, budgetId, name, amount, categoryId, date } = doc.data() as Budget
 
                 const budget: Budget = {
+                    financeType: FinanceType.personal,
+                    groupId: null,
                     budgetId: budgetId,
                     userId: userId,
                     name: name,
@@ -46,23 +49,19 @@ class BudgetRepository implements IBudgetRepository {
 
     }
 
-    async create(budget: BudgetCreate): Promise<Budget | null> {
+    async create(budget: Budget): Promise<Budget | null> {
 
         try {
 
             const newDocRef = firestore().collection(Collections.BUDGET).doc();
 
-            const budgetCreated: Budget = {
-                budgetId: newDocRef.id,
-                userId: budget.userId,
-                name: budget.name,
-                amount: budget.amount,
-                categoryId: budget?.categoryId || 0,
-                date: budget.date
+            const newBudget: Budget = {
+                ...budget,
+                budgetId: newDocRef.id, // we set the id
             }
 
-            await newDocRef.set(budgetCreated);
-            return budgetCreated
+            await newDocRef.set(newBudget);
+            return newBudget
 
         } catch (error) {
             console.error("error BudgetRepository create", error);
@@ -136,6 +135,8 @@ class BudgetRepository implements IBudgetRepository {
                 budgets.forEach(budget => {
 
                     const newBudget: Budget = {
+                        financeType: FinanceType.personal,
+                        groupId: null,
                         userId: budget.userId,
                         name: budget.name,
                         amount: budget.amount,

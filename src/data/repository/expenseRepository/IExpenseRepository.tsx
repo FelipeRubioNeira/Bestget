@@ -1,5 +1,5 @@
 import { Expense, ExpenseCreate } from "../../types/Expense"
-import { QueryParams } from "../../types/QueryParams"
+import { QueryGroupParams, QueryParams } from "../../types/QueryParams"
 
 
 interface IExpenseRespository {
@@ -9,6 +9,9 @@ interface IExpenseRespository {
     update: (expense: Expense) => Promise<boolean>
 
     getAll: (queryParams: QueryParams) => Promise<Expense[]>
+
+    getAllByGroup: (queryGroupParams: QueryGroupParams) => Promise<Expense[]>
+
     getByBudgetId: (id: string) => Promise<Expense[]>
     getAllByBudgetId: (id: string[]) => Promise<Expense[]>
 

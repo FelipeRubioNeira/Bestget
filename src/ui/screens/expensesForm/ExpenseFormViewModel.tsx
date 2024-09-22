@@ -15,7 +15,6 @@ import { useAppSelector } from "../../../data/globalContext/StoreHooks"
 import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppSlice"
 import { selectFinancesApp } from "../../../data/globalContext/redux/slices/FinancesAppSlice"
 import { selectDateIntervalApp } from "../../../data/globalContext/redux/slices/DateIntervalAppSlice"
-import IExpenseGroupRepository from "../../../data/repository/expenseRepository/IExpenseGroupRepository"
 import FinanceType, { getFinanceType } from "../../../data/types/FinanceType"
 
 const dateTime = new DateTime()
@@ -24,7 +23,6 @@ const dateTime = new DateTime()
 type ExpensesCreateViewModelProps = {
     createExpenseUseCase: CreateExpenseUseCase,
     editExpenseUseCase: EditExpenseUseCase,
-    expenseGroupRepository: IExpenseGroupRepository
 } & ExpensesCreateScreenProps
 
 
