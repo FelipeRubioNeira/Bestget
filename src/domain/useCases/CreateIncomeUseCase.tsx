@@ -22,15 +22,11 @@ class CreateIncomeUseCase {
         const validation = await this.applyValidations(newIncome.name, newIncome.amount)
 
 
-        if (!validation.isValid) {
-            return this.throwMessage(validation.message)
-        }
+        if (!validation.isValid) return this.throwMessage(validation.message)
 
         const incomeCreated = await this.incomeRepository.create(newIncome)
 
-        if (!incomeCreated) {
-            return this.throwMessage("No se pudo guardar el ingreso.")
-        }
+        if (!incomeCreated) return this.throwMessage("No se pudo guardar el ingreso.")
 
         validationResult.result = incomeCreated
         return validationResult

@@ -22,7 +22,7 @@ import { currencyFormat } from "../../../utils/NumberFormat"
 import { IIncomeRepository } from "../../../data/repository/incomeRepository/IIncomeRepository"
 import useModalViewModel from "../../components/modal/ModalViewModel"
 import DeleteIncomeUseCase from "../../../domain/useCases/DeleteIncomeUseCase"
-import { QueryParams } from "../../../data/types/QueryParams"
+import { QueryGroupParams, QueryParams } from "../../../data/types/QueryParams"
 import { useAppDispatch, useAppSelector } from "../../../data/globalContext/StoreHooks"
 import { selectUserApp } from "../../../data/globalContext/redux/slices/UserAppSlice"
 import { selectFinancesApp, updateIncomes } from "../../../data/globalContext/redux/slices/FinancesAppSlice"
@@ -50,7 +50,7 @@ const useIncomesViewModel = ({
 
 
     // ------------------- context ------------------- //
-    const userApp = useAppSelector(selectUserApp)
+    const { userId } = useAppSelector(selectUserApp)
     const { incomes, groupId } = useAppSelector(selectFinancesApp)
     const dateInterval = useAppSelector(selectDateIntervalApp)
     const appDispatch = useAppDispatch()
@@ -97,12 +97,18 @@ const useIncomesViewModel = ({
     }, [editMode, incomes])
 
 
-    // if we have a new income or changes in one, we regenerate the list
+    // if we have a new income or changes one, we regenerate the list
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
+            
             if (!incomeId) return
-            getIncomesFromRepository({ userId: userApp.userId, ...dateInterval })
-                .then(initializeIncomeData)
+
+            groupId ?
+                getIncomesByGroup({ groupId, ...dateInterval })
+                    .then(initializeIncomeData)
+
+                : getIncomes({ userId, ...dateInterval })
+                    .then(initializeIncomeData)
         })
 
         return unsubscribe
@@ -120,8 +126,12 @@ const useIncomesViewModel = ({
 
 
     // ------------------- methods ------------------- //
-    const getIncomesFromRepository = async (queryParams: QueryParams): Promise<Income[]> => {
+    const getIncomes = async (queryParams: QueryParams): Promise<Income[]> => {
         return incomesRepository.getAll(queryParams)
+    }
+
+    const getIncomesByGroup = async (queryParams: QueryGroupParams): Promise<Income[]> => {
+        return incomesRepository.getAllByGroup(queryParams)
     }
 
     const initializeIncomeData = (incomes: Income[]) => {
@@ -269,7 +279,7 @@ const useIncomesViewModel = ({
 
         if (response.isValid) {
 
-            const newIncomesList = await getIncomesFromRepository({ userId: userApp.userId, ...dateInterval })
+            const newIncomesList = groupId ? await getIncomesByGroup({ groupId, ...dateInterval }) : await getIncomes({ userId, ...dateInterval })
 
             appDispatch(updateIncomes(newIncomesList))
             generateIncomeList(newIncomesList)

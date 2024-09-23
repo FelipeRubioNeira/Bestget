@@ -37,6 +37,9 @@ export const financesAppSlice = createSlice({
         updateGroupId: (state, action: PayloadAction<string>) => {
             state.groupId = action.payload
         },
+        deleteGroupId: (state) => {
+            state.groupId = ""
+        },
         updateIncomes: (state, action: PayloadAction<Income[]>) => {
             state.incomes = action.payload
         },
@@ -57,6 +60,7 @@ export const selectFinancesApp = (state: RootState) => state.financesApp;
 // export the slice of the state
 export const {
     updateGroupId,
+    deleteGroupId,
     updateIncomes,
     updateExpenses,
     updateBudgets,
