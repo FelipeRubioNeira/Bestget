@@ -27,7 +27,10 @@ class EditExpenseUseCase {
             await this.expenseRepository.update(expense)
             validationResult.result = expense.expenseId
 
-            emmitEvent(EventNames.EXPENSE_EDITED, expense)
+            // if the expense is from a budget, we emmit a different event
+            const eventName = expense.budgetId ? EventNames.EXPENSE_EDITED_FROM_BUDGET : EventNames.EXPENSE_EDITED
+            emmitEvent(eventName, expense)
+
 
         } else {
             validationResult.isValid = false

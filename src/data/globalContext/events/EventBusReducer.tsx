@@ -47,6 +47,8 @@ const eventBusReducer = (state: EventBusState, eventName: EventNames) => {
         case EventNames.EXPENSE_EDITED:
         case EventNames.EXPENSE_DELETED:
         case EventNames.EXPENSE_CREATED_FROM_BUDGET:
+        case EventNames.EXPENSE_EDITED_FROM_BUDGET:
+        case EventNames.EXPENSE_DELETED_FROM_BUDGET:
             return { ...state, expensesQueue: [...state.expensesQueue, { eventName }] }
 
 

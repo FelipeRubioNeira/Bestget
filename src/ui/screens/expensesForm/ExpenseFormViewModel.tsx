@@ -235,7 +235,6 @@ const useExpenseFormViewModel = ({
         if (!isValid) return showModal("Error", message)
 
         if (budget) {
-
             navigation.navigate(ScreenRoutes.BUDGET, {
                 budget: budget,
                 newExpenseId: newExpense.expenseId,
