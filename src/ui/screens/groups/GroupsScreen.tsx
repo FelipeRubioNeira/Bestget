@@ -41,7 +41,8 @@ const GroupsScreen = ({
         modalState,
         editMode,
         onPressDeleteGroupConfirmation,
-        onPressEditGroupConfirmation
+        onPressEditGroupConfirmation,
+        generateShortName
     } = useGroupsViewModel({
         navigation,
         route,
@@ -87,6 +88,7 @@ const GroupsScreen = ({
                 data={groups}
                 renderItem={({ item }) => (
                     <GroupItem
+                        shortName={generateShortName(item.name)}
                         groupId={item.groupId}
                         name={item.name}
                         editMode={editMode}

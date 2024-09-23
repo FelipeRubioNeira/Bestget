@@ -172,6 +172,14 @@ const useGroupsViewModel = ({
 
     }
 
+    const generateShortName = (name: string) => {
+        const words = name.split(" ")
+        if (words.length === 1) return name.charAt(0).toUpperCase()
+        else return words[0].charAt(0).toUpperCase() + words[1].charAt(0).toUpperCase()
+    }
+
+
+
 
     // ------------------- header buttons ------------------- //
     const onPressQuestionHeaderIcon = () => {
@@ -183,6 +191,17 @@ const useGroupsViewModel = ({
     }
 
     const onPressEditGroupConfirmation = (groupId: string) => {
+
+        showModal(
+            "Lo sentimos",
+            "Esta funcionalidad aún no está disponible",
+            [
+                {
+                    text: "Aceptar",
+                    onPress: () => hideModal()
+                }
+            ]
+        )
 
         turnOffDeleteMode()
 
@@ -220,6 +239,7 @@ const useGroupsViewModel = ({
         if (isValid) {
             clearGroup(groupId)
             hideModal()
+            turnOffDeleteMode()
 
         } else {
             showModal(
@@ -271,6 +291,8 @@ const useGroupsViewModel = ({
         editMode,
         onPressDeleteGroupConfirmation,
         onPressEditGroupConfirmation,
+
+        generateShortName
     }
 }
 

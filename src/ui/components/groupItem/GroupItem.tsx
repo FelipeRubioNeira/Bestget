@@ -10,7 +10,8 @@ import { Colors } from '../../constants/Colors'
 
 // ------------------- component ------------------- //
 interface GroupItemProps {
-    name: string
+    name: string,
+    shortName: string,
     groupId: string,
     editMode?: boolean,
     onEdit?: () => void,
@@ -22,6 +23,7 @@ interface GroupItemProps {
 const GroupItem = ({
     groupId,
     name,
+    shortName,
     editMode,
     navigateToFinancesOfGroup,
     onEdit,
@@ -37,7 +39,7 @@ const GroupItem = ({
             <View style={GroupItemStyles.icon}>
 
                 <Label
-                    value='GF'
+                    value={shortName}
                     color={Colors.WHITE}
                     fontFamily={FontFamily.BOLD}
                 />

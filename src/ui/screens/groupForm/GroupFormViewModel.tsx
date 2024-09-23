@@ -51,7 +51,10 @@ const useGroupFormViewModel = ({
         buttonList: []
     })
 
-    const modalViewModel = useModalViewModel()
+    const {
+        showModal,
+        hideModal
+    } = useModalViewModel()
 
 
 
@@ -97,19 +100,19 @@ const useGroupFormViewModel = ({
             returnToGroups(response.result?.groupId || "")
 
         } else {
-            modalViewModel.showModal(
+            showModal(
                 "Error",
                 response.message,
                 [
                     {
                         text: "Aceptar",
-                        onPress: () => modalViewModel.hideModal()
+                        onPress: () => hideModal()
                     }
                 ])
         }
     }
 
-    const editGroup = async (group: Group) => { }
+    const editGroup = async (group: Group) => {}
 
 
     // ---------------- return to groups ---------------- //
